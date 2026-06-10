@@ -381,7 +381,7 @@ footer a:hover{text-decoration:underline}
 <script>
 document.getElementById('yr').textContent=new Date().getFullYear();
 
-const DATA=(()=>{try{const s=localStorage.getItem('twm_courses');if(s)return JSON.parse(s);}catch(e){}return {
+const DATA={
   arduino:{
     ages:['6-9 yrs','10-12 yrs','13-15 yrs','All ages'],
     projects:[
@@ -416,7 +416,9 @@ const DATA=(()=>{try{const s=localStorage.getItem('twm_courses');if(s)return JSO
       {id:'a9',icon:'ti-rocket',title:'Build your portfolio',diff:'Advanced',age:'13-16 yrs',time:120,desc:'GitHub, pitch deck, and showcase prep'},
     ]
   }
-};})();
+};
+// Apply any course edits saved via admin.html
+try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
 
 let track='arduino',selectedAge='All ages',selected=[],duration=null,planText='';
 
@@ -430,29 +432,46 @@ function switchTrack(t){
 }
 
 function renderAge(){
-  document.getElementById('age-bar').innerHTML=DATA[track].ages.map(a=>
-    '<button class="age-btn '+(a===selectedAge?'active-'+track:'')+'" onclick="setAge(''+a+'')">'+a+'</button>'
-  ).join('');
+  document.getElementById('age-bar').innerHTML=DATA[track].ages.map(a=>{
+    const active=a===selectedAge?'active-'+track:'';
+    return '<button class="age-btn '+active+'" data-age="'+a+'">'+a+'</button>';
+  }).join('');
 }
+// Age bar click delegation
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('#age-bar [data-age]');
+  if(btn) setAge(btn.dataset.age);
+});
 
 function setAge(a){selectedAge=a;renderAge();renderGrid();}
 
 function renderGrid(){
   const items=DATA[track].projects.filter(p=>selectedAge==='All ages'||p.age===selectedAge||p.age==='All ages');
-  document.getElementById('projects-grid').innerHTML=items.map(p=>{
+  const grid=document.getElementById('projects-grid');
+  if(!items.length){grid.innerHTML='<p style="color:var(--text-3);font-size:14px;padding:1rem 0">No activities for this age group yet.</p>';return;}
+  grid.innerHTML=items.map(p=>{
     const sel=selected.includes(p.id);
     const dc=p.diff==='Beginner'?'diff-beg':p.diff==='Intermediate'?'diff-int':'diff-adv';
-    return '<div class="proj-card '+(sel?'selected-'+track:'')+'" onclick="toggleProject(''+p.id+'')" role="button" tabindex="0">'
+    return '<div class="proj-card '+(sel?'selected-'+track:'')+'" data-pid="'+p.id+'" role="button" tabindex="0">'
       +(sel?'<span class="check-badge check-'+track+'"><i class="ti ti-check"></i></span>':'')
       +'<span class="card-icon"><i class="ti '+p.icon+'"></i></span>'
       +'<div class="proj-title">'+p.title+'</div>'
-      +'<div class="proj-meta">'+p.time+' min · '+p.age+'</div>'
+      +'<div class="proj-meta">'+p.time+' min &middot; '+p.age+'</div>'
       +'<div class="proj-desc">'+p.desc+'</div>'
       +'<span class="diff-badge '+dc+'">'+p.diff+'</span>'
       +'</div>';
   }).join('');
 }
-
+// Project grid click delegation
+document.addEventListener('click',function(e){
+  const card=e.target.closest('#projects-grid [data-pid]');
+  if(card) toggleProject(card.dataset.pid);
+});
+// Basket tag click delegation
+document.addEventListener('click',function(e){
+  const tag=e.target.closest('#basket-items [data-pid]');
+  if(tag) toggleProject(tag.dataset.pid);
+});
 function toggleProject(id){
   selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id];
   renderGrid();renderBasket();updateBtn();
@@ -465,7 +484,7 @@ function renderBasket(){
   const all=[...DATA.arduino.projects,...DATA.ai.projects];
   el.innerHTML=selected.map(id=>{
     const p=all.find(x=>x.id===id),t=id.startsWith('ar')?'arduino':'ai';
-    return '<span class="basket-tag basket-tag-'+t+'" onclick="toggleProject(''+id+'')">'+p.title+' <i class="ti ti-x" style="font-size:11px"></i></span>';
+    return '<span class="basket-tag basket-tag-'+t+'" data-pid="'+id+'">'+p.title+' <i class="ti ti-x" style="font-size:11px"></i></span>';
   }).join('');
 }
 
