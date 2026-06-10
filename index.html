@@ -193,7 +193,7 @@ footer a:hover{text-decoration:underline}
 @media print{
   .site-nav,.hero,.steps,.card:not(.output-card),.gen-btn,.plan-actions,
   footer,.catalog-section,#email-status,#catalog-section,.book-wa-box,.referral-nudge,
-  .trust-bar,.proof-strip,.testimonial-card,.sticky-wa{display:none!important}
+  .trust-bar,.proof-strip,.testimonial-card,.sticky-wa,.pricing-block{display:none!important}
   main{display:block!important}
   #output-section{display:block!important}
   .output-card{border:none!important;padding:0!important;box-shadow:none!important;margin:0!important;border-radius:0!important}
@@ -258,7 +258,26 @@ footer a:hover{text-decoration:underline}
 .testimonial-attr{font-size:12px;font-weight:600;color:var(--text-3);display:flex;align-items:center;gap:6px}
 .testimonial-stars{color:var(--orange);font-size:14px;letter-spacing:1px}
 
-/* ── BOOK ON WHATSAPP CTA ── */
+/* ── PRICING BLOCK ── */
+.pricing-block{display:none;margin-top:1.25rem}
+.pricing-block.visible{display:block}
+.pricing-block-title{font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.pricing-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:520px){.pricing-cards{grid-template-columns:1fr}}
+.pricing-card{border:2px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center;background:var(--surface);position:relative;transition:border-color 0.15s}
+.pricing-card.featured{border-color:var(--orange);background:var(--orange-light)}
+.pricing-card .pc-duration{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-3);margin-bottom:6px}
+.pricing-card.featured .pc-duration{color:var(--orange-dark)}
+.pricing-card .pc-price{font-size:24px;font-weight:700;color:var(--text);line-height:1}
+.pricing-card.featured .pc-price{color:var(--orange-dark)}
+.pricing-card .pc-unit{font-size:11px;color:var(--text-3);margin-top:3px}
+.pricing-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
+.avail-schedule{background:var(--green-light);border:1px solid rgba(76,175,42,0.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--green-dark);display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.avail-schedule i{flex-shrink:0;margin-top:1px}
+.avail-slots{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+.avail-slot{background:#fff;border:1px solid rgba(76,175,42,0.35);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--green-dark)}
+.book-cal-btn{display:inline-flex;align-items:center;gap:7px;background:var(--brown);color:#fff;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;text-decoration:none;transition:filter 0.15s;margin-bottom:10px}
+.book-cal-btn:hover{filter:brightness(1.25)}
 .book-wa-box{background:linear-gradient(135deg,#075E54 0%,#128C7E 100%);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-top:1.25rem;display:none;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .book-wa-box.visible{display:flex}
 .book-wa-text strong{color:#fff;font-size:15px;display:block;margin-bottom:4px}
@@ -473,6 +492,40 @@ footer a:hover{text-decoration:underline}
         <button class="action-btn" onclick="resetPlan()"><i class="ti ti-refresh" aria-hidden="true"></i> Start over</button>
       </div>
 
+      <div class="pricing-block" id="pricing-block">
+        <div class="pricing-block-title"><i class="ti ti-tag"></i> Session pricing</div>
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <div class="pc-duration">90 minutes</div>
+            <div class="pc-price">KES 2,500</div>
+            <div class="pc-unit">per child</div>
+          </div>
+          <div class="pricing-card featured">
+            <div class="pricing-badge">Most popular</div>
+            <div class="pc-duration">2 hours</div>
+            <div class="pc-price">KES 3,500</div>
+            <div class="pc-unit">per child</div>
+          </div>
+          <div class="pricing-card">
+            <div class="pc-duration">Full day</div>
+            <div class="pc-price">KES 8,000+</div>
+            <div class="pc-unit">per child</div>
+          </div>
+        </div>
+        <div class="avail-schedule">
+          <i class="ti ti-calendar-event"></i>
+          <div>
+            <strong>Available slots</strong>
+            <div class="avail-slots">
+              <span class="avail-slot">Thu 11am – 1pm</span>
+              <span class="avail-slot">Fri all day</span>
+              <span class="avail-slot">Sat 2 – 4:30pm</span>
+            </div>
+          </div>
+        </div>
+        <a class="book-cal-btn" href="https://calendar.app.google/pbfswYzWMEmG5VQa9" target="_blank" rel="noopener"><i class="ti ti-calendar-plus"></i> Pick a date &amp; time</a>
+      </div>
+
       <div class="book-wa-box" id="book-wa-box">
         <div class="book-wa-text">
           <strong>Ready to book this session?</strong>
@@ -663,6 +716,7 @@ function generatePlan(){
   document.getElementById('email-status').className='email-status';
   document.getElementById('book-wa-box').classList.remove('visible');
   document.getElementById('referral-nudge').classList.remove('visible');
+  document.getElementById('pricing-block').classList.remove('visible');
   document.getElementById('output-card').style.borderTop='4px solid '+(hasArduino&&hasAI?'var(--blue)':(hasAI?'var(--green)':'var(--orange)'));
   document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
 
@@ -720,6 +774,7 @@ function generatePlan(){
   const waMsg='Hi Anne! I\'ve just built a session plan on TinkerWithMe for '+(cName||'my child')+(cAge?', age '+cAge:'')+'. Activities: '+picks.filter(Boolean).map(p=>p.title).join(', ')+'. Duration: '+durLabel+'. Can we book a session?';
   const waLink='https://wa.me/254117784724?text='+encodeURIComponent(waMsg);
   document.getElementById('book-wa-btn').href=waLink;
+  document.getElementById('pricing-block').classList.add('visible');
   document.getElementById('book-wa-box').classList.add('visible');
   document.getElementById('referral-nudge').classList.add('visible');
 }
@@ -806,6 +861,7 @@ function resetPlan(){
   document.getElementById('output-section').classList.remove('visible');
   document.getElementById('book-wa-box').classList.remove('visible');
   document.getElementById('referral-nudge').classList.remove('visible');
+  document.getElementById('pricing-block').classList.remove('visible');
   renderGrid();renderBasket();renderDur();updateBtn();
   window.scrollTo({top:0,behavior:'smooth'});
 }
