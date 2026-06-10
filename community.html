@@ -113,12 +113,37 @@ footer a:hover{text-decoration:underline}
   .expect-card{padding:1.25rem}
   .cta-box{padding:2rem 1.25rem}
 }
+
+/* ── TOP NAV ── */
+.site-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 1.5rem;background:rgba(0,0,0,0.25);position:relative;z-index:10;border-bottom:1px solid rgba(255,255,255,0.08)}
+.nav-brand{font-size:15px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:0.01em}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:7px 15px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.65);transition:all 0.15s}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.10)}
+.nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
+@media(max-width:420px){.nav-brand{font-size:13px}.nav-link{padding:6px 10px;font-size:12px}}
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 </head>
 <body>
 
 <!-- HERO -->
 <header class="hero">
+<nav class="site-nav">
+  <a class="nav-brand" href="index.html">TinkerWithMe</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Course Picker</a>
+    <a class="nav-link active" href="community.html">Community</a>
+    <a class="nav-link" href="admin.html">Editor</a>
+  </div>
+</nav>
   <!-- Logo placeholder — swap src for real logo -->
   <div style="height:90px;width:180px;background:rgba(255,255,255,0.08);border-radius:12px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;position:relative;z-index:1">TinkerWithMe</div>
 

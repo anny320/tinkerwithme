@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TinkerWithMe — Course Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
+  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
+  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
+  --red:#C0392B;--red-light:#FCEBEB;
+  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
+  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
+  --radius:12px;--radius-sm:8px;--radius-pill:99px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+.site-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 1.5rem;background:var(--brown);border-bottom:1px solid rgba(255,255,255,0.08)}
+.nav-brand{font-size:15px;font-weight:700;color:#fff;text-decoration:none}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:7px 15px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.65);transition:all 0.15s}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.10)}
+.nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
+
+/* LAYOUT */
+.page-header{background:var(--brown);padding:2rem 1.5rem 2.5rem;color:#fff}
+.page-header h1{font-size:26px;font-weight:700;margin-bottom:6px}
+.page-header p{font-size:14px;color:rgba(255,255,255,0.65)}
+.container{max-width:960px;margin:0 auto;padding:2rem 1.25rem 4rem}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.toolbar h2{font-size:16px;font-weight:700;flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;font-family:inherit}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-secondary{background:var(--bg);color:var(--text-2);border:1.5px solid var(--border-strong)}
+.btn-secondary:hover{background:#fff}
+.btn-danger{background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,57,43,0.25)}
+.btn-danger:hover{background:#f5c6c0}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(1.08)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* TRACK TABS */
+.track-tabs{display:flex;gap:8px;margin-bottom:1.5rem}
+.track-tab{padding:9px 22px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text-2);transition:all 0.15s}
+.track-tab.active-arduino{background:var(--orange-light);border-color:var(--orange);color:var(--orange-dark)}
+.track-tab.active-ai{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-3);padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(42,26,14,0.02)}
+.diff-badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:var(--radius-pill);font-weight:600}
+.diff-beg{background:var(--green-light);color:var(--green-dark)}
+.diff-int{background:var(--orange-light);color:var(--orange-dark)}
+.diff-adv{background:var(--blue-light);color:var(--blue-dark)}
+.row-actions{display:flex;gap:6px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(42,26,14,0.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);transform:translateY(12px);transition:transform 0.2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+.modal-header h3{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-3);padding:4px;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--text-2)}
+input,select,textarea{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:border-color 0.12s}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#fff}
+textarea{resize:vertical;min-height:70px}
+
+/* EXPORT AREA */
+.export-box{background:var(--bg);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);padding:1rem;font-family:monospace;font-size:11px;color:var(--text-2);white-space:pre-wrap;word-break:break-all;max-height:260px;overflow-y:auto;margin-top:12px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--brown);color:#fff;padding:11px 22px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;z-index:200;opacity:0;transition:all 0.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--orange)}
+.stat-num.green{color:var(--green)}
+.stat-label{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
+
+.empty-state{text-align:center;padding:2.5rem;color:var(--text-3);font-size:14px}
+
+@media(max-width:520px){
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+  .toolbar{gap:8px}
+}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-26H8GCM572"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-26H8GCM572');
+</script>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="index.html">TinkerWithMe</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Course Picker</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link active" href="admin.html">Editor</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>Course Editor</h1>
+  <p>Add, edit, or remove activities. Changes are saved in your browser and applied to the Course Picker automatically.</p>
+</div>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row"></div>
+
+  <!-- Track selector -->
+  <div class="track-tabs">
+    <button class="track-tab active-arduino" onclick="setTrack('arduino')">⚙️ Arduino</button>
+    <button class="track-tab" onclick="setTrack('ai')">🤖 AI Skills</button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <h2 id="track-label">Arduino activities</h2>
+    <button class="btn btn-secondary btn-sm" onclick="openExport()"><i class="ti ti-download"></i> Export JSON</button>
+    <button class="btn btn-secondary btn-sm" onclick="resetToDefaults()"><i class="ti ti-refresh"></i> Reset to defaults</button>
+    <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Add activity</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Activity</th>
+          <th>Difficulty</th>
+          <th>Age group</th>
+          <th>Duration</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="course-table"></tbody>
+    </table>
+    <div id="empty-state" class="empty-state" style="display:none">No activities yet — click <strong>Add activity</strong> to get started.</div>
+  </div>
+
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Add activity</h3>
+      <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="f-title">Activity title *</label>
+          <input id="f-title" type="text" placeholder="e.g. Traffic light simulation">
+        </div>
+        <div class="form-group">
+          <label for="f-diff">Difficulty *</label>
+          <select id="f-diff">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-age">Age group *</label>
+          <select id="f-age"></select>
+        </div>
+        <div class="form-group">
+          <label for="f-time">Duration (minutes) *</label>
+          <input id="f-time" type="number" min="15" step="5" placeholder="60">
+        </div>
+        <div class="form-group">
+          <label for="f-icon">Icon class</label>
+          <input id="f-icon" type="text" placeholder="ti-traffic-lights">
+          <span style="font-size:11px;color:var(--text-3);margin-top:3px">Browse icons at <a href="https://tabler.io/icons" target="_blank" style="color:var(--orange)">tabler.io/icons</a></span>
+        </div>
+        <div class="form-group full">
+          <label for="f-desc">Short description *</label>
+          <textarea id="f-desc" placeholder="One sentence describing what the child builds or learns"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveActivity()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="export-modal" onclick="handleExportOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Export course data</h3>
+      <button class="modal-close" onclick="closeExport()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:10px">Copy this JSON and replace the <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:12px">const DATA={...}</code> block in <strong>index.html</strong> to make your changes permanent.</p>
+      <button class="btn btn-secondary btn-sm" onclick="copyExport()" style="margin-bottom:8px"><i class="ti ti-copy"></i> Copy to clipboard</button>
+      <div class="export-box" id="export-box"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeExport()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DEFAULT DATA (mirrors index.html) ─────────────────────────────────────
+const DEFAULT_DATA = {
+  arduino:{
+    ages:['6-9 yrs','10-12 yrs','13-15 yrs','All ages'],
+    projects:[
+      {id:'ar1',icon:'ti-traffic-lights',title:'Traffic light simulation',diff:'Beginner',age:'6-9 yrs',time:60,desc:'3 LEDs mimic real traffic light sequences'},
+      {id:'ar2',icon:'ti-hand-click',title:'Button controlled LED',diff:'Beginner',age:'6-9 yrs',time:45,desc:'Push button toggles LED on/off'},
+      {id:'ar3',icon:'ti-brightness',title:'Fade an LED',diff:'Beginner',age:'6-9 yrs',time:45,desc:'PWM & analogWrite() to dim LED smoothly'},
+      {id:'ar4',icon:'ti-palette',title:'RGB LED colour mixer',diff:'Beginner',age:'6-9 yrs',time:60,desc:'3 potentiometers mix red, green & blue'},
+      {id:'ar5',icon:'ti-hand-finger',title:'Capacitive touch sensor',diff:'Beginner',age:'10-12 yrs',time:60,desc:'Touch sensor module toggles an LED'},
+      {id:'ar6',icon:'ti-music',title:'Buzzer melody',diff:'Beginner',age:'6-9 yrs',time:60,desc:'Piezo buzzer plays tunes like Ode to Joy'},
+      {id:'ar7',icon:'ti-dots',title:'Morse code blinker',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'LED blinks out Morse code messages'},
+      {id:'ar8',icon:'ti-temperature',title:'Temperature logger',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'DHT11 reads & displays temperature'},
+      {id:'ar9',icon:'ti-radar',title:'Ultrasonic distance sensor',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'HC-SR04 measures distance, LED warns on proximity'},
+      {id:'ar10',icon:'ti-rotate-clockwise',title:'Servo motor control',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'Potentiometer steers servo to any position'},
+      {id:'ar11',icon:'ti-sun',title:'Light-activated LED',diff:'Beginner',age:'6-9 yrs',time:60,desc:'Photoresistor auto-lights LED when dark'},
+      {id:'ar12',icon:'ti-dice-5',title:'Digital dice',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'Multiple LEDs randomly show a dice roll'},
+      {id:'ar13',icon:'ti-bell',title:'Basic alarm system',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'Motion sensor triggers buzzer & LED alarm'},
+      {id:'ar14',icon:'ti-wind',title:'Fan control',diff:'Advanced',age:'13-15 yrs',time:90,desc:'Temperature sensor controls relay-powered fan'},
+      {id:'ar15',icon:'ti-gamepad',title:'Simon says game',diff:'Advanced',age:'13-15 yrs',time:120,desc:'Classic memory game with LEDs, buttons & buzzer'},
+    ]
+  },
+  ai:{
+    ages:['7-10 yrs','10-13 yrs','13-16 yrs','All ages'],
+    projects:[
+      {id:'a1',icon:'ti-message-circle',title:'Prompting power',diff:'Beginner',age:'7-10 yrs',time:60,desc:'ChatGPT basics — ask better questions'},
+      {id:'a2',icon:'ti-photo-ai',title:'AI art studio',diff:'Beginner',age:'7-10 yrs',time:60,desc:'DALL-E image generation workshop'},
+      {id:'a3',icon:'ti-music',title:'AI music & sound',diff:'Beginner',age:'7-10 yrs',time:60,desc:'Generate soundtracks and beats'},
+      {id:'a4',icon:'ti-book-2',title:'AI storytelling',diff:'Beginner',age:'10-13 yrs',time:75,desc:'Write illustrated stories with AI'},
+      {id:'a5',icon:'ti-cpu',title:'Teachable Machine',diff:'Intermediate',age:'10-13 yrs',time:90,desc:'Train your own image classifier'},
+      {id:'a6',icon:'ti-palette',title:'Mashup madness',diff:'Intermediate',age:'10-13 yrs',time:90,desc:'Combine multiple AI tools creatively'},
+      {id:'a7',icon:'ti-scale',title:'Bias detective',diff:'Intermediate',age:'13-16 yrs',time:75,desc:'Find and discuss bias in AI tools'},
+      {id:'a8',icon:'ti-briefcase',title:'AI careers deep dive',diff:'Intermediate',age:'13-16 yrs',time:60,desc:'ML engineers, ethicists, data scientists'},
+      {id:'a9',icon:'ti-rocket',title:'Build your portfolio',diff:'Advanced',age:'13-16 yrs',time:120,desc:'GitHub, pitch deck, and showcase prep'},
+    ]
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'twm_courses';
+let currentTrack = 'arduino';
+let editingId = null;
+
+function loadData() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  } catch(e) {
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function renderStats() {
+  const data = loadData();
+  const ard = data.arduino.projects.length;
+  const ai = data.ai.projects.length;
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${ard}</div><div class="stat-label">Arduino activities</div></div>
+    <div class="stat-card"><div class="stat-num green">${ai}</div><div class="stat-label">AI activities</div></div>
+    <div class="stat-card"><div class="stat-num">${ard+ai}</div><div class="stat-label">Total activities</div></div>
+  `;
+}
+
+function renderTable() {
+  const data = loadData();
+  const projects = data[currentTrack].projects;
+  const tbody = document.getElementById('course-table');
+  const empty = document.getElementById('empty-state');
+
+  if (!projects.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const dc = d => d==='Beginner'?'diff-beg':d==='Intermediate'?'diff-int':'diff-adv';
+  tbody.innerHTML = projects.map(p => `
+    <tr>
+      <td><strong>${p.title}</strong></td>
+      <td><span class="diff-badge ${dc(p.diff)}">${p.diff}</span></td>
+      <td>${p.age}</td>
+      <td>${p.time} min</td>
+      <td style="max-width:220px;color:var(--text-2)">${p.desc}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openEdit('${p.id}')"><i class="ti ti-pencil"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteActivity('${p.id}')"><i class="ti ti-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function render() { renderStats(); renderTable(); }
+
+// ── TRACK ─────────────────────────────────────────────────────────────────
+function setTrack(t) {
+  currentTrack = t;
+  document.querySelectorAll('.track-tab').forEach(el => {
+    el.className = 'track-tab';
+    if (el.textContent.toLowerCase().includes(t === 'arduino' ? 'arduino' : 'ai')) {
+      el.classList.add('active-' + t);
+    }
+  });
+  document.getElementById('track-label').textContent =
+    t === 'arduino' ? 'Arduino activities' : 'AI Skills activities';
+  renderTable();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function populateAgeSelect() {
+  const data = loadData();
+  const ages = data[currentTrack].ages.filter(a => a !== 'All ages');
+  const sel = document.getElementById('f-age');
+  sel.innerHTML = ages.map(a => `<option>${a}</option>`).join('');
+}
+
+function openAdd() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Add activity';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-diff').value = 'Beginner';
+  document.getElementById('f-time').value = '60';
+  document.getElementById('f-icon').value = '';
+  document.getElementById('f-desc').value = '';
+  populateAgeSelect();
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('f-title').focus();
+}
+
+function openEdit(id) {
+  const data = loadData();
+  const p = data[currentTrack].projects.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit activity';
+  document.getElementById('f-title').value = p.title;
+  document.getElementById('f-diff').value = p.diff;
+  document.getElementById('f-time').value = p.time;
+  document.getElementById('f-icon').value = p.icon || '';
+  document.getElementById('f-desc').value = p.desc;
+  populateAgeSelect();
+  document.getElementById('f-age').value = p.age;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+function saveActivity() {
+  const title = document.getElementById('f-title').value.trim();
+  const diff = document.getElementById('f-diff').value;
+  const age = document.getElementById('f-age').value;
+  const time = parseInt(document.getElementById('f-time').value) || 60;
+  const icon = document.getElementById('f-icon').value.trim() || 'ti-code';
+  const desc = document.getElementById('f-desc').value.trim();
+
+  if (!title || !desc) { showToast('Please fill in the title and description'); return; }
+
+  const data = loadData();
+  const projects = data[currentTrack].projects;
+
+  if (editingId) {
+    const idx = projects.findIndex(p => p.id === editingId);
+    if (idx > -1) projects[idx] = { ...projects[idx], title, diff, age, time, icon, desc };
+    showToast('Activity updated');
+  } else {
+    const prefix = currentTrack === 'arduino' ? 'ar' : 'a';
+    const newId = prefix + Date.now();
+    projects.push({ id: newId, icon, title, diff, age, time, desc });
+    showToast('Activity added');
+  }
+
+  saveData(data);
+  closeModal();
+  render();
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────
+function deleteActivity(id) {
+  if (!confirm('Delete this activity?')) return;
+  const data = loadData();
+  data[currentTrack].projects = data[currentTrack].projects.filter(p => p.id !== id);
+  saveData(data);
+  render();
+  showToast('Activity deleted');
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────
+function resetToDefaults() {
+  if (!confirm('Reset all courses to defaults? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+  showToast('Reset to default courses');
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────
+function openExport() {
+  const data = loadData();
+  document.getElementById('export-box').textContent = 'const DATA=' + JSON.stringify(data, null, 2) + ';';
+  document.getElementById('export-modal').classList.add('open');
+}
+function closeExport() { document.getElementById('export-modal').classList.remove('open'); }
+function handleExportOverlayClick(e) { if (e.target === document.getElementById('export-modal')) closeExport(); }
+function copyExport() {
+  const text = document.getElementById('export-box').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
