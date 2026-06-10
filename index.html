@@ -670,62 +670,51 @@ function generatePlan(){
   document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
 
   // Build materials list based on actual picks
-  const materials=(hasArduino?'Arduino Uno board, USB cable, breadboard, jumper wires, LEDs, resistors (220Ω)':'')
+  const materials=(hasArduino?'Arduino Uno board, USB cable, breadboard, jumper wires':'')
     +(hasArduino&&hasAI?' + ':'')
     +(hasAI?'Laptop or tablet per child, stable internet connection':'')
     +(hasArduino?' — plus component kit for: '+picks.filter(p=>p.id.startsWith('ar')).map(p=>p.title).join(', '):'');
 
-  // Build timed schedule
-  const warmup=10, wrapup=15, buffer=5;
-  const projectTime=durMins-warmup-wrapup;
-  const perProject=picks.length>0?Math.floor(projectTime/picks.length):projectTime;
-  let schedule='• 0–10 min — Welcome & warm-up activity\n';
-  let t=10;
-  picks.forEach((p,i)=>{
-    schedule+='• '+t+'–'+(t+perProject)+' min — '+p.title+': '+p.desc+'\n';
-    t+=perProject;
-  });
-  schedule+='• '+t+'–'+(t+wrapup)+' min — Showcase, reflection & wrap-up';
-
-  // Build learning outcomes
+  // Build outcome bullets — what the child will DO and TAKE AWAY
   const outcomes=picks.map(p=>{
-    if(track==='arduino') return 'Build and program a '+p.title.toLowerCase()+' circuit';
-    return 'Explore and apply '+p.title.toLowerCase()+' using AI tools';
+    if(p.id.startsWith('ar')) return 'Build and test a working **'+p.title+'** circuit they can take home';
+    return 'Create and personalise their own **'+p.title+'** AI project';
   });
 
-  // Difficulty-aware tips
-  const hasBeginner=picks.some(p=>p.diff==='Beginner');
-  const hasAdvanced=picks.some(p=>p.diff==='Advanced');
-  const tips=[
-    hasBeginner?'Start with a group demo before letting kids work independently — especially important for first-timers.':'',
-    hasAdvanced?'Challenge advanced learners to extend the project (e.g. add a second sensor, remix the AI output).':'',
-    track==='arduino'?'Keep a spare kit of pre-wired components for kids who get stuck on hardware.':'Keep an eye on internet connectivity — have an offline fallback activity ready.',
-    'Encourage kids to explain their project to a neighbour before the showcase — it builds confidence.',
-    notes?'Parent note: '+notes:'',
-  ].filter(Boolean);
+  // Per-project highlights (teaser, not step-by-step)
+  const projectHighlights=picks.map(p=>{
+    const badge=p.diff==='Beginner'?'Starter project':p.diff==='Intermediate'?'Builds on basics':'Challenge project';
+    return '**'+p.title+'** *('+badge+' · '+p.ages+')*\n'+p.desc;
+  });
+
+  // What to bring
+  const bring=[];
+  if(hasArduino) bring.push('Curiosity and willingness to tinker!');
+  if(hasAI) bring.push('A laptop or tablet (we can arrange one if needed)');
+  bring.push('A snack and water for longer sessions');
+  if(notes) bring.push('Note from parent: '+notes);
 
   planText=
-    '## Session Overview\n'
-    +(cName?'**Child:** '+cName+(cAge?', age '+cAge:'')+' — '+expLabel+'.\n':'')
-    +(school?'**School:** '+school+'\n':'')
+    '## Session Proposal\n'
+    +(cName?'**For:** '+cName+(cAge?', age '+cAge:'')+' — '+expLabel+'.\n':'')
+    +(school?'**School / Group:** '+school+'\n':'')
     +'**Track:** '+trackLabel+'\n'
-    +'**Duration:** '+durLabel+'\n'
-    +'**Projects:** '+picks.map(p=>p.title).join(', ')+'\n\n'
-    +'## Learning Outcomes\n'
+    +'**Duration:** '+durLabel+'\n\n'
+    +'## What '+( cName||'Your Child')+' Will Build\n'
     +outcomes.map(o=>'- '+o).join('\n')+'\n\n'
-    +'## Materials Needed\n'
-    +materials+'\n\n'
-    +'## Timed Schedule\n'
-    +schedule+'\n\n'
-    +'## Facilitation Tips\n'
-    +tips.map(t=>'- '+t).join('\n')+'\n\n'
-    +'## Closing Reflection\n'
-    +'Ask each child: *“What was the hardest part? What would you change or build next?”* '
-    +'Give stickers or certificates to celebrate their work.\n\n'
-    +'## Next Steps\n'
-    +'- Share project photos in the TinkerWithMe WhatsApp community\n'
-    +'- Book the next session at anny320.github.io/tinkerwithme\n'
-    +(track==='arduino'?'- Encourage kids to show their circuit to family at home':'- Encourage kids to share their AI creation with friends');
+    +'## Projects at a Glance\n'
+    +projectHighlights.join('\n\n')+'\n\n'
+    +'## What to Bring\n'
+    +bring.map(b=>'- '+b).join('\n')+'\n\n'
+    +'## How It Works\n'
+    +'Anne runs every session using a hands-on, project-based method designed for ages 6–16. '
+    +'Kids work at their own pace with direct support throughout — no prior experience needed. '
+    +'Every child leaves with a finished project and the confidence to keep building.\n\n'
+    +'## Ready to Book?\n'
+    +'Reply to this email or message Anne on WhatsApp to confirm your slot, get pricing, and choose in-person or virtual format.\n'
+    +'- WhatsApp: +254 0117784724\n'
+    +'- Email: tinkerwithanne@gmail.com\n'
+    +'- Web: anny320.github.io/tinkerwithme';
 
   document.getElementById('plan-content').innerHTML=formatPlan(planText);
   document.getElementById('plan-actions').style.display='flex';
@@ -754,10 +743,13 @@ function triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,plan){
     +'  1. Your current rates for a '+durLabel+' session\n'
     +'  2. Available dates and times\n'
     +'  3. Whether the session is in-person, virtual, or both\n\n';
-  const planSection='I have also included the auto-generated session plan below for reference:\n\n'
+  const planSection='Here is a summary of the session proposal I generated:\n\n'
     +'─────────────────────────────\n'
-    +plan.replace(/##\s*/g,'').replace(/\*\*/g,'')+
-    '\n─────────────────────────────\n\n';
+    +'Track: '+trackLabel+'\n'
+    +'Duration: '+durLabel+'\n'
+    +'Projects: '+picks.map(p=>p.title).join(', ')+'\n'
+    +(cAge?'Age: '+cAge+'\n':'')
+    +'─────────────────────────────\n\n';
   const closing='Looking forward to hearing from you!\n\n'+(pName?'Best,\n'+pName:'Best wishes');
   const body=greeting+intro+details+ask+planSection+closing;
   const link='mailto:tinkerwithanne@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
