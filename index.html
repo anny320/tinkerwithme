@@ -689,7 +689,7 @@ function updateBtn(){
 
 function generatePlan(){
   const all=[...DATA.arduino.projects,...DATA.ai.projects];
-  const picks=selected.map(id=>all.find(x=>x.id===id));
+  const picks=selected.map(id=>all.find(x=>x.id===id)).filter(Boolean);
   const durMins=duration==='full'?330:parseInt(duration);
   const durLabel=duration==='full'?'full day (5-6 hours)':duration+' minutes';
   const hasArduino=picks.some(p=>p&&p.id.startsWith('ar'));
