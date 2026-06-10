@@ -191,11 +191,23 @@ footer a:hover{text-decoration:underline}
 }
 
 @media print{
-  .hero .hero-tagline,.steps,.card:not(.output-card),.gen-btn,.plan-actions,footer{display:none!important}
+  .site-nav,.hero,.steps,.card:not(.output-card),.gen-btn,.plan-actions,
+  footer,.catalog-section,#email-status{display:none!important}
   #output-section{display:block!important}
-  .output-card{border:none;padding:0;box-shadow:none}
-  body{background:#fff}
+  .output-card{border:none;padding:0;box-shadow:none;margin:0}
+  body{background:#fff;font-size:13px}
+  #print-header{display:block!important}
+  #plan-content h3{font-size:14px;margin-top:18px}
+  #plan-content ul{margin-left:1.2rem}
+  #plan-content p{margin-bottom:8px}
+  .print-divider{border:none;border-top:1px solid #ddd;margin:16px 0}
+  @page{margin:20mm 18mm}
 }
+#print-header{display:none;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #F07B1D}
+.print-header-top{display:flex;justify-content:space-between;align-items:flex-start}
+.print-brand{font-size:18px;font-weight:700;color:#2A1A0E}
+.print-contact{font-size:11px;color:#6B4C30;text-align:right;line-height:1.6}
+.print-tag{display:inline-block;background:#FEF0E0;color:#C45C00;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
 
 /* ── TOP NAV ── */
 .site-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 1.5rem;background:rgba(0,0,0,0.25);position:relative;z-index:10;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -348,6 +360,20 @@ footer a:hover{text-decoration:underline}
 
   <section id="output-section" aria-live="polite">
     <div class="output-card" id="output-card">
+      <!-- Only visible when printing / saving as PDF -->
+      <div id="print-header">
+        <div class="print-header-top">
+          <div>
+            <div class="print-brand">TinkerWithMe</div>
+            <span class="print-tag">Session Plan</span>
+          </div>
+          <div class="print-contact">
+            tinkerwithanne@gmail.com<br>
+            Nairobi, Kenya<br>
+            anny320.github.io/tinkerwithme
+          </div>
+        </div>
+      </div>
       <h2 id="output-title">Your session plan</h2>
       <p class="subtitle" id="output-subtitle"></p>
       <div id="plan-content"></div>
@@ -589,17 +615,38 @@ function generatePlan(){
 }
 
 function triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,plan){
-  const subject='TinkerWithMe session plan'+(cName?' for '+cName:'');
-  const body='New session request from TinkerWithMe Course Picker\n\n'
-    +'Parent: '+(pName||'-')+'\nEmail: '+(pEmail||'not provided')+'\n'
-    +'Child: '+(cName||'-')+', age '+(cAge||'-')+'\n'
-    +'Track: '+trackLabel+'\nDuration: '+durLabel+'\n'
-    +'Projects: '+picks.map(p=>p.title).join(', ')+'\n\n'
-    +'--- SESSION PLAN ---\n\n'+plan;
+  const subject='Session Booking Request'+(cName?' — '+cName:'')+(cAge?' (Age '+cAge+')':'');
+  const greeting='Hi Anne,\n\n';
+  const intro='I would like to book a TinkerWithMe session'+(cName?' for '+cName:'')+' and find out more about pricing and available slots.\n\n';
+  const details='SESSION DETAILS\n'
+    +'─────────────────────────────\n'
+    +'Child: '+(cName||'—')+(cAge?', Age '+cAge:'')+'\n'
+    +'Parent / Guardian: '+(pName||'—')+'\n'
+    +'Reply-to email: '+(pEmail||'—')+'\n'
+    +'Track: '+trackLabel+'\n'
+    +'Preferred duration: '+durLabel+'\n'
+    +'Activities selected: '+picks.map(p=>p.title).join(', ')+'\n\n';
+  const ask='Could you please let me know:\n'
+    +'  1. Your current rates for a '+durLabel+' session\n'
+    +'  2. Available dates and times\n'
+    +'  3. Whether the session is in-person, virtual, or both\n\n';
+  const planSection='I have also included the auto-generated session plan below for reference:\n\n'
+    +'─────────────────────────────\n'
+    +plan.replace(/##\s*/g,'').replace(/\*\*/g,'')+
+    '\n─────────────────────────────\n\n';
+  const closing='Looking forward to hearing from you!\n\n'+(pName?'Best,\n'+pName:'Best wishes');
+  const body=greeting+intro+details+ask+planSection+closing;
   const link='mailto:tinkerwithanne@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   const el=document.getElementById('email-status');
-  el.innerHTML='<strong><i class="ti ti-mail"></i> Ready to send!</strong> Your session plan has been generated. '
-    +'<a href="'+link+'" style="color:inherit;text-decoration:underline;font-weight:600">Click here to email it to tinkerwithanne@gmail.com</a> — it will open in your mail app with everything filled in.';
+  el.innerHTML=
+    '<div style="display:flex;align-items:flex-start;gap:12px">'
+    +'<i class="ti ti-mail-forward" style="font-size:22px;flex-shrink:0;margin-top:2px"></i>'
+    +'<div><strong>Your booking request is ready.</strong><br>'
+    +'<span style="font-size:13px;opacity:0.85">It asks Anne about pricing, availability, and format — with your session plan attached.</span><br><br>'
+    +'<a href="'+link+'" style="display:inline-flex;align-items:center;gap:6px;background:var(--green-dark);color:#fff;padding:9px 18px;border-radius:99px;text-decoration:none;font-weight:700;font-size:13px">'
+    +'<i class="ti ti-send"></i> Send booking request to Anne</a>'
+    +'<span style="display:block;font-size:11px;opacity:0.7;margin-top:8px">Opens in your mail app · To: tinkerwithanne@gmail.com</span>'
+    +'</div></div>';
   el.className='email-status success';
 }
 
