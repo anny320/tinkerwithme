@@ -524,6 +524,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </div>
         <a class="book-cal-btn" href="https://calendar.app.google/pbfswYzWMEmG5VQa9" target="_blank" rel="noopener"><i class="ti ti-calendar-plus"></i> Pick a date &amp; time</a>
+        <div style="font-size:12px;color:var(--text-3);margin-top:6px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: <strong>KES 7,000</strong> + delivery &mdash; order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
       </div>
 
       <div class="book-wa-box" id="book-wa-box">
@@ -727,7 +728,7 @@ function generatePlan(){
 
   // Build outcome bullets — what the child will DO and TAKE AWAY
   const outcomes=picks.map(p=>{
-    if(p.id.startsWith('ar')) return 'Build and test a working **'+p.title+'** circuit they can take home';
+    if(p.id.startsWith('ar')) return 'Build and test a working **'+p.title+'** circuit';
     return 'Create and personalise their own **'+p.title+'** AI project';
   });
 
@@ -739,8 +740,10 @@ function generatePlan(){
 
   // What to bring
   const bring=[];
-  if(hasArduino) bring.push('Curiosity and willingness to tinker!');
-  if(hasAI) bring.push('A laptop or tablet (we can arrange one if needed)');
+  bring.push('Curiosity and a willingness to tinker!');
+  if(hasArduino) bring.push('**Arduino kit** (KES 7,000 + delivery) — order through Anne ahead of the session, or source your own. We will share a full materials list once booked.');
+  if(hasArduino) bring.push('Where to shop for components: [Nerokas](https://store.nerokas.co.ke/) or [Pixel Electronics](https://pixelelectric.com/)');
+  if(hasAI) bring.push('A laptop or tablet per child (we can arrange one if needed)');
   bring.push('A snack and water for longer sessions');
   if(notes) bring.push('Note from parent: '+notes);
 
