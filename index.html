@@ -192,16 +192,19 @@ footer a:hover{text-decoration:underline}
 
 @media print{
   .site-nav,.hero,.steps,.card:not(.output-card),.gen-btn,.plan-actions,
-  footer,.catalog-section,#email-status{display:none!important}
+  footer,.catalog-section,#email-status,#catalog-section{display:none!important}
+  main{display:block!important}
   #output-section{display:block!important}
-  .output-card{border:none;padding:0;box-shadow:none;margin:0}
-  body{background:#fff;font-size:13px}
-  #print-header{display:block!important}
-  #plan-content h3{font-size:14px;margin-top:18px}
-  #plan-content ul{margin-left:1.2rem}
-  #plan-content p{margin-bottom:8px}
-  .print-divider{border:none;border-top:1px solid #ddd;margin:16px 0}
-  @page{margin:20mm 18mm}
+  .output-card{border:none!important;padding:0!important;box-shadow:none!important;margin:0!important;border-radius:0!important}
+  body{background:#fff!important;font-size:12.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-header{display:flex!important}
+  #plan-content{font-size:12.5px;line-height:1.65}
+  #plan-content h3{font-size:13px;font-weight:700;margin:14px 0 4px;color:#2A1A0E;border-bottom:1px solid #eee;padding-bottom:3px}
+  #plan-content ul{margin:4px 0 10px 1.2rem}
+  #plan-content li{margin-bottom:3px}
+  #plan-content p{margin-bottom:7px}
+  #print-footer{display:block!important}
+  @page{margin:18mm 16mm;size:A4}
 }
 #print-header{display:none;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #F07B1D}
 .print-header-top{display:flex;justify-content:space-between;align-items:flex-start}
@@ -264,6 +267,7 @@ footer a:hover{text-decoration:underline}
       <div class="step-num" style="background:var(--green-light);color:var(--green-dark)">4</div>
       <p>Add <strong>details</strong> &amp; send</p>
     </div>
+    <div id="mix-hint" style="display:none;margin-top:10px;padding:8px 12px;background:var(--blue-light);color:var(--blue-dark);border-radius:var(--radius-sm);font-size:12px;font-weight:600"><i class="ti ti-check"></i> Great — you've picked from both tracks! Your plan will cover both Arduino and AI.</div>
   </div>
 
   <div class="card">
@@ -361,18 +365,21 @@ footer a:hover{text-decoration:underline}
   <section id="output-section" aria-live="polite">
     <div class="output-card" id="output-card">
       <!-- Only visible when printing / saving as PDF -->
-      <div id="print-header">
-        <div class="print-header-top">
-          <div>
-            <div class="print-brand">TinkerWithMe</div>
-            <span class="print-tag">Session Plan</span>
-          </div>
-          <div class="print-contact">
-            tinkerwithanne@gmail.com<br>
-            Nairobi, Kenya<br>
-            anny320.github.io/tinkerwithme
-          </div>
+      <div id="print-header" style="display:none;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:2.5px solid #F07B1D">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#2A1A0E;letter-spacing:-0.01em">TinkerWithMe</div>
+          <div id="print-plan-title" style="font-size:13px;color:#6B4C30;margin-top:3px"></div>
+          <div id="print-plan-sub" style="font-size:11px;color:#B08060;margin-top:2px"></div>
         </div>
+        <div style="text-align:right;font-size:11px;color:#6B4C30;line-height:1.7">
+          tinkerwithanne@gmail.com<br>
+          Nairobi, Kenya<br>
+          <span id="print-date"></span>
+        </div>
+      </div>
+      <div id="print-footer" style="display:none;margin-top:2rem;padding-top:0.75rem;border-top:1px solid #ddd;font-size:10px;color:#B08060;display:flex;justify-content:space-between">
+        <span>TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com</span>
+        <span>anny320.github.io/tinkerwithme</span>
       </div>
       <h2 id="output-title">Your session plan</h2>
       <p class="subtitle" id="output-subtitle"></p>
@@ -449,12 +456,16 @@ try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);
 let track='arduino',selectedAge='All ages',selected=[],duration=null,planText='';
 
 function switchTrack(t){
-  track=t;selected=[];selectedAge='All ages';duration=null;
+  track=t;selectedAge='All ages';
   document.querySelectorAll('.track-tab').forEach(el=>el.classList.remove('active'));
   document.querySelector('.track-tab.'+t).classList.add('active');
-  document.getElementById('output-section').classList.remove('visible');
   document.getElementById('gen-btn').className='gen-btn gen-'+t;
   renderAge();renderGrid();renderBasket();renderDur();updateBtn();
+  // Show mix-hint when both tracks have selections
+  const hasArduino=selected.some(id=>id.startsWith('ar'));
+  const hasAI=selected.some(id=>!id.startsWith('ar'));
+  const hint=document.getElementById('mix-hint');
+  if(hint) hint.style.display=(hasArduino&&hasAI)?'block':'none';
 }
 
 function renderAge(){
@@ -534,7 +545,9 @@ function generatePlan(){
   const picks=selected.map(id=>all.find(x=>x.id===id));
   const durMins=duration==='full'?330:parseInt(duration);
   const durLabel=duration==='full'?'full day (5-6 hours)':duration+' minutes';
-  const trackLabel=track==='arduino'?'Arduino robotics & electronics':'AI Skills for Kids';
+  const hasArduino=picks.some(p=>p&&p.id.startsWith('ar'));
+  const hasAI=picks.some(p=>p&&!p.id.startsWith('ar'));
+  const trackLabel=hasArduino&&hasAI?'Arduino & AI mixed session':hasAI?'AI Skills for Kids':'Arduino robotics & electronics';
   const cName=document.getElementById('child-name').value.trim();
   const cAge=document.getElementById('child-age').value.trim();
   const pName=document.getElementById('parent-name').value.trim();
@@ -545,17 +558,22 @@ function generatePlan(){
   const expLabel={'none':'no prior experience','some':'some prior experience','lots':'lots of experience'}[exp]||exp;
 
   document.getElementById('output-section').classList.add('visible');
-  document.getElementById('output-title').textContent=(cName?cName+'’s ':'Your ')+trackLabel+' plan';
+  document.getElementById('output-title').textContent=(cName?cName+"'s ":'Your ')+trackLabel+' plan';
+  // Populate PDF print header
+  document.getElementById('print-plan-title').textContent=(cName?cName+"'s ":'Your ')+trackLabel+' session plan';
+  document.getElementById('print-plan-sub').textContent=picks.length+' project'+(picks.length>1?'s':'')+' · '+durLabel+(cAge?' · Age '+cAge:'');
+  document.getElementById('print-date').textContent='Generated '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   document.getElementById('output-subtitle').textContent=picks.length+' project'+(picks.length>1?'s':'')+' · '+durLabel+(cAge?' · Age '+cAge:'');
   document.getElementById('plan-actions').style.display='none';
   document.getElementById('email-status').className='email-status';
-  document.getElementById('output-card').style.borderTop='4px solid '+(track==='arduino'?'var(--orange)':'var(--green)');
+  document.getElementById('output-card').style.borderTop='4px solid '+(hasArduino&&hasAI?'var(--blue)':(hasAI?'var(--green)':'var(--orange)'));
   document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
 
-  // Build materials list based on track
-  const materials=track==='arduino'
-    ?'Arduino Uno board, USB cable, breadboard, jumper wires, LEDs, resistors (220Ω), '+picks.map(p=>p.title).join(' kit, ')+' components'
-    :'Laptop or tablet per child, stable internet connection, headphones (optional), Google account for Teachable Machine activities';
+  // Build materials list based on actual picks
+  const materials=(hasArduino?'Arduino Uno board, USB cable, breadboard, jumper wires, LEDs, resistors (220Ω)':'')
+    +(hasArduino&&hasAI?' + ':'')
+    +(hasAI?'Laptop or tablet per child, stable internet connection':'')
+    +(hasArduino?' — plus component kit for: '+picks.filter(p=>p.id.startsWith('ar')).map(p=>p.title).join(', '):'');
 
   // Build timed schedule
   const warmup=10, wrapup=15, buffer=5;
@@ -651,14 +669,33 @@ function triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,plan){
 }
 
 function formatPlan(t){
-  return t
-    .replace(/^## (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^### (.+)$/gm,'<h3 style="font-size:14px">$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^[-*•] (.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>[\s\S]*?<\/li>)+/g,'<ul>$&</ul>')
-    .replace(/\n{2,}/g,'</p><p>')
-    .replace(/^(?!<[hup])(.+)$/gm,'$1');
+  // Process line by line for clean, printable HTML
+  const lines=t.split('\n');
+  let html='',inList=false,inPara=false;
+  function closeList(){if(inList){html+='</ul>';inList=false;}}
+  function closePara(){if(inPara){html+='</p>';inPara=false;}}
+  lines.forEach(line=>{
+    const h2=line.match(/^## (.+)$/);
+    const bullet=line.match(/^[-*•] (.+)$/);
+    const bold=s=>s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    if(h2){
+      closeList();closePara();
+      html+='<h3>'+bold(h2[1])+'</h3>';
+    } else if(bullet){
+      closePara();
+      if(!inList){html+='<ul>';inList=true;}
+      html+='<li>'+bold(bullet[1])+'</li>';
+    } else if(line.trim()===''){
+      closeList();closePara();
+    } else {
+      closeList();
+      if(!inPara){html+='<p>';inPara=true;}
+      else html+=' ';
+      html+=bold(line.trim());
+    }
+  });
+  closeList();closePara();
+  return html;
 }
 
 function copyPlan(){
