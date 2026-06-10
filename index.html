@@ -503,9 +503,10 @@ function updateBtn(){
   b.className='gen-btn gen-'+track;
 }
 
-async function generatePlan(){
+function generatePlan(){
   const all=[...DATA.arduino.projects,...DATA.ai.projects];
   const picks=selected.map(id=>all.find(x=>x.id===id));
+  const durMins=duration==='full'?330:parseInt(duration);
   const durLabel=duration==='full'?'full day (5-6 hours)':duration+' minutes';
   const trackLabel=track==='arduino'?'Arduino robotics & electronics':'AI Skills for Kids';
   const cName=document.getElementById('child-name').value.trim();
@@ -515,52 +516,76 @@ async function generatePlan(){
   const school=document.getElementById('school-name').value.trim();
   const exp=document.getElementById('experience').value;
   const notes=document.getElementById('notes').value.trim();
+  const expLabel={'none':'no prior experience','some':'some prior experience','lots':'lots of experience'}[exp]||exp;
 
   document.getElementById('output-section').classList.add('visible');
-  document.getElementById('output-title').textContent='Generating your session plan…';
-  document.getElementById('output-subtitle').textContent='';
+  document.getElementById('output-title').textContent=(cName?cName+'’s ':'Your ')+trackLabel+' plan';
+  document.getElementById('output-subtitle').textContent=picks.length+' project'+(picks.length>1?'s':'')+' · '+durLabel+(cAge?' · Age '+cAge:'');
   document.getElementById('plan-actions').style.display='none';
   document.getElementById('email-status').className='email-status';
-  document.getElementById('plan-content').innerHTML='<div class="plan-loading"><div class="'+(track==='arduino'?'sp-o':'sp-g')+'"></div><p>Building your custom '+trackLabel+' session…</p></div>';
+  document.getElementById('output-card').style.borderTop='4px solid '+(track==='arduino'?'var(--orange)':'var(--green)');
   document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
 
-  const prompt=`You are an expert kids ${trackLabel} facilitator at TinkerWith_ in Nairobi, Kenya.
+  // Build materials list based on track
+  const materials=track==='arduino'
+    ?'Arduino Uno board, USB cable, breadboard, jumper wires, LEDs, resistors (220Ω), '+picks.map(p=>p.title).join(' kit, ')+' components'
+    :'Laptop or tablet per child, stable internet connection, headphones (optional), Google account for Teachable Machine activities';
 
-Child: ${cName||'(unnamed)'}, age ${cAge||selectedAge}, experience: ${exp||'unspecified'}
-${school?'School: '+school:''}
-Session duration: ${durLabel}
-Selected projects:
-${picks.map(p=>'- '+p.title+' ('+p.time+' min, '+p.diff+'): '+p.desc).join('\n')}
-${notes?'Parent notes: '+notes:''}
+  // Build timed schedule
+  const warmup=10, wrapup=15, buffer=5;
+  const projectTime=durMins-warmup-wrapup;
+  const perProject=picks.length>0?Math.floor(projectTime/picks.length):projectTime;
+  let schedule='• 0–10 min — Welcome & warm-up activity\n';
+  let t=10;
+  picks.forEach((p,i)=>{
+    schedule+='• '+t+'–'+(t+perProject)+' min — '+p.title+': '+p.desc+'\n';
+    t+=perProject;
+  });
+  schedule+='• '+t+'–'+(t+wrapup)+' min — Showcase, reflection & wrap-up';
 
-Write a detailed ready-to-run TinkerWith_ session plan with these sections:
+  // Build learning outcomes
+  const outcomes=picks.map(p=>{
+    if(track==='arduino') return 'Build and program a '+p.title.toLowerCase()+' circuit';
+    return 'Explore and apply '+p.title.toLowerCase()+' using AI tools';
+  });
 
-## Session Overview
-## Learning Outcomes
-## Materials Needed
-## Timed Schedule
-## Facilitation Tips
-## Closing Reflection
-## Next Steps
+  // Difficulty-aware tips
+  const hasBeginner=picks.some(p=>p.diff==='Beginner');
+  const hasAdvanced=picks.some(p=>p.diff==='Advanced');
+  const tips=[
+    hasBeginner?'Start with a group demo before letting kids work independently — especially important for first-timers.':'',
+    hasAdvanced?'Challenge advanced learners to extend the project (e.g. add a second sensor, remix the AI output).':'',
+    track==='arduino'?'Keep a spare kit of pre-wired components for kids who get stuck on hardware.':'Keep an eye on internet connectivity — have an offline fallback activity ready.',
+    'Encourage kids to explain their project to a neighbour before the showcase — it builds confidence.',
+    notes?'Parent note: '+notes:'',
+  ].filter(Boolean);
 
-Be warm, practical, and specific. Write for a facilitator in Nairobi working with kids.`;
+  planText=
+    '## Session Overview\n'
+    +(cName?'**Child:** '+cName+(cAge?', age '+cAge:'')+' — '+expLabel+'.\n':'')
+    +(school?'**School:** '+school+'\n':'')
+    +'**Track:** '+trackLabel+'\n'
+    +'**Duration:** '+durLabel+'\n'
+    +'**Projects:** '+picks.map(p=>p.title).join(', ')+'\n\n'
+    +'## Learning Outcomes\n'
+    +outcomes.map(o=>'- '+o).join('\n')+'\n\n'
+    +'## Materials Needed\n'
+    +materials+'\n\n'
+    +'## Timed Schedule\n'
+    +schedule+'\n\n'
+    +'## Facilitation Tips\n'
+    +tips.map(t=>'- '+t).join('\n')+'\n\n'
+    +'## Closing Reflection\n'
+    +'Ask each child: *“What was the hardest part? What would you change or build next?”* '
+    +'Give stickers or certificates to celebrate their work.\n\n'
+    +'## Next Steps\n'
+    +'- Share project photos in the TinkerWithMe WhatsApp community\n'
+    +'- Book the next session at anny320.github.io/tinkerwithme\n'
+    +(track==='arduino'?'- Encourage kids to show their circuit to family at home':'- Encourage kids to share their AI creation with friends');
 
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    if(data.error)throw new Error(data.error.message);
-    planText=data.content.map(b=>b.text||'').join('');
-
-    document.getElementById('output-title').textContent=(cName?cName+"'s ":'Your ')+trackLabel+' plan';
-    document.getElementById('output-subtitle').textContent=picks.length+' project'+(picks.length>1?'s':'')+' · '+durLabel+(cAge?' · Age '+cAge:'');
-    document.getElementById('plan-content').innerHTML=formatPlan(planText);
-    document.getElementById('plan-actions').style.display='flex';
-    document.getElementById('output-card').style.borderTop='4px solid '+(track==='arduino'?'var(--orange)':'var(--green)');
-    triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,planText);
-  }catch(err){
-    document.getElementById('output-title').textContent='Something went wrong';
-    document.getElementById('plan-content').innerHTML='<div class="error-msg">'+err.message+'</div>';
-  }
+  document.getElementById('plan-content').innerHTML=formatPlan(planText);
+  document.getElementById('plan-actions').style.display='flex';
+  triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,planText);
 }
 
 function triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,plan){
