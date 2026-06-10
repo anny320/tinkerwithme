@@ -110,6 +110,29 @@ textarea{resize:vertical;min-height:70px}
   .form-group.full{grid-column:1}
   .toolbar{gap:8px}
 }
+
+/* ── LOGIN GATE ── */
+#login-gate{position:fixed;inset:0;background:var(--brown);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#login-gate.hidden{display:none}
+.login-box{background:var(--surface);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.35)}
+.login-logo{font-size:15px;font-weight:700;color:var(--brown);margin-bottom:1.5rem;letter-spacing:0.01em}
+.login-box h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--text-3);margin-bottom:1.5rem}
+.login-field{position:relative;margin-bottom:12px}
+.login-field input{width:100%;padding:12px 44px 12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:border-color 0.12s}
+.login-field input:focus{border-color:var(--orange);background:#fff}
+.login-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-3);font-size:18px;padding:2px}
+.login-toggle:hover{color:var(--text)}
+.login-submit{width:100%;padding:13px;border-radius:var(--radius-pill);border:none;background:var(--orange);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:4px}
+.login-submit:hover{filter:brightness(1.08)}
+.login-submit:active{transform:scale(0.97)}
+.login-error{color:#C0392B;font-size:13px;margin-top:10px;display:none}
+.login-error.show{display:block}
+.login-forgot{font-size:12px;color:var(--text-3);margin-top:14px}
+.login-forgot a{color:var(--orange);text-decoration:none;font-weight:600}
+.login-forgot a:hover{text-decoration:underline}
+.logout-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:99px;font-size:13px;font-weight:600;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.75);border:none;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.logout-btn:hover{background:rgba(255,255,255,0.20);color:#fff}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-26H8GCM572"></script>
@@ -123,6 +146,25 @@ textarea{resize:vertical;min-height:70px}
 </head>
 <body>
 
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="login-box">
+    <div class="login-logo">TinkerWithMe</div>
+    <h2>Course Editor</h2>
+    <p>Enter your password to continue</p>
+    <div class="login-field">
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+      <button class="login-toggle" id="pw-toggle" type="button" title="Show/hide password">
+        <i class="ti ti-eye" id="pw-eye"></i>
+      </button>
+    </div>
+    <button class="login-submit" id="pw-submit">Unlock Editor</button>
+    <div class="login-error" id="pw-error">Incorrect password — try again</div>
+    <p class="login-forgot">Forgot your password? <a href="#" id="reset-link">Send reset email</a></p>
+  </div>
+</div>
+
+
 <nav class="site-nav">
   <a class="nav-brand" href="index.html">TinkerWithMe</a>
   <div class="nav-links">
@@ -130,6 +172,7 @@ textarea{resize:vertical;min-height:70px}
     <a class="nav-link" href="community.html">Community</a>
     <a class="nav-link active" href="admin.html">Editor</a>
   </div>
+  <button class="logout-btn" onclick="logout()"><i class="ti ti-lock"></i> Lock</button>
 </nav>
 
 <div class="page-header">
@@ -468,8 +511,87 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2400);
 }
 
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+const HASH = 'd16348550f1b363c5a1c0d310c1c1ff297362f249929a9ed4dd419c85959113e';
+const SESSION_KEY = 'twm_admin_auth';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function tryLogin() {
+  const val = document.getElementById('pw-input').value;
+  if (!val) return;
+  const btn = document.getElementById('pw-submit');
+  btn.textContent = 'Checking…';
+  btn.disabled = true;
+  const h = await sha256(val);
+  if (h === HASH) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    document.getElementById('login-gate').classList.add('hidden');
+    render();
+  } else {
+    document.getElementById('pw-error').classList.add('show');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+    btn.textContent = 'Unlock Editor';
+    btn.disabled = false;
+    // Shake animation
+    const box = document.querySelector('.login-box');
+    box.style.animation = 'none';
+    box.offsetHeight;
+    box.style.animation = 'shake 0.4s ease';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// Show/hide password
+document.getElementById('pw-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('pw-input');
+  const eye = document.getElementById('pw-eye');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    eye.className = 'ti ti-eye-off';
+  } else {
+    inp.type = 'password';
+    eye.className = 'ti ti-eye';
+  }
+});
+
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryLogin();
+  document.getElementById('pw-error').classList.remove('show');
+});
+document.getElementById('pw-submit').addEventListener('click', tryLogin);
+
+document.getElementById('reset-link').addEventListener('click', e => {
+  e.preventDefault();
+  const subject = encodeURIComponent('TinkerWithMe Admin — Password Reset Request');
+  const body = encodeURIComponent('Hi Anne,\n\nI need to reset the Course Editor password for TinkerWithMe.\n\nPlease send me the current password or instructions to update it.\n\nThanks!');
+  window.location.href = 'mailto:tinkerwithanne@gmail.com?subject=' + subject + '&body=' + body;
+});
+
+// Gate check on load
+if (sessionStorage.getItem(SESSION_KEY) !== '1') {
+  // Show gate, don't render yet — render() called after successful login
+  document.getElementById('pw-input').focus();
+} else {
+  document.getElementById('login-gate').classList.add('hidden');
+}
+
+// Shake keyframe
+const style = document.createElement('style');
+style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}';
+document.head.appendChild(style);
+
 // ── INIT ──────────────────────────────────────────────────────────────────
-render();
+if(sessionStorage.getItem(SESSION_KEY)==="1") render();
 </script>
 </body>
 </html>
