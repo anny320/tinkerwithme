@@ -278,11 +278,10 @@ footer a:hover{text-decoration:underline}
 .avail-slot{background:#fff;border:1px solid rgba(76,175,42,0.35);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--green-dark)}
 .book-cal-btn{display:inline-flex;align-items:center;gap:7px;background:var(--brown);color:#fff;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;text-decoration:none;transition:filter 0.15s;margin-bottom:10px}
 .book-cal-btn:hover{filter:brightness(1.25)}
-.book-wa-box{background:linear-gradient(135deg,#075E54 0%,#128C7E 100%);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-top:1.25rem;display:none;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.book-wa-box{border-top:1px solid var(--border);padding-top:12px;margin-top:10px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
 .book-wa-box.visible{display:flex}
-.book-wa-text strong{color:#fff;font-size:15px;display:block;margin-bottom:4px}
-.book-wa-text span{color:rgba(255,255,255,0.75);font-size:13px}
-.book-wa-btn{background:#25D366;color:#fff;padding:11px 22px;border-radius:var(--radius-pill);font-size:14px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;transition:filter 0.15s;flex-shrink:0}
+.book-wa-text{font-size:13px;color:var(--text-3);flex:1}
+.book-wa-btn{background:#25D366;color:#fff;padding:8px 16px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:filter 0.15s;flex-shrink:0}
 .book-wa-btn:hover{filter:brightness(1.1)}
 
 /* ── REFERRAL NUDGE ── */
@@ -493,7 +492,8 @@ footer a:hover{text-decoration:underline}
       </div>
 
       <div class="pricing-block" id="pricing-block">
-        <div class="pricing-block-title"><i class="ti ti-tag"></i> Session pricing</div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0 1rem">
+        <div style="font-size:13px;color:var(--text-2);margin-bottom:12px">Ready to book? Here's what sessions cost:</div>
         <div class="pricing-cards">
           <div class="pricing-card">
             <div class="pc-duration">90 minutes</div>
@@ -527,10 +527,9 @@ footer a:hover{text-decoration:underline}
       </div>
 
       <div class="book-wa-box" id="book-wa-box">
-        <div class="book-wa-text">
-          <strong>Ready to book this session?</strong>
-          <span>Message Anne directly on WhatsApp to confirm dates, pricing, and format.</span>
-        </div>
+        <span class="book-wa-text">Or message Anne directly to ask a quick question:</span>
+        <a class="book-wa-btn" id="book-wa-btn" href="#" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> WhatsApp Anne</a>
+      </div>
         <a class="book-wa-btn" id="book-wa-btn" href="#" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> Book on WhatsApp</a>
       </div>
 
