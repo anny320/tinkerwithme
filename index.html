@@ -276,8 +276,26 @@ footer a:hover{text-decoration:underline}
 .avail-schedule i{flex-shrink:0;margin-top:1px}
 .avail-slots{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
 .avail-slot{background:#fff;border:1px solid rgba(76,175,42,0.35);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--green-dark)}
-.book-cal-btn{display:inline-flex;align-items:center;gap:7px;background:var(--brown);color:#fff;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;text-decoration:none;transition:filter 0.15s;margin-bottom:10px}
+.book-cal-btn{display:inline-flex;align-items:center;gap:7px;background:var(--brown);color:#fff;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;text-decoration:none;transition:filter 0.15s;margin-bottom:6px}
 .book-cal-btn:hover{filter:brightness(1.25)}
+/* ── PRICING TIERS ── */
+.pricing-tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:520px){.pricing-tiers{grid-template-columns:1fr}}
+.pricing-tier{border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;background:var(--surface);position:relative}
+.pricing-tier.featured{border-color:var(--orange);background:var(--orange-light)}
+.pricing-tier .pt-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-3);margin-bottom:4px}
+.pricing-tier.featured .pt-label{color:var(--orange-dark)}
+.pricing-tier .pt-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.pricing-tier .pt-detail{font-size:11px;color:var(--text-3);margin-bottom:8px}
+.pricing-tier .pt-price{font-size:20px;font-weight:700;color:var(--text)}
+.pricing-tier.featured .pt-price{color:var(--orange-dark)}
+.pricing-tier .pt-note{font-size:11px;color:var(--text-3);margin-top:2px}
+.pricing-badge{position:absolute;top:-10px;right:12px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
+.group-book-box{background:var(--brown);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.group-book-text strong{color:#fff;font-size:13px;display:block;margin-bottom:2px}
+.group-book-text span{color:rgba(255,255,255,0.65);font-size:12px}
+.group-book-btn{background:var(--orange);color:#fff;padding:9px 18px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:filter 0.15s;flex-shrink:0}
+.group-book-btn:hover{filter:brightness(1.1)}
 .book-wa-box{border-top:1px solid var(--border);padding-top:12px;margin-top:10px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
 .book-wa-box.visible{display:flex}
 .book-wa-text{font-size:13px;color:var(--text-3);flex:1}
@@ -494,28 +512,54 @@ footer a:hover{text-decoration:underline}
       <div class="pricing-block" id="pricing-block">
         <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0 1rem">
         <div style="font-size:13px;color:var(--text-2);margin-bottom:12px">Ready to book? Here's what sessions cost:</div>
-        <div class="pricing-cards">
-          <div class="pricing-card">
-            <div class="pc-duration">90 minutes</div>
-            <div class="pc-price">KES 2,500</div>
-            <div class="pc-unit">per child</div>
-          </div>
-          <div class="pricing-card featured">
+
+        <div class="pricing-tiers">
+          <div class="pricing-tier featured">
             <div class="pricing-badge">Most popular</div>
-            <div class="pc-duration">2 hours</div>
-            <div class="pc-price">KES 3,500</div>
-            <div class="pc-unit">per child</div>
+            <div class="pt-label">Schools &amp; community groups</div>
+            <div class="pt-name">Group session</div>
+            <div class="pt-detail">10–20 kids &middot; 90 min or 2 hrs</div>
+            <div class="pt-price">From KES 2,500</div>
+            <div class="pt-note">per child &middot; per session</div>
           </div>
-          <div class="pricing-card">
-            <div class="pc-duration">Full day</div>
-            <div class="pc-price">KES 8,000+</div>
-            <div class="pc-unit">per child</div>
+          <div class="pricing-tier">
+            <div class="pt-label">International &amp; expat schools</div>
+            <div class="pt-name">School session</div>
+            <div class="pt-detail">Curriculum-aligned &middot; any duration</div>
+            <div class="pt-price">From KES 3,500</div>
+            <div class="pt-note">per child &middot; per session</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="pt-label">Holiday camp &amp; intensives</div>
+            <div class="pt-name">Full-day camp</div>
+            <div class="pt-detail">Multiple projects &middot; full day</div>
+            <div class="pt-price">From KES 5,500</div>
+            <div class="pt-note">per child &middot; per session</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="pt-label">Hotel, estate &amp; corporate</div>
+            <div class="pt-name">Venue &amp; corporate</div>
+            <div class="pt-detail">Kids club, corporate family day</div>
+            <div class="pt-price">From KES 8,000</div>
+            <div class="pt-note">per child &middot; per session</div>
           </div>
         </div>
+
+        <div class="group-book-box">
+          <div class="group-book-text">
+            <strong>Booking for a group or school?</strong>
+            <span>Get a tailored quote — message or email Anne directly.</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="group-book-btn" id="group-wa-btn" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enquire%20about%20a%20group%20session%20for%20TinkerWithMe." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> WhatsApp</a>
+            <a class="group-book-btn" style="background:var(--brown-mid)" href="mailto:tinkerwithanne@gmail.com?subject=Group%20Session%20Enquiry&body=Hi%20Anne%2C%0A%0AI%27d%20like%20to%20enquire%20about%20booking%20a%20group%20TinkerWithMe%20session.%0A%0AGroup%20size%3A%0AVenue%20type%3A%0APreferred%20dates%3A%0ATrack%20(Arduino%20%2F%20AI%20%2F%20both)%3A%0A%0ALooking%20forward%20to%20hearing%20from%20you!"><i class="ti ti-mail"></i> Email</a>
+          </div>
+        </div>
+
         <div class="avail-schedule">
           <i class="ti ti-calendar-event"></i>
           <div>
-            <strong>Available slots</strong>
+            <strong>Individual session slots</strong>
             <div class="avail-slots">
               <span class="avail-slot">Thu 11am – 1pm</span>
               <span class="avail-slot">Fri all day</span>
@@ -530,7 +574,7 @@ footer a:hover{text-decoration:underline}
         <div id="cal-wa-wrap" style="display:none;font-size:13px;color:var(--text-2);background:var(--orange-light);border-radius:var(--radius-sm);padding:10px 14px">
           <strong>3-hour and full-day sessions</strong> are arranged directly with Anne — message her on WhatsApp to check dates and confirm your booking.
         </div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:6px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: <strong>KES 7,000</strong> + delivery &mdash; order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:10px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: <strong>KES 7,000</strong> + delivery — order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
       </div>
 
       <div class="book-wa-box" id="book-wa-box">
