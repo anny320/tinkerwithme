@@ -523,8 +523,13 @@ footer a:hover{text-decoration:underline}
             </div>
           </div>
         </div>
-        <a class="book-cal-btn" id="book-cal-btn" href="https://calendar.app.google/pbfswYzWMEmG5VQa9" target="_blank" rel="noopener"><i class="ti ti-calendar-plus"></i> Book a <span id="cal-dur-label">session</span> slot</a>
-        <div style="font-size:11px;color:var(--text-3);margin-top:5px"><i class="ti ti-info-circle" style="vertical-align:middle;margin-right:3px"></i>Books one session — all selected projects covered in a single booking</div>
+        <div id="cal-booking-wrap">
+          <a class="book-cal-btn" id="book-cal-btn" href="https://calendar.app.google/pbfswYzWMEmG5VQa9" target="_blank" rel="noopener"><i class="ti ti-calendar-plus"></i> Book a <span id="cal-dur-label">session</span> slot</a>
+          <div style="font-size:11px;color:var(--text-3);margin-top:5px"><i class="ti ti-info-circle" style="vertical-align:middle;margin-right:3px"></i>One session — all selected projects covered in a single booking</div>
+        </div>
+        <div id="cal-wa-wrap" style="display:none;font-size:13px;color:var(--text-2);background:var(--orange-light);border-radius:var(--radius-sm);padding:10px 14px">
+          <strong>3-hour and full-day sessions</strong> are arranged directly with Anne — message her on WhatsApp to check dates and confirm your booking.
+        </div>
         <div style="font-size:12px;color:var(--text-3);margin-top:6px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: <strong>KES 7,000</strong> + delivery &mdash; order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
       </div>
 
@@ -778,7 +783,11 @@ function generatePlan(){
   const waLink='https://wa.me/254117784724?text='+encodeURIComponent(waMsg);
   document.getElementById('book-wa-btn').href=waLink;
   document.getElementById('pricing-block').classList.add('visible');
-  document.getElementById('cal-dur-label').textContent=durLabel;
+  // Show calendar for 90/120 min only; longer sessions go via WhatsApp
+  const calAvail=(duration===90||duration===120);
+  document.getElementById('cal-booking-wrap').style.display=calAvail?'block':'none';
+  document.getElementById('cal-wa-wrap').style.display=calAvail?'none':'block';
+  if(calAvail) document.getElementById('cal-dur-label').textContent=durLabel;
   document.getElementById('book-wa-box').classList.add('visible');
   document.getElementById('referral-nudge').classList.add('visible');
 }
