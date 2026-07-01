@@ -1,0 +1,90 @@
+From a767117e33163957d57508e6ebee19dc382ae0e1 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 1 Jul 2026 10:17:43 +0000
+Subject: [PATCH] Fix curriculum generator workflow so it actually runs
+
+- Move workflow to .github/workflows/ (GitHub Actions only discovers
+  workflows there, so it never appeared under the Actions tab)
+- Fix script path to generate_curriculum.py (root), matching where the
+  script actually lives
+- Add WeasyPrint's system libraries (Pango, cairo, etc.) to the runner
+  and catch OSError alongside ImportError, since a missing shared
+  library otherwise crashes the whole run instead of falling back to
+  HTML output
+- Update the retired claude-3-5-sonnet-20241022 model id to claude-sonnet-5
+- Add a Curriculum Generator link to the site nav
+---
+ .../workflows/curriculum-generator.yml                     | 7 ++++++-
+ generate_curriculum.py                                     | 6 +++---
+ index.html                                                 | 1 +
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+ rename curriculum-generator.yml => .github/workflows/curriculum-generator.yml (89%)
+
+diff --git a/curriculum-generator.yml b/.github/workflows/curriculum-generator.yml
+similarity index 89%
+rename from curriculum-generator.yml
+rename to .github/workflows/curriculum-generator.yml
+index a053333..8dbd68d 100644
+--- a/curriculum-generator.yml
++++ b/.github/workflows/curriculum-generator.yml
+@@ -52,6 +52,11 @@ jobs:
+         with:
+           python-version: '3.11'
+       
++      - name: Install system dependencies for WeasyPrint
++        run: |
++          sudo apt-get update
++          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info fonts-liberation
++
+       - name: Install dependencies
+         run: |
+           pip install anthropic requests python-dotenv weasyprint
+@@ -64,7 +69,7 @@ jobs:
+           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
+           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
+           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
+-        run: python .github/scripts/generate_curriculum.py
++        run: python generate_curriculum.py
+       
+       - name: Upload Curriculum Artifact
+         uses: actions/upload-artifact@v3
+diff --git a/generate_curriculum.py b/generate_curriculum.py
+index d80c9dd..15df7aa 100644
+--- a/generate_curriculum.py
++++ b/generate_curriculum.py
+@@ -17,9 +17,9 @@ from anthropic import Anthropic
+ try:
+     from weasyprint import HTML, CSS
+     HAS_WEASYPRINT = True
+-except ImportError:
++except (ImportError, OSError) as e:
+     HAS_WEASYPRINT = False
+-    print("⚠️  WeasyPrint not available. Install with: pip install weasyprint")
++    print(f"⚠️  WeasyPrint not available ({e}). Falling back to HTML output.")
+ 
+ # Course data matching index.html
+ COURSE_DATA = {
+@@ -150,7 +150,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
+     # Call Claude API
+     try:
+         message = client.messages.create(
+-            model="claude-3-5-sonnet-20241022",
++            model="claude-sonnet-5",
+             max_tokens=4000,
+             system=system_prompt,
+             messages=[
+diff --git a/index.html b/index.html
+index fe43e05..b87d69e 100644
+--- a/index.html
++++ b/index.html
+@@ -336,6 +336,7 @@ footer a:hover{text-decoration:underline}
+   <div class="nav-links">
+     <a class="nav-link active" href="index.html">Course Picker</a>
+     <a class="nav-link" href="community.html">Community</a>
++    <a class="nav-link" href="curriculum-generator.html">Curriculum Generator</a>
+     <a class="nav-link" href="admin.html">Editor</a>
+   </div>
+ </nav>
+-- 
+2.43.0
+
