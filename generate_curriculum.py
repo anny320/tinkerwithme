@@ -157,6 +157,10 @@ Format output as clean HTML (not markdown) for PDF conversion."""
                 {"role": "user", "content": user_message}
             ]
         )
+
+        curriculum_html = next(block.text for block in message.content if block.type == "text")
+
+        # Create output directory
         
  curriculum_html = next(block.text for block in message.content if block.type == "text")   
 
@@ -400,10 +404,12 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         return None
 
 if __name__ == "__main__":
-    track = os.getenv("TRACK", "arduino")
-    projects = os.getenv("PROJECTS", "ar1").split(",")
+    track = os.getenv("TRACK", "arduino").strip()
+    projects = [p.strip() for p in os.getenv("PROJECTS", "ar1").split(",") if p.strip()]
     age_group = os.getenv("AGE_GROUP", "6-9 yrs")
     duration = os.getenv("DURATION", "90")
     user_email = os.getenv("USER_EMAIL", "user@example.com")
-    
-    generate_curriculum_pdf(track, projects, age_group, duration, user_email)
+
+    result = generate_curriculum_pdf(track, projects, age_group, duration, user_email)
+    if result is None:
+        sys.exit(1)
