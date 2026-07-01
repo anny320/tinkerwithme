@@ -158,8 +158,8 @@ Format output as clean HTML (not markdown) for PDF conversion."""
             ]
         )
         
-        curriculum_html = message.content[0].text
-        
+ curriculum_html = next(block.text for block in message.content if block.type == "text")   
+
         # Create output directory
         output_dir = Path("output")
         output_dir.mkdir(exist_ok=True)
