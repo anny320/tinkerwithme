@@ -8,19 +8,13 @@ Triggered via button click from curriculum-generator.html (payment-gated).
 """
 
 import os
-import json
 import re
 import sys
 from pathlib import Path
 from datetime import datetime
 from anthropic import Anthropic
 
-try:
-    from weasyprint import HTML, CSS
-    HAS_WEASYPRINT = True
-except (ImportError, OSError) as e:
-    HAS_WEASYPRINT = False
-    print(f"⚠️  WeasyPrint not available ({e}). Falling back to HTML output.")
+from weasyprint import HTML
 
 # Course data matching index.html
 COURSE_DATA = {
@@ -219,10 +213,6 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
         curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
-        # Create output directory
-        output_dir = Path("output")
-        output_dir.mkdir(exist_ok=True)
-        
         # Generate full HTML with TinkerWithMe branding and footer
         current_date = datetime.now().strftime("%d %B %Y")
         full_html = f"""<!DOCTYPE html>
@@ -441,46 +431,15 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 </html>
 """
         
-        # Save HTML first
+        # Write PDF directly from HTML string
         audience_slug = "homeschool" if is_homeschool else "classroom"
-        html_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.html"
-        with open(html_file, "w") as f:
-            f.write(full_html)
-        
-        # Convert to PDF if WeasyPrint is available
-        pdf_file = None
-        if HAS_WEASYPRINT:
-            try:
-                pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
-                HTML(string=full_html).write_pdf(pdf_file)
-                print(f"✅ PDF generated: {pdf_file}")
-            except Exception as e:
-                print(f"⚠️  PDF generation failed: {e}")
-                print("   HTML version saved instead.")
-        else:
-            print(f"⚠️  WeasyPrint not installed. Saved as HTML: {html_file}")
-        
-        # Save metadata
-        metadata_file = output_dir / "metadata.json"
-        metadata = {
-            "track": track,
-            "age_group": age_group,
-            "duration": duration,
-            "audience": audience,
-            "projects": project_ids,
-            "user_email": user_email,
-            "html_file": str(html_file),
-            "pdf_file": str(pdf_file) if pdf_file else None,
-            "generated_at": datetime.now().isoformat()
-        }
-        
-        with open(metadata_file, "w") as f:
-            json.dump(metadata, f, indent=2)
-        
-        output_file = pdf_file if pdf_file else html_file
+        output_dir = Path("output")
+        output_dir.mkdir(exist_ok=True)
+        pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
+        HTML(string=full_html).write_pdf(pdf_file)
+        print(f"✅ PDF generated: {pdf_file}")
         print(f"\n📧 Ready to email to: {user_email}")
-        
-        return str(output_file)
+        return str(pdf_file)
     
     except Exception as e:
         print(f"❌ Error generating curriculum: {e}", file=sys.stderr)
