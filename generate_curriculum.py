@@ -81,7 +81,8 @@ def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email)
     projects = get_project_details(track, project_ids)
     
     if not projects:
-        print(f"❌ Error: No projects found for IDs: {project_ids}")
+        valid_ids = ", ".join(p["id"] for p in COURSE_DATA.get(track, {}).get("projects", []))
+        print(f"❌ Error: No matching projects for IDs {project_ids} in track '{track}'. Valid IDs: {valid_ids}")
         return None
     
     # Convert duration to minutes
@@ -157,9 +158,9 @@ Format output as clean HTML (not markdown) for PDF conversion."""
                 {"role": "user", "content": user_message}
             ]
         )
-        
-        curriculum_html = message.content[0].text
-        
+
+        curriculum_html = next(block.text for block in message.content if block.type == "text")
+
         # Create output directory
         output_dir = Path("output")
         output_dir.mkdir(exist_ok=True)
@@ -400,10 +401,12 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         return None
 
 if __name__ == "__main__":
-    track = os.getenv("TRACK", "arduino")
-    projects = os.getenv("PROJECTS", "ar1").split(",")
+    track = os.getenv("TRACK", "arduino").strip()
+    projects = [p.strip() for p in os.getenv("PROJECTS", "ar1").split(",") if p.strip()]
     age_group = os.getenv("AGE_GROUP", "6-9 yrs")
     duration = os.getenv("DURATION", "90")
     user_email = os.getenv("USER_EMAIL", "user@example.com")
-    
-    generate_curriculum_pdf(track, projects, age_group, duration, user_email)
+
+    result = generate_curriculum_pdf(track, projects, age_group, duration, user_email)
+    if result is None:
+        sys.exit(1)
