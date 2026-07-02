@@ -52,6 +52,11 @@ jobs:
         with:
           python-version: '3.11'
       
+      - name: Install system dependencies for WeasyPrint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info fonts-liberation
+
       - name: Install dependencies
         run: |
           pip install anthropic requests python-dotenv weasyprint
@@ -64,7 +69,7 @@ jobs:
           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
-        run: python .github/scripts/generate_curriculum.py
+        run: python generate_curriculum.py
       
       - name: Upload Curriculum Artifact
         uses: actions/upload-artifact@v3
