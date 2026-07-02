@@ -72,12 +72,13 @@ def get_project_details(track, project_ids):
     
     return projects
 
-def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email):
+def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email, audience="classroom"):
     """
     Main curriculum generation function using Claude AI.
     Outputs professional PDF with TinkerWithMe branding and footer.
+    audience: "classroom" (default) or "homeschool"
     """
-    
+
     # Get project metadata
     projects = get_project_details(track, project_ids)
     
@@ -97,21 +98,68 @@ def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email)
     ])
     
     track_label = "Arduino Robotics & Electronics" if track == "arduino" else "AI Skills for Kids"
-    
+    is_homeschool = audience.lower() == "homeschool"
+
     # Initialize Claude client
     client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    
-    # Create comprehensive curriculum prompt
-    system_prompt = f"""You are an expert STEM educator specializing in hands-on learning for ages 6-16. 
+
+    # Build prompt variants based on audience
+    if is_homeschool:
+        system_prompt = f"""You are an expert STEM educator specialising in hands-on learning for ages 6-16.
+You create detailed, age-appropriate lesson plans with clear learning outcomes, flexible schedules, materials lists, and troubleshooting tips.
+
+You work for TinkerWithMe, a hands-on education program in Nairobi teaching {track_label}.
+This plan is for a HOMESCHOOL setting where one parent or guardian guides one child at home.
+Always tailor content to the specific age group, difficulty level, and time constraints.
+Do not include purchase links or URLs of any kind — list components by name, spec, and quantity only.
+Use warm, encouraging language. Write parent guidance notes in plain English (no jargon).
+Make the schedule flexible — suggest time ranges rather than rigid minute-by-minute timings.
+Format output as clean HTML (not markdown) for PDF conversion."""
+
+        user_message = f"""Generate a detailed, parent-friendly lesson plan for a home session. Format your response as clean HTML suitable for PDF printing.
+
+**Session Details:**
+- Track: {track_label}
+- Age Group: {age_group}
+- Duration: {duration_label}
+- Projects:
+{projects_summary}
+
+**Required Sections (use semantic HTML tags):**
+1. **Session Overview** - What the child will build/learn and why it's exciting
+2. **Learning Objectives** - 3-5 specific, measurable outcomes (written for a parent to understand)
+3. **Materials & Setup** - Complete checklist with item name, spec, and quantity (no purchase links or URLs)
+4. **Flexible Schedule** - Suggested time ranges per activity (not rigid — let the child set the pace); include breaks
+5. **Project Breakdowns** - For each project:
+   - Step-by-step instructions the child can read themselves (with parent check-ins noted)
+   - Common mistakes & how to fix them
+   - Success criteria ("your child has got it when...")
+6. **Conversation Starters & Check-ins** - Open-ended questions parents can ask to gauge understanding without quizzing
+7. **Extensions & Challenges** - Extra activities if the child finishes early or wants to go deeper
+8. **Troubleshooting Guide** - FAQ and common issues, written so a non-expert parent can help
+9. **Parent Guidance Tips** - How to guide without over-helping, when to step back, how to handle frustration
+10. **Follow-up Activities** - Take-home experiments or next steps the child can try independently
+
+**HTML Formatting Guidelines:**
+- Use <h2> for main sections, <h3> for subsections
+- Use <ul><li> for lists
+- Use <strong> and <em> for emphasis
+- Use <table> for structured data (schedules, materials lists)
+- Use <p> for paragraphs
+- Keep it clean and printable
+- NO inline styles - use semantic HTML only
+"""
+    else:
+        system_prompt = f"""You are an expert STEM educator specialising in hands-on learning for ages 6-16.
 You create detailed, age-appropriate lesson plans with clear learning outcomes, minute-by-minute schedules, materials lists, and troubleshooting tips.
 
 You work for TinkerWithMe, a hands-on education program in Nairobi teaching {track_label}.
 Always tailor content to the specific age group, difficulty level, and time constraints.
-Include real component links for Arduino (Nerokas, Pixel Electronics) and AI tool links.
+Do not include purchase links or URLs of any kind — list components by name, spec, and quantity only.
 Make plans engaging, inclusive, and adaptable for mixed-ability groups.
 Format output as clean HTML (not markdown) for PDF conversion."""
-    
-    user_message = f"""Generate a detailed, professional lesson plan for this session. Format your response as clean HTML suitable for PDF printing.
+
+        user_message = f"""Generate a detailed, professional lesson plan for this session. Format your response as clean HTML suitable for PDF printing.
 
 **Session Details:**
 - Track: {track_label}
@@ -123,7 +171,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 **Required Sections (use semantic HTML tags):**
 1. **Session Overview** - What students will accomplish and why it matters
 2. **Learning Objectives** - 3-5 specific, measurable outcomes (use Bloom's taxonomy)
-3. **Materials & Setup** - Complete checklist with shopping links
+3. **Materials & Setup** - Complete checklist with item name, spec, and quantity (no purchase links or URLs)
 4. **Minute-by-Minute Schedule** - Detailed breakdown (include breaks, transitions)
 5. **Project Breakdowns** - For each project:
    - Step-by-step instructions
@@ -145,7 +193,8 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 - NO inline styles - use semantic HTML only
 """
     
-    print(f"🤖 Generating curriculum for {track} ({age_group}, {duration_label})...")
+    audience_label = "Homeschool" if is_homeschool else "Classroom"
+    print(f"🤖 Generating {audience_label} curriculum for {track} ({age_group}, {duration_label})...")
     print(f"📧 User email: {user_email}")
     print("\n" + "="*60 + "\n")
     
@@ -355,7 +404,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         </div>
         <div class="header-brand">TinkerWithMe</div>
         <div class="header-title">{track_label} · {age_group}</div>
-        <div class="header-subtitle">{len(projects)} project(s) · {duration_label}</div>
+        <div class="header-subtitle">{len(projects)} project(s) · {duration_label} · {audience_label}</div>
     </header>
     
     <main>
@@ -366,7 +415,8 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 """
         
         # Save HTML first
-        html_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}.html"
+        audience_slug = "homeschool" if is_homeschool else "classroom"
+        html_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.html"
         with open(html_file, "w") as f:
             f.write(full_html)
         
@@ -374,7 +424,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         pdf_file = None
         if HAS_WEASYPRINT:
             try:
-                pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}.pdf"
+                pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
                 HTML(string=full_html).write_pdf(pdf_file)
                 print(f"✅ PDF generated: {pdf_file}")
             except Exception as e:
@@ -389,6 +439,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
             "track": track,
             "age_group": age_group,
             "duration": duration,
+            "audience": audience,
             "projects": project_ids,
             "user_email": user_email,
             "html_file": str(html_file),
@@ -414,7 +465,8 @@ if __name__ == "__main__":
     age_group = os.getenv("AGE_GROUP", "6-9 yrs")
     duration = os.getenv("DURATION", "90")
     user_email = os.getenv("USER_EMAIL", "user@example.com")
+    audience = os.getenv("AUDIENCE", "classroom").strip()
 
-    result = generate_curriculum_pdf(track, projects, age_group, duration, user_email)
+    result = generate_curriculum_pdf(track, projects, age_group, duration, user_email, audience)
     if result is None:
         sys.exit(1)

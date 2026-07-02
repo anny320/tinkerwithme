@@ -38,6 +38,13 @@ on:
       user_email:
         description: 'User email for delivery'
         required: true
+      audience:
+        description: 'Target audience'
+        required: true
+        type: choice
+        options:
+          - classroom
+          - homeschool
 
 jobs:
   generate-curriculum:
@@ -69,10 +76,11 @@ jobs:
           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
+          AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
         run: python generate_curriculum.py
       
       - name: Upload Curriculum Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}
