@@ -9,6 +9,7 @@ Triggered via button click from curriculum-generator.html (payment-gated).
 
 import os
 import json
+import re
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -152,14 +153,20 @@ Format output as clean HTML (not markdown) for PDF conversion."""
     try:
         message = client.messages.create(
             model="claude-sonnet-5",
-            max_tokens=4000,
+            max_tokens=8000,
             system=system_prompt,
             messages=[
                 {"role": "user", "content": user_message}
             ]
         )
 
+        if message.stop_reason == "max_tokens":
+            print("⚠️  Response was truncated at max_tokens — consider raising the limit further.")
+
         curriculum_html = next(block.text for block in message.content if block.type == "text")
+        # Strip a leading/trailing markdown code fence (```html ... ```) if Claude added one
+        curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
+        curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
         # Create output directory
         output_dir = Path("output")
@@ -209,6 +216,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         }}
         
         header {{
+            position: relative;
             border-bottom: 2.5px solid #F07B1D;
             padding-bottom: 1rem;
             margin-bottom: 2rem;
@@ -239,8 +247,8 @@ Format output as clean HTML (not markdown) for PDF conversion."""
             text-align: right;
             line-height: 1.7;
             position: absolute;
-            right: 16mm;
-            top: 18mm;
+            right: 0;
+            top: 0;
         }}
         
         h1 {{
