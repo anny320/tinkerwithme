@@ -8,19 +8,13 @@ Triggered via button click from curriculum-generator.html (payment-gated).
 """
 
 import os
-import json
 import re
 import sys
 from pathlib import Path
 from datetime import datetime
 from anthropic import Anthropic
 
-try:
-    from weasyprint import HTML, CSS
-    HAS_WEASYPRINT = True
-except (ImportError, OSError) as e:
-    HAS_WEASYPRINT = False
-    print(f"⚠️  WeasyPrint not available ({e}). Falling back to HTML output.")
+from weasyprint import HTML
 
 # Course data matching index.html
 COURSE_DATA = {
@@ -132,6 +126,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 4. **Flexible Schedule** - Suggested time ranges per activity (not rigid — let the child set the pace); include breaks
 5. **Project Breakdowns** - For each project:
    - Step-by-step instructions the child can read themselves (with parent check-ins noted)
+   - **Full working code** — for Arduino projects include the complete `.ino` sketch inside a <pre><code> block with line-by-line comments a child can follow; for AI projects include the exact prompts or tool steps to use
    - Common mistakes & how to fix them
    - Success criteria ("your child has got it when...")
 6. **Conversation Starters & Check-ins** - Open-ended questions parents can ask to gauge understanding without quizzing
@@ -175,6 +170,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 4. **Minute-by-Minute Schedule** - Detailed breakdown (include breaks, transitions)
 5. **Project Breakdowns** - For each project:
    - Step-by-step instructions
+   - **Full working code** — for Arduino projects include the complete `.ino` sketch inside a <pre><code> block with inline comments; for AI projects include the exact prompts or tool steps to use
    - Common mistakes & how to fix them
    - Success criteria
 6. **Assessment** - How to check understanding (games, challenges, presentations)
@@ -217,10 +213,6 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
         curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
-        # Create output directory
-        output_dir = Path("output")
-        output_dir.mkdir(exist_ok=True)
-        
         # Generate full HTML with TinkerWithMe branding and footer
         current_date = datetime.now().strftime("%d %B %Y")
         full_html = f"""<!DOCTYPE html>
@@ -393,6 +385,31 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         .content {{
             page-break-inside: avoid;
         }}
+
+        pre {{
+            background: #F5F0EB;
+            border-left: 3px solid #F07B1D;
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            font-size: 10px;
+            line-height: 1.55;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }}
+
+        code {{
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            background: #F5F0EB;
+            padding: 0 3px;
+            border-radius: 2px;
+        }}
+
+        pre code {{
+            background: none;
+            padding: 0;
+        }}
     </style>
 </head>
 <body>
@@ -414,46 +431,15 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 </html>
 """
         
-        # Save HTML first
+        # Write PDF directly from HTML string
         audience_slug = "homeschool" if is_homeschool else "classroom"
-        html_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.html"
-        with open(html_file, "w") as f:
-            f.write(full_html)
-        
-        # Convert to PDF if WeasyPrint is available
-        pdf_file = None
-        if HAS_WEASYPRINT:
-            try:
-                pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
-                HTML(string=full_html).write_pdf(pdf_file)
-                print(f"✅ PDF generated: {pdf_file}")
-            except Exception as e:
-                print(f"⚠️  PDF generation failed: {e}")
-                print("   HTML version saved instead.")
-        else:
-            print(f"⚠️  WeasyPrint not installed. Saved as HTML: {html_file}")
-        
-        # Save metadata
-        metadata_file = output_dir / "metadata.json"
-        metadata = {
-            "track": track,
-            "age_group": age_group,
-            "duration": duration,
-            "audience": audience,
-            "projects": project_ids,
-            "user_email": user_email,
-            "html_file": str(html_file),
-            "pdf_file": str(pdf_file) if pdf_file else None,
-            "generated_at": datetime.now().isoformat()
-        }
-        
-        with open(metadata_file, "w") as f:
-            json.dump(metadata, f, indent=2)
-        
-        output_file = pdf_file if pdf_file else html_file
+        output_dir = Path("output")
+        output_dir.mkdir(exist_ok=True)
+        pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
+        HTML(string=full_html).write_pdf(pdf_file)
+        print(f"✅ PDF generated: {pdf_file}")
         print(f"\n📧 Ready to email to: {user_email}")
-        
-        return str(output_file)
+        return str(pdf_file)
     
     except Exception as e:
         print(f"❌ Error generating curriculum: {e}", file=sys.stderr)
