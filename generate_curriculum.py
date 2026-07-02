@@ -17,9 +17,9 @@ from anthropic import Anthropic
 try:
     from weasyprint import HTML, CSS
     HAS_WEASYPRINT = True
-except ImportError:
+except (ImportError, OSError) as e:
     HAS_WEASYPRINT = False
-    print("⚠️  WeasyPrint not available. Install with: pip install weasyprint")
+    print(f"⚠️  WeasyPrint not available ({e}). Falling back to HTML output.")
 
 # Course data matching index.html
 COURSE_DATA = {
@@ -150,7 +150,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
     # Call Claude API
     try:
         message = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-5",
             max_tokens=4000,
             system=system_prompt,
             messages=[
