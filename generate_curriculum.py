@@ -132,6 +132,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 4. **Flexible Schedule** - Suggested time ranges per activity (not rigid — let the child set the pace); include breaks
 5. **Project Breakdowns** - For each project:
    - Step-by-step instructions the child can read themselves (with parent check-ins noted)
+   - **Full working code** — for Arduino projects include the complete `.ino` sketch inside a <pre><code> block with line-by-line comments a child can follow; for AI projects include the exact prompts or tool steps to use
    - Common mistakes & how to fix them
    - Success criteria ("your child has got it when...")
 6. **Conversation Starters & Check-ins** - Open-ended questions parents can ask to gauge understanding without quizzing
@@ -175,6 +176,7 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 4. **Minute-by-Minute Schedule** - Detailed breakdown (include breaks, transitions)
 5. **Project Breakdowns** - For each project:
    - Step-by-step instructions
+   - **Full working code** — for Arduino projects include the complete `.ino` sketch inside a <pre><code> block with inline comments; for AI projects include the exact prompts or tool steps to use
    - Common mistakes & how to fix them
    - Success criteria
 6. **Assessment** - How to check understanding (games, challenges, presentations)
@@ -392,6 +394,31 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         
         .content {{
             page-break-inside: avoid;
+        }}
+
+        pre {{
+            background: #F5F0EB;
+            border-left: 3px solid #F07B1D;
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            font-size: 10px;
+            line-height: 1.55;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }}
+
+        code {{
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            background: #F5F0EB;
+            padding: 0 3px;
+            border-radius: 2px;
+        }}
+
+        pre code {{
+            background: none;
+            padding: 0;
         }}
     </style>
 </head>
