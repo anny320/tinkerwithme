@@ -204,7 +204,27 @@ window.addEventListener("load",()=>{
   if(sessionStorage.getItem("curriculum-unlocked")==="1"){
     document.getElementById("pw-overlay").style.display="none";
   }
+  // Pre-fill from URL params when arriving from the course picker
+  const params=new URLSearchParams(location.search);
+  if(params.get("track")){
+    const t=params.get("track");
+    setTrack(t);
+  }
+  if(params.get("age")){
+    const ageEl=document.getElementById("age-group");
+    const ageVal=params.get("age");
+    for(let i=0;i<ageEl.options.length;i++){if(ageEl.options[i].value===ageVal){ageEl.selectedIndex=i;break;}}
+  }
   updateProjects();
+  if(params.get("projects")){
+    const ids=params.get("projects").split(",");
+    ids.forEach(id=>{if(id)selectedProjects=[...selectedProjects,id];});
+    updateProjects();
+  }
+  if(params.get("duration")){
+    setDuration(params.get("duration"));
+  }
+  updateBtn();
 });
 </script>
 
