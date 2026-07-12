@@ -148,8 +148,8 @@ footer a{color:var(--orange);text-decoration:none}
     </div>
 
     <div class="success-msg" id="success-msg">
-      ✅ Curriculum generated! Check your email for the PDF download link.
-      <a class="download-btn" id="download-btn" href="#" download><i class="ti ti-download"></i> Download Now</a>
+      <span id="success-text">✅ Curriculum generated! Check your email for the PDF download link.</span>
+      <a class="download-btn" id="download-btn" href="#" download style="display:none"><i class="ti ti-download"></i> Download Now</a>
     </div>
 
     <div class="error-msg" id="error-msg"></div>
@@ -166,6 +166,11 @@ footer a{color:var(--orange);text-decoration:none}
 // Password is stored as a SHA-256 hash. Current password: TinkerEdu2025
 // To change: replace this hash with sha256(newPassword).toLowerCase()
 const PASSWORD_HASH="022887155792bfceabb302b5f20dd3c7d13cd0e1a53c9e107c9f9e3c5c377830";
+
+// Curriculum Generator API — the Cloudflare Worker that triggers the GitHub
+// Actions workflow. Replace <your-subdomain> with the URL printed by
+// `wrangler deploy` (see cloudflare-worker/README.md).
+const CURRICULUM_API="https://tinkerwithme-curriculum.<your-subdomain>.workers.dev";
 
 async function sha256(str){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("")}
 
@@ -198,7 +203,38 @@ function toggleProject(id){selectedProjects=selectedProjects.includes(id)?select
 function setDuration(d){selectedDuration=d;document.querySelectorAll(".dur-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:"var(--border-strong)";btn.style.background=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:` var(--bg)`;btn.style.color=btn.dataset.dur===d?"#fff":"var(--text-2)"});updateBtn()}
 function setAudience(a){selectedAudience=a;document.querySelectorAll(".aud-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.aud===a?"var(--blue)":"var(--border-strong)";btn.style.background=btn.dataset.aud===a?"var(--blue)":"var(--bg)";btn.style.color=btn.dataset.aud===a?"#fff":"var(--text-2)"});updateBtn()}
 function updateBtn(){const btn=document.getElementById("gen-btn");btn.disabled=selectedProjects.length===0||!selectedDuration||!selectedAudience;btn.style.opacity=btn.disabled?"0.4":"1"}
-function generateCurriculum(){const email=document.getElementById("user-email").value.trim();if(!email){alert("Please enter your email");return}document.getElementById("loading").style.display="block";document.getElementById("error-msg").style.display="none";const payload={track:currentTrack,projects:selectedProjects.join(","),age_group:document.getElementById("age-group").value,duration:selectedDuration,audience:selectedAudience,user_email:email};fetch("/api/generate-curriculum",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).then(r=>r.json()).then(data=>{if(data.success){document.getElementById("loading").style.display="none";document.getElementById("success-msg").style.display="block";document.getElementById("download-btn").href=data.download_url}else{throw new Error(data.error)}}).catch(e=>{document.getElementById("loading").style.display="none";document.getElementById("error-msg").textContent=`❌ ${e.message}`;document.getElementById("error-msg").style.display="block"})}
+function generateCurriculum(){
+  const email=document.getElementById("user-email").value.trim();
+  if(!email){alert("Please enter your email");return}
+  const btn=document.getElementById("gen-btn");
+  btn.disabled=true;
+  document.getElementById("loading").style.display="block";
+  document.getElementById("success-msg").style.display="none";
+  document.getElementById("error-msg").style.display="none";
+  const payload={track:currentTrack,projects:selectedProjects.join(","),age_group:document.getElementById("age-group").value,duration:selectedDuration,audience:selectedAudience,user_email:email};
+  fetch(CURRICULUM_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+    .then(async r=>{
+      let data;
+      try{data=await r.json()}catch(_){throw new Error(`Server returned ${r.status}. Please try again in a moment.`)}
+      if(!r.ok||!data.success){throw new Error(data&&data.error?data.error:`Request failed (${r.status}).`)}
+      return data;
+    })
+    .then(data=>{
+      document.getElementById("loading").style.display="none";
+      btn.disabled=false;
+      const dl=document.getElementById("download-btn");
+      if(data.download_url){dl.href=data.download_url;dl.style.display="inline-flex"}
+      else{dl.style.display="none"}
+      document.getElementById("success-text").textContent=data.message||("✅ Your curriculum is being generated. We'll email the PDF to "+email+" shortly.");
+      document.getElementById("success-msg").style.display="block";
+    })
+    .catch(e=>{
+      document.getElementById("loading").style.display="none";
+      btn.disabled=false;
+      document.getElementById("error-msg").textContent=`❌ ${e.message}`;
+      document.getElementById("error-msg").style.display="block";
+    });
+}
 
 window.addEventListener("load",()=>{
   if(sessionStorage.getItem("curriculum-unlocked")==="1"){
