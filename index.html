@@ -507,6 +507,7 @@ footer a:hover{text-decoration:underline}
       <div class="plan-actions" id="plan-actions" style="display:none">
         <button class="action-btn" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i> Print / Save PDF</button>
         <button class="action-btn" id="copy-btn" onclick="copyPlan()"><i class="ti ti-copy" aria-hidden="true"></i> Copy text</button>
+        <a class="action-btn" id="curriculum-btn" href="curriculumgenerator.html" style="text-decoration:none"><i class="ti ti-file-text" aria-hidden="true"></i> Generate PDF Curriculum</a>
         <button class="action-btn" onclick="resetPlan()"><i class="ti ti-refresh" aria-hidden="true"></i> Start over</button>
       </div>
 
@@ -822,6 +823,8 @@ function generatePlan(){
 
   document.getElementById('plan-content').innerHTML=formatPlan(planText);
   document.getElementById('plan-actions').style.display='flex';
+  const _currParams=new URLSearchParams({track,projects:picks.map(p=>p.id).join(','),age:selectedAge,duration:duration||''});
+  document.getElementById('curriculum-btn').href='curriculumgenerator.html?'+_currParams.toString();
   triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,planText);
   // Book on WhatsApp CTA
   const waMsg='Hi Anne! I\'ve just built a session plan on TinkerWithMe for '+(cName||'my child')+(cAge?', age '+cAge:'')+'. Activities: '+picks.filter(Boolean).map(p=>p.title).join(', ')+'. Duration: '+durLabel+'. Can we book a session?';
