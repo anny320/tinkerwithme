@@ -1,0 +1,97 @@
+<section class="lesson">
+<h1>Traffic Light Simulation</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Students build a working traffic light from three LEDs and program it to cycle in sequence. It's an ideal first group project: every learner sees the Arduino follow ordered instructions, wait, and repeat. By the end the class understands that a program is a list of steps the computer runs in order, on a loop.</p>
+
+<h2>2. Learning Objectives</h2>
+<p>By the end of this session students will be able to:</p>
+<ul>
+<li>Connect an LED to an Arduino safely using a resistor.</li>
+<li>Explain what <code>digitalWrite()</code> and <code>delay()</code> do.</li>
+<li>Predict which LED lights next by reading the code.</li>
+<li>Modify the timing to change the sequence.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB cable</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half/full</td><td>1</td></tr>
+<tr><td>LEDs</td><td>red, yellow, green</td><td>3</td></tr>
+<tr><td>Resistors 220Ω</td><td></td><td>3</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Red LED long leg → pin 12 via 220Ω, yellow → pin 11, green → pin 10. All short legs → GND rail.</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:08 — Hook:</strong> Show a video/photo of traffic lights; class calls out the order.</li>
+<li><strong>0:08–0:25 — Build:</strong> Groups place LEDs and resistors. Circulate and check wiring.</li>
+<li><strong>0:25–0:45 — Code &amp; upload:</strong> Walk through the sketch on a projector; groups type and upload.</li>
+<li><strong>0:45–0:55 — Tinker challenge:</strong> Change the delays; add a flashing green.</li>
+<li><strong>0:55–1:00 — Share &amp; tidy:</strong> One group demos; pack kits.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step (facilitator script)</h3>
+<ol>
+<li>Demonstrate a correct LED (long leg = positive) on the projector first.</li>
+<li>Groups place the three LEDs, each in its own row, with a 220Ω resistor to the pin.</li>
+<li>Join short legs to a common ground row, then one wire to Arduino GND.</li>
+<li>Groups open the Arduino IDE, select board/port, and type the sketch.</li>
+<li>Upload and observe the cycle.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Traffic Light Simulation — TinkerWithMe
+int redPin = 12, yellowPin = 11, greenPin = 10;
+
+void setup() {
+  pinMode(redPin, OUTPUT);
+  pinMode(yellowPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(redPin, HIGH);   delay(4000); digitalWrite(redPin, LOW);
+  digitalWrite(greenPin, HIGH); delay(4000); digitalWrite(greenPin, LOW);
+  digitalWrite(yellowPin, HIGH);delay(1500); digitalWrite(yellowPin, LOW);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED never lights:</strong> legs swapped — long leg toward the resistor/pin.</li>
+<li><strong>Nothing happens:</strong> ground wire not reaching Arduino GND.</li>
+<li><strong>Upload fails:</strong> wrong board/port in Tools.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> the cycle repeats red → green → yellow, and a group member can point to the line controlling each colour.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li><strong>Quick check:</strong> ask each group "which line makes the yellow light stay on longest?"</li>
+<li><strong>Challenge task:</strong> make the full cycle last exactly 10 seconds — check their delay maths.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a pedestrian crossing (flash green three times before yellow).</li>
+<li>Add a fourth "walk" LED.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>All LEDs dim:</strong> missing resistors.</li>
+<li><strong>Two light together:</strong> a leg is on the wrong row — spread them out.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, assign clear roles per group (wirer, coder, checker) and rotate them. Keep a "known-good" demo circuit at the front for quick comparison. For mixed ability, pair confident students with those who need support, and give early finishers the extension immediately to keep momentum.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Homework: time a real traffic light and reprogram the delays to match next session.</li>
+</ul>
+</section>

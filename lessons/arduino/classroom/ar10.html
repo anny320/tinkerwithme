@@ -1,0 +1,89 @@
+<section class="lesson">
+<h1>Servo Motor Control</h1>
+<p><em>Intermediate · about 75 minutes · ages 10–12 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups make something move: a servo turns to an exact angle, steered by a potentiometer. This is the class's gateway to robotics — precise position control, not just spinning.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Use the built-in <code>Servo</code> library.</li>
+<li>Move a servo to a specific angle (0–180°).</li>
+<li>Map a knob reading to an angle.</li>
+<li>Identify the three servo wires.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>Servo (SG90)</td><td></td><td>1</td></tr>
+<tr><td>Potentiometer 10kΩ</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Servo brown/black → GND, red → 5V, orange/yellow → pin 9. Pot outer legs → 5V/GND, middle → A0.</p>
+<div class="warn">Small SG90 servos run from Arduino 5V. Larger servos need a separate battery pack (shared GND).</div>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> robot arms and where precise movement matters.</li>
+<li><strong>0:10–0:30 — Build:</strong> servo, then knob.</li>
+<li><strong>0:30–0:55 — Code, upload, test:</strong> knob steers the servo.</li>
+<li><strong>0:55–1:15 — Flag challenge &amp; share:</strong> tape a card flag; make a signal.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Connect the servo's three wires by colour.</li>
+<li>Wire the knob; upload; twist.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Servo Motor Control — TinkerWithMe
+#include &lt;Servo.h&gt;
+Servo myServo;
+int potPin = A0;
+
+void setup() { myServo.attach(9); }
+
+void loop() {
+  int angle = map(analogRead(potPin), 0, 1023, 0, 180);
+  myServo.write(angle);
+  delay(15);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Jitters:</strong> low power — fresh USB or external pack (shared GND).</li>
+<li><strong>Doesn't move:</strong> signal not on pin 9, or missing library line.</li>
+<li><strong>Wrong direction:</strong> map to <code>180, 0</code>.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> servo tracks the knob; a student explains 0° and 180°.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "how is this different from a wheel that just spins?"</li>
+<li>Challenge: auto-sweep back and forth without the knob.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Combine with the ultrasonic sensor to point a "radar".</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Arduino resets on movement:</strong> power draw too high — external power.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, servos spark big "let's build a robot" energy — channel it into the flag/arm challenge. Warn groups not to force the servo horn by hand. Keep the room's USB power reliable to avoid jitter across many boards.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Sketch a servo-powered gate or waving puppet to build next time.</li>
+</ul>
+</section>

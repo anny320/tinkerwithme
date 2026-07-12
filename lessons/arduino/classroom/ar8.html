@@ -1,0 +1,97 @@
+<section class="lesson">
+<h1>Temperature Logger</h1>
+<p><em>Intermediate · about 90 minutes · ages 10–12 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups build a digital thermometer with a DHT11 and print temperature and humidity to the screen. This is the class's first project using a <strong>library</strong> and real-world data — a launch pad for data science.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Install and use an Arduino library.</li>
+<li>Read temperature and humidity from a digital sensor.</li>
+<li>Print formatted data to the Serial Monitor.</li>
+<li>Record and compare measurements.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>DHT11 (3-pin module)</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~3</td></tr>
+</table>
+<p><strong>Wiring:</strong> VCC → 5V, GND → GND, DATA → pin 2.<br>
+<strong>Library:</strong> Tools → Manage Libraries → install "DHT sensor library" (Adafruit) + Unified Sensor dependency. <em>Pre-install before class if possible.</em></p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> class estimates room temperature; find the warmest spot.</li>
+<li><strong>0:10–0:30 — Setup:</strong> confirm library; wire the sensor.</li>
+<li><strong>0:30–1:00 — Code, upload, read:</strong> observe live values.</li>
+<li><strong>1:00–1:25 — Investigate:</strong> readings by window, near a hand, etc.; log in a table.</li>
+<li><strong>1:25–1:30 — Share:</strong> compare group data.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Confirm the DHT library is installed.</li>
+<li>Wire the three pins; upload; open Serial Monitor at 9600.</li>
+<li>Read updating temperature and humidity.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Temperature Logger — TinkerWithMe
+#include "DHT.h"
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() { Serial.begin(9600); dht.begin(); }
+
+void loop() {
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+  if (isnan(t) || isnan(h)) {
+    Serial.println("Sensor not ready...");
+  } else {
+    Serial.print("Temp: "); Serial.print(t);
+    Serial.print(" C   Humidity: "); Serial.print(h); Serial.println(" %");
+  }
+  delay(2000);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>"nan":</strong> wait a few seconds; check DATA pin.</li>
+<li><strong>DHT compile error:</strong> library not installed.</li>
+<li><strong>Bare 4-pin sensor:</strong> add a 10kΩ between VCC and DATA.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> steady temp/humidity updates; a student explains the sensor measures the real air.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Data task: each group records 3 locations and reports differences.</li>
+<li>Ask: "why does breathing on the sensor raise the reading?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Light a red LED above 28°C; make a class chart of readings.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Values never change:</strong> sensor reading its own warmth — move to open air.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, pre-installing the library on all machines saves major time. Pair this with a science-notebook routine: predictions, measurements, conclusions. Assign a "data recorder" per group so results are captured for a whole-class comparison.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Compare classroom readings morning vs. afternoon over a week.</li>
+</ul>
+</section>

@@ -1,0 +1,102 @@
+<section class="lesson">
+<h1>Fan Control (Automatic Cooling)</h1>
+<p><em>Advanced · about 90 minutes · ages 13–15 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups build a thermostat: when the temperature rises above a set point, the Arduino switches a fan on via a relay. A real engineering project introducing relay control and automatic (hysteresis) logic.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Act automatically on a temperature reading.</li>
+<li>Use a relay to switch a separate circuit.</li>
+<li>Add hysteresis to prevent rapid switching.</li>
+<li>Reason about powering motors safely.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>DHT11 (3-pin)</td><td></td><td>1</td></tr>
+<tr><td>Relay module (5V)</td><td></td><td>1</td></tr>
+<tr><td>Small DC fan + battery pack</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~9</td></tr>
+</table>
+<p><strong>Wiring:</strong> DHT VCC→5V, GND→GND, DATA→pin 2. Relay VCC→5V, GND→GND, IN→pin 7. Fan on its own battery pack, switched via relay COM/NO.</p>
+<div class="warn">Use only a low-voltage DC fan with its own battery pack. Never switch mains electricity. Supervise all relay wiring directly.</div>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> how does a laptop/room thermostat decide to cool?</li>
+<li><strong>0:10–0:35 — Build:</strong> sensor, relay, then fan (facilitator checks relay wiring).</li>
+<li><strong>0:35–1:10 — Code, upload, test:</strong> warm the sensor to trip the fan.</li>
+<li><strong>1:10–1:25 — Tune on/off points; discuss hysteresis.</strong></li>
+<li><strong>1:25–1:30 — Share.</strong></li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Test the DHT alone first.</li>
+<li>Add the relay and the externally-powered fan through it.</li>
+<li>Upload; warm the sensor with a cupped hand.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Automatic Fan Control — TinkerWithMe
+#include "DHT.h"
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+int relayPin = 7;
+float onTemp = 28.0, offTemp = 26.0;
+bool fanOn = false;
+
+void setup() {
+  pinMode(relayPin, OUTPUT); digitalWrite(relayPin, LOW);
+  dht.begin(); Serial.begin(9600);
+}
+void loop() {
+  float t = dht.readTemperature();
+  if (!isnan(t)) {
+    Serial.print("Temp: "); Serial.print(t); Serial.println(" C");
+    if (!fanOn &amp;&amp; t &gt; onTemp)  { fanOn = true;  digitalWrite(relayPin, HIGH); Serial.println("Fan ON"); }
+    else if (fanOn &amp;&amp; t &lt; offTemp) { fanOn = false; digitalWrite(relayPin, LOW);  Serial.println("Fan OFF"); }
+  }
+  delay(2000);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Relay chatters:</strong> the on/off gap prevents this — widen it if needed.</li>
+<li><strong>Relay inverted:</strong> some modules are active-LOW — swap HIGH/LOW.</li>
+<li><strong>Fan never spins:</strong> confirm its battery pack is through COM/NO.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> fan switches on when warm, off when cool, without chattering; a student explains why on/off points differ.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "why not use the same temperature to turn on and off?"</li>
+<li>Challenge: let users set the target temperature with a potentiometer.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a status LED for fan on/off.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Arduino misbehaves when fan runs:</strong> fan must be on separate power sharing GND.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, this is the first "power beyond LEDs" project — personally check each group's relay and fan wiring before they power on. Model safe practice explicitly. Hysteresis is advanced; if groups grasp why on/off differ, that's a strong outcome.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Research how a fridge thermostat works; compare designs as a group.</li>
+</ul>
+</section>

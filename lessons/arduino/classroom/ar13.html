@@ -1,0 +1,96 @@
+<section class="lesson">
+<h1>Basic Alarm System</h1>
+<p><em>Intermediate · about 90 minutes · ages 10–12 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups become security engineers, building a motion-triggered alarm: a PIR sensor detects movement and sets off a buzzer and flashing LED. Useful, satisfying, and rich in discussion about sensitivity and false alarms.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Use a PIR motion sensor as a digital input.</li>
+<li>Trigger multiple outputs from one event.</li>
+<li>Understand sensor warm-up and sensitivity.</li>
+<li>Organise an alarm routine with a function.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>PIR sensor (HC-SR501)</td><td></td><td>1</td></tr>
+<tr><td>Buzzer</td><td></td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~8</td></tr>
+</table>
+<p><strong>Wiring:</strong> PIR VCC → 5V, GND → GND, OUT → pin 2. Buzzer "+" → pin 8, other → GND. LED long leg → pin 7 via 220Ω, short leg → GND.</p>
+<div class="warn">The PIR needs ~30–60s to settle after power-on. Have the class stay still during warm-up.</div>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> where are alarms used? what should trigger them?</li>
+<li><strong>0:10–0:30 — Build:</strong> PIR, buzzer, LED.</li>
+<li><strong>0:30–1:00 — Code, upload, settle, test.</strong></li>
+<li><strong>1:00–1:25 — Deploy &amp; tune:</strong> guard a "treasure"; adjust PIR dials.</li>
+<li><strong>1:25–1:30 — Discuss false alarms.</strong></li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire all three parts; point the PIR at the guarded area.</li>
+<li>Upload; stay still ~1 min to settle.</li>
+<li>Move in front — it should sound and flash.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Basic Alarm System — TinkerWithMe
+int pirPin = 2, buzzer = 8, ledPin = 7;
+
+void setup() {
+  pinMode(pirPin, INPUT); pinMode(buzzer, OUTPUT); pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Warming up... stay still ~1 min");
+}
+void sound_alarm() {
+  for (int i = 0; i &lt; 5; i++) {
+    digitalWrite(ledPin, HIGH); tone(buzzer, 1000); delay(150);
+    digitalWrite(ledPin, LOW);  noTone(buzzer);     delay(150);
+  }
+}
+void loop() {
+  if (digitalRead(pirPin) == HIGH) { Serial.println("MOTION!"); sound_alarm(); }
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Constant alarms:</strong> not settled, or sensitivity too high — wait, turn it down.</li>
+<li><strong>No sound:</strong> active buzzer needs <code>digitalWrite(buzzer, HIGH)</code> instead of <code>tone()</code>.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> after warm-up, motion reliably triggers the alarm; stillness keeps it silent.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "what causes false alarms, and how would you reduce them?"</li>
+<li>Challenge: add an arm/disarm button.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Count and print how many times motion was detected.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Triggers from far:</strong> lower the PIR range dial.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, set expectations about the warm-up so groups don't think it's broken — turn the "stay still" minute into a challenge. Great discussion opportunity on sensitivity trade-offs; have groups justify their chosen setting.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Design a classroom "do not disturb" alarm as a group proposal.</li>
+</ul>
+</section>

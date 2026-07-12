@@ -1,0 +1,97 @@
+<section class="lesson">
+<h1>Digital Dice</h1>
+<p><em>Intermediate · about 90 minutes · ages 10–12 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups build an electronic dice that rolls a random 1–6 on LEDs at the press of a button. It brings together buttons, LEDs, randomness and logic — and it's genuinely fun to use afterwards.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Generate random numbers with <code>random()</code>.</li>
+<li>Detect a button press.</li>
+<li>Use functions to display a number as LEDs.</li>
+<li>Combine input, logic and output.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard (full)</td><td></td><td>1</td></tr>
+<tr><td>LEDs (pips)</td><td></td><td>7</td></tr>
+<tr><td>Resistors 220Ω</td><td></td><td>7</td></tr>
+<tr><td>Button + 10kΩ resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~16</td></tr>
+</table>
+<p><strong>Wiring:</strong> LEDs on pins 3–9 (each via 220Ω to GND). Button → pin 2 with 10kΩ pull-down (other side to 5V).</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> how does a real dice show 1–6?</li>
+<li><strong>0:10–0:40 — Build:</strong> 7 LEDs in pip layout + button (methodical, checkpoints).</li>
+<li><strong>0:40–1:15 — Code &amp; upload:</strong> random number, then LED display.</li>
+<li><strong>1:15–1:30 — Play &amp; share:</strong> use it in a quick game.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Arrange 7 LEDs (test each as you go), wire to pins 3–9.</li>
+<li>Add the button to pin 2.</li>
+<li>Upload; press to roll.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Digital Dice — TinkerWithMe
+int pips[] = {3,4,5,6,7,8,9};
+int buttonPin = 2;
+
+void setup() {
+  for (int i = 0; i &lt; 7; i++) pinMode(pips[i], OUTPUT);
+  pinMode(buttonPin, INPUT);
+  randomSeed(analogRead(A0));
+}
+void clearAll() { for (int i = 0; i &lt; 7; i++) digitalWrite(pips[i], LOW); }
+void showNumber(int n) { clearAll(); for (int i = 0; i &lt; n; i++) digitalWrite(pips[i], HIGH); }
+
+void loop() {
+  if (digitalRead(buttonPin) == HIGH) {
+    for (int i = 0; i &lt; 10; i++) { showNumber(random(1,7)); delay(60); }
+    showNumber(random(1, 7));
+    delay(500);
+  }
+}
+</code></pre>
+<p><em>Note:</em> this version lights <code>n</code> LEDs for number <code>n</code>. Challenge groups to map true dice-pip patterns.</p>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Same number each time:</strong> keep A0 unconnected for <code>randomSeed</code>.</li>
+<li><strong>Rolls unprompted:</strong> check the 10kΩ pull-down.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> a press shows a quick shuffle then a random 1–6; a student explains the randomness source.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "is a computer's randomness truly random? How does ours cheat?"</li>
+<li>Challenge: program real dice-pip patterns.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a buzzer "roll" sound; make a two-dice version.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Some pips never light:</strong> test those LEDs/resistors individually.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, this is the biggest build — set wiring checkpoints (e.g. "all 7 LEDs lit before coding") and circulate to sign off each. Neat wiring is a teachable skill here. Budget extra time; consider it a two-part project for younger groups.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Use the dice in a maths game; design a scoreboard extension.</li>
+</ul>
+</section>

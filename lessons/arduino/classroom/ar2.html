@@ -1,0 +1,89 @@
+<section class="lesson">
+<h1>Button Controlled LED</h1>
+<p><em>Beginner · about 45 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Students make the Arduino <em>listen</em>: a push button turns an LED on and off. This is the class's first taste of <strong>input</strong> — the board reacting to the world — and the foundation for every sensor project to come.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Distinguish input from output.</li>
+<li>Wire a push button with a pull-down resistor.</li>
+<li>Use <code>digitalRead()</code> and an <code>if</code> statement.</li>
+<li>Explain HIGH and LOW.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Push button + 10kΩ resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~8</td></tr>
+</table>
+<p><strong>Wiring:</strong> LED long leg → pin 9 via 220Ω, short leg → GND. Button: one side → 5V, other side → pin 2 and → GND via 10kΩ (pull-down).</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:05 — Hook:</strong> class names switches around the room.</li>
+<li><strong>0:05–0:20 — Build:</strong> LED first, confirm, then add the button.</li>
+<li><strong>0:20–0:35 — Code &amp; upload:</strong> walk through the <code>if</code> together.</li>
+<li><strong>0:35–0:45 — Challenge &amp; share:</strong> reverse the logic; quick demos.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Groups wire the LED to pin 9 and confirm placement.</li>
+<li>Place the button across the centre gap; add the 10kΩ pull-down to GND.</li>
+<li>Upload and press.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Button Controlled LED — TinkerWithMe
+int buttonPin = 2, ledPin = 9;
+
+void setup() {
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(buttonPin) == HIGH) digitalWrite(ledPin, HIGH);
+  else                                 digitalWrite(ledPin, LOW);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED flickers:</strong> missing pull-down — pin is floating.</li>
+<li><strong>Button does nothing:</strong> rotate it 90° so legs bridge the gap.</li>
+<li><strong>LED always on:</strong> 5V and pin-2 wires swapped.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> LED lights only while held; a student can point to the <code>if</code> that decides.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "what is the Arduino checking every loop?"</li>
+<li>Challenge: make it a toggle (press on, press off) — assess reasoning about state.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Toggle the LED; add a second button + LED.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Reacts to touching wires:</strong> loose ground — reseat firmly.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, the pull-down resistor is the sticking point — teach it once at the front with a hose analogy, then let groups replicate. Have spare buttons ready (they're easily inserted wrong). Rotate the "coder" role so everyone types.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Design a "secret doorbell" pattern as a take-home idea.</li>
+</ul>
+</section>

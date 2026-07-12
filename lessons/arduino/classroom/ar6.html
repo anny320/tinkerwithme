@@ -1,0 +1,95 @@
+<section class="lesson">
+<h1>Buzzer Melody</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>The class makes music: a piezo buzzer plays "Ode to Joy" by stepping through stored notes and durations. It links code to sound and introduces frequency (pitch) and arrays.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Use <code>tone()</code> to play notes.</li>
+<li>Understand higher frequency = higher pitch.</li>
+<li>Store notes/durations in arrays.</li>
+<li>Step through a melody with a loop.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>Passive piezo buzzer</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~2</td></tr>
+</table>
+<p><strong>Wiring:</strong> Buzzer "+" → pin 8, other leg → GND.</p>
+<div class="warn">Sound management: passive buzzers are quiet individually but loud as a class. Consider staggering uploads or a "play on my count" rule.</div>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> hum high vs low notes.</li>
+<li><strong>0:10–0:15 — Build:</strong> two wires.</li>
+<li><strong>0:15–0:40 — Code &amp; upload:</strong> explain arrays &amp; frequencies.</li>
+<li><strong>0:40–1:00 — Compose &amp; share:</strong> change a note; groups perform.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire buzzer between pin 8 and GND.</li>
+<li>Upload; listen and follow the code.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Buzzer Melody: Ode to Joy — TinkerWithMe
+int buzzer = 8;
+#define E4 330
+#define F4 349
+#define G4 392
+int melody[]    = { E4,E4,F4,G4,G4,F4,E4 };
+int durations[] = {400,400,400,400,400,400,400};
+int numNotes = 7;
+
+void setup() { pinMode(buzzer, OUTPUT); }
+
+void loop() {
+  for (int i = 0; i &lt; numNotes; i++) {
+    tone(buzzer, melody[i], durations[i]);
+    delay(durations[i] * 1.1);
+  }
+  noTone(buzzer);
+  delay(2000);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>No sound:</strong> an active buzzer only beeps — use passive for tunes.</li>
+<li><strong>Just a click:</strong> flip the buzzer.</li>
+<li><strong>Notes run together:</strong> increase the delay gap.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> a recognisable tune repeats; a student points to the highest note.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "which number plays the highest note?"</li>
+<li>Challenge: add C4=262, D4=294, A4=440 and extend the tune.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Groups compose an 8-note melody and perform it.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Very quiet:</strong> normal — cup hands around the buzzer.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, set a clear signal for "buzzers off" to keep noise controlled. Turn composition into a friendly contest and give each group 30 seconds to perform — it keeps a noisy activity structured and fun.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Homework: convert a familiar song's first line into notes for next session.</li>
+</ul>
+</section>
