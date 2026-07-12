@@ -86,6 +86,34 @@ jobs:
           name: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}
           path: output/
           retention-days: 30
+
+      - name: Upload PDF to Cloudflare R2
+        if: success() && github.event_name == 'repository_dispatch'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_EC2_METADATA_DISABLED: 'true'
+          # Newer AWS CLI adds integrity checksums that R2 rejects; only send when required.
+          AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+          AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          JOB_ID: ${{ github.event.client_payload.job_id }}
+        run: |
+          if [ -z "$JOB_ID" ]; then
+            echo "No job_id in payload — skipping R2 upload."
+            exit 0
+          fi
+          PDF=$(ls output/*.pdf 2>/dev/null | head -n1)
+          if [ -z "$PDF" ]; then
+            echo "❌ No PDF found in output/"; exit 1
+          fi
+          aws s3 cp "$PDF" "s3://$R2_BUCKET/curricula/$JOB_ID.pdf" \
+            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" \
+            --content-type application/pdf \
+            --content-disposition 'attachment; filename="TinkerWithMe-Curriculum.pdf"'
+          echo "✅ Uploaded to R2: curricula/$JOB_ID.pdf"
       
       - name: Send Success Notification
         if: success()

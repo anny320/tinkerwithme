@@ -144,7 +144,7 @@ footer a{color:var(--orange);text-decoration:none}
 
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <p>🤖 AI is crafting your curriculum... (2-3 minutes)</p>
+      <p id="loading-text">🤖 AI is crafting your curriculum... (2-3 minutes)</p>
     </div>
 
     <div class="success-msg" id="success-msg">
@@ -203,12 +203,20 @@ function toggleProject(id){selectedProjects=selectedProjects.includes(id)?select
 function setDuration(d){selectedDuration=d;document.querySelectorAll(".dur-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:"var(--border-strong)";btn.style.background=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:` var(--bg)`;btn.style.color=btn.dataset.dur===d?"#fff":"var(--text-2)"});updateBtn()}
 function setAudience(a){selectedAudience=a;document.querySelectorAll(".aud-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.aud===a?"var(--blue)":"var(--border-strong)";btn.style.background=btn.dataset.aud===a?"var(--blue)":"var(--bg)";btn.style.color=btn.dataset.aud===a?"#fff":"var(--text-2)"});updateBtn()}
 function updateBtn(){const btn=document.getElementById("gen-btn");btn.disabled=selectedProjects.length===0||!selectedDuration||!selectedAudience;btn.style.opacity=btn.disabled?"0.4":"1"}
+function showGenError(msg){
+  document.getElementById("loading").style.display="none";
+  document.getElementById("gen-btn").disabled=false;
+  document.getElementById("error-msg").textContent=msg;
+  document.getElementById("error-msg").style.display="block";
+}
+
 function generateCurriculum(){
   const email=document.getElementById("user-email").value.trim();
   if(!email){alert("Please enter your email");return}
   const btn=document.getElementById("gen-btn");
   btn.disabled=true;
   document.getElementById("loading").style.display="block";
+  document.getElementById("loading-text").textContent="🤖 Sending your request...";
   document.getElementById("success-msg").style.display="none";
   document.getElementById("error-msg").style.display="none";
   const payload={track:currentTrack,projects:selectedProjects.join(","),age_group:document.getElementById("age-group").value,duration:selectedDuration,audience:selectedAudience,user_email:email};
@@ -216,23 +224,43 @@ function generateCurriculum(){
     .then(async r=>{
       let data;
       try{data=await r.json()}catch(_){throw new Error(`Server returned ${r.status}. Please try again in a moment.`)}
-      if(!r.ok||!data.success){throw new Error(data&&data.error?data.error:`Request failed (${r.status}).`)}
+      if(!r.ok||!data.success||!data.job_id){throw new Error(data&&data.error?data.error:`Request failed (${r.status}).`)}
       return data;
     })
     .then(data=>{
-      document.getElementById("loading").style.display="none";
-      btn.disabled=false;
-      const dl=document.getElementById("download-btn");
-      if(data.download_url){dl.href=data.download_url;dl.style.display="inline-flex"}
-      else{dl.style.display="none"}
-      document.getElementById("success-text").textContent=data.message||("✅ Your curriculum is being generated. We'll email the PDF to "+email+" shortly.");
-      document.getElementById("success-msg").style.display="block";
+      document.getElementById("loading-text").textContent="🤖 AI is crafting your curriculum... (2-3 minutes). Keep this page open.";
+      pollForCurriculum(data.job_id,0);
     })
-    .catch(e=>{
-      document.getElementById("loading").style.display="none";
-      btn.disabled=false;
-      document.getElementById("error-msg").textContent=`❌ ${e.message}`;
-      document.getElementById("error-msg").style.display="block";
+    .catch(e=>showGenError(`❌ ${e.message}`));
+}
+
+function pollForCurriculum(jobId,attempt){
+  const MAX_ATTEMPTS=45,INTERVAL=8000; // ~6 min
+  fetch(`${CURRICULUM_API}?action=status&job_id=${encodeURIComponent(jobId)}`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data&&data.ready){
+        document.getElementById("loading").style.display="none";
+        document.getElementById("gen-btn").disabled=false;
+        const dl=document.getElementById("download-btn");
+        dl.href=`${CURRICULUM_API}?action=download&job_id=${encodeURIComponent(jobId)}`;
+        dl.style.display="inline-flex";
+        document.getElementById("success-text").textContent="✅ Your curriculum PDF is ready!";
+        document.getElementById("success-msg").style.display="block";
+        return;
+      }
+      if(attempt>=MAX_ATTEMPTS){
+        showGenError("⏳ This is taking longer than usual. Your PDF may still be generating — please try again in a few minutes.");
+        return;
+      }
+      setTimeout(()=>pollForCurriculum(jobId,attempt+1),INTERVAL);
+    })
+    .catch(()=>{
+      if(attempt>=MAX_ATTEMPTS){
+        showGenError("❌ Lost connection while checking status. Please try again.");
+        return;
+      }
+      setTimeout(()=>pollForCurriculum(jobId,attempt+1),INTERVAL);
     });
 }
 

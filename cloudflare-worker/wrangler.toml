@@ -13,3 +13,10 @@ ALLOWED_ORIGIN = "https://anny320.github.io"
 
 # GITHUB_TOKEN is a SECRET — never put it here. Set it after deploy with:
 #   wrangler secret put GITHUB_TOKEN
+
+# R2 bucket that holds the generated PDFs. If you set the binding in the
+# dashboard instead (Worker → Settings → Bindings → R2), you don't need this
+# block. The binding name MUST be CURRICULUM_BUCKET.
+[[r2_buckets]]
+binding = "CURRICULUM_BUCKET"
+bucket_name = "tinkerwithme-curricula"
