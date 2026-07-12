@@ -1,0 +1,92 @@
+<section class="lesson">
+<h1>RGB LED Colour Mixer</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups mix red, green and blue with an RGB LED and three potentiometers to make any colour. It shows the class how screens and stage lights build millions of colours from three, while reading analog inputs.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand additive colour (R+G+B).</li>
+<li>Read a potentiometer with <code>analogRead()</code>.</li>
+<li>Convert readings with <code>map()</code>.</li>
+<li>Drive three PWM outputs together.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard (full)</td><td></td><td>1</td></tr>
+<tr><td>RGB LED (common cathode)</td><td></td><td>1</td></tr>
+<tr><td>Resistors 220Ω</td><td></td><td>3</td></tr>
+<tr><td>Potentiometers 10kΩ</td><td></td><td>3</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~12</td></tr>
+</table>
+<p><strong>Wiring:</strong> longest leg → GND; red → ~9, green → ~10, blue → ~11 each via 220Ω. Each pot: outer legs → 5V/GND, middle → A0/A1/A2.</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> zoom into a screen close-up; three colours everywhere.</li>
+<li><strong>0:10–0:30 — Build:</strong> RGB LED, then one knob at a time.</li>
+<li><strong>0:30–0:50 — Code &amp; upload:</strong> explain <code>map()</code>; groups twist knobs.</li>
+<li><strong>0:50–1:00 — Colour challenge &amp; share:</strong> make white, then a sunset orange.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Identify the common-cathode long leg → GND.</li>
+<li>Wire each colour leg to its ~ pin via a resistor; wire the three knobs.</li>
+<li>Upload and mix.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// RGB Colour Mixer — TinkerWithMe
+int redPin = 9, greenPin = 10, bluePin = 11;
+int potR = A0, potG = A1, potB = A2;
+
+void setup() {
+  pinMode(redPin, OUTPUT); pinMode(greenPin, OUTPUT); pinMode(bluePin, OUTPUT);
+}
+
+void loop() {
+  analogWrite(redPin,   map(analogRead(potR), 0, 1023, 0, 255));
+  analogWrite(greenPin, map(analogRead(potG), 0, 1023, 0, 255));
+  analogWrite(bluePin,  map(analogRead(potB), 0, 1023, 0, 255));
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Colours wrong:</strong> red/green/blue legs in wrong pins — swap.</li>
+<li><strong>A colour won't turn off:</strong> check that leg's resistor/pin.</li>
+<li><strong>Common-anode LED:</strong> long leg → 5V and use <code>255 - value</code>.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> a group dials a target colour and names which knob changed it.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "all three knobs high — what colour, and why?"</li>
+<li>Challenge: record the R/G/B numbers for a named colour via Serial Monitor.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Auto-cycle a rainbow in code (no knobs).</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Flickery colour:</strong> loose pot middle wire.</li>
+<li><strong>Nothing lights:</strong> common leg not on GND.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, this build has many wires — hand out a printed wiring diagram per group. Run a "colour target" game (first to make teal) to channel the energy. Keep spare potentiometers; their three legs are easy to misplace.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Class gallery: each group presents their favourite custom colour and its RGB values.</li>
+</ul>
+</section>

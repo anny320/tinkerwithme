@@ -39,6 +39,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#f
 .error-msg{background:#FCEBEB;color:#A32D2D;padding:1rem;border-radius:var(--radius-sm);margin-top:1rem;display:none}
 .download-btn{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:#fff;padding:10px 20px;border:none;border-radius:var(--radius-pill);font-size:13px;font-weight:700;cursor:pointer;margin-top:1rem}
 .download-btn:hover{filter:brightness(1.08)}
+.topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.nav-brand{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:15px;color:var(--brown);text-decoration:none}
+.nav-brand:hover{color:var(--orange-dark)}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-link{font-size:13px;font-weight:500;color:var(--text-2);text-decoration:none;padding:6px 12px;border-radius:var(--radius-pill)}
+.nav-link:hover{background:var(--bg);color:var(--text)}
+.nav-link.active{background:var(--orange-light);color:var(--orange-dark);font-weight:600}
 footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface)}
 footer a{color:var(--orange);text-decoration:none}
 .pw-overlay{position:fixed;inset:0;background:rgba(42,26,14,0.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
@@ -73,9 +80,18 @@ footer a{color:var(--orange);text-decoration:none}
   </div>
 </div>
 
+<nav class="topnav">
+  <a class="nav-brand" href="index.html"><i class="ti ti-arrow-left"></i> TinkerWithMe</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Course Picker</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link active" href="curriculumgenerator.html">Curriculum Generator</a>
+  </div>
+</nav>
+
 <header class="hero">
   <h1>🎓 Curriculum Generator</h1>
-  <p>Generate detailed, print-ready lesson plans powered by AI. Premium feature for TinkerWithMe educators.</p>
+  <p>Build print-ready, personalized lesson packs from ready-made TinkerWithMe lessons. For educators &amp; homeschool guides.</p>
 </header>
 
 <div class="container">
@@ -135,11 +151,11 @@ footer a{color:var(--orange);text-decoration:none}
       <div class="card-title"><i class="ti ti-user"></i> Personalize (for the printed pack)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="form-group" style="margin-bottom:0">
-          <label for="child-name">Child's first name</label>
+          <label for="child-name" id="child-label">Child's first name</label>
           <input type="text" id="child-name" placeholder="e.g. Aisha">
         </div>
         <div class="form-group" style="margin-bottom:0">
-          <label for="parent-name">Parent / guardian name</label>
+          <label for="parent-name" id="parent-label">Parent / guardian name</label>
           <input type="text" id="parent-name" placeholder="e.g. Mrs. Kamau">
         </div>
       </div>
@@ -176,8 +192,9 @@ const PASSWORD_HASH="022887155792bfceabb302b5f20dd3c7d13cd0e1a53c9e107c9f9e3c5c3
 
 // Pre-generated lessons live as static files in the repo, served by GitHub
 // Pages. We retrieve, personalize in the browser, and print to PDF — no backend.
-const LESSON_DIR=track=>`lessons/${track}/homeschool/`;
+const LESSON_DIR=(track,audience)=>`lessons/${track}/${audience}/`;
 const TRACK_LABELS={arduino:"Arduino Robotics",ai:"AI Skills"};
+const AUDIENCE_LABELS={homeschool:"Homeschool",classroom:"Classroom"};
 const DURATION_LABELS={"90":"90 minutes","120":"2 hours","180":"3 hours","full":"Full day"};
 
 async function sha256(str){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("")}
@@ -209,7 +226,11 @@ function setTrack(t){currentTrack=t;document.querySelectorAll(".track-btn").forE
 function updateProjects(){const ageGroup=document.getElementById("age-group").value;const projects=DATA[currentTrack].projects.filter(p=>p.age===ageGroup||p.age==="All ages");const grid=document.getElementById("projects-grid");grid.innerHTML=projects.map(p=>`<button class="proj-btn" data-id="${p.id}" onclick="toggleProject('${p.id}')" style="padding:12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:all 0.15s;${selectedProjects.includes(p.id)?`border-color:var(--${currentTrack==='arduino'?'orange':'green'});background:var(--${currentTrack==='arduino'?'orange':'green'}-light);color:var(--${currentTrack==='arduino'?'orange':'green'}-dark);font-weight:600;`:''}\">${p.title}<br><small style="font-size:11px;opacity:0.7">${p.time}min</small></button>`).join("")}
 function toggleProject(id){selectedProjects=selectedProjects.includes(id)?selectedProjects.filter(x=>x!==id):[...selectedProjects,id];updateProjects();updateBtn()}
 function setDuration(d){selectedDuration=d;document.querySelectorAll(".dur-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:"var(--border-strong)";btn.style.background=btn.dataset.dur===d?`var(--${currentTrack==='arduino'?'orange':'green'})`:` var(--bg)`;btn.style.color=btn.dataset.dur===d?"#fff":"var(--text-2)"});updateBtn()}
-function setAudience(a){selectedAudience=a;document.querySelectorAll(".aud-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.aud===a?"var(--blue)":"var(--border-strong)";btn.style.background=btn.dataset.aud===a?"var(--blue)":"var(--bg)";btn.style.color=btn.dataset.aud===a?"#fff":"var(--text-2)"});updateBtn()}
+function setAudience(a){selectedAudience=a;document.querySelectorAll(".aud-btn").forEach(btn=>{btn.style.borderColor=btn.dataset.aud===a?"var(--blue)":"var(--border-strong)";btn.style.background=btn.dataset.aud===a?"var(--blue)":"var(--bg)";btn.style.color=btn.dataset.aud===a?"#fff":"var(--text-2)"});
+  const cl=document.getElementById("child-label"),pl=document.getElementById("parent-label"),ci=document.getElementById("child-name"),pi=document.getElementById("parent-name");
+  if(a==="classroom"){cl.textContent="Class / group name";ci.placeholder="e.g. Grade 5 Robotics Club";pl.textContent="Educator name";pi.placeholder="e.g. Mr. Otieno";}
+  else{cl.textContent="Child's first name";ci.placeholder="e.g. Aisha";pl.textContent="Parent / guardian name";pi.placeholder="e.g. Mrs. Kamau";}
+  updateBtn();}
 function updateBtn(){const btn=document.getElementById("gen-btn");btn.disabled=selectedProjects.length===0||!selectedDuration||!selectedAudience;btn.style.opacity=btn.disabled?"0.4":"1"}
 function showGenError(msg){
   document.getElementById("loading").style.display="none";
@@ -240,16 +261,15 @@ function openLessonPack(){
 }
 
 function generateCurriculum(){
-  // This pre-generated flow currently covers homeschool lessons (Arduino + AI).
-  if(selectedAudience!=="homeschool"){
-    showGenError("❌ Ready-made packs are currently available for the Homeschool audience. Please select Homeschool, or email tinkerwithanne@gmail.com for classroom requests.");
-    return;
-  }
+  if(!selectedAudience){showGenError("❌ Please choose Classroom or Homeschool first.");return;}
   const track=currentTrack;
+  const audience=selectedAudience;
   const trackLabel=TRACK_LABELS[track]||track;
+  const audienceLabel=AUDIENCE_LABELS[audience]||audience;
+  const isClass=audience==="classroom";
   const child=document.getElementById("child-name").value.trim();
   const parent=document.getElementById("parent-name").value.trim();
-  if(!child){alert("Please enter the child's first name");return}
+  if(!child){alert(isClass?"Please enter the class / group name":"Please enter the child's first name");return}
 
   const btn=document.getElementById("gen-btn");
   btn.disabled=true;
@@ -262,17 +282,18 @@ function generateCurriculum(){
   const durationLabel=DURATION_LABELS[selectedDuration]||selectedDuration;
   const ids=selectedProjects.slice();
   const titleById=id=>{const p=DATA[track].projects.find(x=>x.id===id);return p?p.title:id};
+  const parentFallback=isClass?"Educator":"Parent/Guardian";
 
   Promise.all(ids.map(id=>
-    fetch(LESSON_DIR(track)+id+".html").then(r=>{
-      if(!r.ok)throw new Error(`Lesson "${titleById(id)}" isn't available yet.`);
+    fetch(LESSON_DIR(track,audience)+id+".html").then(r=>{
+      if(!r.ok)throw new Error(`Lesson "${titleById(id)}" isn't available yet for ${audienceLabel.toLowerCase()}.`);
       return r.text();
     })
   )).then(fragments=>{
-    const tokens={"{{child}}":esc(child),"{{parent}}":esc(parent||"Parent/Guardian"),"{{date}}":esc(new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})),"{{duration}}":esc(durationLabel)};
+    const tokens={"{{child}}":esc(child),"{{parent}}":esc(parent||parentFallback),"{{date}}":esc(new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})),"{{duration}}":esc(durationLabel)};
     const personalize=html=>html.replace(/\{\{child\}\}|\{\{parent\}\}|\{\{date\}\}|\{\{duration\}\}/g,m=>tokens[m]);
     const lessons=fragments.map(personalize).join('\n<div class="page-break"></div>\n');
-    lessonPackHTML=buildPackDoc({child,parent:parent||"Parent/Guardian",date:tokens["{{date}}"],ageGroup,durationLabel,ids,titleById,lessons,trackLabel});
+    lessonPackHTML=buildPackDoc({child,parent:parent||parentFallback,date:tokens["{{date}}"],ageGroup,durationLabel,ids,titleById,lessons,trackLabel,audienceLabel,isClass});
 
     document.getElementById("loading").style.display="none";
     btn.disabled=false;
@@ -322,10 +343,10 @@ section.lesson{page-break-inside:auto}
 <div class="wrap">
 <div class="cover">
   <div class="brand">TinkerWithMe</div>
-  <div class="sub">Homeschool ${esc(o.trackLabel)} · Personalized Lesson Pack</div>
+  <div class="sub">${esc(o.audienceLabel)} ${esc(o.trackLabel)} · Personalized Lesson Pack</div>
   <div class="meta">
-    <div><strong>Learner:</strong> ${esc(o.child)}</div>
-    <div><strong>Guide:</strong> ${esc(o.parent)}</div>
+    <div><strong>${o.isClass?"Group":"Learner"}:</strong> ${esc(o.child)}</div>
+    <div><strong>${o.isClass?"Educator":"Guide"}:</strong> ${esc(o.parent)}</div>
     <div><strong>Age group:</strong> ${esc(o.ageGroup)}</div>
     <div><strong>Planned session:</strong> ${esc(o.durationLabel)}</div>
     <div><strong>Date:</strong> ${o.date}</div>
@@ -362,6 +383,9 @@ window.addEventListener("load",()=>{
   }
   if(params.get("duration")){
     setDuration(params.get("duration"));
+  }
+  if(params.get("audience")){
+    setAudience(params.get("audience"));
   }
   updateBtn();
 });

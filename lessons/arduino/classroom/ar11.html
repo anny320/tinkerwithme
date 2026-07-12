@@ -1,0 +1,89 @@
+<section class="lesson">
+<h1>Light-Activated LED (Night Light)</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups build an automatic night light that switches on when it gets dark, using a photoresistor. The class learns the Arduino can sense the world and act on its own — introducing the idea of a <strong>threshold</strong>.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand how a photoresistor responds to light.</li>
+<li>Read an analog value with <code>analogRead()</code>.</li>
+<li>Choose a threshold for an automatic decision.</li>
+<li>Use the Serial Monitor to find that threshold.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>Photoresistor (LDR)</td><td></td><td>1</td></tr>
+<tr><td>Resistor 10kΩ</td><td></td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> LDR leg → 5V; other LDR leg → A0 and → GND via 10kΩ (divider). LED long leg → pin 9 via 220Ω, short leg → GND.</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> streetlights that switch on at dusk.</li>
+<li><strong>0:10–0:25 — Build:</strong> light-sensor divider + LED.</li>
+<li><strong>0:25–0:45 — Find threshold:</strong> read bright vs covered values.</li>
+<li><strong>0:45–1:00 — Test &amp; share:</strong> cover the sensor; LED switches on.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Build the divider into A0; wire the LED.</li>
+<li>Upload; open Serial Monitor; note values in light and dark.</li>
+<li>Set the threshold between them.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Light-Activated Night Light — TinkerWithMe
+int ldrPin = A0, ledPin = 9;
+int threshold = 400;   // adjust from Serial values
+
+void setup() { pinMode(ledPin, OUTPUT); Serial.begin(9600); }
+
+void loop() {
+  int light = analogRead(ldrPin);
+  Serial.println(light);
+  digitalWrite(ledPin, (light &lt; threshold) ? HIGH : LOW);
+  delay(100);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED never changes:</strong> threshold outside real range — pick a value between measured light/dark readings.</li>
+<li><strong>Backwards:</strong> swap <code>&lt;</code> for <code>&gt;</code>.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> covering the sensor turns the LED on; a student explains the threshold decides "dark enough".</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask each group their bright and dark values and chosen threshold.</li>
+<li>Challenge: make the LED brighter the darker it gets (<code>map()</code> + <code>analogWrite()</code>).</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a buzzer for a "cupboard opened" light alarm.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Stuck at 0 or 1023:</strong> divider leg loose or 10kΩ missing.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, threshold-finding is the teaching moment — do one live at the front, then let groups find their own (room lighting varies by seat!). This naturally differentiates: stronger groups tune finer thresholds while others get theirs working.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Discuss real automatic lights and sensors around the school.</li>
+</ul>
+</section>

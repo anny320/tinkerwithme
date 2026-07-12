@@ -1,0 +1,91 @@
+<section class="lesson">
+<h1>Capacitive Touch Sensor</h1>
+<p><em>Beginner · about 60 minutes · ages 10–12 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Groups build a touch switch — tap a pad, light an LED — like a phone screen. Students learn to wire a 3-pin sensor module and read it, and to use the Serial Monitor to see a sensor's value.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Wire a 3-pin module (VCC, GND, signal).</li>
+<li>Read it with <code>digitalRead()</code>.</li>
+<li>Use the Serial Monitor to observe values.</li>
+<li>Explain capacitive sensing at a basic level.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>Touch module (TTP223)</td><td></td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Module VCC → 5V, GND → GND, SIG → pin 2. LED long leg → pin 8 via 220Ω, short leg → GND.</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:10 — Hook:</strong> list touch surfaces (phones, lifts, taps).</li>
+<li><strong>0:10–0:25 — Build:</strong> module + LED.</li>
+<li><strong>0:25–0:50 — Code, Serial Monitor, test:</strong> read 1/0 while tapping.</li>
+<li><strong>0:50–1:00 — Challenge &amp; share:</strong> make the LED toggle per tap.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Connect the three module pins carefully (VCC/GND correct).</li>
+<li>Wire the LED to pin 8.</li>
+<li>Upload; open Serial Monitor at 9600; tap the pad.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Capacitive Touch Sensor — TinkerWithMe
+int touchPin = 2, ledPin = 8;
+
+void setup() {
+  pinMode(touchPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int touched = digitalRead(touchPin);
+  Serial.println(touched);
+  digitalWrite(ledPin, touched == HIGH ? HIGH : LOW);
+  delay(50);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Always 1:</strong> VCC/SIG swapped.</li>
+<li><strong>Serial blank:</strong> set baud to 9600.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> Serial prints 1 on touch, 0 otherwise; LED follows.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "how is this different from the push button?"</li>
+<li>Challenge: implement a toggle and explain the state logic.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Hide the pad under paper for a "magic" spot; add a buzzer.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Random triggers:</strong> keep the module clear of other wires/metal.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, introduce the Serial Monitor at the front once, then have groups predict the value before touching. Most faults are swapped VCC/GND — post a labelled photo of the module to reduce repeat questions.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Groups sketch a product idea that uses a hidden touch sensor.</li>
+</ul>
+</section>

@@ -1,0 +1,84 @@
+<section class="lesson">
+<h1>Fade an LED</h1>
+<p><em>Beginner · about 45 minutes · ages 6–9 · classroom</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Students make an LED <em>breathe</em> — smoothly brightening and dimming — introducing <strong>PWM</strong> via <code>analogWrite()</code> and counting loops. It shows the class that the Arduino can control <em>how much</em>, not just on/off.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand brightness as a range (0–255).</li>
+<li>Use <code>analogWrite()</code> on a PWM (~) pin.</li>
+<li>Use a <code>for</code> loop to count up and down.</li>
+<li>Identify which pins support PWM.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup (per group of 2–3)</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno + USB</td><td></td><td>1</td></tr>
+<tr><td>Breadboard</td><td></td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~3</td></tr>
+</table>
+<p><strong>Wiring:</strong> LED long leg → pin <strong>~9</strong> via 220Ω, short leg → GND.</p>
+
+<h2>4. Minute-by-Minute Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>0:00–0:05 — Hook:</strong> dim a screen; discuss "how much" light.</li>
+<li><strong>0:05–0:15 — Build:</strong> simple LED on a ~ pin.</li>
+<li><strong>0:15–0:35 — Code &amp; upload:</strong> explain the two loops.</li>
+<li><strong>0:35–0:45 — Challenge &amp; share:</strong> pause at full brightness.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Groups wire the LED to a ~ pin (point out the ~ symbol).</li>
+<li>Upload the sketch.</li>
+<li>Observe the smooth fade.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Fade an LED — TinkerWithMe
+int ledPin = 9;  // must be a ~ (PWM) pin
+
+void setup() { pinMode(ledPin, OUTPUT); }
+
+void loop() {
+  for (int b = 0; b &lt;= 255; b++) { analogWrite(ledPin, b); delay(8); }
+  for (int b = 255; b &gt;= 0; b--) { analogWrite(ledPin, b); delay(8); }
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED only blinks/stays on:</strong> not on a ~ pin — use 3, 5, 6, 9, 10, 11.</li>
+<li><strong>Fade jumpy:</strong> increase the delay.</li>
+</ul>
+<div class="tip"><strong>Success criteria:</strong> smooth up/down fade; a student explains 0 = off, 255 = full.</div>
+
+<h2>6. Assessment</h2>
+<ul>
+<li>Ask: "what value is half brightness?"</li>
+<li>Challenge: fade two LEDs in opposite directions.</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a one-second hold at full brightness; make a "candle flicker" with random values.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>No change:</strong> confirm upload and LED orientation.</li>
+</ul>
+
+<h2>9. Classroom Management Tips</h2>
+<p>{{parent}}, this is a quick win — keep the pace up. Pre-label the ~ pins on a diagram so groups don't stall hunting for them. Use early finishers to help neighbouring groups (peer teaching cements understanding).</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Challenge students to storyboard where a "breathing light" would be useful (notifications, mood lamps).</li>
+</ul>
+</section>
