@@ -1,0 +1,100 @@
+<section class="lesson">
+<h1>Light-Activated LED (Night Light)</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} builds an automatic night light that switches on when the room gets dark — just like the streetlights outside. Using a light sensor (photoresistor/LDR), {{child}} learns that the Arduino can sense the world and react on its own, with no buttons to press.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand how a photoresistor changes with light.</li>
+<li>Read an analog value with <code>analogRead()</code>.</li>
+<li>Choose a threshold to make an automatic decision.</li>
+<li>Use the Serial Monitor to find the right threshold.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>Photoresistor (LDR)</td><td></td><td>1</td></tr>
+<tr><td>Resistor 10kΩ</td><td>voltage divider</td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> One LDR leg → 5V. Other LDR leg → A0 <em>and</em> → GND through the 10kΩ resistor (a "voltage divider"). LED long leg → pin 9 through 220Ω, short leg → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Notice lights that turn on by themselves at dusk.</li>
+<li><strong>Build (15 min):</strong> Wire the light sensor divider, then the LED.</li>
+<li><strong>Find the threshold (20 min):</strong> Read values in bright and covered light.</li>
+<li><strong>Test &amp; play (15 min):</strong> Cover the sensor and watch the LED switch on.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Build the light-sensor voltage divider into A0.</li>
+<li>Wire the LED to pin 9.</li>
+<li>Upload the code and open the Serial Monitor to see the light value.</li>
+<li>Cover the sensor with a hand; note the value and adjust the threshold if needed.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Light-Activated Night Light — TinkerWithMe
+int ldrPin = A0;
+int ledPin = 9;
+int threshold = 400;   // adjust after watching the Serial Monitor
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int light = analogRead(ldrPin);   // brighter = higher (with this wiring)
+  Serial.println(light);
+
+  if (light &lt; threshold) {   // it's dark
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  delay(100);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED never changes:</strong> your threshold is outside the real range — read the Serial values in light and dark, then pick a number in between.</li>
+<li><strong>Backwards behaviour:</strong> swap <code>&lt;</code> for <code>&gt;</code> (depends on which way the divider is wired).</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> covering the sensor turns the LED on; uncovering turns it off. {{child}} can explain the threshold decides "dark enough".</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"What number did we see when it was bright? When it was dark?"</li>
+<li>"How do streetlights know when to turn on?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Make the LED brighter the darker it gets (use <code>map()</code> and <code>analogWrite()</code>).</li>
+<li>Add a buzzer for a "someone opened the cupboard" light alarm.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Values stuck at 0 or 1023:</strong> a divider leg is loose or missing the 10kΩ resistor.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, the key idea is a <em>threshold</em> — a line that separates "act" from "don't act". Finding it together using the Serial Monitor is the heart of the lesson. It's a concept {{child}} will meet again and again in sensors and even in everyday decisions.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Place the night light in {{child}}'s room and check it works at bedtime.</li>
+</ul>
+</section>

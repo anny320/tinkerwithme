@@ -1,0 +1,99 @@
+<section class="lesson">
+<h1>Button Controlled LED</h1>
+<p><em>Beginner · about 45 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Here {{child}} makes the Arduino <em>listen</em>. A push button becomes a switch that turns an LED on and off. This is {{child}}'s first taste of <strong>input</strong> — until now the Arduino only gave instructions; now it reacts to the world. It's the foundation for every sensor project that follows.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand the difference between an input and an output.</li>
+<li>Wire a push button with a pull-down resistor.</li>
+<li>Use <code>digitalRead()</code> and an <code>if</code> statement.</li>
+<li>Explain what "HIGH" and "LOW" mean.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>LED</td><td>any colour, 5mm</td><td>1</td></tr>
+<tr><td>Resistor 220Ω</td><td>for the LED</td><td>1</td></tr>
+<tr><td>Resistor 10kΩ</td><td>pull-down for button</td><td>1</td></tr>
+<tr><td>Push button</td><td>4-pin tactile</td><td>1</td></tr>
+<tr><td>Jumper wires</td><td>male-to-male</td><td>~8</td></tr>
+</table>
+<p><strong>Wiring:</strong> LED long leg → pin 9 through 220Ω; LED short leg → GND. Button: one side to <strong>5V</strong>, the other side to pin 2 <em>and</em> to GND through the 10kΩ resistor (this "pull-down" keeps the pin at 0 until pressed).</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (5 min):</strong> Find switches around the house — what do they turn on?</li>
+<li><strong>Build (15 min):</strong> Wire the LED first, test it stays on, then add the button.</li>
+<li><strong>Code &amp; test (15 min):</strong> Upload and press the button.</li>
+<li><strong>Play (10 min):</strong> Make the button do the opposite (on when released).</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire the LED to pin 9 and confirm the wiring by lighting it directly if you like.</li>
+<li>Place the button across the middle gap of the breadboard so its legs straddle the channel.</li>
+<li>Add the 10kΩ pull-down resistor from the pin-2 side of the button to GND.</li>
+<li>Upload the code and press the button.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Button Controlled LED — TinkerWithMe
+int buttonPin = 2;   // button input
+int ledPin = 9;      // LED output
+
+void setup() {
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  int buttonState = digitalRead(buttonPin); // read the button
+
+  if (buttonState == HIGH) {   // button is pressed
+    digitalWrite(ledPin, HIGH); // LED on
+  } else {
+    digitalWrite(ledPin, LOW);  // LED off
+  }
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED flickers randomly:</strong> the pull-down resistor is missing — the pin is "floating".</li>
+<li><strong>Button does nothing:</strong> it may be turned 90° — rotate it so the legs bridge the gap.</li>
+<li><strong>LED always on:</strong> 5V and pin-2 wires may be swapped.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the LED lights only while the button is held, and {{child}} can point to the <code>if</code> line that makes the decision.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"What is the Arduino checking over and over in the loop?"</li>
+<li>"How is this button like a light switch at home? How is it different?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Make the LED <em>toggle</em> — one press on, next press off (ask {{parent}} to help track the state).</li>
+<li>Add a second button and second LED.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Reacts to touching wires:</strong> a loose ground — press wires firmly into the board.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, the pull-down resistor is the tricky idea here. Use a garden-hose analogy: without it, the pin is left "open" and picks up stray signals; the resistor gently ties it to 0 until the button sends a clear "yes". Let {{child}} feel the click of the button and connect that to the LED turning on.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Design a "secret doorbell" that only {{child}} knows how to press.</li>
+</ul>
+</section>

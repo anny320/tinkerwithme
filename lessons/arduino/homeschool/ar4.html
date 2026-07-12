@@ -1,0 +1,101 @@
+<section class="lesson">
+<h1>RGB LED Colour Mixer</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} becomes a light artist! Using an RGB LED (three colours in one) and three potentiometers (twisty knobs), {{child}} mixes red, green and blue to make <em>any</em> colour — orange, purple, teal, white. This shows how screens and stage lights create millions of colours from just three.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand that all colours of light come from mixing red, green and blue.</li>
+<li>Read a potentiometer with <code>analogRead()</code> (values 0–1023).</li>
+<li>Convert a reading to a brightness with <code>map()</code>.</li>
+<li>Control three PWM outputs at once.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>full size</td><td>1</td></tr>
+<tr><td>RGB LED</td><td>common cathode, 4-pin</td><td>1</td></tr>
+<tr><td>Resistors 220Ω</td><td>one per colour</td><td>3</td></tr>
+<tr><td>Potentiometers</td><td>10kΩ</td><td>3</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~12</td></tr>
+</table>
+<p><strong>Wiring:</strong> RGB LED longest leg → GND. Red leg → pin ~9, Green → ~10, Blue → ~11, each through a 220Ω resistor. Each potentiometer: outer legs to 5V and GND, middle leg to A0, A1, A2.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Mix paint or look at a screen close-up — three colours everywhere!</li>
+<li><strong>Build (20 min):</strong> Wire the RGB LED, then add one knob at a time.</li>
+<li><strong>Code &amp; test (20 min):</strong> Upload and start twisting.</li>
+<li><strong>Play (10 min):</strong> Challenge: make white, then a sunset orange.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Identify the RGB LED's longest leg (common cathode) — it goes to GND.</li>
+<li>Wire each colour leg to its PWM pin through a resistor.</li>
+<li>Wire the three knobs to A0, A1, A2.</li>
+<li>Upload the code and twist the knobs to mix colours.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// RGB Colour Mixer — TinkerWithMe
+int redPin = 9, greenPin = 10, bluePin = 11;
+int potR = A0, potG = A1, potB = A2;
+
+void setup() {
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+}
+
+void loop() {
+  // Read each knob (0-1023) and shrink to 0-255
+  int r = map(analogRead(potR), 0, 1023, 0, 255);
+  int g = map(analogRead(potG), 0, 1023, 0, 255);
+  int b = map(analogRead(potB), 0, 1023, 0, 255);
+
+  analogWrite(redPin, r);
+  analogWrite(greenPin, g);
+  analogWrite(bluePin, b);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Colours look wrong:</strong> the red/green/blue legs may be in the wrong pins — swap until they match.</li>
+<li><strong>One colour won't turn off:</strong> check that leg's resistor and pin connection.</li>
+<li><strong>Common anode LED (opposite type):</strong> connect the long leg to 5V instead and use <code>255 - value</code>.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> {{child}} can dial in a custom colour and name which knob changed it.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"All three knobs up high — what colour do we get? Why?"</li>
+<li>"How do you think a TV makes yellow if it only has red, green and blue?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Write down the R, G, B numbers for {{child}}'s favourite colour using the Serial Monitor.</li>
+<li>Remove the knobs and cycle through a rainbow automatically in code.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Flickery colours:</strong> a potentiometer's middle wire is loose.</li>
+<li><strong>Nothing lights:</strong> the common leg isn't connected to GND.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, let {{child}} experiment freely — there's no wrong colour. If {{child}} gets stuck making a specific shade, that's a great moment to introduce the Serial Monitor so you can both <em>see</em> the numbers. Celebrate the "aha" when white appears from all three at full.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Make a colour matching game: {{parent}} names a colour, {{child}} dials it in.</li>
+</ul>
+</section>

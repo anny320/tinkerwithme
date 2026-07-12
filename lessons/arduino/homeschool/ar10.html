@@ -1,0 +1,95 @@
+<section class="lesson">
+<h1>Servo Motor Control</h1>
+<p><em>Intermediate · about 75 minutes · ages 10–12</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} makes something <em>move</em>! A servo motor turns to an exact angle, and {{child}} steers it with a twist of a potentiometer. This is the gateway to robotics — robot arms, steering, moving flags and gates all start here. {{child}} learns to control a motor's position, not just switch it on.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Use the built-in <code>Servo</code> library.</li>
+<li>Move a servo to a specific angle (0–180°).</li>
+<li>Map a knob reading to an angle with <code>map()</code>.</li>
+<li>Understand the three servo wires (power, ground, signal).</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>Servo motor</td><td>SG90 (small)</td><td>1</td></tr>
+<tr><td>Potentiometer 10kΩ</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Servo brown/black → GND, red → 5V, orange/yellow (signal) → pin 9. Potentiometer outer legs → 5V and GND, middle → A0.</p>
+<div class="warn"><strong>{{parent}}</strong>, a small SG90 servo runs fine from the Arduino's 5V. If you ever use a larger servo, power it from a separate battery pack (shared GND) so it doesn't reset the Arduino.</div>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Talk about robot arms and where precise movement matters.</li>
+<li><strong>Build (20 min):</strong> Wire the servo, then the knob.</li>
+<li><strong>Code &amp; test (25 min):</strong> Sweep test first, then knob control.</li>
+<li><strong>Play (20 min):</strong> Tape a card "flag" to the servo and make a signal.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Connect the servo's three wires by colour.</li>
+<li>Upload the code below and twist the knob.</li>
+<li>Watch the servo mirror the knob's position.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Servo Motor Control — TinkerWithMe
+#include &lt;Servo.h&gt;
+
+Servo myServo;
+int potPin = A0;
+
+void setup() {
+  myServo.attach(9);   // signal wire on pin 9
+}
+
+void loop() {
+  int reading = analogRead(potPin);          // 0-1023
+  int angle = map(reading, 0, 1023, 0, 180); // 0-180 degrees
+  myServo.write(angle);
+  delay(15);   // give the servo time to move
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Servo jitters:</strong> usually low power — try a fresh USB port, or a battery pack sharing GND.</li>
+<li><strong>Doesn't move:</strong> the signal wire isn't on pin 9, or the library line is missing.</li>
+<li><strong>Moves the wrong way:</strong> swap the map to <code>180, 0</code>.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the servo turns smoothly as {{child}} twists the knob, and {{child}} can explain 0° and 180° are the two extremes.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"What's the difference between this motor and a wheel that just spins?"</li>
+<li>"What could {{child}} build that needs to move to an exact position?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Make the servo sweep back and forth automatically (no knob).</li>
+<li>Combine with the ultrasonic sensor to point a "radar" at the nearest object.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Arduino resets when servo moves:</strong> power draw too high — use external power.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this project often sparks the "I want to build a robot!" moment. Lean into it — attach a cardboard arm or flag and let {{child}} invent a use. Movement makes mistakes obvious and fixes satisfying.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Build a servo-powered gate or a puppet that waves.</li>
+</ul>
+</section>

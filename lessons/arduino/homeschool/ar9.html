@@ -1,0 +1,108 @@
+<section class="lesson">
+<h1>Ultrasonic Distance Sensor</h1>
+<p><em>Intermediate · about 75 minutes · ages 10–12</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} gives the Arduino "bat vision"! An HC-SR04 sensor sends out silent sound pulses and times their echo to measure distance. {{child}} will build a parking-sensor style project: an LED warns when something gets too close. This teaches sensors, simple maths, and the physics of echoes.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand how echo timing measures distance.</li>
+<li>Use <code>pulseIn()</code> to measure a signal's length.</li>
+<li>Turn a measurement into a decision with <code>if</code>.</li>
+<li>Display distance on the Serial Monitor.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>HC-SR04 ultrasonic sensor</td><td>4-pin</td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Sensor VCC → 5V, GND → GND, TRIG → pin 9, ECHO → pin 10. LED long leg → pin 7 through 220Ω, short leg → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Talk about bats and submarines — how do they "see" with sound?</li>
+<li><strong>Build (20 min):</strong> Wire the four sensor pins and the LED.</li>
+<li><strong>Code &amp; test (30 min):</strong> Upload; wave a hand and watch the distance change.</li>
+<li><strong>Play (15 min):</strong> Set the warning distance for a "parking sensor".</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire the sensor's four pins — mind TRIG and ECHO.</li>
+<li>Wire the warning LED to pin 7.</li>
+<li>Upload the code and open the Serial Monitor.</li>
+<li>Move your hand toward the sensor; the LED lights when closer than 10 cm.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Ultrasonic Distance Sensor — TinkerWithMe
+int trigPin = 9, echoPin = 10, ledPin = 7;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Send a short pulse
+  digitalWrite(trigPin, LOW);  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH); delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Time the echo and convert to cm
+  long duration = pulseIn(echoPin, HIGH);
+  int distance = duration * 0.034 / 2;
+
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  if (distance &gt; 0 &amp;&amp; distance &lt; 10) {
+    digitalWrite(ledPin, HIGH);  // too close!
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  delay(100);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Distance is always 0 or huge:</strong> TRIG and ECHO are likely swapped.</li>
+<li><strong>Jumpy readings:</strong> aim the sensor at a flat surface; soft/angled objects scatter the echo.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the printed distance changes as {{child}} moves a hand, and the LED lights when very close.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Why do we divide the time by 2 in the code?"</li>
+<li>"Where have you seen distance sensors in real life?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a buzzer that beeps faster the closer an object gets (real reverse-parking sensor!).</li>
+<li>Use three LEDs: green / amber / red for far / near / very near.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Sensor unresponsive:</strong> confirm it's on 5V, not 3.3V.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, the maths (speed of sound, divide by two) is a lovely real-world use of numbers — but don't let it stall the fun. Get it working first, then explore the "why". Challenge {{child}} to guess a distance, then check it against the sensor with a ruler.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Build a "keep out" zone for a bedroom door that lights up when crossed.</li>
+</ul>
+</section>

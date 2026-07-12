@@ -1,0 +1,146 @@
+<section class="lesson">
+<h1>Simon Says Memory Game</h1>
+<p><em>Advanced · about 120 minutes · ages 13–15</em></p>
+
+<h2>1. Session Overview</h2>
+<p>The grand finale! {{child}} builds the classic "Simon" memory game: the Arduino flashes a growing sequence of colours with matching tones, and the player repeats it using buttons. This project ties together everything — arrays, loops, functions, input, output, sound and game logic — into a real, playable game.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Store and grow a sequence using an array.</li>
+<li>Compare player input to a stored pattern.</li>
+<li>Structure a program into clear functions.</li>
+<li>Handle game states: play sequence, get input, win/lose.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>full size</td><td>1</td></tr>
+<tr><td>LEDs</td><td>red, green, blue, yellow</td><td>4</td></tr>
+<tr><td>Resistors 220Ω</td><td>for LEDs</td><td>4</td></tr>
+<tr><td>Push buttons</td><td>+ 10kΩ pull-downs</td><td>4</td></tr>
+<tr><td>Buzzer</td><td>passive</td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~24</td></tr>
+</table>
+<p><strong>Wiring:</strong> LEDs on pins 2,3,4,5 (each via 220Ω to GND). Buttons on pins 8,9,10,11 (each with a 10kΩ pull-down to GND, other side to 5V). Buzzer "+" → pin 12, other leg → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Play the memory game verbally; discuss how to store a growing list.</li>
+<li><strong>Build (40 min):</strong> This is a big wiring job — 4 LEDs, 4 buttons, buzzer. Work methodically.</li>
+<li><strong>Code in stages (50 min):</strong> Light each LED, then play a sequence, then add input checking.</li>
+<li><strong>Play &amp; polish (20 min):</strong> Add win/lose feedback and beat a high score.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire and test all 4 LEDs and 4 buttons individually first — don't code the game until each part works.</li>
+<li>Add the buzzer.</li>
+<li>Upload the full game and play. The sequence grows by one each round.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Simon Says — TinkerWithMe
+int leds[]    = {2, 3, 4, 5};
+int buttons[] = {8, 9, 10, 11};
+int tones[]   = {262, 330, 392, 494};  // C E G B
+int buzzer = 12;
+
+int sequence[100];
+int level = 0;
+
+void setup() {
+  for (int i = 0; i &lt; 4; i++) {
+    pinMode(leds[i], OUTPUT);
+    pinMode(buttons[i], INPUT);
+  }
+  pinMode(buzzer, OUTPUT);
+  randomSeed(analogRead(A0));
+}
+
+void flash(int i) {
+  digitalWrite(leds[i], HIGH);
+  tone(buzzer, tones[i], 300);
+  delay(350);
+  digitalWrite(leds[i], LOW);
+  delay(150);
+}
+
+int waitForPress() {
+  while (true) {
+    for (int i = 0; i &lt; 4; i++) {
+      if (digitalRead(buttons[i]) == HIGH) {
+        flash(i);
+        while (digitalRead(buttons[i]) == HIGH);  // wait for release
+        return i;
+      }
+    }
+  }
+}
+
+void gameOver() {
+  for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 4; j++) digitalWrite(leds[j], HIGH);
+    tone(buzzer, 120, 300); delay(300);
+    for (int j = 0; j &lt; 4; j++) digitalWrite(leds[j], LOW);
+    delay(300);
+  }
+  level = 0;   // restart
+  delay(1000);
+}
+
+void loop() {
+  // Add a new random step
+  sequence[level] = random(0, 4);
+  level++;
+
+  // Play the whole sequence
+  for (int i = 0; i &lt; level; i++) flash(sequence[i]);
+
+  // Player repeats it
+  for (int i = 0; i &lt; level; i++) {
+    int press = waitForPress();
+    if (press != sequence[i]) { gameOver(); return; }
+  }
+  delay(700);  // short pause, then next round
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Buttons register twice:</strong> the "wait for release" line handles this — make sure it's present.</li>
+<li><strong>Random but same each power-up:</strong> keep A0 unconnected for <code>randomSeed</code>.</li>
+<li><strong>An LED/button pair mismatched:</strong> confirm pin order matches the wiring.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> a playable game where the sequence grows each round and a wrong press ends the game. {{child}} can explain how the array remembers the pattern.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"How does the array let the game 'remember' a growing sequence?"</li>
+<li>"What would you change to make the game harder as it goes on?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Speed the sequence up as the level rises.</li>
+<li>Show the score by flashing the level number, or add a two-player mode.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Game feels unresponsive:</strong> check every button's pull-down resistor — a floating input causes chaos.</li>
+<li><strong>One colour never accepts input:</strong> that button's wiring is off; test it with a simple read sketch.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this capstone is ambitious — expect it to take the full session and possibly a second sitting. The secret is building in stages and testing each piece before moving on. Celebrate reaching a playable game; it's a genuine achievement that pulls together months of learning. Then challenge {{child}} to beat your high score!</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Design {{child}}'s own electronic game and sketch the wiring plan.</li>
+<li>Show the finished game to family — teaching others cements the learning.</li>
+</ul>
+</section>

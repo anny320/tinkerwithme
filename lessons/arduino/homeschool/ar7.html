@@ -1,0 +1,105 @@
+<section class="lesson">
+<h1>Morse Code Blinker</h1>
+<p><em>Intermediate · about 75 minutes · ages 10–12</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} turns an LED into a secret messenger, blinking out words in Morse code. This project blends history, patterns and coding: short blinks (dots) and long blinks (dashes) spell letters. {{child}} will write functions and see how a program can be built from small reusable pieces.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand timing patterns (dot, dash, gaps).</li>
+<li>Write and call custom <strong>functions</strong>.</li>
+<li>Break a big task (a word) into small steps (letters).</li>
+<li>Read the Serial Monitor for feedback.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~3</td></tr>
+</table>
+<p><strong>Wiring:</strong> LED long leg → pin 13 through 220Ω; short leg → GND. (Pin 13 also has a built-in LED, handy for testing.)</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Look at a Morse chart; spell {{child}}'s initials in dots and dashes.</li>
+<li><strong>Build (5 min):</strong> One LED.</li>
+<li><strong>Code &amp; test (35 min):</strong> Build the dot/dash functions, then spell "SOS".</li>
+<li><strong>Play (20 min):</strong> Spell {{child}}'s name.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire the LED to pin 13.</li>
+<li>Type the code — notice the two helper functions <code>dot()</code> and <code>dash()</code>.</li>
+<li>Upload and watch it blink "SOS" ( ... --- ... ).</li>
+<li>Open the Serial Monitor to read along.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Morse Code Blinker — TinkerWithMe
+int led = 13;
+int unit = 250;  // one time-unit in ms
+
+void setup() {
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
+}
+
+void dot() {
+  digitalWrite(led, HIGH); delay(unit);
+  digitalWrite(led, LOW);  delay(unit);   // gap after symbol
+}
+
+void dash() {
+  digitalWrite(led, HIGH); delay(unit * 3);
+  digitalWrite(led, LOW);  delay(unit);
+}
+
+void letterGap() { delay(unit * 2); } // extra gap between letters
+
+void loop() {
+  Serial.println("SOS");
+  dot(); dot(); dot();  letterGap();  // S
+  dash(); dash(); dash(); letterGap(); // O
+  dot(); dot(); dot();  letterGap();  // S
+  delay(2000);  // pause before repeating
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Dots and dashes look the same:</strong> the dash uses <code>unit * 3</code> — check that multiplier.</li>
+<li><strong>Letters blur together:</strong> add or lengthen <code>letterGap()</code>.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> a clear ...&nbsp;---&nbsp;... pattern, and {{child}} can add a new letter by calling <code>dot()</code>/<code>dash()</code> in the right order.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Why do we need gaps between letters as well as between dots?"</li>
+<li>"How is a function like a recipe we can reuse?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Spell out {{child}}'s full name.</li>
+<li>Add a buzzer so the message beeps as well as blinks.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Nothing blinks:</strong> the pin-13 built-in LED should still flash — if not, re-upload.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this is a great first look at functions. Help {{child}} see that once <code>dot()</code> is written, it can be used again and again — just like learning a word and reusing it. Encode a short secret message to {{child}} and let them decode the blinks.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Make a two-way Morse chat with a friend or {{parent}} using torches.</li>
+</ul>
+</section>

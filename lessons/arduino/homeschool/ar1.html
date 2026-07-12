@@ -1,0 +1,119 @@
+<section class="lesson">
+<h1>Traffic Light Simulation</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>In this lesson {{child}} builds a working traffic light out of three LEDs — red, amber (yellow) and green — and programs it to cycle just like the lights on a real road. It's the perfect first "sequence" project: {{child}} will see the Arduino follow instructions in order, wait, then repeat. By the end {{child}} will understand that a program is simply a list of steps the computer does over and over.</p>
+<div class="tip"><strong>{{parent}}</strong>, this is a wonderful project to connect to the real world — point out real traffic lights on your next walk or drive and count the seconds each colour stays on.</div>
+
+<h2>2. Learning Objectives</h2>
+<p>By the end of this session {{child}} will be able to:</p>
+<ul>
+<li>Connect an LED to an Arduino safely using a resistor.</li>
+<li>Explain what <code>digitalWrite()</code> and <code>delay()</code> do.</li>
+<li>Read a simple program and predict what will light up next.</li>
+<li>Change the timing to make the lights faster or slower.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno (or compatible)</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half or full size</td><td>1</td></tr>
+<tr><td>LEDs</td><td>red, yellow, green (5mm)</td><td>3</td></tr>
+<tr><td>Resistors</td><td>220Ω</td><td>3</td></tr>
+<tr><td>Jumper wires</td><td>male-to-male</td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Connect the long leg (+) of the red LED to pin 12 through a 220Ω resistor, yellow to pin 11, green to pin 10. Connect the short leg (−) of each LED to the Arduino <strong>GND</strong> rail.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (5–10 min):</strong> Talk about real traffic lights. What order do they go in?</li>
+<li><strong>Build (15–20 min):</strong> Place the LEDs and resistors on the breadboard together.</li>
+<li><strong>Code &amp; test (20–25 min):</strong> Type in the sketch, upload, and watch it run.</li>
+<li><strong>Play &amp; tweak (10 min):</strong> Change the delays; add a flashing green.</li>
+<li><strong>Wrap-up (5 min):</strong> Tidy up and talk about what {{child}} learned.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Push the three LEDs into the breadboard, each in its own row. Remember: long leg is positive.</li>
+<li>Connect a 220Ω resistor from each LED's long leg toward the Arduino pins (12, 11, 10).</li>
+<li>Join all the short legs to a ground (−) row, then run one wire from that row to the Arduino <strong>GND</strong>.</li>
+<li>Plug the Arduino into the computer and open the Arduino IDE.</li>
+<li>Type in the code below (typing it out helps {{child}} learn — but copy/paste is fine for the first go).</li>
+<li>Press the <strong>Upload</strong> arrow and watch the lights cycle.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Traffic Light Simulation — TinkerWithMe
+// Red = pin 12, Yellow = pin 11, Green = pin 10
+
+int redPin = 12;
+int yellowPin = 11;
+int greenPin = 10;
+
+void setup() {
+  // Tell the Arduino these pins send power OUT to the LEDs
+  pinMode(redPin, OUTPUT);
+  pinMode(yellowPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+}
+
+void loop() {
+  // RED for 4 seconds (stop!)
+  digitalWrite(redPin, HIGH);
+  delay(4000);
+  digitalWrite(redPin, LOW);
+
+  // GREEN for 4 seconds (go!)
+  digitalWrite(greenPin, HIGH);
+  delay(4000);
+  digitalWrite(greenPin, LOW);
+
+  // YELLOW for 1.5 seconds (get ready to stop)
+  digitalWrite(yellowPin, HIGH);
+  delay(1500);
+  digitalWrite(yellowPin, LOW);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>An LED never lights:</strong> the legs are probably swapped — flip the LED so the long leg goes toward the resistor/pin.</li>
+<li><strong>Nothing happens at all:</strong> check the ground wire actually reaches the Arduino GND.</li>
+<li><strong>Upload fails:</strong> make sure the right board and port are selected in Tools.</li>
+</ul>
+
+<div class="tip"><strong>Success looks like:</strong> the lights repeat red → green → yellow → red forever. {{child}} can point at the code and say which line lights which colour.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"What do you think would happen if we made the red delay much longer?"</li>
+<li>"Why do real traffic lights use yellow before red?"</li>
+<li>"Which line in the code is the computer reading right now?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a "pedestrian crossing" — make the green flash three times before turning yellow.</li>
+<li>Add a fourth LED as a walk/don't-walk signal.</li>
+<li>Change all the delays so the whole cycle takes exactly 10 seconds.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>All LEDs are dim:</strong> you may be missing resistors — never connect an LED straight to a pin.</li>
+<li><strong>Two light together:</strong> a leg is touching the wrong row — spread them out on the breadboard.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, let {{child}} do the pushing and plugging — even when it's slower. If something doesn't work, resist fixing it yourself; instead ask "what does the red LED need to light up?" Frustration is part of learning; a short break and a fresh look fixes most problems.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Time a real traffic light on a walk and reprogram the delays to match.</li>
+<li>Draw the sequence as a comic strip showing each step the Arduino takes.</li>
+</ul>
+</section>
