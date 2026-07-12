@@ -35,6 +35,13 @@ on:
           - '120'
           - '180'
           - 'full'
+      audience:
+        description: 'Target audience'
+        required: true
+        type: choice
+        options:
+          - classroom
+          - homeschool
       user_email:
         description: 'User email for delivery'
         required: true
@@ -46,21 +53,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.client_payload.ref || github.ref }}
-      
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install system dependencies for WeasyPrint
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info fonts-liberation
+          sudo apt-get install -y \
+            libpango-1.0-0 \
+            libpangocairo-1.0-0 \
+            libgdk-pixbuf2.0-0 \
+            libffi-dev \
+            shared-mime-info \
+            fonts-liberation
 
-      - name: Install dependencies
-        run: |
-          pip install anthropic requests python-dotenv weasyprint
-      
+      - name: Install Python dependencies
+        run: pip install anthropic weasyprint
+
       - name: Generate Curriculum
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -68,19 +80,21 @@ jobs:
           PROJECTS: ${{ inputs.projects || github.event.client_payload.projects }}
           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
+          AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
         run: python generate_curriculum.py
-      
-      - name: Upload Curriculum Artifact
+
+      - name: Upload Curriculum PDF
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}
           path: output/
           retention-days: 30
-      
-      - name: Send Success Notification
+
+      - name: Report success
         if: success()
-        env:
-          USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
-        run: echo "✅ Curriculum generated successfully for $USER_EMAIL"
+        run: |
+          echo "✅ Curriculum generated successfully"
+          echo "📧 Ready for: ${{ inputs.user_email || github.event.client_payload.user_email }}"
+          echo "📄 Artifact: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}"
