@@ -1,0 +1,116 @@
+<section class="lesson">
+<h1>Fan Control (Automatic Cooling)</h1>
+<p><em>Advanced · about 90 minutes · ages 13–15</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} builds a smart cooling system: when the temperature rises above a set point, the Arduino switches on a fan using a relay. This is a real engineering project — a thermostat — that introduces controlling higher-power devices safely through a relay, plus the logic of automatic control.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Read temperature and act on it automatically.</li>
+<li>Use a relay module to switch a separate circuit.</li>
+<li>Add hysteresis (on/off gap) to avoid rapid switching.</li>
+<li>Reason about powering motors safely.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>DHT11 temperature sensor</td><td>3-pin module</td><td>1</td></tr>
+<tr><td>Relay module</td><td>5V, single channel</td><td>1</td></tr>
+<tr><td>Small DC fan + battery pack</td><td>e.g. 5–9V fan</td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~9</td></tr>
+</table>
+<p><strong>Wiring:</strong> DHT VCC→5V, GND→GND, DATA→pin 2. Relay VCC→5V, GND→GND, IN→pin 7. Fan powered by its own battery pack, switched through the relay's COM/NO terminals.</p>
+<div class="warn"><strong>{{parent}}</strong>, keep this to a small <strong>low-voltage DC fan with its own battery pack</strong>. Do <em>not</em> switch mains electricity. Supervise all relay wiring.</div>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> How does a thermostat or a laptop fan decide to switch on?</li>
+<li><strong>Build (25 min):</strong> Sensor, relay, then the fan circuit (with {{parent}}).</li>
+<li><strong>Code &amp; test (35 min):</strong> Read temp, then add the relay logic.</li>
+<li><strong>Tune (15 min):</strong> Set the on/off temperatures and test by warming the sensor.</li>
+<li><strong>Wrap-up (5 min):</strong> Discuss hysteresis and why it matters.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire and test the DHT sensor alone first (see the Temperature Logger lesson).</li>
+<li>Add the relay and connect the fan through it with its own power.</li>
+<li>Upload the code; warm the sensor (a cupped hand) to trip the fan on.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Automatic Fan Control — TinkerWithMe
+#include "DHT.h"
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+int relayPin = 7;
+float onTemp  = 28.0;  // fan turns ON above this
+float offTemp = 26.0;  // fan turns OFF below this (hysteresis)
+bool fanOn = false;
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, LOW);  // fan off
+  dht.begin();
+  Serial.begin(9600);
+}
+
+void loop() {
+  float t = dht.readTemperature();
+  if (!isnan(t)) {
+    Serial.print("Temp: "); Serial.print(t); Serial.println(" C");
+
+    if (!fanOn &amp;&amp; t &gt; onTemp) {
+      fanOn = true;
+      digitalWrite(relayPin, HIGH);   // fan ON
+      Serial.println("Fan ON");
+    } else if (fanOn &amp;&amp; t &lt; offTemp) {
+      fanOn = false;
+      digitalWrite(relayPin, LOW);    // fan OFF
+      Serial.println("Fan OFF");
+    }
+  }
+  delay(2000);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Relay clicks on and off rapidly:</strong> that's why we use two temperatures (on/off gap) — widen the gap if needed.</li>
+<li><strong>Relay logic inverted:</strong> some relay modules are "active-LOW" — swap HIGH/LOW.</li>
+<li><strong>Fan never spins:</strong> confirm the fan's own battery pack is connected through COM/NO.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the fan switches on when warm and off when cool, without chattering. {{child}} can explain why the on and off points differ.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Why not use the same temperature to turn on and off?"</li>
+<li>"Where is automatic temperature control used in real homes and devices?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add an LED that shows fan status at a glance.</li>
+<li>Let the user set the target temperature with a potentiometer.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Arduino behaves oddly when fan runs:</strong> the fan must be on separate power sharing GND, never drawn from the Arduino's 5V.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this is the first project touching "power" beyond LEDs — a good moment to model careful, safe building. Stay involved with the relay and fan wiring. The concept of <em>hysteresis</em> is genuinely advanced; if {{child}} grasps why the on/off points differ, that's a real win.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Research how a fridge thermostat works and compare it to this design.</li>
+</ul>
+</section>

@@ -1,0 +1,108 @@
+<section class="lesson">
+<h1>Digital Dice</h1>
+<p><em>Intermediate · about 90 minutes · ages 10–12</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} builds an electronic dice that "rolls" a random number 1–6 shown on LEDs at the press of a button. This project brings together buttons, LEDs, randomness and logic — and it's genuinely fun to play with afterwards. {{child}} learns how computers make random choices and how to light patterns to represent numbers.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Generate random numbers with <code>random()</code>.</li>
+<li>Detect a button press cleanly.</li>
+<li>Use functions to show a number as an LED pattern.</li>
+<li>Combine input, logic and output in one program.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>full size</td><td>1</td></tr>
+<tr><td>LEDs</td><td>5mm (dice pips)</td><td>7</td></tr>
+<tr><td>Resistors 220Ω</td><td>one per LED</td><td>7</td></tr>
+<tr><td>Push button + 10kΩ resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~16</td></tr>
+</table>
+<p><strong>Simplified wiring:</strong> To keep it manageable, use LEDs on pins 3–9 as "pips". Button to pin 2 with a 10kΩ pull-down to GND (one side to 5V). Each LED long leg → its pin through 220Ω, short legs → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Roll a real dice — how does it show 1 to 6?</li>
+<li><strong>Build (30 min):</strong> Place LEDs like dice pips; add the button. Take your time.</li>
+<li><strong>Code &amp; test (35 min):</strong> Random number first, then LED patterns.</li>
+<li><strong>Play (15 min):</strong> Use it in a board game!</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Arrange 7 LEDs in the classic dice-pip layout on the breadboard.</li>
+<li>Wire each to pins 3–9, and the button to pin 2.</li>
+<li>Upload the code, press the button, and watch a random roll.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Digital Dice — TinkerWithMe
+int pips[] = {3,4,5,6,7,8,9};  // 7 LEDs
+int buttonPin = 2;
+
+void setup() {
+  for (int i = 0; i &lt; 7; i++) pinMode(pips[i], OUTPUT);
+  pinMode(buttonPin, INPUT);
+  randomSeed(analogRead(A0));  // make rolls unpredictable
+}
+
+void clearAll() {
+  for (int i = 0; i &lt; 7; i++) digitalWrite(pips[i], LOW);
+}
+
+// Light the pips for a given number (simple: light 'n' LEDs)
+void showNumber(int n) {
+  clearAll();
+  for (int i = 0; i &lt; n; i++) digitalWrite(pips[i], HIGH);
+}
+
+void loop() {
+  if (digitalRead(buttonPin) == HIGH) {
+    // quick roll animation
+    for (int i = 0; i &lt; 10; i++) { showNumber(random(1,7)); delay(60); }
+    int roll = random(1, 7);   // 1 to 6
+    showNumber(roll);
+    delay(500);  // simple debounce / hold
+  }
+}
+</code></pre>
+<p><em>Note:</em> this version lights <code>n</code> LEDs for the number <code>n</code>. Once {{child}} is comfortable, challenge them to map real dice-pip patterns.</p>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Same number every time:</strong> the <code>randomSeed</code> line is missing — leave A0 unconnected so it picks up noise.</li>
+<li><strong>Rolls without pressing:</strong> add or check the button's 10kΩ pull-down.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> pressing the button shows a quick shuffle then settles on a random 1–6. {{child}} can explain where the randomness comes from.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Is anything a computer does <em>truly</em> random? How does ours cheat?"</li>
+<li>"How could we show the real dot patterns of a dice?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Program the true dice-pip patterns for each number.</li>
+<li>Add a buzzer "roll" sound.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Some pips never light:</strong> check those LEDs' legs and resistors individually.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this is the biggest build so far — lots of LEDs. Break it into chunks: get one LED working, then repeat. Wiring seven LEDs teaches patience and neat work. Once done, actually play a game with it — the reward makes the effort worthwhile.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Design a two-dice version for games that need higher rolls.</li>
+</ul>
+</section>

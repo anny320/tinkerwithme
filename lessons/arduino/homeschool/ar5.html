@@ -1,0 +1,99 @@
+<section class="lesson">
+<h1>Capacitive Touch Sensor</h1>
+<p><em>Beginner · about 60 minutes · ages 10–12</em></p>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} builds a touch switch — tap a metal pad and an LED lights, like the screen of a phone. Using a touch sensor module, {{child}} learns that computers can sense a human finger. This is a friendly introduction to sensors and to reading a digital input from a small module.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Wire a 3-pin sensor module (VCC, GND, signal).</li>
+<li>Read the sensor with <code>digitalRead()</code>.</li>
+<li>Use the Serial Monitor to watch a sensor's value.</li>
+<li>Explain what "capacitive" sensing roughly means.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>Capacitive touch module</td><td>TTP223 or similar</td><td>1</td></tr>
+<tr><td>LED + 220Ω resistor</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~7</td></tr>
+</table>
+<p><strong>Wiring:</strong> Module VCC → 5V, GND → GND, SIG → pin 2. LED long leg → pin 8 through 220Ω, short leg → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Where do we use touch every day? Phones, lift buttons, taps.</li>
+<li><strong>Build (15 min):</strong> Wire the module and the LED.</li>
+<li><strong>Code &amp; test (25 min):</strong> Upload, watch the Serial Monitor, tap the pad.</li>
+<li><strong>Play (10 min):</strong> Make the LED toggle on each tap.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Connect the module's three pins carefully — VCC and GND the right way round.</li>
+<li>Wire the LED to pin 8.</li>
+<li>Upload the code and open <strong>Tools → Serial Monitor</strong> (9600 baud).</li>
+<li>Touch the pad and watch the value and the LED change.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Capacitive Touch Sensor — TinkerWithMe
+int touchPin = 2;
+int ledPin = 8;
+
+void setup() {
+  pinMode(touchPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int touched = digitalRead(touchPin);
+  Serial.println(touched);   // 1 = touched, 0 = not
+
+  if (touched == HIGH) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  delay(50);
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>Always reads 1:</strong> VCC and SIG may be swapped — double-check the module labels.</li>
+<li><strong>Serial Monitor shows nothing:</strong> set the baud rate to 9600 in the bottom corner.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the Serial Monitor prints 1 while touching and 0 when not, and the LED follows.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Why do you think this works through a thin layer of paper or tape?"</li>
+<li>"How is this different from the push button we used before?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Make the LED <em>toggle</em> — tap once for on, again for off.</li>
+<li>Hide the pad under paper and make a "magic" touch spot.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Random triggering:</strong> keep the module away from other wires and metal.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, the Serial Monitor is a superpower here — it lets {{child}} <em>see</em> what the sensor feels. Encourage {{child}} to predict the number before touching. If the module behaves oddly, most issues are a swapped VCC/GND, so check that first together.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Build a "do not touch" alarm box using the touch pad and a buzzer.</li>
+</ul>
+</section>

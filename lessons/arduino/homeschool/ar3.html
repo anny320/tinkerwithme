@@ -1,0 +1,96 @@
+<section class="lesson">
+<h1>Fade an LED</h1>
+<p><em>Beginner · about 45 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>So far LEDs have been fully on or fully off. In this lesson {{child}} makes an LED <em>breathe</em> — smoothly brightening and dimming. This introduces the powerful idea of <strong>PWM</strong> (turning a pin on and off very fast so it looks partly on) using <code>analogWrite()</code>, plus loops that count up and down.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Explain that brightness can be a range, not just on/off.</li>
+<li>Use <code>analogWrite()</code> with values from 0 to 255.</li>
+<li>Use a <code>for</code> loop to count up and down.</li>
+<li>Identify which Arduino pins support PWM (the ones marked ~).</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>LED</td><td>any colour</td><td>1</td></tr>
+<tr><td>Resistor 220Ω</td><td></td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~3</td></tr>
+</table>
+<p><strong>Wiring:</strong> LED long leg → pin <strong>~9</strong> (a PWM pin) through 220Ω; short leg → GND.</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (5 min):</strong> Dim a room light or phone screen — talk about "how much" light.</li>
+<li><strong>Build (10 min):</strong> Simple LED wiring on a PWM pin.</li>
+<li><strong>Code &amp; test (20 min):</strong> Upload and watch the fade; slow it down.</li>
+<li><strong>Play (10 min):</strong> Make it "breathe" faster or pause at the brightest point.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Wire the LED to pin ~9. Look for the little ~ symbol next to the number.</li>
+<li>Upload the code below.</li>
+<li>Watch the LED glow up and down smoothly.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Fade an LED — TinkerWithMe
+int ledPin = 9;  // must be a ~ (PWM) pin
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // Fade UP: 0 (off) to 255 (brightest)
+  for (int b = 0; b &lt;= 255; b++) {
+    analogWrite(ledPin, b);
+    delay(8);
+  }
+  // Fade DOWN: 255 back to 0
+  for (int b = 255; b &gt;= 0; b--) {
+    analogWrite(ledPin, b);
+    delay(8);
+  }
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>LED only blinks or stays on:</strong> it isn't on a ~ pin — move it to 3, 5, 6, 9, 10 or 11.</li>
+<li><strong>Fade is jumpy:</strong> increase the <code>delay</code> a little to smooth it.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> the LED smoothly brightens and dims on repeat. {{child}} can explain that 0 is off and 255 is fully bright.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"What number makes the LED half as bright?"</li>
+<li>"The Arduino is switching the LED on and off super fast — why does it look like a smooth glow?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Make the LED pause for one second at full brightness before fading down.</li>
+<li>Fade two LEDs so one brightens as the other dims.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>No change at all:</strong> confirm the sketch uploaded and the LED legs aren't swapped.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, PWM is a big idea hidden in a simple project. You don't need to explain the electronics deeply — the takeaway for {{child}} is "the computer can control <em>how much</em>, not just yes or no." Let {{child}} change the numbers 0 and 255 and predict what happens before uploading.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Program a "candle flicker" by fading to random brightness values.</li>
+</ul>
+</section>

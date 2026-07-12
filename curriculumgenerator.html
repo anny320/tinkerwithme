@@ -132,24 +132,31 @@ footer a{color:var(--orange);text-decoration:none}
     </div>
 
     <div class="card">
-      <div class="card-title"><i class="ti ti-mail"></i> Your Email (for delivery)</div>
-      <div class="form-group">
-        <input type="email" id="user-email" placeholder="your@email.com" required>
+      <div class="card-title"><i class="ti ti-user"></i> Personalize (for the printed pack)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group" style="margin-bottom:0">
+          <label for="child-name">Child's first name</label>
+          <input type="text" id="child-name" placeholder="e.g. Aisha">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="parent-name">Parent / guardian name</label>
+          <input type="text" id="parent-name" placeholder="e.g. Mrs. Kamau">
+        </div>
       </div>
     </div>
 
     <button class="gen-btn" id="gen-btn" onclick="generateCurriculum()" disabled>
-      <i class="ti ti-wand"></i> Generate PDF Curriculum
+      <i class="ti ti-wand"></i> Build Printable Lesson Pack
     </button>
 
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <p id="loading-text">🤖 AI is crafting your curriculum... (2-3 minutes)</p>
+      <p id="loading-text">📚 Assembling your personalized lesson pack...</p>
     </div>
 
     <div class="success-msg" id="success-msg">
-      <span id="success-text">✅ Curriculum generated! Check your email for the PDF download link.</span>
-      <a class="download-btn" id="download-btn" href="#" download style="display:none"><i class="ti ti-download"></i> Download Now</a>
+      <span id="success-text">✅ Your lesson pack is ready!</span>
+      <button class="download-btn" id="download-btn" type="button" onclick="openLessonPack()" style="display:none"><i class="ti ti-printer"></i> Open / Save as PDF</button>
     </div>
 
     <div class="error-msg" id="error-msg"></div>
@@ -167,10 +174,11 @@ footer a{color:var(--orange);text-decoration:none}
 // To change: replace this hash with sha256(newPassword).toLowerCase()
 const PASSWORD_HASH="022887155792bfceabb302b5f20dd3c7d13cd0e1a53c9e107c9f9e3c5c377830";
 
-// Curriculum Generator API — the Cloudflare Worker that triggers the GitHub
-// Actions workflow. Replace <your-subdomain> with the URL printed by
-// `wrangler deploy` (see cloudflare-worker/README.md).
-const CURRICULUM_API="https://tinkerwithme-curriculum.<your-subdomain>.workers.dev";
+// Pre-generated lessons live as static files in the repo, served by GitHub
+// Pages. We retrieve, personalize in the browser, and print to PDF — no backend.
+const LESSON_DIR=track=>`lessons/${track}/homeschool/`;
+const TRACK_LABELS={arduino:"Arduino Robotics",ai:"AI Skills"};
+const DURATION_LABELS={"90":"90 minutes","120":"2 hours","180":"3 hours","full":"Full day"};
 
 async function sha256(str){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("")}
 
@@ -210,58 +218,125 @@ function showGenError(msg){
   document.getElementById("error-msg").style.display="block";
 }
 
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+// The assembled, personalized lesson pack HTML — kept so the button can
+// re-open it if the browser blocked the first pop-up.
+let lessonPackHTML=null;
+
+function openLessonPack(){
+  if(!lessonPackHTML)return;
+  const w=window.open("","_blank");
+  if(!w){
+    // Pop-up blocked — fall back to a downloadable HTML file.
+    const blob=new Blob([lessonPackHTML],{type:"text/html"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="TinkerWithMe-Arduino-Lessons.html";
+    document.body.appendChild(a);a.click();a.remove();
+    return;
+  }
+  w.document.open();w.document.write(lessonPackHTML);w.document.close();
+}
+
 function generateCurriculum(){
-  const email=document.getElementById("user-email").value.trim();
-  if(!email){alert("Please enter your email");return}
+  // This pre-generated flow currently covers homeschool lessons (Arduino + AI).
+  if(selectedAudience!=="homeschool"){
+    showGenError("❌ Ready-made packs are currently available for the Homeschool audience. Please select Homeschool, or email tinkerwithanne@gmail.com for classroom requests.");
+    return;
+  }
+  const track=currentTrack;
+  const trackLabel=TRACK_LABELS[track]||track;
+  const child=document.getElementById("child-name").value.trim();
+  const parent=document.getElementById("parent-name").value.trim();
+  if(!child){alert("Please enter the child's first name");return}
+
   const btn=document.getElementById("gen-btn");
   btn.disabled=true;
   document.getElementById("loading").style.display="block";
-  document.getElementById("loading-text").textContent="🤖 Sending your request...";
+  document.getElementById("loading-text").textContent="📚 Assembling your personalized lesson pack...";
   document.getElementById("success-msg").style.display="none";
   document.getElementById("error-msg").style.display="none";
-  const payload={track:currentTrack,projects:selectedProjects.join(","),age_group:document.getElementById("age-group").value,duration:selectedDuration,audience:selectedAudience,user_email:email};
-  fetch(CURRICULUM_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
-    .then(async r=>{
-      let data;
-      try{data=await r.json()}catch(_){throw new Error(`Server returned ${r.status}. Please try again in a moment.`)}
-      if(!r.ok||!data.success||!data.job_id){throw new Error(data&&data.error?data.error:`Request failed (${r.status}).`)}
-      return data;
+
+  const ageGroup=document.getElementById("age-group").value;
+  const durationLabel=DURATION_LABELS[selectedDuration]||selectedDuration;
+  const ids=selectedProjects.slice();
+  const titleById=id=>{const p=DATA[track].projects.find(x=>x.id===id);return p?p.title:id};
+
+  Promise.all(ids.map(id=>
+    fetch(LESSON_DIR(track)+id+".html").then(r=>{
+      if(!r.ok)throw new Error(`Lesson "${titleById(id)}" isn't available yet.`);
+      return r.text();
     })
-    .then(data=>{
-      document.getElementById("loading-text").textContent="🤖 AI is crafting your curriculum... (2-3 minutes). Keep this page open.";
-      pollForCurriculum(data.job_id,0);
-    })
-    .catch(e=>showGenError(`❌ ${e.message}`));
+  )).then(fragments=>{
+    const tokens={"{{child}}":esc(child),"{{parent}}":esc(parent||"Parent/Guardian"),"{{date}}":esc(new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})),"{{duration}}":esc(durationLabel)};
+    const personalize=html=>html.replace(/\{\{child\}\}|\{\{parent\}\}|\{\{date\}\}|\{\{duration\}\}/g,m=>tokens[m]);
+    const lessons=fragments.map(personalize).join('\n<div class="page-break"></div>\n');
+    lessonPackHTML=buildPackDoc({child,parent:parent||"Parent/Guardian",date:tokens["{{date}}"],ageGroup,durationLabel,ids,titleById,lessons,trackLabel});
+
+    document.getElementById("loading").style.display="none";
+    btn.disabled=false;
+    document.getElementById("success-text").textContent=`✅ ${child}'s ${trackLabel} lesson pack is ready — ${ids.length} lesson${ids.length>1?"s":""}. Open it, then choose Print → Save as PDF.`;
+    document.getElementById("download-btn").style.display="inline-flex";
+    document.getElementById("success-msg").style.display="block";
+    openLessonPack();
+  }).catch(e=>showGenError(`❌ ${e.message}`));
 }
 
-function pollForCurriculum(jobId,attempt){
-  const MAX_ATTEMPTS=45,INTERVAL=8000; // ~6 min
-  fetch(`${CURRICULUM_API}?action=status&job_id=${encodeURIComponent(jobId)}`)
-    .then(r=>r.json())
-    .then(data=>{
-      if(data&&data.ready){
-        document.getElementById("loading").style.display="none";
-        document.getElementById("gen-btn").disabled=false;
-        const dl=document.getElementById("download-btn");
-        dl.href=`${CURRICULUM_API}?action=download&job_id=${encodeURIComponent(jobId)}`;
-        dl.style.display="inline-flex";
-        document.getElementById("success-text").textContent="✅ Your curriculum PDF is ready!";
-        document.getElementById("success-msg").style.display="block";
-        return;
-      }
-      if(attempt>=MAX_ATTEMPTS){
-        showGenError("⏳ This is taking longer than usual. Your PDF may still be generating — please try again in a few minutes.");
-        return;
-      }
-      setTimeout(()=>pollForCurriculum(jobId,attempt+1),INTERVAL);
-    })
-    .catch(()=>{
-      if(attempt>=MAX_ATTEMPTS){
-        showGenError("❌ Lost connection while checking status. Please try again.");
-        return;
-      }
-      setTimeout(()=>pollForCurriculum(jobId,attempt+1),INTERVAL);
-    });
+function buildPackDoc(o){
+  const projectList=o.ids.map(id=>`<li>${esc(o.titleById(id))}</li>`).join("");
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TinkerWithMe ${esc(o.trackLabel)} Lessons — ${esc(o.child)}</title>
+<style>
+@page{size:A4;margin:18mm 16mm;@bottom-center{content:"TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com";font-size:9pt;color:#B08060}@bottom-right{content:"Page " counter(page) " of " counter(pages);font-size:9pt;color:#B08060}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Segoe UI',sans-serif;line-height:1.6;color:#2A1A0E;background:#fff}
+.toolbar{position:sticky;top:0;background:#2A1A0E;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
+.toolbar button{background:#F07B1D;color:#fff;border:none;padding:9px 18px;border-radius:99px;font-weight:700;cursor:pointer;font-size:13px}
+.wrap{max-width:820px;margin:0 auto;padding:24px 20px 60px}
+.cover{border-bottom:2.5px solid #F07B1D;padding-bottom:1rem;margin-bottom:1.5rem}
+.cover .brand{font-size:20px;font-weight:700}
+.cover .sub{font-size:13px;color:#6B4C30;margin-top:4px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin:1rem 0;font-size:13px}
+.meta div{color:#6B4C30}.meta strong{color:#2A1A0E}
+.cover ul{margin:0.5rem 0 0 1.3rem;font-size:13px;color:#2A1A0E}
+h1{font-size:24px;font-weight:700;margin:1.25rem 0 .5rem;border-bottom:1px solid #ddd;padding-bottom:.4rem}
+h2{font-size:17px;font-weight:700;margin:1.25rem 0 .6rem;color:#2A1A0E;border-bottom:1px solid #eee;padding-bottom:.3rem}
+h3{font-size:14px;font-weight:700;margin:.9rem 0 .4rem}
+p{margin-bottom:.7rem;line-height:1.7}
+ul,ol{margin:.6rem 0 .7rem 1.4rem}li{margin-bottom:.35rem}
+table{width:100%;border-collapse:collapse;margin:.9rem 0;font-size:12px}
+th{background:#FAFAF7;padding:.5rem;text-align:left;font-weight:700;border-bottom:2px solid #B08060;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#B08060}
+td{padding:.5rem;border-bottom:1px solid #ddd;vertical-align:top}
+strong{font-weight:600}em{font-style:italic;color:#6B4C30}
+pre{background:#F5F0EB;border-left:3px solid #F07B1D;padding:.75rem 1rem;margin:.75rem 0;font-size:10.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;font-family:'Courier New',monospace}
+code{font-family:'Courier New',monospace;font-size:11px;background:#F5F0EB;padding:0 3px;border-radius:2px}
+pre code{background:none;padding:0}
+.tip{background:#EBF7E3;border-left:3px solid #4CAF2A;padding:.6rem .9rem;margin:.7rem 0;font-size:13px;border-radius:0 6px 6px 0}
+.warn{background:#FEF0E0;border-left:3px solid #F07B1D;padding:.6rem .9rem;margin:.7rem 0;font-size:13px;border-radius:0 6px 6px 0}
+section.lesson{page-break-inside:auto}
+.page-break{page-break-after:always}
+@media print{.toolbar{display:none}.wrap{max-width:none;padding:0}}
+</style></head><body>
+<div class="toolbar"><span>📚 ${esc(o.child)}'s ${esc(o.trackLabel)} Lesson Pack — use the button to save a PDF</span><button onclick="window.print()">🖨️ Print / Save as PDF</button></div>
+<div class="wrap">
+<div class="cover">
+  <div class="brand">TinkerWithMe</div>
+  <div class="sub">Homeschool ${esc(o.trackLabel)} · Personalized Lesson Pack</div>
+  <div class="meta">
+    <div><strong>Learner:</strong> ${esc(o.child)}</div>
+    <div><strong>Guide:</strong> ${esc(o.parent)}</div>
+    <div><strong>Age group:</strong> ${esc(o.ageGroup)}</div>
+    <div><strong>Planned session:</strong> ${esc(o.durationLabel)}</div>
+    <div><strong>Date:</strong> ${o.date}</div>
+    <div><strong>Lessons:</strong> ${o.ids.length}</div>
+  </div>
+  <div><strong style="font-size:13px">In this pack:</strong><ul>${projectList}</ul></div>
+</div>
+${o.lessons}
+</div>
+<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},400)})<\/script>
+</body></html>`;
 }
 
 window.addEventListener("load",()=>{

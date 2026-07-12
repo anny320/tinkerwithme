@@ -1,0 +1,72 @@
+<section class="lesson">
+<h1>Teachable Machine</h1>
+<p><em>Intermediate · about 90 minutes · ages 10–13</em></p>
+
+<div class="warn"><strong>{{parent}}, please read first:</strong> This lesson uses Google's <strong>Teachable Machine</strong> (teachablemachine.withgoogle.com) — a free, browser-based tool with no login required. It uses the webcam; supervise and only capture images of {{child}} and household objects.</div>
+
+<h2>1. Session Overview</h2>
+<p>{{child}} trains their very own AI! Using Teachable Machine, {{child}} teaches the computer to recognise things with the webcam — like telling apart a thumbs-up from a thumbs-down, or two different toys. This reveals the big secret of modern AI: it learns from <strong>examples</strong>, and more (and better) examples make it smarter.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Understand that AI learns from labelled examples (training data).</li>
+<li>Create classes, capture samples, and train a model.</li>
+<li>Test the model and see its confidence percentages.</li>
+<li>Discover how data quality and quantity affect accuracy.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<ul>
+<li>Computer with a webcam and internet (Chrome works well).</li>
+<li>Two or three objects, or hand gestures, to tell apart.</li>
+</ul>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> How would <em>you</em> teach a friend to spot the difference between two things?</li>
+<li><strong>Train v1 (25 min):</strong> Make 2 classes with ~20 samples each and train.</li>
+<li><strong>Test &amp; improve (30 min):</strong> Find where it fails, add better examples, retrain.</li>
+<li><strong>Experiment (20 min):</strong> Add a third class; try tricky angles and lighting.</li>
+<li><strong>Reflect (5 min):</strong> What made it better?</li>
+</ul>
+
+<h2>5. Activity Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Go to <strong>teachablemachine.withgoogle.com</strong> → "Get Started" → "Image Project" → "Standard image model".</li>
+<li>Name <strong>Class 1</strong> (e.g. "Thumbs Up"). Hold the webcam and record ~20+ samples in different positions.</li>
+<li>Name <strong>Class 2</strong> (e.g. "Thumbs Down") and record ~20+ samples.</li>
+<li>Click <strong>Train Model</strong> and wait a few seconds.</li>
+<li>Test it live — watch the confidence bars change as {{child}} moves.</li>
+<li>Find a case where it's wrong, add more examples of that case, and retrain.</li>
+</ol>
+<div class="tip"><strong>Success looks like:</strong> a model that confidently tells the two classes apart, and {{child}} can explain that adding varied examples improved it.</div>
+
+<h2>6. Conversation Starters &amp; Check-ins</h2>
+<ul>
+<li>"Why did it get confused? What example would help it learn?"</li>
+<li>"What happens if all your photos have the same background?"</li>
+<li>"Is the AI 'thinking', or matching patterns from examples?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add a "nothing / background" class so it isn't forced to always pick.</li>
+<li>Build a sorter: two of {{child}}'s toys, and see if it can tell them apart.</li>
+<li>Deliberately give it biased data (only one lighting) and see it struggle — a great bias lesson.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Always predicts one class:</strong> the classes have very uneven or too few samples — balance them.</li>
+<li><strong>Webcam not working:</strong> allow camera permission in the browser; use Chrome.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, this is the lesson where AI stops being magic and becomes understandable. Lean into the failures — every mistake is a chance for {{child}} to reason about <em>data</em>. Ask "what example would fix this?" rather than fixing it for them.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Discuss real uses: sorting recycling, spotting ripe fruit — and where wrong data could cause problems.</li>
+</ul>
+</section>

@@ -1,0 +1,102 @@
+<section class="lesson">
+<h1>Buzzer Melody</h1>
+<p><em>Beginner · about 60 minutes · ages 6–9</em></p>
+
+<h2>1. Session Overview</h2>
+<p>Time to make music! {{child}} uses a piezo buzzer to play a real tune — "Ode to Joy" — by telling the Arduino which musical notes to play and for how long. This connects code to sound and sneaks in ideas about frequency (high vs. low notes) and rhythm.</p>
+
+<h2>2. Learning Objectives</h2>
+<ul>
+<li>Use the <code>tone()</code> function to play notes.</li>
+<li>Understand that higher numbers (frequencies) make higher pitches.</li>
+<li>Use arrays to store a list of notes and durations.</li>
+<li>Use a loop to step through a melody.</li>
+</ul>
+
+<h2>3. Materials &amp; Setup</h2>
+<table>
+<tr><th>Item</th><th>Spec</th><th>Qty</th></tr>
+<tr><td>Arduino Uno</td><td>with USB cable</td><td>1</td></tr>
+<tr><td>Breadboard</td><td>half size</td><td>1</td></tr>
+<tr><td>Piezo buzzer</td><td>passive (plays tones)</td><td>1</td></tr>
+<tr><td>Jumper wires</td><td></td><td>~2</td></tr>
+</table>
+<p><strong>Wiring:</strong> Buzzer "+" leg → pin 8, other leg → GND. (A passive buzzer is needed to play different notes.)</p>
+
+<h2>4. Flexible Schedule <span style="font-weight:400;font-size:12px;color:#6B4C30">(planned session: {{duration}})</span></h2>
+<ul>
+<li><strong>Warm-up (10 min):</strong> Hum a tune; talk about high and low sounds.</li>
+<li><strong>Build (5 min):</strong> Two wires — quick!</li>
+<li><strong>Code &amp; test (25 min):</strong> Upload and listen; find any wrong notes.</li>
+<li><strong>Play (15 min):</strong> Change a note; speed up or slow down the rhythm.</li>
+</ul>
+
+<h2>5. Project Breakdown</h2>
+<h3>Step-by-step</h3>
+<ol>
+<li>Connect the buzzer between pin 8 and GND.</li>
+<li>Upload the code below.</li>
+<li>Listen for the melody and follow along in the code.</li>
+</ol>
+
+<h3>Full working code</h3>
+<pre><code>// Buzzer Melody: Ode to Joy — TinkerWithMe
+int buzzer = 8;
+
+// Note frequencies (Hz)
+#define E4 330
+#define F4 349
+#define G4 392
+
+// Melody notes and how long each lasts (ms)
+int melody[]   = { E4,E4,F4,G4,G4,F4,E4 };
+int durations[] = {400,400,400,400,400,400,400};
+int numNotes = 7;
+
+void setup() {
+  pinMode(buzzer, OUTPUT);
+}
+
+void loop() {
+  for (int i = 0; i &lt; numNotes; i++) {
+    tone(buzzer, melody[i], durations[i]);
+    delay(durations[i] * 1.1);  // small gap between notes
+  }
+  noTone(buzzer);
+  delay(2000);  // pause before repeating
+}
+</code></pre>
+
+<h3>Common mistakes &amp; how to fix them</h3>
+<ul>
+<li><strong>No sound:</strong> you may have an <em>active</em> buzzer (only beeps) — use a passive one for tunes.</li>
+<li><strong>Just a click:</strong> the buzzer legs may be reversed — try flipping it.</li>
+<li><strong>Notes run together:</strong> increase the gap in the <code>delay</code> line.</li>
+</ul>
+<div class="tip"><strong>Success looks like:</strong> a recognisable tune plays and repeats. {{child}} can point to the note that is highest.</div>
+
+<h2>6. Conversation Starters</h2>
+<ul>
+<li>"Which number in the code plays the highest note?"</li>
+<li>"How could we make the song play faster?"</li>
+</ul>
+
+<h2>7. Extensions &amp; Challenges</h2>
+<ul>
+<li>Add more notes (C4=262, D4=294, A4=440) and extend the tune.</li>
+<li>Compose {{child}}'s own 8-note melody.</li>
+</ul>
+
+<h2>8. Troubleshooting Guide</h2>
+<ul>
+<li><strong>Very quiet:</strong> that's normal for tiny buzzers — cup your hands around it.</li>
+</ul>
+
+<h2>9. Parent Guidance Tips</h2>
+<p>{{parent}}, music makes the abstract idea of "frequency" real. Let {{child}} change one note and hear the result immediately — that instant feedback is where the learning sticks. If {{child}} wants to compose, write the note names on paper first, then translate to code together.</p>
+
+<h2>10. Follow-up Activities</h2>
+<ul>
+<li>Turn a favourite nursery rhyme or birthday song into code.</li>
+</ul>
+</section>
