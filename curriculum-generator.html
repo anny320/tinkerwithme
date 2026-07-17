@@ -96,28 +96,15 @@ footer a{color:var(--orange);text-decoration:none}
         <input type="text" id="req-country" placeholder="e.g. Kenya">
       </div>
     </div>
-    <div class="two-col">
-      <div class="form-group">
-        <label for="req-role">Your role</label>
-        <select id="req-role">
-          <option value="teacher">Teacher</option>
-          <option value="homeschool">Homeschool parent</option>
-          <option value="parent">Parent (extra-curricular)</option>
-          <option value="tutor">Tutor / Instructor</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="req-heard">How did you hear about TinkerWithMe?</label>
-        <select id="req-heard">
-          <option value="">— Select —</option>
-          <option value="social">Social media</option>
-          <option value="friend">Friend / colleague</option>
-          <option value="search">Google search</option>
-          <option value="event">Event / workshop</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
+    <div class="form-group">
+      <label for="req-role">Your role</label>
+      <select id="req-role">
+        <option value="teacher">Teacher</option>
+        <option value="homeschool">Homeschool parent</option>
+        <option value="parent">Parent (extra-curricular)</option>
+        <option value="tutor">Tutor / Instructor</option>
+        <option value="other">Other</option>
+      </select>
     </div>
   </div>
 
@@ -204,17 +191,11 @@ footer a{color:var(--orange);text-decoration:none}
 //   c. Paste your Form ID (from the form URL) and each entry ID below.
 const GOOGLE_FORM_ID = 'YOUR_GOOGLE_FORM_ID'; // e.g. 1FAIpQLSe...
 const GF = {
-  name:     'entry.XXXXXXXXX',
-  email:    'entry.XXXXXXXXX',
-  org:      'entry.XXXXXXXXX',
-  country:  'entry.XXXXXXXXX',
-  role:     'entry.XXXXXXXXX',
-  heard:    'entry.XXXXXXXXX',
-  track:    'entry.XXXXXXXXX',
-  audience: 'entry.XXXXXXXXX',
-  age:      'entry.XXXXXXXXX',
-  projects: 'entry.XXXXXXXXX',
-  duration: 'entry.XXXXXXXXX',
+  name:    'entry.XXXXXXXXX',
+  email:   'entry.XXXXXXXXX',
+  org:     'entry.XXXXXXXXX',
+  country: 'entry.XXXXXXXXX',
+  role:    'entry.XXXXXXXXX',
 };
 
 // STEP 2 — (Optional) GitHub token to auto-trigger the workflow.
@@ -337,7 +318,6 @@ async function submit() {
   const org     = document.getElementById('req-org').value.trim();
   const country = document.getElementById('req-country').value.trim();
   const role    = document.getElementById('req-role').value;
-  const heard   = document.getElementById('req-heard').value;
   const age     = document.getElementById('age-group').value;
 
   if (!name)  { alert('Please enter your name.'); return; }
@@ -360,19 +340,12 @@ async function submit() {
   try {
     // 1. Send to Google Forms (data capture → Google Sheet)
     if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
-      const durLabel = {90:'90 min',120:'2 hours',180:'3 hours',full:'Full day'}[selectedDuration] || selectedDuration;
       const body = new URLSearchParams({
-        [GF.name]:     name,
-        [GF.email]:    email,
-        [GF.org]:      org,
-        [GF.country]:  country,
-        [GF.role]:     role,
-        [GF.heard]:    heard,
-        [GF.track]:    currentTrack === 'arduino' ? 'Arduino Robotics' : 'AI Skills',
-        [GF.audience]: currentAudience === 'homeschool' ? 'Homeschool' : 'Classroom',
-        [GF.age]:      age,
-        [GF.projects]: selectedProjects.join(', '),
-        [GF.duration]: durLabel,
+        [GF.name]:    name,
+        [GF.email]:   email,
+        [GF.org]:     org,
+        [GF.country]: country,
+        [GF.role]:    role,
       });
       // no-cors: response is opaque but data lands in the Sheet
       await fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
