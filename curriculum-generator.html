@@ -416,12 +416,22 @@ async function submit() {
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
     }
 
-    // Show generating state and start polling for the PDF
     setStep('Done!', '');
     document.getElementById('loading').style.display = 'none';
     document.getElementById('success-box').style.display = 'block';
     document.getElementById('gen-btn').style.display = 'none';
-    pollForCurriculum(requestId);
+
+    if (GITHUB_TOKEN) {
+      // Workflow was triggered — poll for the PDF
+      pollForCurriculum(requestId);
+    } else {
+      // No token — workflow must be triggered manually; show a holding message
+      document.getElementById('poll-msg').textContent = '';
+      document.getElementById('generating-area').querySelector('h3').textContent = '✅ Request received!';
+      document.getElementById('generating-area').querySelector('p').textContent =
+        'Your details have been saved. We\'ll generate your curriculum and reach out to you at ' + email + '.';
+      document.querySelector('.progress-bar').style.display = 'none';
+    }
 
   } catch (err) {
     document.getElementById('loading').style.display = 'none';
@@ -432,9 +442,10 @@ async function submit() {
 }
 
 async function pollForCurriculum(requestId) {
+  // Use GitHub API to detect when the file is committed (avoids CDN cache delay)
   const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/downloads/${requestId}.pdf`;
-  const maxWait = 7 * 60 * 1000; // 7 minutes
-  const pollInterval = 12 * 1000; // check every 12 seconds
+  const maxWait = 7 * 60 * 1000;
+  const pollInterval = 12 * 1000;
   const start = Date.now();
 
   const pollMsg = document.getElementById('poll-msg');
@@ -446,14 +457,22 @@ async function pollForCurriculum(requestId) {
   while (Date.now() - start < maxWait) {
     await new Promise(r => setTimeout(r, pollInterval));
     try {
-      const res = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github.v3+json' }, cache: 'no-store' });
+      // Suppress browser error logging: fetch with no credentials so 404 is silent
+      const res = await fetch(apiUrl, {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+        cache: 'no-store',
+        credentials: 'omit',
+      });
       if (res.ok) {
         const data = await res.json();
         clearInterval(ticker);
         showReady(data.download_url);
         return;
       }
-    } catch (_) {}
+      // 404 = not ready yet, continue polling silently
+    } catch (_) {
+      // Network error — continue polling
+    }
   }
 
   clearInterval(ticker);
