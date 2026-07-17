@@ -55,16 +55,24 @@ COURSE_DATA = {
 }
 
 def get_project_details(track, project_ids):
-    """Fetch project metadata from course data."""
     projects = []
     track_projects = COURSE_DATA.get(track, {}).get("projects", [])
-    
     for pid in project_ids:
         project = next((p for p in track_projects if p["id"] == pid), None)
         if project:
             projects.append(project)
-    
     return projects
+
+
+def load_pregenerated(project_id):
+    """Return pre-generated content HTML for a project, or None if not available."""
+    import json
+    path = Path("project_content") / f"{project_id}.json"
+    if path.exists():
+        with open(path) as f:
+            return json.load(f).get("content_html")
+    return None
+
 
 def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email, audience="classroom"):
     """
@@ -190,26 +198,59 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 """
     
     audience_label = "Homeschool" if is_homeschool else "Classroom"
-    print(f"🤖 Generating {audience_label} curriculum for {track} ({age_group}, {duration_label})...")
     print(f"📧 User email: {user_email}")
-    print("\n" + "="*60 + "\n")
-    
-    # Call Claude API
+
+    # Load pre-generated content for each project (fast path)
+    pregenerated = {pid: load_pregenerated(pid) for pid in project_ids}
+    has_pregenerated = all(v is not None for v in pregenerated.values())
+
     try:
-        message = client.messages.create(
-            model="claude-sonnet-5",
-            max_tokens=8000,
-            system=system_prompt,
-            messages=[
-                {"role": "user", "content": user_message}
-            ]
-        )
+        if has_pregenerated:
+            # Fast path: assemble pre-generated content + short personalisation call
+            print(f"⚡ Fast path — using pre-generated content for {len(projects)} project(s)")
+            combined_content = ""
+            for p in projects:
+                combined_content += f"\n<h2>{p['title']}</h2>\n{pregenerated[p['id']]}\n"
+
+            personalise_prompt = f"""You are an expert STEM educator working for TinkerWithMe in Nairobi.
+
+Below is raw lesson content for {len(projects)} project(s). Your job is to assemble it into a single, polished lesson plan HTML document tailored to:
+- Age group: {age_group}
+- Audience: {audience_label} ({'one parent + one child at home' if is_homeschool else 'classroom teacher with a group'})
+- Total duration: {duration_label}
+
+Tasks:
+1. Add a brief **Session Overview** (<h2>) at the top covering all projects.
+2. Add a **Schedule** (<h2>) that distributes {duration_label} across the selected projects{' with flexible time ranges' if is_homeschool else ' with a minute-by-minute breakdown'}.
+3. Rewrite the opening sentence of each project section to be appropriate for {age_group} students.
+{'4. Add a **Parent Guidance Tips** section at the end with 3-5 practical tips for a non-expert parent.' if is_homeschool else '4. Add a **Classroom Management Tips** section at the end.'}
+5. Keep all technical content (code, steps, materials, troubleshooting) exactly as-is.
+
+Output clean HTML only — no markdown, no DOCTYPE, no <html>/<body> tags.
+
+--- CONTENT TO ASSEMBLE ---
+{combined_content}"""
+
+            message = client.messages.create(
+                model="claude-sonnet-5",
+                max_tokens=3000,
+                messages=[{"role": "user", "content": personalise_prompt}],
+            )
+        else:
+            # Slow path: full generation (no pre-generated content available)
+            missing = [pid for pid, v in pregenerated.items() if v is None]
+            print(f"🤖 Slow path — generating from scratch (missing pre-generated content for: {missing})")
+            message = client.messages.create(
+                model="claude-sonnet-5",
+                max_tokens=8000,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_message}],
+            )
 
         if message.stop_reason == "max_tokens":
-            print("⚠️  Response was truncated at max_tokens — consider raising the limit further.")
+            print("⚠️  Response truncated at max_tokens.")
 
         curriculum_html = next(block.text for block in message.content if block.type == "text")
-        # Strip a leading/trailing markdown code fence (```html ... ```) if Claude added one
         curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
         curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
