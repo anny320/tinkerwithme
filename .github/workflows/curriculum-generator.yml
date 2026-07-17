@@ -35,6 +35,9 @@ on:
           - '120'
           - '180'
           - 'full'
+      user_email:
+        description: 'User email for delivery'
+        required: true
       audience:
         description: 'Target audience'
         required: true
@@ -42,9 +45,13 @@ on:
         options:
           - classroom
           - homeschool
-      user_email:
-        description: 'User email for delivery'
-        required: true
+      request_id:
+        description: 'Unique request ID (auto-set by the web form)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
 
 jobs:
   generate-curriculum:
@@ -55,23 +62,18 @@ jobs:
           ref: ${{ github.event.client_payload.ref || github.ref }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install system dependencies for WeasyPrint
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libpango-1.0-0 \
-            libpangocairo-1.0-0 \
-            libgdk-pixbuf2.0-0 \
-            libffi-dev \
-            shared-mime-info \
-            fonts-liberation
+          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info fonts-liberation
 
-      - name: Install Python dependencies
-        run: pip install anthropic weasyprint
+      - name: Install dependencies
+        run: |
+          pip install anthropic requests python-dotenv weasyprint
 
       - name: Generate Curriculum
         env:
@@ -80,21 +82,32 @@ jobs:
           PROJECTS: ${{ inputs.projects || github.event.client_payload.projects }}
           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
-          AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
+          AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
         run: python generate_curriculum.py
 
-      - name: Upload Curriculum PDF
+      - name: Publish PDF for download
+        if: success()
+        env:
+          REQUEST_ID: ${{ inputs.request_id || github.event.client_payload.request_id || github.run_id }}
+        run: |
+          PDF=$(find output -name "*.pdf" | head -1)
+          if [ -z "$PDF" ]; then
+            echo "No PDF found in output/, skipping publish"
+            exit 0
+          fi
+          mkdir -p downloads
+          cp "$PDF" "downloads/${REQUEST_ID}.pdf"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add downloads/
+          git commit -m "Add curriculum ${REQUEST_ID}"
+          git push origin HEAD:main
+
+      - name: Upload Curriculum Artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}
           path: output/
           retention-days: 30
-
-      - name: Report success
-        if: success()
-        run: |
-          echo "✅ Curriculum generated successfully"
-          echo "📧 Ready for: ${{ inputs.user_email || github.event.client_payload.user_email }}"
-          echo "📄 Artifact: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}"

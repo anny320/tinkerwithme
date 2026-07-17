@@ -4,7 +4,7 @@ TinkerWithMe Curriculum Generator Agent
 
 Generates detailed lesson plans using Claude AI based on selected projects.
 Outputs professional PDF with TinkerWithMe branding and footer.
-Triggered via button click from curriculumgenerator.html (password-gated).
+Triggered via button click from curriculum-generator.html (payment-gated).
 """
 
 import os
