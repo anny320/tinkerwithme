@@ -166,7 +166,8 @@ footer a{color:var(--orange);text-decoration:none}
 
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <p style="color:var(--text-2);font-size:14px">Submitting your request…</p>
+    <p id="loading-msg" style="color:var(--text-2);font-size:14px">Submitting your request…</p>
+    <p id="loading-sub" style="color:var(--text-3);font-size:12px;margin-top:4px"></p>
   </div>
 
   <div class="success-box" id="success-box">
@@ -328,17 +329,20 @@ async function submit() {
   document.getElementById('error-msg').style.display = 'none';
   document.getElementById('gen-btn').disabled = true;
 
-  const payload = {
-    name, email, org, country, role, heard,
-    track: currentTrack,
-    audience: currentAudience,
-    age_group: age,
-    projects: selectedProjects.join(', '),
-    duration: selectedDuration,
+  const setStep = (msg, sub) => {
+    document.getElementById('loading-msg').textContent = msg;
+    document.getElementById('loading-sub').textContent = sub || '';
+  };
+
+  const fetchWithTimeout = (url, opts, ms = 6000) => {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(tid));
   };
 
   try {
-    // 1. Send to Google Forms (data capture → Google Sheet)
+    // 1. Send to Google Forms (best-effort, 6 s timeout — no-cors response is opaque)
+    setStep('Saving your details…', 'Step 1 of 2');
     if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
       const body = new URLSearchParams({
         [GF.name]:    name,
@@ -347,37 +351,48 @@ async function submit() {
         [GF.country]: country,
         [GF.role]:    role,
       });
-      // no-cors: response is opaque but data lands in the Sheet
-      await fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
-        method: 'POST', mode: 'no-cors', body,
-      });
+      try {
+        await fetchWithTimeout(
+          `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`,
+          { method: 'POST', mode: 'no-cors', body },
+          6000,
+        );
+      } catch (_) {
+        // Timeout or network hiccup — data likely went through, don't block the user
+      }
     }
 
     // 2. Trigger GitHub Actions workflow (optional — only if token is configured)
     if (GITHUB_TOKEN) {
-      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/dispatches`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${GITHUB_TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          event_type: 'generate-curriculum',
-          client_payload: {
-            track: currentTrack,
-            projects: selectedProjects.join(','),
-            age_group: age,
-            duration: selectedDuration,
-            user_email: email,
-            audience: currentAudience,
+      setStep('Queuing curriculum generation…', 'Step 2 of 2');
+      const ghRes = await fetchWithTimeout(
+        `https://api.github.com/repos/${GITHUB_REPO}/dispatches`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
           },
-        }),
-      });
+          body: JSON.stringify({
+            event_type: 'generate-curriculum',
+            client_payload: {
+              track: currentTrack,
+              projects: selectedProjects.join(','),
+              age_group: age,
+              duration: selectedDuration,
+              user_email: email,
+              audience: currentAudience,
+            },
+          }),
+        },
+        10000,
+      );
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
     }
 
     // Success
+    setStep('Done!', '');
     document.getElementById('loading').style.display = 'none';
     document.getElementById('success-box').style.display = 'block';
     document.getElementById('confirm-email').textContent = email;
