@@ -96,28 +96,15 @@ footer a{color:var(--orange);text-decoration:none}
         <input type="text" id="req-country" placeholder="e.g. Kenya">
       </div>
     </div>
-    <div class="two-col">
-      <div class="form-group">
-        <label for="req-role">Your role</label>
-        <select id="req-role">
-          <option value="teacher">Teacher</option>
-          <option value="homeschool">Homeschool parent</option>
-          <option value="parent">Parent (extra-curricular)</option>
-          <option value="tutor">Tutor / Instructor</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="req-heard">How did you hear about TinkerWithMe?</label>
-        <select id="req-heard">
-          <option value="">— Select —</option>
-          <option value="social">Social media</option>
-          <option value="friend">Friend / colleague</option>
-          <option value="search">Google search</option>
-          <option value="event">Event / workshop</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
+    <div class="form-group">
+      <label for="req-role">Your role</label>
+      <select id="req-role">
+        <option value="teacher">Teacher</option>
+        <option value="homeschool">Homeschool parent</option>
+        <option value="parent">Parent (extra-curricular)</option>
+        <option value="tutor">Tutor / Instructor</option>
+        <option value="other">Other</option>
+      </select>
     </div>
   </div>
 
@@ -198,13 +185,22 @@ footer a{color:var(--orange);text-decoration:none}
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────────────────────
-// 1. Sign up at https://formspree.io → create a form → paste your form ID below.
-//    This emails you every request with all requester details.
-const FORMSPREE_ID = 'YOUR_FORMSPREE_ID';
+// STEP 1 — Google Forms setup:
+//   a. Create your Google Form with the 11 questions listed in the README.
+//   b. Open the form preview, right-click → View Page Source, search "entry."
+//   c. Paste your Form ID (from the form URL) and each entry ID below.
+const GOOGLE_FORM_ID = 'YOUR_GOOGLE_FORM_ID'; // e.g. 1FAIpQLSe...
+const GF = {
+  name:    'entry.XXXXXXXXX',
+  email:   'entry.XXXXXXXXX',
+  org:     'entry.XXXXXXXXX',
+  country: 'entry.XXXXXXXXX',
+  role:    'entry.XXXXXXXXX',
+};
 
-// 2. (Optional) Create a fine-grained GitHub PAT with "actions: write" on this
-//    repo and paste it below. This auto-triggers the workflow so the PDF
-//    arrives without manual intervention. Leave empty to handle manually.
+// STEP 2 — (Optional) GitHub token to auto-trigger the workflow.
+//   Create a fine-grained PAT with "Actions: write" on anny320/tinkerwithme.
+//   Leave empty to handle manually from the GitHub Actions UI.
 const GITHUB_TOKEN = '';
 const GITHUB_REPO  = 'anny320/tinkerwithme';
 // ───────────────────────────────────────────────────────────────────────────────
@@ -322,7 +318,6 @@ async function submit() {
   const org     = document.getElementById('req-org').value.trim();
   const country = document.getElementById('req-country').value.trim();
   const role    = document.getElementById('req-role').value;
-  const heard   = document.getElementById('req-heard').value;
   const age     = document.getElementById('age-group').value;
 
   if (!name)  { alert('Please enter your name.'); return; }
@@ -343,14 +338,19 @@ async function submit() {
   };
 
   try {
-    // 1. Send to Formspree (data capture)
-    if (FORMSPREE_ID && FORMSPREE_ID !== 'YOUR_FORMSPREE_ID') {
-      const fsRes = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload),
+    // 1. Send to Google Forms (data capture → Google Sheet)
+    if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
+      const body = new URLSearchParams({
+        [GF.name]:    name,
+        [GF.email]:   email,
+        [GF.org]:     org,
+        [GF.country]: country,
+        [GF.role]:    role,
       });
-      if (!fsRes.ok) throw new Error('Form submission failed. Please try again.');
+      // no-cors: response is opaque but data lands in the Sheet
+      await fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
+        method: 'POST', mode: 'no-cors', body,
+      });
     }
 
     // 2. Trigger GitHub Actions workflow (optional — only if token is configured)
