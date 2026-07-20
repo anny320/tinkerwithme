@@ -36,9 +36,18 @@ jobs:
       - name: Install Python dependencies
         run: pip install anthropic
 
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Each project is committed + pushed the moment it's generated (COMMIT_EACH=1),
+      # so a cancel or timeout never loses completed work. Re-running resumes: any
+      # project whose JSON already exists is skipped (unless "force" is checked).
       - name: Generate project content
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COMMIT_EACH: '1'
         run: |
           ARGS="${{ inputs.only }}"
           if [ "${{ inputs.force }}" = "true" ]; then
@@ -47,14 +56,14 @@ jobs:
           echo "Running: python pregenerate.py $ARGS"
           python pregenerate.py $ARGS
 
-      - name: Commit cached content
+      # Backstop: commit anything that wasn't already pushed incrementally.
+      - name: Commit any remaining content
+        if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add project_content/
           if git diff --cached --quiet; then
-            echo "No changes to commit — content already up to date."
+            echo "Nothing left to commit — all content already pushed."
           else
-            git commit -m "Pre-generate curriculum content for cached (zero-token) requests"
+            git commit -m "Pre-generate curriculum content (backstop commit)"
             git push origin HEAD:main
           fi
