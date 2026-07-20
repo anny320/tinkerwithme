@@ -141,11 +141,13 @@ def build_static_curriculum(projects, pregenerated, age_group, duration_mins,
     return overview + schedule + body + tips
 
 
-def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email, audience="classroom"):
+def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email,
+                            audience="classroom", user_name=""):
     """
     Main curriculum generation function using Claude AI.
     Outputs professional PDF with TinkerWithMe branding and footer.
     audience: "classroom" (default) or "homeschool"
+    user_name: person the plan is prepared for (shown in the header)
     """
 
     # Get project metadata
@@ -361,6 +363,26 @@ Format output as clean HTML (not markdown) for PDF conversion."""
             font-size: 11px;
             color: #B08060;
         }}
+
+        .header-prepared {{
+            margin-top: 0.6rem;
+            font-size: 12px;
+            color: #2A1A0E;
+        }}
+
+        .session-badge {{
+            display: inline-block;
+            background: #FEF0E0;
+            color: #C45C00;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-left: 6px;
+            vertical-align: middle;
+        }}
         
         .header-meta {{
             font-size: 11px;
@@ -501,7 +523,11 @@ Format output as clean HTML (not markdown) for PDF conversion."""
         </div>
         <div class="header-brand">TinkerWithMe</div>
         <div class="header-title">{track_label} · {age_group}</div>
-        <div class="header-subtitle">{len(projects)} project(s) · {duration_label} · {audience_label}</div>
+        <div class="header-subtitle">{len(projects)} project(s) · {duration_label}</div>
+        <div class="header-prepared">
+            {f'Prepared for <strong>{user_name}</strong>' if user_name else 'Lesson plan'}
+            <span class="session-badge">{audience_label} session</span>
+        </div>
     </header>
     
     <main>
@@ -534,9 +560,12 @@ if __name__ == "__main__":
     projects = [p.strip() for p in os.getenv("PROJECTS", "ar1").split(",") if p.strip()]
     age_group = os.getenv("AGE_GROUP", "6-9 yrs")
     duration = os.getenv("DURATION", "90")
+    user_name = os.getenv("USER_NAME", "").strip()
     user_email = os.getenv("USER_EMAIL", "user@example.com")
     audience = os.getenv("AUDIENCE", "classroom").strip()
 
-    result = generate_curriculum_pdf(track, projects, age_group, duration, user_email, audience)
+    result = generate_curriculum_pdf(
+        track, projects, age_group, duration, user_email, audience, user_name
+    )
     if result is None:
         sys.exit(1)
