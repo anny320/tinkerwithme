@@ -242,7 +242,7 @@ Output clean HTML only — no markdown, no DOCTYPE, no <html>/<body> tags.
             print(f"🤖 Slow path — generating from scratch (missing pre-generated content for: {missing})")
             message = client.messages.create(
                 model="claude-sonnet-5",
-                max_tokens=8000,
+                max_tokens=4000 + len(projects) * 6000,
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_message}],
             )
