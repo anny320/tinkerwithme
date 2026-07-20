@@ -473,10 +473,14 @@ Output clean HTML only — no markdown, no DOCTYPE, no <html>/<body> tags.
 """
         
         # Write PDF directly from HTML string
-        audience_slug = "homeschool" if is_homeschool else "classroom"
         output_dir = Path("output")
         output_dir.mkdir(exist_ok=True)
-        pdf_file = output_dir / f"curriculum_{track}_{age_group.replace(' ', '_').replace('-', '')}_{audience_slug}.pdf"
+        if len(projects) == 1:
+            project_slug = projects[0]["title"].replace(" ", "_")
+        else:
+            project_slug = projects[0]["title"].replace(" ", "_") + f"_and_{len(projects)-1}_more"
+        safe_slug = re.sub(r"[^\w\-]", "", project_slug)
+        pdf_file = output_dir / f"TinkerWithMe_{safe_slug}.pdf"
         HTML(string=full_html).write_pdf(pdf_file)
         print(f"✅ PDF generated: {pdf_file}")
         print(f"\n📧 Ready to email to: {user_email}")
