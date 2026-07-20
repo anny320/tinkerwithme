@@ -42,6 +42,10 @@ on:
         options:
           - classroom
           - homeschool
+      user_name:
+        description: 'Name of the person the plan is prepared for'
+        required: false
+        default: ''
       user_email:
         description: 'User email for delivery'
         required: true
@@ -88,6 +92,7 @@ jobs:
           AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
           AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
+          USER_NAME: ${{ inputs.user_name || github.event.client_payload.user_name }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
         run: python generate_curriculum.py
 
