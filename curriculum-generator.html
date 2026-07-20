@@ -488,7 +488,7 @@ async function pollForCurriculum(requestId) {
   pollMsg.textContent = 'Taking longer than expected — please refresh the page in a minute.';
 }
 
-function showReady(downloadUrl) {
+async function showReady(downloadUrl) {
   document.getElementById('generating-area').style.display = 'none';
   document.getElementById('ready-area').style.display = 'block';
 
@@ -505,10 +505,17 @@ function showReady(downloadUrl) {
   document.getElementById('btn-download').setAttribute('download', filename);
   document.getElementById('btn-preview').href = downloadUrl;
 
-  // Use the raw URL directly — browsers render PDFs natively, no Google Docs needed
+  // raw.githubusercontent.com sends X-Frame-Options: deny, so we fetch as a blob
+  // and create an object URL — blob URLs have no frame-embedding restrictions
   const frame = document.getElementById('pdf-frame');
-  frame.src = downloadUrl;
   frame.style.display = 'block';
+  try {
+    const resp = await fetch(downloadUrl);
+    const blob = await resp.blob();
+    frame.src = URL.createObjectURL(blob);
+  } catch (e) {
+    frame.style.display = 'none';
+  }
 }
 
 function saveToken() {
