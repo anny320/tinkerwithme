@@ -11,10 +11,34 @@ to personalise/assemble — cutting generation time from ~3 min to ~30 s.
 
 import json
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
 from anthropic import Anthropic
+
+
+def git_push_file(path):
+    """Commit and push a single generated file so progress is durable.
+
+    Enabled only when COMMIT_EACH=1 (set by the GitHub Actions workflow); a
+    no-op for local runs. Best-effort: on a push race it rebases and retries.
+    """
+    if os.getenv("COMMIT_EACH") != "1":
+        return
+    for _ in range(3):
+        try:
+            subprocess.run(["git", "add", str(path)], check=True)
+            if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
+                return  # nothing new to commit
+            subprocess.run(["git", "commit", "-m", f"Pre-generate {path.name}"], check=True)
+            subprocess.run(["git", "push", "origin", "HEAD:main"], check=True)
+            return
+        except subprocess.CalledProcessError:
+            # Likely a push race with another commit to main — rebase and retry.
+            subprocess.run(["git", "pull", "--rebase", "origin", "main"])
+            time.sleep(2)
+    print(f"    ⚠️  could not push {path.name} after retries (will retry on next run)")
 
 COURSE_DATA = {
     "arduino": [
@@ -153,6 +177,8 @@ def generate_project(client, track, project, out_dir, force=False):
         with open(out_file, "w") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         print(f" done ({len(content_html)} chars)")
+        # Persist immediately so a cancel/timeout never loses completed work.
+        git_push_file(out_file)
     except Exception as e:
         print(f" FAILED: {e}")
 
