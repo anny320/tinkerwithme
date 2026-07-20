@@ -74,6 +74,73 @@ def load_pregenerated(project_id):
     return None
 
 
+def build_static_curriculum(projects, pregenerated, age_group, duration_mins,
+                            duration_label, is_homeschool):
+    """Assemble a complete curriculum HTML from pre-generated project content.
+
+    Fully deterministic — makes NO AI call. Used whenever every selected
+    project already has cached content in project_content/.
+    """
+    n = len(projects)
+    titles = ", ".join(p["title"] for p in projects)
+
+    overview = (
+        "<h2>Session Overview</h2>\n"
+        f"<p>This session covers {n} hands-on project"
+        f"{'s' if n != 1 else ''} for <strong>{age_group}</strong>: "
+        f"<strong>{titles}</strong>. Total planned time is {duration_label}. "
+        "Each project below includes materials, step-by-step instructions, "
+        "full code or prompts, common mistakes, discussion questions, and "
+        "extension challenges.</p>\n"
+    )
+
+    # Schedule — distribute the session time across projects, weighted by each
+    # project's typical duration, reserving a little for intro and wrap-up.
+    total_weight = sum(p.get("time", 60) for p in projects) or 1
+    intro = max(5, round(duration_mins * 0.08))
+    wrap = max(5, round(duration_mins * 0.07))
+    body_mins = max(1, duration_mins - intro - wrap)
+    rows = f"<tr><td>Welcome &amp; setup</td><td>{intro} min</td></tr>\n"
+    for p in projects:
+        alloc = max(1, round(body_mins * p.get("time", 60) / total_weight))
+        rows += f"<tr><td>{p['title']}</td><td>{alloc} min</td></tr>\n"
+    rows += f"<tr><td>Wrap-up &amp; reflection</td><td>{wrap} min</td></tr>\n"
+    schedule = (
+        "<h2>Schedule</h2>\n"
+        "<table><thead><tr><th>Activity</th><th>Suggested time</th></tr></thead>"
+        f"<tbody>{rows}</tbody></table>\n"
+    )
+
+    body = ""
+    for p in projects:
+        body += f"<h1>{p['title']}</h1>\n"
+        body += f"<p><em>{p['diff']} · {p['age']} · ~{p['time']} min</em></p>\n"
+        body += (pregenerated[p["id"]] or "") + "\n"
+
+    if is_homeschool:
+        tips = (
+            "<h2>Parent Guidance Tips</h2>\n<ul>"
+            "<li>Let your child lead — step in only when they're stuck for more than a minute or two.</li>"
+            "<li>Ask \"what do you think will happen?\" before each step to build prediction skills.</li>"
+            "<li>Mistakes are part of it — a project that doesn't work first time is a learning moment, not a failure.</li>"
+            "<li>Take a short break between projects to keep energy up.</li>"
+            "<li>Celebrate the finished build — take a photo and talk about what they'd change next time.</li>"
+            "</ul>\n"
+        )
+    else:
+        tips = (
+            "<h2>Classroom Management Tips</h2>\n<ul>"
+            "<li>Pair students so faster finishers can buddy up with those who need more time.</li>"
+            "<li>Set a visible timer for each activity block to keep the session on track.</li>"
+            "<li>Circulate during build steps — most issues are wiring or a missing semicolon.</li>"
+            "<li>Use the extension challenges to keep early finishers engaged.</li>"
+            "<li>End with a quick show-and-tell so every group demonstrates their build.</li>"
+            "</ul>\n"
+        )
+
+    return overview + schedule + body + tips
+
+
 def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email, audience="classroom"):
     """
     Main curriculum generation function using Claude AI.
@@ -101,9 +168,6 @@ def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email,
     
     track_label = "Arduino Robotics & Electronics" if track == "arduino" else "AI Skills for Kids"
     is_homeschool = audience.lower() == "homeschool"
-
-    # Initialize Claude client
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     # Build prompt variants based on audience
     if is_homeschool:
@@ -206,53 +270,28 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 
     try:
         if has_pregenerated:
-            # Fast path: assemble pre-generated content + short personalisation call
-            print(f"⚡ Fast path — using pre-generated content for {len(projects)} project(s)")
-            combined_content = ""
-            for p in projects:
-                combined_content += f"\n<h2>{p['title']}</h2>\n{pregenerated[p['id']]}\n"
-
-            personalise_prompt = f"""You are an expert STEM educator working for TinkerWithMe in Nairobi.
-
-Below is raw lesson content for {len(projects)} project(s). Your job is to assemble it into a single, polished lesson plan HTML document tailored to:
-- Age group: {age_group}
-- Audience: {audience_label} ({'one parent + one child at home' if is_homeschool else 'classroom teacher with a group'})
-- Total duration: {duration_label}
-
-Tasks:
-1. Add a brief **Session Overview** (<h2>) at the top covering all projects.
-2. Add a **Schedule** (<h2>) that distributes {duration_label} across the selected projects{' with flexible time ranges' if is_homeschool else ' with a minute-by-minute breakdown'}.
-3. Rewrite the opening sentence of each project section to be appropriate for {age_group} students.
-{'4. Add a **Parent Guidance Tips** section at the end with 3-5 practical tips for a non-expert parent.' if is_homeschool else '4. Add a **Classroom Management Tips** section at the end.'}
-5. Keep all technical content (code, steps, materials, troubleshooting) exactly as-is.
-
-Output clean HTML only — no markdown, no DOCTYPE, no <html>/<body> tags.
-
---- CONTENT TO ASSEMBLE ---
-{combined_content}"""
-
-            message = client.messages.create(
-                model="claude-sonnet-5",
-                max_tokens=3000,
-                messages=[{"role": "user", "content": personalise_prompt}],
+            # Static path: assemble pre-generated content with NO AI call at all.
+            print(f"🟢 Static path — assembling {len(projects)} pre-generated project(s), no AI tokens used")
+            curriculum_html = build_static_curriculum(
+                projects, pregenerated, age_group, duration_mins,
+                duration_label, is_homeschool,
             )
         else:
-            # Slow path: full generation (no pre-generated content available)
+            # Slow path: full AI generation (no pre-generated content available)
             missing = [pid for pid, v in pregenerated.items() if v is None]
             print(f"🤖 Slow path — generating from scratch (missing pre-generated content for: {missing})")
+            client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
             message = client.messages.create(
                 model="claude-sonnet-5",
                 max_tokens=4000 + len(projects) * 6000,
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_message}],
             )
-
-        if message.stop_reason == "max_tokens":
-            print("⚠️  Response truncated at max_tokens.")
-
-        curriculum_html = next(block.text for block in message.content if block.type == "text")
-        curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
-        curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
+            if message.stop_reason == "max_tokens":
+                print("⚠️  Response truncated at max_tokens.")
+            curriculum_html = next(block.text for block in message.content if block.type == "text")
+            curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
+            curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
         # Generate full HTML with TinkerWithMe branding and footer
         current_date = datetime.now().strftime("%d %B %Y")

@@ -1,0 +1,60 @@
+name: Pre-generate Curriculum Content
+
+# One-time (or occasional) job that generates reusable lesson content for all
+# 24 projects and commits them to project_content/. After this runs once, every
+# curriculum request assembles from cache with ZERO AI tokens.
+#
+# Run it from the Actions tab → "Pre-generate Curriculum Content" → Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Regenerate files that already exist'
+        required: false
+        type: boolean
+        default: false
+      only:
+        description: 'Optional: only these project IDs (space-separated, e.g. "ar1 a3"). Leave blank for all 24.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  pregenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install anthropic
+
+      - name: Generate project content
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          ARGS="${{ inputs.only }}"
+          if [ "${{ inputs.force }}" = "true" ]; then
+            ARGS="--force $ARGS"
+          fi
+          echo "Running: python pregenerate.py $ARGS"
+          python pregenerate.py $ARGS
+
+      - name: Commit cached content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add project_content/
+          if git diff --cached --quiet; then
+            echo "No changes to commit — content already up to date."
+          else
+            git commit -m "Pre-generate curriculum content for cached (zero-token) requests"
+            git push origin HEAD:main
+          fi
