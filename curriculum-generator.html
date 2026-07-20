@@ -187,13 +187,17 @@ footer a{color:var(--orange);text-decoration:none}
     </div>
     <div id="ready-area" style="display:none">
       <h3 style="color:var(--green-dark)">✅ Your curriculum is ready!</h3>
+      <p style="font-size:13px;color:var(--text-2);margin:6px 0 2px">
+        Click <strong>Save as PDF</strong>, then choose <strong>“Save as PDF”</strong> as the destination in the print dialog.
+      </p>
       <div class="dl-row">
-        <a id="btn-preview" class="btn-dl btn-preview" target="_blank" rel="noopener">👁 Preview</a>
-        <a id="btn-download" class="btn-dl btn-download" download>⬇ Download PDF</a>
+        <button id="btn-download" class="btn-dl btn-download" onclick="savePdf()">⬇ Save as PDF</button>
+        <button id="btn-preview" class="btn-dl btn-preview" onclick="openInTab()">👁 Open in new tab</button>
       </div>
       <iframe id="pdf-frame" class="pdf-frame" title="Curriculum preview"></iframe>
     </div>
   </div>
+  <iframe id="print-frame" style="display:none" title="Print"></iframe>
 
   <div class="error-msg" id="error-msg"></div>
 
@@ -202,15 +206,6 @@ footer a{color:var(--orange);text-decoration:none}
 <footer>
   <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
   <p style="margin-top:6px"><a href="index.html">← Back to Course Picker</a></p>
-  <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px dashed var(--border)">
-    <p style="font-size:11px;color:var(--text-3);margin-bottom:8px">⚙ Admin — GitHub token (saved to this browser only)</p>
-    <div style="display:flex;gap:8px;justify-content:center;max-width:420px;margin:0 auto">
-      <input type="password" id="admin-token" placeholder="ghp_..." style="flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border-strong);font-size:12px;font-family:inherit;background:var(--bg)">
-      <button onclick="saveToken()" style="padding:7px 14px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit">Save</button>
-      <button onclick="clearToken()" style="padding:7px 12px;background:var(--bg);border:1.5px solid var(--border-strong);border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit">Clear</button>
-    </div>
-    <p id="admin-status" style="font-size:11px;color:var(--text-3);margin-top:6px"></p>
-  </div>
 </footer>
 
 <script>
@@ -228,11 +223,9 @@ const GF = {
   role:    'entry.531199886',
 };
 
-// STEP 2 — (Optional) GitHub token to auto-trigger the workflow.
-//   Create a fine-grained PAT with "Actions: write" on anny320/tinkerwithme.
-//   Leave empty to handle manually from the GitHub Actions UI.
-const GITHUB_TOKEN = localStorage.getItem('twm_gh_token') || '';
-const GITHUB_REPO  = 'anny320/tinkerwithme'; // must be a public repo for download links to work
+// STEP 2 — Pre-generated lesson content lives in the public repo, so the PDF is
+//   assembled entirely in the visitor's browser — no token or backend required.
+const RAW_BASE = 'https://raw.githubusercontent.com/anny320/tinkerwithme/main/project_content/';
 // ───────────────────────────────────────────────────────────────────────────────
 
 const DATA = {
@@ -363,18 +356,9 @@ async function submit() {
     document.getElementById('loading-sub').textContent = sub || '';
   };
 
-  const fetchWithTimeout = (url, opts, ms = 6000) => {
-    const ctrl = new AbortController();
-    const tid  = setTimeout(() => ctrl.abort(), ms);
-    return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(tid));
-  };
-
-  // Unique ID used to name the PDF in the repo so we know exactly where to find it
-  const requestId = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-
   try {
-    // 1. Send to Google Forms (best-effort, 6 s timeout — no-cors response is opaque)
-    setStep('Saving your details…', 'Step 1 of 2');
+    // 1. Log details to Google Forms — fire-and-forget so it never blocks or fails
+    //    the PDF. This is optional record-keeping only; the PDF works regardless.
     if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
       const body = new URLSearchParams({
         [GF.name]:    name,
@@ -383,65 +367,43 @@ async function submit() {
         [GF.country]: country,
         [GF.role]:    role,
       });
-      try {
-        await fetchWithTimeout(
-          `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`,
-          { method: 'POST', mode: 'no-cors', body },
-          6000,
-        );
-      } catch (_) {
-        // Timeout or network hiccup — data likely went through, don't block the user
-      }
+      fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`,
+        { method: 'POST', mode: 'no-cors', body }).catch(() => {});
     }
 
-    // 2. Trigger GitHub Actions workflow (optional — only if token is configured)
-    if (GITHUB_TOKEN) {
-      setStep('Queuing curriculum generation…', 'Step 2 of 2');
-      const ghRes = await fetchWithTimeout(
-        `https://api.github.com/repos/${GITHUB_REPO}/dispatches`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            event_type: 'generate-curriculum',
-            client_payload: {
-              track: currentTrack,
-              projects: selectedProjects.join(','),
-              age_group: age,
-              duration: selectedDuration,
-              user_name: name,
-              user_email: email,
-              audience: currentAudience,
-              request_id: requestId,
-              ref: 'refs/heads/main',
-            },
-          }),
-        },
-        10000,
-      );
-      if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
+    // 2. Build the curriculum PDF entirely in the browser — no token, no backend
+    setStep('Building your curriculum…', '');
+    const durationMins  = selectedDuration === 'full' ? 330 : parseInt(selectedDuration, 10);
+    const durationLabel = selectedDuration === 'full' ? 'full day (5-6 hours)' : `${durationMins} minutes`;
+    const projects = selectedProjects
+      .map(id => DATA[currentTrack].projects.find(p => p.id === id))
+      .filter(Boolean);
+
+    // Fetch pre-generated content for each selected project (public, no auth)
+    const contentMap = {};
+    for (const p of projects) {
+      const res = await fetch(RAW_BASE + p.id + '.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Couldn't load content for "${p.title}". Please try again.`);
+      contentMap[p.id] = (await res.json()).content_html || '';
     }
+
+    const titles = projects.map(p => p.title.replace(/\s+/g, '_'));
+    currentFilename = titles.length === 1
+      ? `TinkerWithMe_${titles[0]}`
+      : `TinkerWithMe_${titles[0]}_and_${titles.length - 1}_more`;
+
+    lastDocHtml = buildCurriculumDoc({
+      projects, contentMap, ageGroup: age, durationMins, durationLabel,
+      isHomeschool: currentAudience === 'homeschool', userName: name,
+      trackLabel: currentTrack === 'arduino' ? 'Arduino Robotics & Electronics' : 'AI Skills for Kids',
+      title: currentFilename,
+    });
 
     setStep('Done!', '');
     document.getElementById('loading').style.display = 'none';
     document.getElementById('success-box').style.display = 'block';
     document.getElementById('gen-btn').style.display = 'none';
-
-    if (GITHUB_TOKEN) {
-      // Workflow was triggered — poll for the PDF
-      pollForCurriculum(requestId);
-    } else {
-      // No token — workflow must be triggered manually; show a holding message
-      document.getElementById('poll-msg').textContent = '';
-      document.getElementById('generating-area').querySelector('h3').textContent = '✅ Request received!';
-      document.getElementById('generating-area').querySelector('p').textContent =
-        'Your details have been saved. We\'ll generate your curriculum and reach out to you at ' + email + '.';
-      document.querySelector('.progress-bar').style.display = 'none';
-    }
+    showReady(lastDocHtml);
 
   } catch (err) {
     document.getElementById('loading').style.display = 'none';
@@ -451,96 +413,148 @@ async function submit() {
   }
 }
 
-async function pollForCurriculum(requestId) {
-  // Use GitHub API to detect when the file is committed (avoids CDN cache delay)
-  const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/downloads/${requestId}.pdf`;
-  const maxWait = 7 * 60 * 1000;
-  const pollInterval = 12 * 1000;
-  const start = Date.now();
+// Holds the assembled document + its filename for the current result
+let lastDocHtml = '';
+let currentFilename = 'TinkerWithMe_Curriculum';
 
-  const pollMsg = document.getElementById('poll-msg');
-  const ticker = setInterval(() => {
-    const s = Math.round((Date.now() - start) / 1000);
-    pollMsg.textContent = `Generating… ${Math.floor(s / 60)}m ${s % 60}s`;
-  }, 1000);
-
-  while (Date.now() - start < maxWait) {
-    await new Promise(r => setTimeout(r, pollInterval));
-    try {
-      // Suppress browser error logging: fetch with no credentials so 404 is silent
-      const res = await fetch(apiUrl, {
-        headers: { Accept: 'application/vnd.github.v3+json' },
-        cache: 'no-store',
-        credentials: 'omit',
-      });
-      if (res.ok) {
-        const data = await res.json();
-        clearInterval(ticker);
-        showReady(data.download_url);
-        return;
-      }
-      // 404 = not ready yet, continue polling silently
-    } catch (_) {
-      // Network error — continue polling
-    }
-  }
-
-  clearInterval(ticker);
-  pollMsg.textContent = 'Taking longer than expected — please refresh the page in a minute.';
-}
-
-async function showReady(downloadUrl) {
+function showReady(fullHtml) {
   document.getElementById('generating-area').style.display = 'none';
   document.getElementById('ready-area').style.display = 'block';
-
-  // Build a nice filename from the projects the user selected
-  const titles = selectedProjects.map(id => {
-    const p = DATA[currentTrack].projects.find(x => x.id === id);
-    return p ? p.title.replace(/\s+/g, '_') : id;
-  });
-  const filename = titles.length === 1
-    ? `TinkerWithMe_${titles[0]}.pdf`
-    : `TinkerWithMe_${titles[0]}_and_${titles.length - 1}_more.pdf`;
-
-  document.getElementById('btn-download').href = downloadUrl;
-  document.getElementById('btn-download').setAttribute('download', filename);
-  document.getElementById('btn-preview').href = downloadUrl;
-
-  // raw.githubusercontent.com sends X-Frame-Options: deny, so we fetch as a blob
-  // and create an object URL — blob URLs have no frame-embedding restrictions
+  // Live preview of the assembled plan
   const frame = document.getElementById('pdf-frame');
   frame.style.display = 'block';
-  try {
-    const resp = await fetch(downloadUrl);
-    const blob = await resp.blob();
-    frame.src = URL.createObjectURL(blob);
-  } catch (e) {
-    frame.style.display = 'none';
+  frame.srcdoc = fullHtml;
+}
+
+// Open the browser print dialog on the assembled document → visitor picks "Save as PDF".
+// The document's <title> becomes the suggested PDF filename.
+function savePdf() {
+  const pf = document.getElementById('print-frame');
+  pf.onload = () => {
+    try {
+      pf.contentWindow.focus();
+      pf.contentWindow.print();
+    } catch (_) {
+      openInTab();
+    }
+  };
+  pf.srcdoc = lastDocHtml;
+}
+
+function openInTab() {
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.open();
+  w.document.write(lastDocHtml);
+  w.document.close();
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Deterministic assembly of the selected projects — mirrors build_static_curriculum()
+// in generate_curriculum.py. No AI, no network beyond the cached JSON already fetched.
+function buildStaticInner(projects, contentMap, ageGroup, durationMins, durationLabel, isHomeschool) {
+  const n = projects.length;
+  const titles = projects.map(p => escapeHtml(p.title)).join(', ');
+  const overview =
+    `<h2>Session Overview</h2>\n<p>This session covers ${n} hands-on project${n !== 1 ? 's' : ''} ` +
+    `for <strong>${escapeHtml(ageGroup)}</strong>: <strong>${titles}</strong>. Total planned time is ` +
+    `${durationLabel}. Each project below includes materials, step-by-step instructions, full code or ` +
+    `prompts, common mistakes, discussion questions, and extension challenges.</p>\n`;
+
+  const totalWeight = projects.reduce((s, p) => s + (p.time || 60), 0) || 1;
+  const intro = Math.max(5, Math.round(durationMins * 0.08));
+  const wrap  = Math.max(5, Math.round(durationMins * 0.07));
+  const bodyMins = Math.max(1, durationMins - intro - wrap);
+  let rows = `<tr><td>Welcome &amp; setup</td><td>${intro} min</td></tr>\n`;
+  for (const p of projects) {
+    const alloc = Math.max(1, Math.round(bodyMins * (p.time || 60) / totalWeight));
+    rows += `<tr><td>${escapeHtml(p.title)}</td><td>${alloc} min</td></tr>\n`;
   }
+  rows += `<tr><td>Wrap-up &amp; reflection</td><td>${wrap} min</td></tr>\n`;
+  const schedule =
+    `<h2>Schedule</h2>\n<table><thead><tr><th>Activity</th><th>Suggested time</th></tr></thead>` +
+    `<tbody>${rows}</tbody></table>\n`;
+
+  let body = '';
+  for (const p of projects) {
+    body += `<h1>${escapeHtml(p.title)}</h1>\n<p><em>${escapeHtml(p.diff)} · ${escapeHtml(p.age)} · ` +
+            `~${p.time} min</em></p>\n${contentMap[p.id] || ''}\n`;
+  }
+
+  const tips = isHomeschool
+    ? `<h2>Parent Guidance Tips</h2>\n<ul>` +
+      `<li>Let your child lead — step in only when they're stuck for more than a minute or two.</li>` +
+      `<li>Ask "what do you think will happen?" before each step to build prediction skills.</li>` +
+      `<li>Mistakes are part of it — a project that doesn't work first time is a learning moment, not a failure.</li>` +
+      `<li>Take a short break between projects to keep energy up.</li>` +
+      `<li>Celebrate the finished build — take a photo and talk about what they'd change next time.</li></ul>\n`
+    : `<h2>Classroom Management Tips</h2>\n<ul>` +
+      `<li>Pair students so faster finishers can buddy up with those who need more time.</li>` +
+      `<li>Set a visible timer for each activity block to keep the session on track.</li>` +
+      `<li>Circulate during build steps — most issues are wiring or a missing semicolon.</li>` +
+      `<li>Use the extension challenges to keep early finishers engaged.</li>` +
+      `<li>End with a quick show-and-tell so every group demonstrates their build.</li></ul>\n`;
+
+  return overview + schedule + body + tips;
 }
 
-function saveToken() {
-  const t = document.getElementById('admin-token').value.trim();
-  if (!t) { document.getElementById('admin-status').textContent = 'Enter a token first.'; return; }
-  localStorage.setItem('twm_gh_token', t);
-  document.getElementById('admin-status').textContent = '✅ Token saved. Reload the page to activate.';
-}
+// Full standalone HTML document with TinkerWithMe branding + print styles.
+// Mirrors the WeasyPrint template in generate_curriculum.py.
+const DOC_CSS = `
+  @page { size: A4; margin: 18mm 16mm;
+    @bottom-center { content: "TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com"; font-size: 9pt; color: #B08060; }
+    @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 9pt; color: #B08060; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; line-height: 1.6; color: #2A1A0E; background: white; padding: 24px; }
+  @media print { body { background: white; padding: 0; } a { color: #F07B1D; text-decoration: none; } }
+  header { position: relative; border-bottom: 2.5px solid #F07B1D; padding-bottom: 1rem; margin-bottom: 2rem; }
+  .header-brand { font-size: 18px; font-weight: 700; color: #2A1A0E; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .header-title { font-size: 13px; color: #6B4C30; margin-bottom: 0.25rem; }
+  .header-subtitle { font-size: 11px; color: #B08060; }
+  .header-prepared { margin-top: 0.6rem; font-size: 12px; color: #2A1A0E; }
+  .session-badge { display: inline-block; background: #FEF0E0; color: #C45C00; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .header-meta { font-size: 11px; color: #6B4C30; text-align: right; line-height: 1.7; position: absolute; right: 0; top: 0; }
+  h1 { font-size: 28px; font-weight: 700; margin: 1.5rem 0 0.5rem; color: #2A1A0E; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+  h2 { font-size: 18px; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #2A1A0E; border-bottom: 1px solid #eee; padding-bottom: 0.35rem; }
+  h3 { font-size: 14px; font-weight: 700; margin: 1rem 0 0.5rem; color: #2A1A0E; }
+  p { margin-bottom: 0.75rem; line-height: 1.75; }
+  ul, ol { margin: 0.75rem 0 0.75rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 12px; }
+  th { background: #FAFAF7; padding: 0.5rem; text-align: left; font-weight: 700; border-bottom: 2px solid #B08060; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #B08060; }
+  td { padding: 0.5rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  strong { font-weight: 600; color: #2A1A0E; }
+  em { font-style: italic; color: #6B4C30; }
+  pre { background: #F5F0EB; border-left: 3px solid #F07B1D; padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 10px; line-height: 1.55; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  code { font-family: 'Courier New', Courier, monospace; font-size: 10px; background: #F5F0EB; padding: 0 3px; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+`;
 
-function clearToken() {
-  localStorage.removeItem('twm_gh_token');
-  document.getElementById('admin-token').value = '';
-  document.getElementById('admin-status').textContent = 'Token cleared.';
+function buildCurriculumDoc(o) {
+  const inner = buildStaticInner(o.projects, o.contentMap, o.ageGroup, o.durationMins, o.durationLabel, o.isHomeschool);
+  const audienceLabel = o.isHomeschool ? 'Homeschool' : 'Classroom';
+  const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const prepared = o.userName ? `Prepared for <strong>${escapeHtml(o.userName)}</strong>` : 'Lesson plan';
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">` +
+    `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
+    `<header>` +
+    `<div class="header-meta">tinkerwithanne@gmail.com<br>Nairobi, Kenya<br>${currentDate}</div>` +
+    `<div class="header-brand">TinkerWithMe</div>` +
+    `<div class="header-title">${escapeHtml(o.trackLabel)} · ${escapeHtml(o.ageGroup)}</div>` +
+    `<div class="header-subtitle">${o.projects.length} project(s) · ${o.durationLabel}</div>` +
+    `<div class="header-prepared">${prepared}<span class="session-badge">${audienceLabel} session</span></div>` +
+    `</header><main>${inner}</main></body></html>`;
 }
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   updateProjects();
-  // Pre-fill admin panel if token already saved
-  const saved = localStorage.getItem('twm_gh_token');
-  if (saved) {
-    document.getElementById('admin-token').value = saved;
-    document.getElementById('admin-status').textContent = '✅ Token configured.';
-  }
 });
 </script>
 
