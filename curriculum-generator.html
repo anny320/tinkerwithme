@@ -490,17 +490,24 @@ async function pollForCurriculum(requestId) {
 
 function showReady(downloadUrl) {
   document.getElementById('generating-area').style.display = 'none';
-  const readyArea = document.getElementById('ready-area');
-  readyArea.style.display = 'block';
+  document.getElementById('ready-area').style.display = 'block';
+
+  // Build a nice filename from the projects the user selected
+  const titles = selectedProjects.map(id => {
+    const p = DATA[currentTrack].projects.find(x => x.id === id);
+    return p ? p.title.replace(/\s+/g, '_') : id;
+  });
+  const filename = titles.length === 1
+    ? `TinkerWithMe_${titles[0]}.pdf`
+    : `TinkerWithMe_${titles[0]}_and_${titles.length - 1}_more.pdf`;
 
   document.getElementById('btn-download').href = downloadUrl;
+  document.getElementById('btn-download').setAttribute('download', filename);
+  document.getElementById('btn-preview').href = downloadUrl;
 
-  // Google Docs viewer handles cross-origin PDF rendering
-  const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(downloadUrl)}&embedded=true`;
-  document.getElementById('btn-preview').href = viewerUrl;
-
+  // Use the raw URL directly — browsers render PDFs natively, no Google Docs needed
   const frame = document.getElementById('pdf-frame');
-  frame.src = viewerUrl;
+  frame.src = downloadUrl;
   frame.style.display = 'block';
 }
 
