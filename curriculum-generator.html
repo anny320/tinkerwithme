@@ -202,7 +202,18 @@ footer a{color:var(--orange);text-decoration:none}
 <footer>
   <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
   <p style="margin-top:6px"><a href="index.html">← Back to Course Picker</a></p>
+  <p style="margin-top:12px"><button onclick="document.getElementById('admin-panel').style.display=document.getElementById('admin-panel').style.display==='none'?'block':'none'" style="background:none;border:none;color:var(--text-3);font-size:11px;cursor:pointer;font-family:inherit">⚙ Admin</button></p>
 </footer>
+
+<div id="admin-panel" style="display:none;background:var(--surface);border-top:1px solid var(--border);padding:1.5rem;text-align:center">
+  <p style="font-size:12px;color:var(--text-2);margin-bottom:8px">GitHub token (stored locally in your browser — never sent to any server)</p>
+  <div style="display:flex;gap:8px;justify-content:center;max-width:480px;margin:0 auto">
+    <input type="password" id="admin-token" placeholder="ghp_..." style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border-strong);font-size:13px;font-family:inherit">
+    <button onclick="saveToken()" style="padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit">Save</button>
+    <button onclick="clearToken()" style="padding:8px 16px;background:var(--bg);border:1.5px solid var(--border-strong);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit">Clear</button>
+  </div>
+  <p id="admin-status" style="font-size:12px;color:var(--text-3);margin-top:8px"></p>
+</div>
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────────────────────
@@ -222,7 +233,7 @@ const GF = {
 // STEP 2 — (Optional) GitHub token to auto-trigger the workflow.
 //   Create a fine-grained PAT with "Actions: write" on anny320/tinkerwithme.
 //   Leave empty to handle manually from the GitHub Actions UI.
-const GITHUB_TOKEN = '';
+const GITHUB_TOKEN = localStorage.getItem('twm_gh_token') || '';
 const GITHUB_REPO  = 'anny320/tinkerwithme'; // must be a public repo for download links to work
 // ───────────────────────────────────────────────────────────────────────────────
 
@@ -495,8 +506,29 @@ function showReady(downloadUrl) {
   frame.style.display = 'block';
 }
 
+function saveToken() {
+  const t = document.getElementById('admin-token').value.trim();
+  if (!t) { document.getElementById('admin-status').textContent = 'Enter a token first.'; return; }
+  localStorage.setItem('twm_gh_token', t);
+  document.getElementById('admin-status').textContent = '✅ Token saved. Reload the page to activate.';
+}
+
+function clearToken() {
+  localStorage.removeItem('twm_gh_token');
+  document.getElementById('admin-token').value = '';
+  document.getElementById('admin-status').textContent = 'Token cleared.';
+}
+
 // Init
-document.addEventListener('DOMContentLoaded', updateProjects);
+document.addEventListener('DOMContentLoaded', () => {
+  updateProjects();
+  // Pre-fill admin panel if token already saved
+  const saved = localStorage.getItem('twm_gh_token');
+  if (saved) {
+    document.getElementById('admin-token').value = saved;
+    document.getElementById('admin-status').textContent = '✅ Token configured.';
+  }
+});
 </script>
 
 </body>
