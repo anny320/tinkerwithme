@@ -16,6 +16,31 @@ from anthropic import Anthropic
 
 import pdf_template
 
+
+def stream_html(system_prompt, user_message, max_tokens, model="claude-sonnet-5"):
+    """Call Claude and return cleaned HTML, always via streaming.
+
+    The Anthropic SDK refuses a NON-streaming request whenever it estimates the
+    call could run past ~10 minutes (large max_tokens trips this and raises
+    "Streaming is required..."). Streaming avoids that guard and the idle-timeout
+    disconnects, so every generation here goes through messages.stream().
+    """
+    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    with client.messages.stream(
+        model=model,
+        max_tokens=max_tokens,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_message}],
+    ) as stream:
+        message = stream.get_final_message()
+    if message.stop_reason == "max_tokens":
+        print("⚠️  Response truncated at max_tokens.")
+    html = next(block.text for block in message.content if block.type == "text")
+    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
+    html = re.sub(r"\n?```\s*$", "", html)
+    return html
+
+
 # Course data matching index.html
 COURSE_DATA = {
     "arduino": {
@@ -199,19 +224,7 @@ If the topic is unsafe or unsuitable for children, still respond helpfully: adap
 
 Output only the HTML body sections above — no DOCTYPE, no <html>, <head> or <body> tags."""
 
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    message = client.messages.create(
-        model="claude-sonnet-5",
-        max_tokens=12000,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
-    )
-    if message.stop_reason == "max_tokens":
-        print("⚠️  Response truncated at max_tokens.")
-    html = next(block.text for block in message.content if block.type == "text")
-    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
-    html = re.sub(r"\n?```\s*$", "", html)
-    return html
+    return stream_html(system_prompt, user_message, max_tokens=12000)
 
 
 def generate_freeform_curriculum_html(request_text, is_homeschool):
@@ -257,19 +270,7 @@ If the request is unsafe or unsuitable for children, adapt it into the closest s
 
 Output only the HTML body sections — no DOCTYPE, <html>, <head> or <body> tags."""
 
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    message = client.messages.create(
-        model="claude-sonnet-5",
-        max_tokens=16000,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
-    )
-    if message.stop_reason == "max_tokens":
-        print("⚠️  Response truncated at max_tokens.")
-    html = next(block.text for block in message.content if block.type == "text")
-    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
-    html = re.sub(r"\n?```\s*$", "", html)
-    return html
+    return stream_html(system_prompt, user_message, max_tokens=16000)
 
 
 def run_freeform(request_text, user_name="", user_email="", audience="classroom"):
@@ -500,18 +501,10 @@ Format output as clean HTML (not markdown) for PDF conversion."""
             # Slow path: full AI generation (no pre-generated content available)
             missing = [pid for pid, v in pregenerated.items() if v is None]
             print(f"🤖 Slow path — generating from scratch (missing pre-generated content for: {missing})")
-            client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-            message = client.messages.create(
-                model="claude-sonnet-5",
-                max_tokens=4000 + len(projects) * 6000,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_message}],
+            curriculum_html = stream_html(
+                system_prompt, user_message,
+                max_tokens=min(32000, 4000 + len(projects) * 6000),
             )
-            if message.stop_reason == "max_tokens":
-                print("⚠️  Response truncated at max_tokens.")
-            curriculum_html = next(block.text for block in message.content if block.type == "text")
-            curriculum_html = re.sub(r"^```(?:html)?\s*\n?", "", curriculum_html.strip())
-            curriculum_html = re.sub(r"\n?```\s*$", "", curriculum_html)
 
         # Generate full HTML with TinkerWithMe branding and footer
         current_date = datetime.now().strftime("%d %B %Y")

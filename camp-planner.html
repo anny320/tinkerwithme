@@ -230,11 +230,10 @@ const DISPATCH_PROXY = '';
 let currentTheme    = 'Arduino Robotics & Electronics';
 let selectedDuration = 'full';
 
-// Preload the worked example: a 51-child camp across three bands.
+// Start with blank rows — the organiser fills in their own bands.
 const DEFAULT_BANDS = [
-  {age:'7-9',   count:20},
-  {age:'10-12', count:19},
-  {age:'13-15', count:12},
+  {age:'', count:''},
+  {age:'', count:''},
 ];
 
 function bandRowHtml(age, count){
