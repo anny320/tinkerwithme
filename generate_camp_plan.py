@@ -266,7 +266,7 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
     Returns the inner HTML that slots in after the deterministic tables.
     `brief` carries any free-text organiser notes/requirements to honour.
     """
-    from anthropic import Anthropic
+    from generate_curriculum import stream_html
 
     band_lines = "\n".join(
         f"- {b['label']}: {b['count']} children, split into "
@@ -351,20 +351,13 @@ A checklist the coordinator runs through with the team before doors open.
 
 Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags."""
 
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     # Scale tokens with band count; full code/build steps per project need room.
-    message = client.messages.create(
-        model="claude-sonnet-5",
+    # Streaming (via stream_html) is required at these token sizes — a plain
+    # non-streaming call raises "Streaming is required..." past ~10 min of work.
+    return stream_html(
+        system_prompt, user_message,
         max_tokens=min(32000, 10000 + len(bands) * 6000),
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
     )
-    if message.stop_reason == "max_tokens":
-        print("⚠️  Response truncated at max_tokens.")
-    html = next(block.text for block in message.content if block.type == "text")
-    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
-    html = re.sub(r"\n?```\s*$", "", html)
-    return html
 
 
 def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
