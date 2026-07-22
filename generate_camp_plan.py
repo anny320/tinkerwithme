@@ -200,6 +200,126 @@ def find_age_bands_in_text(text):
     return bands or None
 
 
+# ─── Zero-token catalogue assembly ──────────────────────────────────────────
+# For Arduino/AI camps we reuse the pre-generated project content (project_content
+# /*.json) — full code, materials, steps — instead of paying the model to
+# re-write it. Only genuinely custom themes fall through to a live AI call.
+
+_SAFETY_HTML = (
+    "<h2>Safety, Logistics &amp; Contingencies</h2>\n"
+    "<ul>"
+    "<li><strong>Space:</strong> one table per group with room to move; keep walkways clear "
+    "and power leads taped down.</li>"
+    "<li><strong>Movement:</strong> groups start and stop together on the master timetable — "
+    "stagger the break and lunch queues so the space never crowds.</li>"
+    "<li><strong>First aid &amp; allergies:</strong> collect allergy info at registration; the "
+    "first-aider holds the kit and the contact list all day.</li>"
+    "<li><strong>Wet weather:</strong> move outdoor free-play to the hall; keep one indoor "
+    "back-up game ready.</li>"
+    "<li><strong>Early finishers:</strong> use each project's extension challenges (listed in "
+    "the project pages below).</li>"
+    "<li><strong>Equipment failure:</strong> keep one spare kit per band; a failed build "
+    "becomes a debugging lesson, not a lost hour.</li>"
+    "</ul>\n"
+)
+
+_STAFF_CHECKLIST_HTML = (
+    "<h2>Staff Briefing Checklist</h2>\n"
+    "<ul>"
+    "<li>Every facilitator knows their group, their band, and their room.</li>"
+    "<li>Kits counted and laid out per group before doors open.</li>"
+    "<li>Registration desk has the sign-in sheet, badges, and allergy list.</li>"
+    "<li>Timekeeper owns the master timetable and calls transitions out loud.</li>"
+    "<li>Floating helpers know which groups they cover during breaks.</li>"
+    "<li>Showcase space and closing certificates ready before the last block.</li>"
+    "</ul>\n"
+)
+
+
+def _age_range(label):
+    """Parse '7-9 yrs' (or '6-9 yrs') into an (lo, hi) integer tuple."""
+    m = re.search(r"(\d+)\s*[-–]\s*(\d+)", label)
+    return (int(m.group(1)), int(m.group(2))) if m else (0, 99)
+
+
+def _range_overlap(a, b):
+    return max(0, min(a[1], b[1]) - max(a[0], b[0]) + 1)
+
+
+def assign_catalogue_projects(band_label, track, n, brief=""):
+    """Pick up to n age-appropriate catalogue projects for a band.
+
+    Ranked by age-band overlap, then boosted when the project matches keywords in
+    the organiser's brief (so "focus on Teachable Machine" surfaces that project).
+    """
+    projects = COURSE_DATA.get(track, {}).get("projects", [])
+    if not projects:
+        return []
+    band_rng = _age_range(band_label)
+    keywords = [w for w in re.findall(r"[a-z]{4,}", brief.lower())]
+
+    def score(p):
+        s = _range_overlap(band_rng, _age_range(p["age"])) * 10
+        text = (p["title"] + " " + p["desc"]).lower()
+        if keywords and any(k in text for k in keywords):
+            s += 1000
+        return s
+
+    ranked = sorted(projects, key=score, reverse=True)
+    return ranked[:n]
+
+
+def build_camp_programme_from_cache(track, bands, groups, timetable_rows,
+                                    is_full_day, brief=""):
+    """Assemble the per-band programme from cached project content — no AI call.
+
+    Returns the programme HTML, or None if any needed project isn't cached (so the
+    caller can fall back to AI generation).
+    """
+    from generate_curriculum import load_pregenerated
+
+    n_projects = 3 if is_full_day else 2
+
+    # Decide every band's projects first, then confirm all are cached before we
+    # commit to the zero-token path.
+    plan = []
+    for b in bands:
+        picks = assign_catalogue_projects(b["label"], track, n_projects, brief)
+        contents = {p["id"]: load_pregenerated(p["id"]) for p in picks}
+        if not picks or any(v is None for v in contents.values()):
+            return None
+        plan.append((b, picks, contents))
+
+    body = ("<h2>Programme by Age Band</h2>\n"
+            "<p>Each band works through age-appropriate TinkerWithMe projects. Every "
+            "project below includes its materials, step-by-step instructions and full "
+            "code/build steps so a facilitator can run it directly.</p>\n")
+    for b, picks, contents in plan:
+        n_groups = sum(1 for g in groups if g["band"] == b["label"])
+        titles = ", ".join(p["title"] for p in picks)
+        body += (f"<h3>{b['label']} — {b['count']} children in {n_groups} group(s)</h3>\n"
+                 f"<p><strong>Projects for this band:</strong> {titles}. Each group's lead "
+                 "facilitator preps the kit, keeps the group to the master timetable, and "
+                 "watches for the common mistakes noted in each project.</p>\n")
+        for p in picks:
+            body += (f"<h4>{p['title']} <em>({p['diff']} · ~{p['time']} min)</em></h4>\n"
+                     + contents[p["id"]] + "\n")
+
+    body += (
+        "<h2>Materials — Scaling</h2>\n"
+        "<p>Each project's materials list above is <strong>per group</strong>. Multiply it "
+        "by the number of groups in that band to get the totals to prepare. Shared kit "
+        "(laptops, power strips, extension leads) can rotate between groups rather than be "
+        "bought per group.</p>\n"
+    )
+    body += _SAFETY_HTML
+    body += _STAFF_CHECKLIST_HTML
+    if brief:
+        body += ("<h2>Organiser Notes</h2>\n<p>Projects were chosen to fit your notes where "
+                 f"possible: <em>{brief}</em></p>\n")
+    return body
+
+
 def catalogue_hint(track):
     """Build a plain-text list of catalogue projects to steer Claude's picks."""
     projects = COURSE_DATA.get(track, {}).get("projects", [])
@@ -266,7 +386,7 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
     Returns the inner HTML that slots in after the deterministic tables.
     `brief` carries any free-text organiser notes/requirements to honour.
     """
-    from anthropic import Anthropic
+    from generate_curriculum import stream_html
 
     band_lines = "\n".join(
         f"- {b['label']}: {b['count']} children, split into "
@@ -351,20 +471,13 @@ A checklist the coordinator runs through with the team before doors open.
 
 Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags."""
 
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     # Scale tokens with band count; full code/build steps per project need room.
-    message = client.messages.create(
-        model="claude-sonnet-5",
+    # Streaming (via stream_html) is required at these token sizes — a plain
+    # non-streaming call raises "Streaming is required..." past ~10 min of work.
+    return stream_html(
+        system_prompt, user_message,
         max_tokens=min(32000, 10000 + len(bands) * 6000),
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
     )
-    if message.stop_reason == "max_tokens":
-        print("⚠️  Response truncated at max_tokens.")
-    html = next(block.text for block in message.content if block.type == "text")
-    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
-    html = re.sub(r"\n?```\s*$", "", html)
-    return html
 
 
 def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
@@ -395,11 +508,21 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
     print(f"📧 User email: {user_email}")
 
     try:
-        print(f"✨ Generating programme via AI (track: {track})…")
-        programme_html = build_ai_programme(
-            theme, track, bands, groups, staff, timetable_rows,
-            duration_label, camp_date, brief=brief,
-        )
+        # Fast path: catalogue themes assemble from the pre-generated cache with
+        # ZERO AI tokens (full code included). Custom themes fall through to AI.
+        programme_html = None
+        if track in ("arduino", "ai"):
+            programme_html = build_camp_programme_from_cache(
+                track, bands, groups, timetable_rows, is_full_day, brief=brief,
+            )
+        if programme_html is not None:
+            print(f"🟢 Static path — assembled from cache (track: {track}), no AI tokens used")
+        else:
+            print(f"✨ AI path — generating programme (track: {track})…")
+            programme_html = build_ai_programme(
+                theme, track, bands, groups, staff, timetable_rows,
+                duration_label, camp_date, brief=brief,
+            )
 
         band_summary = ", ".join(f"{b['label']} ({b['count']})" for b in bands)
         overview = (
