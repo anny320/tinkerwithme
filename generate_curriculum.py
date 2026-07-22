@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime
 from anthropic import Anthropic
 
-from weasyprint import HTML
+import pdf_template
 
 # Course data matching index.html
 COURSE_DATA = {
@@ -141,8 +141,82 @@ def build_static_curriculum(projects, pregenerated, age_group, duration_mins,
     return overview + schedule + body + tips
 
 
+def generate_custom_curriculum_html(topic, custom_request, age_group,
+                                    duration_label, is_homeschool):
+    """Generate a full lesson plan for a topic that isn't in the predefined
+    project catalogue (e.g. "Scratch game design", "Solar-powered gadgets").
+
+    Always makes a live AI call — there is no pre-generated cache for custom
+    topics. Returns the inner HTML for the <main> body.
+    """
+    setting = ("a HOMESCHOOL setting where one parent or guardian guides one "
+               "child at home" if is_homeschool
+               else "a CLASSROOM / group setting")
+    schedule_line = ("Make the schedule flexible — suggest time ranges rather "
+                     "than rigid minute-by-minute timings."
+                     if is_homeschool
+                     else "Include a detailed minute-by-minute schedule with "
+                          "breaks and transitions.")
+    tips_section = ("Parent Guidance Tips — how to guide without over-helping, "
+                    "when to step back, how to handle frustration"
+                    if is_homeschool
+                    else "Classroom Management Tips — group dynamics, pacing, "
+                         "handling mixed abilities")
+
+    system_prompt = f"""You are an expert STEM educator specialising in hands-on learning for ages 6-16.
+You work for TinkerWithMe, a hands-on education program in Nairobi.
+You are being asked to build a lesson plan for a CUSTOM topic that is not in the standard catalogue, so design it from scratch.
+This plan is for {setting}.
+Design an engaging, safe, age-appropriate, hands-on session on the requested topic.
+Tailor everything to the specific age group and time available.
+Do not include purchase links or URLs of any kind — list any materials by name, spec, and quantity only.
+For any Nairobi-sourced components, you may name local suppliers (Nerokas, Pixel Electronics) in plain text without links.
+Format output as clean HTML (not markdown) for PDF conversion — use <h2>/<h3>, <ul>/<li>, <table>, <strong>, <em>, <p>, and <pre><code> for any code. NO inline styles."""
+
+    request_block = f"\n\n**Educator's request (verbatim):**\n{custom_request}" if custom_request else ""
+
+    user_message = f"""Design a detailed, hands-on lesson plan for this CUSTOM topic. Format your response as clean HTML suitable for PDF printing.
+
+**Session Details:**
+- Topic: {topic}
+- Age Group: {age_group}
+- Duration: {duration_label}{request_block}
+
+**Required Sections (use semantic HTML tags):**
+1. <h2>Session Overview</h2> — what learners will build/explore and why it's exciting
+2. <h2>Learning Objectives</h2> — 3-5 specific, measurable outcomes
+3. <h2>Materials &amp; Setup</h2> — complete checklist with item name, spec and quantity (no links)
+4. <h2>Schedule</h2> — {schedule_line}
+5. <h2>Activity Breakdown</h2> — step-by-step instructions; include any full code inside <pre><code> with comments, or exact prompts/tool steps where relevant
+6. <h2>Common Mistakes &amp; Fixes</h2>
+7. <h2>Assessment &amp; Success Criteria</h2>
+8. <h2>Extensions &amp; Challenges</h2> — for early finishers and deeper dives
+9. <h2>Troubleshooting Guide</h2>
+10. <h2>{tips_section}</h2>
+11. <h2>Follow-up Activities</h2>
+
+If the topic is unsafe or unsuitable for children, still respond helpfully: adapt it into the closest safe, age-appropriate hands-on activity and note the adaptation in the Session Overview.
+
+Output only the HTML body sections above — no DOCTYPE, no <html>, <head> or <body> tags."""
+
+    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    message = client.messages.create(
+        model="claude-sonnet-5",
+        max_tokens=12000,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    if message.stop_reason == "max_tokens":
+        print("⚠️  Response truncated at max_tokens.")
+    html = next(block.text for block in message.content if block.type == "text")
+    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
+    html = re.sub(r"\n?```\s*$", "", html)
+    return html
+
+
 def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email,
-                            audience="classroom", user_name=""):
+                            audience="classroom", user_name="",
+                            custom_topic="", custom_request=""):
     """
     Main curriculum generation function using Claude AI.
     Outputs professional PDF with TinkerWithMe branding and footer.
@@ -150,26 +224,38 @@ def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email,
     user_name: person the plan is prepared for (shown in the header)
     """
 
-    # Get project metadata
-    projects = get_project_details(track, project_ids)
-    
-    if not projects:
-        valid_ids = ", ".join(p["id"] for p in COURSE_DATA.get(track, {}).get("projects", []))
-        print(f"❌ Error: No matching projects for IDs {project_ids} in track '{track}'. Valid IDs: {valid_ids}")
-        return None
-    
+    # A custom request is anything outside the predefined catalogue: the caller
+    # supplies a free-text topic (and optionally a longer description) instead of
+    # a track + project IDs.
+    is_custom = bool(custom_topic) or track == "custom"
+
     # Convert duration to minutes
     duration_mins = 330 if duration == "full" else int(duration)
     duration_label = f"{duration_mins} minutes" if duration != "full" else "full day (5-6 hours)"
-    
-    # Build project summary for Claude
-    projects_summary = "\n".join([
-        f"- **{p['title']}** ({p['diff']}) - {p['time']}min: {p['desc']}"
-        for p in projects
-    ])
-    
-    track_label = "Arduino Robotics & Electronics" if track == "arduino" else "AI Skills for Kids"
+
     is_homeschool = audience.lower() == "homeschool"
+
+    if is_custom:
+        # No predefined projects — the whole plan comes from the topic/request.
+        projects = []
+        track_label = custom_topic or "Custom Topic"
+        projects_summary = ""
+    else:
+        # Get project metadata
+        projects = get_project_details(track, project_ids)
+
+        if not projects:
+            valid_ids = ", ".join(p["id"] for p in COURSE_DATA.get(track, {}).get("projects", []))
+            print(f"❌ Error: No matching projects for IDs {project_ids} in track '{track}'. Valid IDs: {valid_ids}")
+            return None
+
+        # Build project summary for Claude
+        projects_summary = "\n".join([
+            f"- **{p['title']}** ({p['diff']}) - {p['time']}min: {p['desc']}"
+            for p in projects
+        ])
+
+        track_label = "Arduino Robotics & Electronics" if track == "arduino" else "AI Skills for Kids"
 
     # Build prompt variants based on audience
     if is_homeschool:
@@ -271,7 +357,14 @@ Format output as clean HTML (not markdown) for PDF conversion."""
     has_pregenerated = all(v is not None for v in pregenerated.values())
 
     try:
-        if has_pregenerated:
+        if is_custom:
+            # Custom path: topic isn't in the catalogue, generate the whole plan.
+            print(f"✨ Custom path — generating plan for topic: {track_label!r}")
+            curriculum_html = generate_custom_curriculum_html(
+                track_label, custom_request, age_group,
+                duration_label, is_homeschool,
+            )
+        elif has_pregenerated:
             # Static path: assemble pre-generated content with NO AI call at all.
             print(f"🟢 Static path — assembling {len(projects)} pre-generated project(s), no AI tokens used")
             curriculum_html = build_static_curriculum(
@@ -297,256 +390,38 @@ Format output as clean HTML (not markdown) for PDF conversion."""
 
         # Generate full HTML with TinkerWithMe branding and footer
         current_date = datetime.now().strftime("%d %B %Y")
-        full_html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TinkerWithMe Curriculum - {track_label}</title>
-    <style>
-        @page {{
-            size: A4;
-            margin: 18mm 16mm;
-            @bottom-center {{
-                content: "TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com";
-                font-size: 9pt;
-                color: #B08060;
-            }}
-            @bottom-right {{
-                content: "Page " counter(page) " of " counter(pages);
-                font-size: 9pt;
-                color: #B08060;
-            }}
-        }}
-        
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
-        
-        body {{
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            color: #2A1A0E;
-            background: white;
-        }}
-        
-        /* Print styles */
-        @media print {{
-            body {{ background: white; }}
-            a {{ color: #F07B1D; text-decoration: none; }}
-        }}
-        
-        header {{
-            position: relative;
-            border-bottom: 2.5px solid #F07B1D;
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }}
-        
-        .header-brand {{
-            font-size: 18px;
-            font-weight: 700;
-            color: #2A1A0E;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.5rem;
-        }}
-        
-        .header-title {{
-            font-size: 13px;
-            color: #6B4C30;
-            margin-bottom: 0.25rem;
-        }}
-        
-        .header-subtitle {{
-            font-size: 11px;
-            color: #B08060;
-        }}
-
-        .header-prepared {{
-            margin-top: 0.6rem;
-            font-size: 12px;
-            color: #2A1A0E;
-        }}
-
-        .session-badge {{
-            display: inline-block;
-            background: #FEF0E0;
-            color: #C45C00;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 99px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-left: 6px;
-            vertical-align: middle;
-        }}
-        
-        .header-meta {{
-            font-size: 11px;
-            color: #6B4C30;
-            text-align: right;
-            line-height: 1.7;
-            position: absolute;
-            right: 0;
-            top: 0;
-        }}
-        
-        h1 {{
-            font-size: 28px;
-            font-weight: 700;
-            margin: 1.5rem 0 0.5rem;
-            color: #2A1A0E;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 0.5rem;
-        }}
-        
-        h2 {{
-            font-size: 18px;
-            font-weight: 700;
-            margin: 1.5rem 0 0.75rem;
-            color: #2A1A0E;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.35rem;
-        }}
-        
-        h3 {{
-            font-size: 14px;
-            font-weight: 700;
-            margin: 1rem 0 0.5rem;
-            color: #2A1A0E;
-        }}
-        
-        p {{
-            margin-bottom: 0.75rem;
-            line-height: 1.75;
-        }}
-        
-        ul, ol {{
-            margin: 0.75rem 0 0.75rem 1.4rem;
-        }}
-        
-        li {{
-            margin-bottom: 0.4rem;
-        }}
-        
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 12px;
-        }}
-        
-        th {{
-            background: #FAFAF7;
-            padding: 0.5rem;
-            text-align: left;
-            font-weight: 700;
-            border-bottom: 2px solid #B08060;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #B08060;
-        }}
-        
-        td {{
-            padding: 0.5rem;
-            border-bottom: 1px solid #ddd;
-            vertical-align: top;
-        }}
-        
-        tr:hover td {{
-            background: rgba(42, 26, 14, 0.02);
-        }}
-        
-        strong {{
-            font-weight: 600;
-            color: #2A1A0E;
-        }}
-        
-        em {{
-            font-style: italic;
-            color: #6B4C30;
-        }}
-        
-        .print-tag {{
-            display: inline-block;
-            background: #FEF0E0;
-            color: #C45C00;
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 99px;
-            margin-top: 0.5rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }}
-        
-        .content {{
-            page-break-inside: avoid;
-        }}
-
-        pre {{
-            background: #F5F0EB;
-            border-left: 3px solid #F07B1D;
-            padding: 0.75rem 1rem;
-            margin: 0.75rem 0;
-            font-size: 10px;
-            line-height: 1.55;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }}
-
-        code {{
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 10px;
-            background: #F5F0EB;
-            padding: 0 3px;
-            border-radius: 2px;
-        }}
-
-        pre code {{
-            background: none;
-            padding: 0;
-        }}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-meta">
-            tinkerwithanne@gmail.com<br>
-            Nairobi, Kenya<br>
-            {current_date}
-        </div>
-        <div class="header-brand">TinkerWithMe</div>
-        <div class="header-title">{track_label} · {age_group}</div>
-        <div class="header-subtitle">{len(projects)} project(s) · {duration_label}</div>
-        <div class="header-prepared">
-            {f'Prepared for <strong>{user_name}</strong>' if user_name else 'Lesson plan'}
-            <span class="session-badge">{audience_label} session</span>
-        </div>
-    </header>
-    
-    <main>
-        {curriculum_html}
-    </main>
-</body>
-</html>
-"""
+        prepared_html = (
+            (f'Prepared for <strong>{user_name}</strong>' if user_name else 'Lesson plan')
+            + f'<span class="session-badge">{audience_label} session</span>'
+        )
+        subtitle = (
+            f"Custom topic · {duration_label}" if is_custom
+            else f"{len(projects)} project(s) · {duration_label}"
+        )
+        header_html = pdf_template.build_header(
+            title_line=f"{track_label} · {age_group}",
+            subtitle_line=subtitle,
+            prepared_html=prepared_html,
+            current_date=current_date,
+        )
+        full_html = pdf_template.render_document(
+            title=f"TinkerWithMe Curriculum - {track_label}",
+            header_html=header_html,
+            body_html=curriculum_html,
+        )
         
         # Write PDF directly from HTML string
         output_dir = Path("output")
         output_dir.mkdir(exist_ok=True)
-        if len(projects) == 1:
+        if is_custom:
+            project_slug = track_label.replace(" ", "_")
+        elif len(projects) == 1:
             project_slug = projects[0]["title"].replace(" ", "_")
         else:
             project_slug = projects[0]["title"].replace(" ", "_") + f"_and_{len(projects)-1}_more"
-        safe_slug = re.sub(r"[^\w\-]", "", project_slug)
+        safe_slug = re.sub(r"[^\w\-]", "", project_slug) or "curriculum"
         pdf_file = output_dir / f"TinkerWithMe_{safe_slug}.pdf"
-        HTML(string=full_html).write_pdf(pdf_file)
+        pdf_template.write_pdf(full_html, pdf_file)
         print(f"✅ PDF generated: {pdf_file}")
         print(f"\n📧 Ready to email to: {user_email}")
         return str(pdf_file)
@@ -563,9 +438,12 @@ if __name__ == "__main__":
     user_name = os.getenv("USER_NAME", "").strip()
     user_email = os.getenv("USER_EMAIL", "user@example.com")
     audience = os.getenv("AUDIENCE", "classroom").strip()
+    custom_topic = os.getenv("CUSTOM_TOPIC", "").strip()
+    custom_request = os.getenv("CUSTOM_REQUEST", "").strip()
 
     result = generate_curriculum_pdf(
-        track, projects, age_group, duration, user_email, audience, user_name
+        track, projects, age_group, duration, user_email, audience, user_name,
+        custom_topic=custom_topic, custom_request=custom_request,
     )
     if result is None:
         sys.exit(1)
