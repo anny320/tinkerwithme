@@ -151,14 +151,53 @@ def build_master_timetable(is_full_day, duration_mins=330):
     ]
 
 
+AI_KEYWORDS = (
+    "teachable machine", "machine learning", "artificial intelligence",
+    "chatgpt", "dall-e", "dall e", "chatbot", "neural network",
+    "generative ai", "ai skills", "ai literacy", "prompt engineering",
+)
+ARDUINO_KEYWORDS = (
+    "arduino", "robot", "electronic", "circuit", "microcontroller",
+    "micro:bit", "microbit", "sensor", "soldering",
+)
+
+
 def resolve_track(theme):
     """Map a free-text theme to a catalogue track, or 'custom' if it isn't one."""
     t = theme.lower()
-    if "arduino" in t or "robot" in t or "electronic" in t:
+    if any(k in t for k in ARDUINO_KEYWORDS):
         return "arduino"
-    if t.strip() in ("ai", "ai skills") or "artificial intelligence" in t or "ai skills" in t:
+    # \bai\b so we match "AI Skills" but not words that merely contain "ai".
+    if re.search(r"\ba\.?i\.?\b", t) or any(k in t for k in AI_KEYWORDS):
         return "ai"
+    # Last resort: if the theme names a specific catalogue project, use its track.
+    for track, data in COURSE_DATA.items():
+        for p in data.get("projects", []):
+            if p["title"].lower() in t:
+                return track
     return "custom"
+
+
+def find_age_bands_in_text(text):
+    """Pull age bands + head-counts out of a free-text request.
+
+    Recognises forms like "7-9 years: 20 children", "10 to 12 (19)",
+    "ages 13-15 — 12 kids". Returns a list of band dicts (same shape as
+    parse_age_bands) or None if nothing band-like is found.
+    """
+    bands = []
+    pattern = re.compile(
+        r"(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s*(?:year|yr)s?\b"   # 7-9 years / 7 to 9 yrs
+        r"[^\d]{0,20}?"                                            # ": ", " (", " — ", "with"
+        r"(\d{1,3})\b",                                           # 20
+        re.IGNORECASE,
+    )
+    for lo, hi, count in pattern.findall(text):
+        c = int(count)
+        if c <= 0:
+            continue
+        bands.append({"label": f"{int(lo)}-{int(hi)} yrs", "count": c})
+    return bands or None
 
 
 def catalogue_hint(track):
@@ -221,10 +260,11 @@ def _timetable_table(rows):
 
 
 def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
-                       duration_label, camp_date):
+                       duration_label, camp_date, brief=""):
     """Ask Claude for the age-appropriate programme and supporting sections.
 
     Returns the inner HTML that slots in after the deterministic tables.
+    `brief` carries any free-text organiser notes/requirements to honour.
     """
     from anthropic import Anthropic
 
@@ -242,6 +282,29 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
         "\n\nThis theme is outside the standard catalogue, so design fresh, "
         "safe, hands-on activities for it."
     )
+    brief_block = (
+        f"\n\n**Organiser's notes / special requirements (honour these closely):**\n{brief}"
+        if brief else ""
+    )
+
+    # Track-specific instruction for what "complete build detail" means so the
+    # PDF actually contains everything needed to run each project on the day.
+    if track == "ai":
+        build_detail = (
+            "For each project include a <strong>Build &amp; Run steps</strong> block with: "
+            "the exact tool/website to open and how to set it up, the step-by-step "
+            "workflow (e.g. for Teachable Machine: create classes, collect/upload "
+            "sample images, train, preview, export the model), the precise example "
+            "prompts or sample training data to use, and how the group tests their result."
+        )
+    else:
+        build_detail = (
+            "For each project include a <strong>Full Build Code &amp; Assembly</strong> block: "
+            "a wiring/assembly list (component → pin), then the COMPLETE working code "
+            "inside <pre><code> with inline comments. Do not abbreviate or write "
+            "\"standard sketch\" — include the entire sketch/program a facilitator "
+            "can type in and run."
+        )
 
     system_prompt = (
         "You are the lead programme designer for TinkerWithMe, a hands-on STEM "
@@ -252,7 +315,8 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
         "and quantity only (local suppliers such as Nerokas or Pixel Electronics "
         "may be named in plain text). Output clean HTML (no markdown, no inline "
         "styles): use <h2>, <h3>, <ul>/<li>, <table>, <strong>, <em>, <p>, and "
-        "<pre><code> for any code."
+        "<pre><code> for any code. Always include the complete code or build steps "
+        "needed to actually make each project — never summarise them away."
     )
 
     user_message = f"""Design the programme content for this full-day camp. The group splits, staffing and master timetable are ALREADY decided (shown below) — do not restate them; build the activities that fill the three project blocks.
@@ -265,14 +329,15 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
 **Total:** {staff['total_children']} children in {staff['n_groups']} groups, {staff['total_adults']} adults.
 
 **Master timetable (fixed):**
-{timetable_txt}{hint_block}
+{timetable_txt}{hint_block}{brief_block}
 
 Produce these sections as HTML, in this order:
 
 <h2>Programme by Age Band</h2>
 For EACH age band, a <h3> with the band name, then:
-- The activity/project for Block 1, Block 2 and Block 3 (age-appropriate; younger bands get simpler, more guided builds, older bands get more independence and challenge).
+- The project(s) for Block 1, Block 2 and Block 3 (age-appropriate; younger bands get simpler, more guided builds, older bands get more independence and challenge). A project may span more than one block.
 - 2-3 learning goals for the band.
+- {build_detail} If a project runs across multiple blocks, give its full code/build steps once. Every project a group builds must have its complete code/build steps somewhere in the plan.
 - A short "Facilitator brief" paragraph: what the group's lead should prepare and watch for.
 
 <h2>Materials Master List</h2>
@@ -287,10 +352,10 @@ A checklist the coordinator runs through with the team before doors open.
 Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags."""
 
     client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-    # Scale tokens with the number of bands so multi-band camps aren't truncated.
+    # Scale tokens with band count; full code/build steps per project need room.
     message = client.messages.create(
         model="claude-sonnet-5",
-        max_tokens=8000 + len(bands) * 4000,
+        max_tokens=min(32000, 10000 + len(bands) * 6000),
         system=system_prompt,
         messages=[{"role": "user", "content": user_message}],
     )
@@ -304,8 +369,12 @@ Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags.""
 
 def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
                            max_group_size=10, user_name="", user_email="",
-                           venue=""):
-    """Plan the camp and write the branded PDF. Returns the PDF path or None."""
+                           venue="", brief=""):
+    """Plan the camp and write the branded PDF. Returns the PDF path or None.
+
+    `brief` is optional free-text organiser notes fed to the AI (e.g. "focus on
+    Teachable Machine", "kids are beginners", "we only have 6 laptops").
+    """
     try:
         bands = parse_age_bands(age_bands_raw)
     except ValueError as e:
@@ -329,7 +398,7 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
         print(f"✨ Generating programme via AI (track: {track})…")
         programme_html = build_ai_programme(
             theme, track, bands, groups, staff, timetable_rows,
-            duration_label, camp_date,
+            duration_label, camp_date, brief=brief,
         )
 
         band_summary = ", ".join(f"{b['label']} ({b['count']})" for b in bands)
@@ -393,15 +462,24 @@ if __name__ == "__main__":
     venue = os.getenv("VENUE", "").strip()
     user_name = os.getenv("USER_NAME", "").strip()
     user_email = os.getenv("USER_EMAIL", "user@example.com").strip()
+    brief = os.getenv("BRIEF", "").strip()
     try:
         max_group_size = int(os.getenv("MAX_GROUP_SIZE", "10"))
     except ValueError:
         max_group_size = 10
 
+    # If the age-band fields are blank but a free-text brief was supplied, try to
+    # read the bands straight out of the brief (e.g. "7-9 years: 20 children…").
+    if not age_bands and brief:
+        detected = find_age_bands_in_text(brief)
+        if detected:
+            age_bands = ",".join(f"{b['label'].replace(' yrs','')}:{b['count']}" for b in detected)
+            print(f"🔎 Read age bands from brief: {age_bands}")
+
     result = generate_camp_plan_pdf(
         theme, age_bands, camp_date=camp_date, duration=duration,
         max_group_size=max_group_size, user_name=user_name,
-        user_email=user_email, venue=venue,
+        user_email=user_email, venue=venue, brief=brief,
     )
     if result is None:
         sys.exit(1)
