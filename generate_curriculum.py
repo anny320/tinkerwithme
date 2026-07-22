@@ -214,6 +214,131 @@ Output only the HTML body sections above — no DOCTYPE, no <html>, <head> or <b
     return html
 
 
+def generate_freeform_curriculum_html(request_text, is_homeschool):
+    """Generate a single-session lesson plan straight from a free-text request.
+
+    The educator just describes what they want in their own words; Claude infers
+    the topic, age group and timing from the text and designs the plan, including
+    the complete code / build steps needed to actually run it.
+    """
+    setting = ("a HOMESCHOOL setting (one parent/guardian guiding one child)"
+               if is_homeschool else "a CLASSROOM / group setting")
+    tips_section = ("Parent Guidance Tips" if is_homeschool
+                    else "Classroom Management Tips")
+
+    system_prompt = f"""You are an expert STEM educator for TinkerWithMe, a hands-on education programme in Nairobi (ages 6-16).
+An educator has described, in their own words, the session they want. Design a complete, safe, age-appropriate, hands-on lesson plan that matches their description as closely as possible.
+This plan is for {setting}.
+Infer the topic, age group and duration from their request; if something isn't stated, choose sensible defaults and say what you assumed.
+Do not include purchase links or URLs — list materials by name, spec and quantity only (local suppliers such as Nerokas or Pixel Electronics may be named in plain text).
+Always include the COMPLETE code or build steps needed to actually run each activity — never summarise them away. For Arduino/electronics put the full sketch in <pre><code> with comments; for AI activities give the exact tools, step-by-step workflow and example prompts/data.
+Output clean HTML (no markdown, no inline styles): <h2>/<h3>, <ul>/<li>, <table>, <strong>, <em>, <p>, <pre><code>."""
+
+    user_message = f"""Here is the educator's request, verbatim:
+
+\"\"\"
+{request_text}
+\"\"\"
+
+Design the lesson plan as HTML with these sections (adapt sensibly to what they asked for):
+1. <h2>Session Overview</h2> — including a one-line note of anything you assumed (age, duration, topic)
+2. <h2>Learning Objectives</h2>
+3. <h2>Materials &amp; Setup</h2> — item, spec, quantity (no links)
+4. <h2>Schedule</h2>
+5. <h2>Activity Breakdown</h2> — step-by-step, with the FULL code in <pre><code>, or exact tool steps/prompts
+6. <h2>Common Mistakes &amp; Fixes</h2>
+7. <h2>Assessment &amp; Success Criteria</h2>
+8. <h2>Extensions &amp; Challenges</h2>
+9. <h2>Troubleshooting Guide</h2>
+10. <h2>{tips_section}</h2>
+11. <h2>Follow-up Activities</h2>
+
+If the request is unsafe or unsuitable for children, adapt it into the closest safe activity and note the change in the Session Overview.
+
+Output only the HTML body sections — no DOCTYPE, <html>, <head> or <body> tags."""
+
+    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    message = client.messages.create(
+        model="claude-sonnet-5",
+        max_tokens=16000,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    if message.stop_reason == "max_tokens":
+        print("⚠️  Response truncated at max_tokens.")
+    html = next(block.text for block in message.content if block.type == "text")
+    html = re.sub(r"^```(?:html)?\s*\n?", "", html.strip())
+    html = re.sub(r"\n?```\s*$", "", html)
+    return html
+
+
+def run_freeform(request_text, user_name="", user_email="", audience="classroom"):
+    """Route a free-text request to the right generator.
+
+    If the text describes multiple age bands with head-counts (a camp), hand off
+    to the camp planner so it gets proper group splits, staffing and a timetable
+    (camps run a full day; the AI still reads the exact wording). Otherwise build
+    a single-session lesson plan from the description, inferring timing from it.
+    """
+    # Lazy import avoids a circular dependency (generate_camp_plan imports
+    # COURSE_DATA from this module at load time).
+    import generate_camp_plan as camp
+
+    bands = camp.find_age_bands_in_text(request_text)
+    # Treat it as a camp when there are 2+ bands, or one sizeable band (>12).
+    is_camp = bool(bands) and (len(bands) >= 2 or sum(b["count"] for b in bands) > 12)
+
+    if is_camp:
+        age_bands_raw = ",".join(
+            f"{b['label'].replace(' yrs','')}:{b['count']}" for b in bands
+        )
+        total = sum(b["count"] for b in bands)
+        theme_track = camp.resolve_track(request_text)
+        theme = {
+            "arduino": "Arduino Robotics & Electronics",
+            "ai": "AI Skills for Kids",
+        }.get(theme_track, "Full-Day Camp")
+        print(f"🏕️  Free-text detected a camp — {total} children, "
+              f"{len(bands)} band(s); routing to camp planner (theme: {theme}).")
+        return camp.generate_camp_plan_pdf(
+            theme, age_bands_raw, user_name=user_name,
+            user_email=user_email, brief=request_text,
+        )
+
+    # Single session.
+    print("📝 Free-text request — generating a single-session plan.")
+    is_homeschool = audience.lower() == "homeschool"
+    try:
+        body_html = generate_freeform_curriculum_html(request_text, is_homeschool)
+        current_date = datetime.now().strftime("%d %B %Y")
+        audience_label = "Homeschool" if is_homeschool else "Classroom"
+        prepared_html = (
+            (f'Prepared for <strong>{user_name}</strong>' if user_name else 'Lesson plan')
+            + f'<span class="session-badge">{audience_label} session</span>'
+        )
+        header_html = pdf_template.build_header(
+            title_line="Custom Lesson Plan",
+            subtitle_line="Generated from your description",
+            prepared_html=prepared_html,
+            current_date=current_date,
+        )
+        full_html = pdf_template.render_document(
+            title="TinkerWithMe Custom Lesson Plan",
+            header_html=header_html,
+            body_html=body_html,
+        )
+        output_dir = Path("output")
+        output_dir.mkdir(exist_ok=True)
+        pdf_file = output_dir / "TinkerWithMe_Custom_Lesson_Plan.pdf"
+        pdf_template.write_pdf(full_html, pdf_file)
+        print(f"✅ PDF generated: {pdf_file}")
+        print(f"\n📧 Ready to email to: {user_email}")
+        return str(pdf_file)
+    except Exception as e:
+        print(f"❌ Error generating plan: {e}", file=sys.stderr)
+        return None
+
+
 def generate_curriculum_pdf(track, project_ids, age_group, duration, user_email,
                             audience="classroom", user_name="",
                             custom_topic="", custom_request=""):
@@ -440,10 +565,20 @@ if __name__ == "__main__":
     audience = os.getenv("AUDIENCE", "classroom").strip()
     custom_topic = os.getenv("CUSTOM_TOPIC", "").strip()
     custom_request = os.getenv("CUSTOM_REQUEST", "").strip()
+    freeform_request = os.getenv("FREEFORM_REQUEST", "").strip()
 
-    result = generate_curriculum_pdf(
-        track, projects, age_group, duration, user_email, audience, user_name,
-        custom_topic=custom_topic, custom_request=custom_request,
-    )
+    # Free-text takes precedence: if the educator described the session in their
+    # own words, route through the freeform handler (which may itself produce a
+    # multi-band camp plan when the text describes one).
+    if freeform_request:
+        result = run_freeform(
+            freeform_request, user_name=user_name, user_email=user_email,
+            audience=audience,
+        )
+    else:
+        result = generate_curriculum_pdf(
+            track, projects, age_group, duration, user_email, audience, user_name,
+            custom_topic=custom_topic, custom_request=custom_request,
+        )
     if result is None:
         sys.exit(1)

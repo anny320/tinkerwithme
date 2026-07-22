@@ -161,6 +161,16 @@ footer a{color:var(--orange);text-decoration:none}
     </div>
   </div>
 
+  <!-- SPECIAL REQUIREMENTS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-message-2"></i> Special Requirements <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <div class="form-group">
+      <label for="brief">Anything the planner should know or focus on?</label>
+      <textarea id="brief" rows="3" placeholder="e.g. Focus on Teachable Machine. Kids are complete beginners. We only have 6 laptops and one 3-hour block of Wi-Fi."></textarea>
+    </div>
+    <p class="hint">These notes are woven into every group's programme.</p>
+  </div>
+
   <button class="gen-btn" id="gen-btn" onclick="submit()">
     <i class="ti ti-wand"></i> Plan My Camp
   </button>
@@ -212,6 +222,9 @@ const GF = {
 // trigger the "Camp Planner Agent" workflow manually from the Actions tab.
 const GITHUB_TOKEN = '';
 const GITHUB_REPO  = 'anny320/tinkerwithme';
+// Recommended: a serverless proxy URL that holds the token server-side (see
+// serverless/README.md). If set, it's used instead of GITHUB_TOKEN.
+const DISPATCH_PROXY = '';
 // ───────────────────────────────────────────────────────────────────────────────
 
 let currentTheme    = 'Arduino Robotics & Electronics';
@@ -295,6 +308,7 @@ async function submit(){
   const ageBands = collectAgeBands();
   const campDate = document.getElementById('camp-date').value.trim();
   const venue    = document.getElementById('venue').value.trim();
+  const brief    = document.getElementById('brief').value.trim();
   const maxGroup = document.getElementById('max-group').value || '10';
 
   if (!name)  { alert('Please enter your name.'); return; }
@@ -334,8 +348,31 @@ async function submit(){
       } catch (_) {}
     }
 
-    // 2. Trigger the Camp Planner workflow (optional — only if a token is set)
-    if (GITHUB_TOKEN) {
+    // 2. Trigger the Camp Planner workflow. Prefer the serverless proxy (no
+    //    token in-page); fall back to a direct GitHub call if a token is set;
+    //    otherwise the run is kicked off manually from the Actions tab.
+    const clientPayload = {
+      theme: currentTheme,
+      age_bands: ageBands,
+      camp_date: campDate,
+      duration: selectedDuration,
+      max_group_size: maxGroup,
+      venue: venue,
+      brief: brief,
+      user_email: email,
+      user_name: name,
+      request_id: requestId,
+      ref: 'refs/heads/main',
+    };
+    if (DISPATCH_PROXY) {
+      setStep('Queuing your camp plan…', 'Step 2 of 2');
+      const res = await fetchWithTimeout(DISPATCH_PROXY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event_type: 'plan-camp', client_payload: clientPayload }),
+      }, 10000);
+      if (!res.ok) throw new Error('Workflow trigger failed. Please try again.');
+    } else if (GITHUB_TOKEN) {
       setStep('Queuing your camp plan…', 'Step 2 of 2');
       const ghRes = await fetchWithTimeout(
         `https://api.github.com/repos/${GITHUB_REPO}/dispatches`,
@@ -346,21 +383,7 @@ async function submit(){
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            event_type: 'plan-camp',
-            client_payload: {
-              theme: currentTheme,
-              age_bands: ageBands,
-              camp_date: campDate,
-              duration: selectedDuration,
-              max_group_size: maxGroup,
-              venue: venue,
-              user_email: email,
-              user_name: name,
-              request_id: requestId,
-              ref: 'refs/heads/main',
-            },
-          }),
+          body: JSON.stringify({ event_type: 'plan-camp', client_payload: clientPayload }),
         }, 10000);
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
     }
