@@ -119,10 +119,26 @@ footer a{color:var(--orange);text-decoration:none}
   <!-- TRACK -->
   <div class="card">
     <div class="card-title"><i class="ti ti-layout-grid"></i> Track</div>
-    <div class="toggle-row two">
+    <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr">
       <button class="toggle-btn active-orange" data-track="arduino" onclick="setTrack('arduino')">⚙️ Arduino Robotics</button>
       <button class="toggle-btn" data-track="ai" onclick="setTrack('ai')">🤖 AI Skills</button>
+      <button class="toggle-btn" data-track="custom" onclick="setTrack('custom')">✨ Custom topic</button>
     </div>
+    <p class="hint" style="margin-top:10px" id="track-hint">Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.</p>
+  </div>
+
+  <!-- CUSTOM TOPIC (shown only when track = custom) -->
+  <div class="card" id="custom-card" style="display:none">
+    <div class="card-title"><i class="ti ti-wand"></i> Your Custom Topic</div>
+    <div class="form-group">
+      <label for="custom-topic">Topic *</label>
+      <input type="text" id="custom-topic" placeholder="e.g. Scratch game design, Solar-powered gadgets, Micro:bit music" oninput="updateBtn()">
+    </div>
+    <div class="form-group">
+      <label for="custom-request">Anything specific you'd like included? (optional)</label>
+      <textarea id="custom-request" rows="3" style="width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);resize:vertical" placeholder="e.g. must use recycled materials; focus on teamwork; tie in to a space theme"></textarea>
+    </div>
+    <p class="hint">Custom plans are written from scratch by our AI — pick the closest age group and duration below.</p>
   </div>
 
   <!-- AUDIENCE -->
@@ -151,7 +167,7 @@ footer a{color:var(--orange);text-decoration:none}
   </div>
 
   <!-- PROJECTS -->
-  <div class="card">
+  <div class="card" id="projects-card">
     <div class="card-title"><i class="ti ti-apps"></i> Select Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(pick one or more)</span></div>
     <div id="projects-grid"></div>
     <p class="hint" style="margin-top:10px" id="projects-hint"></p>
@@ -201,6 +217,7 @@ footer a{color:var(--orange);text-decoration:none}
 
 <footer>
   <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
+  <p style="margin-top:6px">Running a big group? Try the <a href="camp-planner.html">Full-Day Camp Planner →</a></p>
   <p style="margin-top:6px"><a href="index.html">← Back to Course Picker</a></p>
 </footer>
 
@@ -272,7 +289,13 @@ function setTrack(t) {
   document.querySelectorAll('[data-track]').forEach(btn => {
     btn.className = 'toggle-btn' + (btn.dataset.track === t ? ' active-orange' : '');
   });
-  updateProjects();
+  const isCustom = t === 'custom';
+  document.getElementById('custom-card').style.display   = isCustom ? 'block' : 'none';
+  document.getElementById('projects-card').style.display = isCustom ? 'none'  : 'block';
+  document.getElementById('track-hint').innerHTML = isCustom
+    ? 'We\'ll design a plan from scratch for whatever you type below.'
+    : 'Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.';
+  if (!isCustom) updateProjects();
   updateBtn();
 }
 
@@ -287,6 +310,7 @@ function setAudience(a) {
 }
 
 function updateProjects() {
+  if (currentTrack === 'custom' || !DATA[currentTrack]) return;
   const ageGroup = document.getElementById('age-group').value;
   const projects = DATA[currentTrack].projects.filter(p => p.age === ageGroup);
   const grid = document.getElementById('projects-grid');
@@ -320,7 +344,7 @@ function toggleProject(id) {
 
 function setDuration(d) {
   selectedDuration = d;
-  const activeClass = currentTrack === 'arduino' ? 'active-orange' : 'active-green';
+  const activeClass = currentTrack === 'ai' ? 'active-green' : 'active-orange';
   document.querySelectorAll('.dur-btn').forEach(btn => {
     btn.className = 'dur-btn' + (btn.dataset.dur === d ? ' ' + activeClass : '');
   });
@@ -329,7 +353,13 @@ function setDuration(d) {
 
 function updateBtn() {
   const btn = document.getElementById('gen-btn');
-  const ok  = selectedProjects.length > 0 && selectedDuration !== null;
+  let ok;
+  if (currentTrack === 'custom') {
+    const topic = document.getElementById('custom-topic').value.trim();
+    ok = topic.length > 0 && selectedDuration !== null;
+  } else {
+    ok = selectedProjects.length > 0 && selectedDuration !== null;
+  }
   btn.disabled = !ok;
 }
 
@@ -402,9 +432,12 @@ async function submit() {
             client_payload: {
               track: currentTrack,
               projects: selectedProjects.join(','),
+              custom_topic: currentTrack === 'custom' ? document.getElementById('custom-topic').value.trim() : '',
+              custom_request: currentTrack === 'custom' ? document.getElementById('custom-request').value.trim() : '',
               age_group: age,
               duration: selectedDuration,
               user_email: email,
+              user_name: name,
               audience: currentAudience,
               request_id: requestId,
               ref: 'refs/heads/main',

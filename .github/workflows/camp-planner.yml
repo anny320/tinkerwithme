@@ -1,57 +1,43 @@
-name: Curriculum Generator Agent
+name: Camp Planner Agent
+
+# Plans a full-day, multi-age-band camp (e.g. 51 children split 7-9/10-12/13-15)
+# and publishes a branded PDF. Triggered from camp-planner.html
+# (repository_dispatch: plan-camp) or run manually from the Actions tab.
 
 on:
   repository_dispatch:
-    types: [generate-curriculum]
+    types: [plan-camp]
   workflow_dispatch:
     inputs:
-      track:
-        description: 'Select track (arduino, ai, or custom)'
+      theme:
+        description: 'Camp theme/topic (e.g. "Arduino Robotics & Electronics" or a custom theme)'
         required: true
-        type: choice
-        options:
-          - arduino
-          - ai
-          - custom
-      projects:
-        description: 'Project IDs (comma-separated, e.g., ar1,ar5). Leave blank for a custom topic.'
-        required: false
-        default: ''
-      custom_topic:
-        description: 'Custom topic title (for track=custom, e.g. "Scratch Game Design")'
-        required: false
-        default: ''
-      custom_request:
-        description: 'Optional longer description of the custom request'
-        required: false
-        default: ''
-      age_group:
-        description: 'Age group'
+        default: 'Arduino Robotics & Electronics'
+      age_bands:
+        description: 'Age bands with head-counts, e.g. 7-9:20,10-12:19,13-15:12'
         required: true
-        type: choice
-        options:
-          - '6-9 yrs'
-          - '10-12 yrs'
-          - '13-15 yrs'
-          - '7-10 yrs'
-          - '10-13 yrs'
-          - '13-16 yrs'
+        default: '7-9:20,10-12:19,13-15:12'
+      camp_date:
+        description: 'Date of the camp (free text, e.g. "Saturday 15 August 2026")'
+        required: false
+        default: ''
       duration:
-        description: 'Session duration (minutes or full)'
+        description: 'Camp duration'
         required: true
         type: choice
+        default: 'full'
         options:
-          - '90'
-          - '120'
-          - '180'
           - 'full'
-      audience:
-        description: 'Target audience'
-        required: true
-        type: choice
-        options:
-          - classroom
-          - homeschool
+          - '180'
+          - '240'
+      max_group_size:
+        description: 'Maximum children per group'
+        required: false
+        default: '10'
+      venue:
+        description: 'Venue (optional)'
+        required: false
+        default: ''
       user_name:
         description: 'Name of the person the plan is prepared for'
         required: false
@@ -68,7 +54,7 @@ permissions:
   contents: write
 
 jobs:
-  generate-curriculum:
+  plan-camp:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,19 +80,18 @@ jobs:
       - name: Install Python dependencies
         run: pip install anthropic requests python-dotenv weasyprint
 
-      - name: Generate Curriculum
+      - name: Generate Camp Plan
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          TRACK: ${{ inputs.track || github.event.client_payload.track }}
-          PROJECTS: ${{ inputs.projects || github.event.client_payload.projects }}
-          AGE_GROUP: ${{ inputs.age_group || github.event.client_payload.age_group }}
-          DURATION: ${{ inputs.duration || github.event.client_payload.duration }}
-          AUDIENCE: ${{ inputs.audience || github.event.client_payload.audience || 'classroom' }}
+          CAMP_THEME: ${{ inputs.theme || github.event.client_payload.theme }}
+          AGE_BANDS: ${{ inputs.age_bands || github.event.client_payload.age_bands }}
+          CAMP_DATE: ${{ inputs.camp_date || github.event.client_payload.camp_date }}
+          DURATION: ${{ inputs.duration || github.event.client_payload.duration || 'full' }}
+          MAX_GROUP_SIZE: ${{ inputs.max_group_size || github.event.client_payload.max_group_size || '10' }}
+          VENUE: ${{ inputs.venue || github.event.client_payload.venue }}
           USER_NAME: ${{ inputs.user_name || github.event.client_payload.user_name }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
-          CUSTOM_TOPIC: ${{ inputs.custom_topic || github.event.client_payload.custom_topic }}
-          CUSTOM_REQUEST: ${{ inputs.custom_request || github.event.client_payload.custom_request }}
-        run: python generate_curriculum.py
+        run: python generate_camp_plan.py
 
       - name: Publish PDF for download
         if: success()
@@ -123,20 +108,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add downloads/
-          git commit -m "Add curriculum ${REQUEST_ID}"
+          git commit -m "Add camp plan ${REQUEST_ID}"
           git push origin HEAD:main
 
-      - name: Upload Curriculum PDF
+      - name: Upload Camp Plan PDF
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}
+          name: camp-plan-${{ github.run_id }}
           path: output/
           retention-days: 30
 
       - name: Report success
         if: success()
         run: |
-          echo "✅ Curriculum generated successfully"
+          echo "✅ Camp plan generated successfully"
           echo "📧 Ready for: ${{ inputs.user_email || github.event.client_payload.user_email }}"
-          echo "📄 Artifact: curriculum-${{ inputs.track || github.event.client_payload.track }}-${{ github.run_id }}"

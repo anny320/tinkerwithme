@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full-Day Camp Planner — TinkerWithMe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
+  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
+  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
+  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
+  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
+  --radius:12px;--radius-sm:8px;--radius-pill:99px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.hero{background:var(--brown);padding:2.5rem 1.5rem 2rem;text-align:center;color:#fff}
+.hero h1{font-size:clamp(22px,5vw,38px);font-weight:700;margin-bottom:8px}
+.hero p{font-size:15px;color:rgba(255,255,255,0.70);max-width:520px;margin:0 auto}
+.hero-badge{display:inline-block;background:rgba(240,123,29,0.25);color:#FFB870;font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:1rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid rgba(240,123,29,0.4)}
+.container{max-width:860px;margin:0 auto;padding:2rem 1rem 4rem}
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.form-group:last-child{margin-bottom:0}
+label{font-size:12px;font-weight:600;color:var(--text-2)}
+input,select,textarea{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#fff;outline:none}
+textarea{resize:vertical;min-height:70px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.two-col{grid-template-columns:1fr}}
+.toggle-row{display:grid;gap:10px}
+.toggle-row.two{grid-template-columns:1fr 1fr}
+.toggle-btn{padding:14px;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:14px;font-family:inherit;transition:all 0.15s;border:2px solid var(--border);background:var(--surface);color:var(--text-2);text-align:center}
+.toggle-btn.active-orange{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark)}
+.dur-row{display:flex;gap:8px;flex-wrap:wrap}
+.dur-btn{padding:8px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-weight:500;font-size:13px;font-family:inherit;transition:all 0.15s;color:var(--text-2)}
+.dur-btn.active-orange{border-color:var(--orange);background:var(--orange);color:#fff}
+.band-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px}
+.band-row .form-group{margin-bottom:0}
+.icon-btn{padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:16px;line-height:1;color:var(--text-2);font-family:inherit}
+.icon-btn:hover{border-color:var(--orange);color:var(--orange-dark)}
+.add-band{margin-top:6px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;padding:4px 0}
+.tally{background:var(--orange-light);color:var(--orange-dark);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px}
+.gen-btn{display:block;width:100%;padding:16px;border-radius:var(--radius);border:none;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.15s;margin-top:1.25rem;background:var(--blue);color:#fff;font-family:inherit}
+.gen-btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.gen-btn:disabled{opacity:0.4;cursor:not-allowed}
+.loading{display:none;text-align:center;padding:2rem}
+.spinner{width:40px;height:40px;border:4px solid var(--orange-light);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.success-box{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-top:1rem;text-align:center}
+.success-box h3{font-size:16px;margin-bottom:0.5rem}
+.success-box p{font-size:13px;color:var(--text-2)}
+.progress-bar{background:var(--orange-light);border-radius:var(--radius-pill);height:6px;margin:1rem auto;max-width:300px;overflow:hidden}
+.progress-fill{height:100%;background:var(--orange);border-radius:var(--radius-pill);animation:prog 120s linear forwards}
+@keyframes prog{from{width:0%}to{width:95%}}
+.dl-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
+.btn-dl{padding:10px 22px;border-radius:var(--radius-pill);font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;text-decoration:none;border:none;display:inline-block}
+.btn-preview{background:var(--blue-light);color:var(--blue-dark);border:1.5px solid var(--blue)}
+.btn-download{background:var(--green);color:#fff}
+.pdf-frame{width:100%;height:520px;border:1px solid var(--border);border-radius:var(--radius);margin-top:1.25rem;display:none}
+.error-msg{background:#FCEBEB;color:#A32D2D;padding:1rem;border-radius:var(--radius-sm);margin-top:1rem;display:none;font-size:13px}
+.hint{font-size:11px;color:var(--text-3);margin-top:4px}
+footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
+footer a{color:var(--orange);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-badge">Free for educators</div>
+  <h1>Full-Day Camp Planner</h1>
+  <p>Running a camp for a big, mixed-age group? Tell us the age bands and how many
+     children in each, and we'll plan the whole day — groups, staffing, timetable,
+     materials and a tailored programme for every band.</p>
+</header>
+
+<div class="container">
+
+  <!-- ABOUT YOU -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user"></i> About You</div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="req-name">Full name *</label>
+        <input type="text" id="req-name" placeholder="e.g. Jane Smith" required>
+      </div>
+      <div class="form-group">
+        <label for="req-email">Email address * <span class="hint" style="display:inline">(PDF delivered here)</span></label>
+        <input type="email" id="req-email" placeholder="your@email.com" required>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="req-org">School / Organization</label>
+        <input type="text" id="req-org" placeholder="e.g. Sunrise Academy, Nairobi">
+      </div>
+      <div class="form-group">
+        <label for="req-country">Country</label>
+        <input type="text" id="req-country" placeholder="e.g. Kenya">
+      </div>
+    </div>
+  </div>
+
+  <!-- THEME -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-bulb"></i> Camp Theme</div>
+    <div class="toggle-row two">
+      <button class="toggle-btn active-orange" data-theme-preset="Arduino Robotics &amp; Electronics" onclick="setThemePreset(this)">⚙️ Arduino Robotics</button>
+      <button class="toggle-btn" data-theme-preset="AI Skills for Kids" onclick="setThemePreset(this)">🤖 AI Skills</button>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label for="theme-custom">Or type a custom theme (anything — not limited to our courses)</label>
+      <input type="text" id="theme-custom" placeholder="e.g. Space &amp; Rockets, Green Energy, Game Design" oninput="onCustomTheme()">
+      <p class="hint">Custom themes are designed from scratch by our AI planner.</p>
+    </div>
+  </div>
+
+  <!-- AGE BANDS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users-group"></i> Age Bands &amp; Numbers</div>
+    <p class="hint" style="margin-bottom:12px">Add a row per age band with how many children are in it. We'll split each band into small groups automatically.</p>
+    <div id="bands"></div>
+    <button class="add-band" onclick="addBand()">＋ Add another age band</button>
+    <div class="tally" id="tally">Total: 0 children</div>
+  </div>
+
+  <!-- DAY DETAILS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar"></i> Day Details</div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="camp-date">Camp date</label>
+        <input type="text" id="camp-date" placeholder="e.g. Saturday 15 August 2026">
+      </div>
+      <div class="form-group">
+        <label for="venue">Venue (optional)</label>
+        <input type="text" id="venue" placeholder="e.g. Sunrise Academy Hall">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Max children per group</label>
+      <div class="two-col">
+        <input type="number" id="max-group" value="10" min="4" max="20">
+        <div></div>
+      </div>
+      <p class="hint">Smaller groups mean more hands-on time per child (and more facilitators needed).</p>
+    </div>
+    <div class="form-group">
+      <label>Duration</label>
+      <div class="dur-row">
+        <button class="dur-btn active-orange" data-dur="full" onclick="setDuration('full')">Full day</button>
+        <button class="dur-btn" data-dur="240" onclick="setDuration('240')">4 hours</button>
+        <button class="dur-btn" data-dur="180" onclick="setDuration('180')">3 hours</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="submit()">
+    <i class="ti ti-wand"></i> Plan My Camp
+  </button>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p id="loading-msg" style="color:var(--text-2);font-size:14px">Submitting your request…</p>
+    <p id="loading-sub" style="color:var(--text-3);font-size:12px;margin-top:4px"></p>
+  </div>
+
+  <div class="success-box" id="success-box">
+    <div id="generating-area">
+      <h3>⏳ Planning your camp…</h3>
+      <p>A full multi-group plan takes 1–3 minutes. This page will update automatically when it's ready.</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <p id="poll-msg" style="font-size:12px;color:var(--text-3);margin-top:8px">Starting…</p>
+    </div>
+    <div id="ready-area" style="display:none">
+      <h3 style="color:var(--green-dark)">✅ Your camp plan is ready!</h3>
+      <div class="dl-row">
+        <a id="btn-preview" class="btn-dl btn-preview" target="_blank" rel="noopener">👁 Preview</a>
+        <a id="btn-download" class="btn-dl btn-download" download>⬇ Download PDF</a>
+      </div>
+      <iframe id="pdf-frame" class="pdf-frame" title="Camp plan preview"></iframe>
+    </div>
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+</div>
+
+<footer>
+  <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
+  <p style="margin-top:6px"><a href="curriculumgenerator.html">← Single-session Curriculum Generator</a> · <a href="index.html">Course Picker</a></p>
+</footer>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────────────────────
+// Same Google Form + optional GitHub token setup as the curriculum generator.
+const GOOGLE_FORM_ID = '1FAIpQLSdk2owabXMyT77go8Md4GDziEyG6ICxJ9fEPHmM_lZM4Q_wLQ';
+const GF = {
+  name:    'entry.2112029396',
+  email:   'entry.1021403262',
+  org:     'entry.959896618',
+  country: 'entry.710652329',
+  role:    'entry.531199886',
+};
+// (Optional) fine-grained PAT with "Actions: write" on the repo. Leave empty to
+// trigger the "Camp Planner Agent" workflow manually from the Actions tab.
+const GITHUB_TOKEN = '';
+const GITHUB_REPO  = 'anny320/tinkerwithme';
+// ───────────────────────────────────────────────────────────────────────────────
+
+let currentTheme    = 'Arduino Robotics & Electronics';
+let selectedDuration = 'full';
+
+// Preload the worked example: a 51-child camp across three bands.
+const DEFAULT_BANDS = [
+  {age:'7-9',   count:20},
+  {age:'10-12', count:19},
+  {age:'13-15', count:12},
+];
+
+function bandRowHtml(age, count){
+  return `
+    <div class="band-row">
+      <div class="form-group">
+        <label>Age band</label>
+        <input type="text" class="band-age" value="${age}" placeholder="e.g. 7-9" oninput="updateTally()">
+      </div>
+      <div class="form-group">
+        <label>Number of children</label>
+        <input type="number" class="band-count" value="${count}" min="1" oninput="updateTally()">
+      </div>
+      <button class="icon-btn" title="Remove band" onclick="this.closest('.band-row').remove();updateTally()">✕</button>
+    </div>`;
+}
+
+function addBand(age='', count=''){
+  document.getElementById('bands').insertAdjacentHTML('beforeend', bandRowHtml(age, count));
+  updateTally();
+}
+
+function updateTally(){
+  let total = 0;
+  document.querySelectorAll('.band-count').forEach(i => { total += parseInt(i.value,10) || 0; });
+  const bands = document.querySelectorAll('.band-row').length;
+  document.getElementById('tally').textContent =
+    `Total: ${total} ${total===1?'child':'children'} across ${bands} age band${bands===1?'':'s'}`;
+}
+
+function setThemePreset(btn){
+  currentTheme = btn.dataset.themePreset.replace('&amp;','&');
+  document.querySelectorAll('[data-theme-preset]').forEach(b => {
+    b.className = 'toggle-btn' + (b === btn ? ' active-orange' : '');
+  });
+  document.getElementById('theme-custom').value = '';
+}
+
+function onCustomTheme(){
+  const v = document.getElementById('theme-custom').value.trim();
+  if (v){
+    currentTheme = v;
+    document.querySelectorAll('[data-theme-preset]').forEach(b => b.className = 'toggle-btn');
+  }
+}
+
+function setDuration(d){
+  selectedDuration = d;
+  document.querySelectorAll('.dur-btn').forEach(b => {
+    b.className = 'dur-btn' + (b.dataset.dur === d ? ' active-orange' : '');
+  });
+}
+
+// Build the "7-9:20,10-12:19,13-15:12" string the workflow expects.
+function collectAgeBands(){
+  const rows = [...document.querySelectorAll('.band-row')];
+  const parts = [];
+  for (const r of rows){
+    const age = r.querySelector('.band-age').value.trim().replace(/\s+/g,'');
+    const count = parseInt(r.querySelector('.band-count').value,10);
+    if (age && count > 0) parts.push(`${age}:${count}`);
+  }
+  return parts.join(',');
+}
+
+async function submit(){
+  const name    = document.getElementById('req-name').value.trim();
+  const email   = document.getElementById('req-email').value.trim();
+  const org     = document.getElementById('req-org').value.trim();
+  const country = document.getElementById('req-country').value.trim();
+  const ageBands = collectAgeBands();
+  const campDate = document.getElementById('camp-date').value.trim();
+  const venue    = document.getElementById('venue').value.trim();
+  const maxGroup = document.getElementById('max-group').value || '10';
+
+  if (!name)  { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  if (!currentTheme) { alert('Please choose or type a camp theme.'); return; }
+  if (!ageBands) { alert('Please add at least one age band with a number of children.'); return; }
+
+  document.getElementById('loading').style.display  = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('gen-btn').disabled = true;
+
+  const setStep = (msg, sub) => {
+    document.getElementById('loading-msg').textContent = msg;
+    document.getElementById('loading-sub').textContent = sub || '';
+  };
+
+  const fetchWithTimeout = (url, opts, ms = 6000) => {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(tid));
+  };
+
+  const requestId = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+
+  try {
+    // 1. Log details to Google Forms (best-effort, non-blocking)
+    setStep('Saving your details…', 'Step 1 of 2');
+    if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
+      const body = new URLSearchParams({
+        [GF.name]: name, [GF.email]: email, [GF.org]: org,
+        [GF.country]: country, [GF.role]: 'camp-organizer',
+      });
+      try {
+        await fetchWithTimeout(
+          `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`,
+          { method: 'POST', mode: 'no-cors', body }, 6000);
+      } catch (_) {}
+    }
+
+    // 2. Trigger the Camp Planner workflow (optional — only if a token is set)
+    if (GITHUB_TOKEN) {
+      setStep('Queuing your camp plan…', 'Step 2 of 2');
+      const ghRes = await fetchWithTimeout(
+        `https://api.github.com/repos/${GITHUB_REPO}/dispatches`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            event_type: 'plan-camp',
+            client_payload: {
+              theme: currentTheme,
+              age_bands: ageBands,
+              camp_date: campDate,
+              duration: selectedDuration,
+              max_group_size: maxGroup,
+              venue: venue,
+              user_email: email,
+              user_name: name,
+              request_id: requestId,
+              ref: 'refs/heads/main',
+            },
+          }),
+        }, 10000);
+      if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
+    }
+
+    setStep('Done!', '');
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('gen-btn').style.display = 'none';
+    pollForPlan(requestId);
+
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-msg').textContent = '❌ ' + err.message;
+    document.getElementById('error-msg').style.display = 'block';
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
+async function pollForPlan(requestId){
+  const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/downloads/${requestId}.pdf`;
+  const maxWait = 8 * 60 * 1000;
+  const pollInterval = 12 * 1000;
+  const start = Date.now();
+
+  const pollMsg = document.getElementById('poll-msg');
+  const ticker = setInterval(() => {
+    const s = Math.round((Date.now() - start) / 1000);
+    pollMsg.textContent = `Planning… ${Math.floor(s / 60)}m ${s % 60}s`;
+  }, 1000);
+
+  while (Date.now() - start < maxWait) {
+    await new Promise(r => setTimeout(r, pollInterval));
+    try {
+      const res = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github.v3+json' }, cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        clearInterval(ticker);
+        showReady(data.download_url);
+        return;
+      }
+    } catch (_) {}
+  }
+  clearInterval(ticker);
+  pollMsg.textContent = 'Taking longer than expected — please refresh the page in a minute.';
+}
+
+function showReady(downloadUrl){
+  document.getElementById('generating-area').style.display = 'none';
+  document.getElementById('ready-area').style.display = 'block';
+  document.getElementById('btn-download').href = downloadUrl;
+  const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(downloadUrl)}&embedded=true`;
+  document.getElementById('btn-preview').href = viewerUrl;
+  const frame = document.getElementById('pdf-frame');
+  frame.src = viewerUrl;
+  frame.style.display = 'block';
+}
+
+// Init — preload the worked example.
+document.addEventListener('DOMContentLoaded', () => {
+  DEFAULT_BANDS.forEach(b => addBand(b.age, b.count));
+  updateTally();
+});
+</script>
+
+</body>
+</html>
