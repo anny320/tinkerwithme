@@ -38,6 +38,10 @@ on:
         description: 'Venue (optional)'
         required: false
         default: ''
+      brief:
+        description: 'Free-text notes / special requirements (e.g. "focus on Teachable Machine", "beginners, 6 laptops only")'
+        required: false
+        default: ''
       user_name:
         description: 'Name of the person the plan is prepared for'
         required: false
@@ -89,6 +93,7 @@ jobs:
           DURATION: ${{ inputs.duration || github.event.client_payload.duration || 'full' }}
           MAX_GROUP_SIZE: ${{ inputs.max_group_size || github.event.client_payload.max_group_size || '10' }}
           VENUE: ${{ inputs.venue || github.event.client_payload.venue }}
+          BRIEF: ${{ inputs.brief || github.event.client_payload.brief }}
           USER_NAME: ${{ inputs.user_name || github.event.client_payload.user_name }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
         run: python generate_camp_plan.py

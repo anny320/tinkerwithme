@@ -116,6 +116,18 @@ footer a{color:var(--orange);text-decoration:none}
     </div>
   </div>
 
+  <!-- DESCRIBE IT (free text — the main way) -->
+  <div class="card" style="border:2px solid var(--orange)">
+    <div class="card-title" style="color:var(--orange-dark)"><i class="ti ti-message-2"></i> Describe What You Want</div>
+    <div class="form-group">
+      <label for="freeform">Tell us about your session or camp in your own words</label>
+      <textarea id="freeform" rows="5" style="width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);resize:vertical" placeholder="e.g. A 2-hour intro to Arduino for eight 10-year-olds who've never coded — I'd like them to each build a traffic light. &#10;&#10;Or: Plan a full-day camp for 51 kids — 7-9 years: 20, 10-12 years: 19, 13-15 years: 12 — focused on Teachable Machine." oninput="onFreeform()"></textarea>
+      <p class="hint">Fill this in and we'll generate straight from your description — it even detects multi-group camps. Leave it blank to use the pick-from options below instead.</p>
+    </div>
+  </div>
+
+  <div id="picker-divider" style="text-align:center;color:var(--text-3);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 1.25rem">— or pick from the options below —</div>
+
   <!-- TRACK -->
   <div class="card">
     <div class="card-title"><i class="ti ti-layout-grid"></i> Track</div>
@@ -241,6 +253,10 @@ const GF = {
 //   Leave empty to handle manually from the GitHub Actions UI.
 const GITHUB_TOKEN = '';
 const GITHUB_REPO  = 'anny320/tinkerwithme'; // must be a public repo for download links to work
+// Recommended: a serverless proxy URL that holds the token server-side (see
+// serverless/README.md). If set, it's used instead of GITHUB_TOKEN so no token
+// ever sits in this page.
+const DISPATCH_PROXY = '';
 // ───────────────────────────────────────────────────────────────────────────────
 
 const DATA = {
@@ -351,10 +367,21 @@ function setDuration(d) {
   updateBtn();
 }
 
+function onFreeform() {
+  // When the free-text box has content, dim the pickers (they're ignored) and
+  // let the button enable on the text alone.
+  const hasText = document.getElementById('freeform').value.trim().length > 0;
+  document.getElementById('picker-divider').style.opacity = hasText ? '0.4' : '1';
+  updateBtn();
+}
+
 function updateBtn() {
   const btn = document.getElementById('gen-btn');
+  const freeform = document.getElementById('freeform').value.trim();
   let ok;
-  if (currentTrack === 'custom') {
+  if (freeform.length > 0) {
+    ok = true;  // free-text drives everything on its own
+  } else if (currentTrack === 'custom') {
     const topic = document.getElementById('custom-topic').value.trim();
     ok = topic.length > 0 && selectedDuration !== null;
   } else {
@@ -415,8 +442,32 @@ async function submit() {
       }
     }
 
-    // 2. Trigger GitHub Actions workflow (optional — only if token is configured)
-    if (GITHUB_TOKEN) {
+    // 2. Trigger the workflow. Prefer the serverless proxy (no token in-page);
+    //    fall back to a direct GitHub call if a token is configured; otherwise
+    //    the run is kicked off manually from the Actions tab.
+    const clientPayload = {
+      track: currentTrack,
+      projects: selectedProjects.join(','),
+      freeform_request: document.getElementById('freeform').value.trim(),
+      custom_topic: currentTrack === 'custom' ? document.getElementById('custom-topic').value.trim() : '',
+      custom_request: currentTrack === 'custom' ? document.getElementById('custom-request').value.trim() : '',
+      age_group: age,
+      duration: selectedDuration,
+      user_email: email,
+      user_name: name,
+      audience: currentAudience,
+      request_id: requestId,
+      ref: 'refs/heads/main',
+    };
+    if (DISPATCH_PROXY) {
+      setStep('Queuing curriculum generation…', 'Step 2 of 2');
+      const res = await fetchWithTimeout(DISPATCH_PROXY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event_type: 'generate-curriculum', client_payload: clientPayload }),
+      }, 10000);
+      if (!res.ok) throw new Error('Workflow trigger failed. Please try again.');
+    } else if (GITHUB_TOKEN) {
       setStep('Queuing curriculum generation…', 'Step 2 of 2');
       const ghRes = await fetchWithTimeout(
         `https://api.github.com/repos/${GITHUB_REPO}/dispatches`,
@@ -427,22 +478,7 @@ async function submit() {
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            event_type: 'generate-curriculum',
-            client_payload: {
-              track: currentTrack,
-              projects: selectedProjects.join(','),
-              custom_topic: currentTrack === 'custom' ? document.getElementById('custom-topic').value.trim() : '',
-              custom_request: currentTrack === 'custom' ? document.getElementById('custom-request').value.trim() : '',
-              age_group: age,
-              duration: selectedDuration,
-              user_email: email,
-              user_name: name,
-              audience: currentAudience,
-              request_id: requestId,
-              ref: 'refs/heads/main',
-            },
-          }),
+          body: JSON.stringify({ event_type: 'generate-curriculum', client_payload: clientPayload }),
         },
         10000,
       );
