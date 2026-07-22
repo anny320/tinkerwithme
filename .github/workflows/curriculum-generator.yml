@@ -25,6 +25,10 @@ on:
         description: 'Optional longer description of the custom request'
         required: false
         default: ''
+      freeform_request:
+        description: 'Free-text request — describe the session/camp in your own words. If set, this drives generation and other fields are ignored.'
+        required: false
+        default: ''
       age_group:
         description: 'Age group'
         required: true
@@ -106,6 +110,7 @@ jobs:
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
           CUSTOM_TOPIC: ${{ inputs.custom_topic || github.event.client_payload.custom_topic }}
           CUSTOM_REQUEST: ${{ inputs.custom_request || github.event.client_payload.custom_request }}
+          FREEFORM_REQUEST: ${{ inputs.freeform_request || github.event.client_payload.freeform_request }}
         run: python generate_curriculum.py
 
       - name: Publish PDF for download
