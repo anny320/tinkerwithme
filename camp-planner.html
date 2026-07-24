@@ -47,6 +47,17 @@ textarea{resize:vertical;min-height:70px}
 .icon-btn:hover{border-color:var(--orange);color:var(--orange-dark)}
 .add-band{margin-top:6px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;padding:4px 0}
 .tally{background:var(--orange-light);color:var(--orange-dark);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+@media(max-width:560px){.proj-grid{grid-template-columns:1fr}}
+.proj-item{display:flex;gap:9px;align-items:flex-start;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);padding:9px 11px;cursor:pointer;background:var(--bg);transition:border-color .15s,background .15s}
+.proj-item:hover{border-color:var(--orange)}
+.proj-item.checked{border-color:var(--orange);background:var(--orange-light)}
+.proj-item input{width:auto;margin-top:2px;flex:0 0 auto}
+.proj-item .p-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.proj-item .p-meta{font-size:11px;color:var(--text-3);margin-top:2px}
+.proj-tools{display:flex;gap:14px;margin:2px 0 10px}
+.proj-tools button{background:none;border:none;color:var(--blue);font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;padding:0}
+.level-tag{display:inline-block;background:var(--blue-light);color:var(--blue-dark);border-radius:var(--radius-pill);font-size:10px;font-weight:700;padding:1px 7px;margin-left:5px}
 .gen-btn{display:block;width:100%;padding:16px;border-radius:var(--radius);border:none;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.15s;margin-top:1.25rem;background:var(--blue);color:#fff;font-family:inherit}
 .gen-btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
 .gen-btn:disabled{opacity:0.4;cursor:not-allowed}
@@ -119,6 +130,18 @@ footer a{color:var(--orange);text-decoration:none}
       <input type="text" id="theme-custom" placeholder="e.g. Space &amp; Rockets, Green Energy, Game Design" oninput="onCustomTheme()">
       <p class="hint">Custom themes are designed from scratch by our AI planner.</p>
     </div>
+  </div>
+
+  <!-- PROJECT PICKER (catalogue themes only) -->
+  <div class="card" id="proj-card" style="display:none">
+    <div class="card-title"><i class="ti ti-checklist"></i> Choose Specific Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <p class="hint" style="margin-bottom:10px">Leave everything unticked and we'll auto-pick the best-fitting projects for each age band. Or tick the exact projects you want — each band gets the best fit for its age from your selection.</p>
+    <div class="proj-tools">
+      <button type="button" onclick="selectAllProjects(true)">Select all</button>
+      <button type="button" onclick="selectAllProjects(false)">Clear</button>
+      <span class="hint" id="proj-count" style="margin-left:auto"></span>
+    </div>
+    <div class="proj-grid" id="proj-grid"></div>
   </div>
 
   <!-- AGE BANDS -->
@@ -270,6 +293,7 @@ function setThemePreset(btn){
     b.className = 'toggle-btn' + (b === btn ? ' active-orange' : '');
   });
   document.getElementById('theme-custom').value = '';
+  refreshProjectPicker();
 }
 
 function onCustomTheme(){
@@ -278,6 +302,76 @@ function onCustomTheme(){
     currentTheme = v;
     document.querySelectorAll('[data-theme-preset]').forEach(b => b.className = 'toggle-btn');
   }
+  refreshProjectPicker();
+}
+
+// ─── Project picker (catalogue themes only) ──────────────────────────────────
+let CATALOGUE = null;      // { arduino:{projects:[…]}, ai:{…} } from courses.json
+let pickerTrack = null;    // track currently rendered in the picker
+
+// Mirror generate_camp_plan.resolve_track: map a theme to a catalogue track.
+const ARDUINO_KW = ['arduino','robot','electronic','circuit','microcontroller','micro:bit','microbit','sensor','soldering'];
+const AI_KW = ['teachable machine','machine learning','artificial intelligence','chatgpt','chatbot','neural network','generative ai','ai skills','ai literacy','prompt'];
+function trackForTheme(theme){
+  const t = (theme || '').toLowerCase();
+  if (ARDUINO_KW.some(k => t.includes(k))) return 'arduino';
+  if (/\ba\.?i\.?\b/.test(t) || AI_KW.some(k => t.includes(k))) return 'ai';
+  return 'custom';
+}
+
+function renderProjects(track){
+  const grid = document.getElementById('proj-grid');
+  const projects = (CATALOGUE && CATALOGUE[track] && CATALOGUE[track].projects) || [];
+  grid.innerHTML = projects.map(p => `
+    <label class="proj-item" data-id="${p.id}">
+      <input type="checkbox" class="proj-check" value="${p.id}" onchange="onProjToggle(this)">
+      <span>
+        <span class="p-title">${p.icon ? p.icon + ' ' : ''}${p.title}${p.level ? `<span class="level-tag">L${p.level}</span>` : ''}</span>
+        <span class="p-meta">${p.diff} · ${p.age} · ~${p.time} min</span>
+      </span>
+    </label>`).join('');
+  updateProjCount();
+}
+
+function onProjToggle(cb){
+  cb.closest('.proj-item').classList.toggle('checked', cb.checked);
+  updateProjCount();
+}
+
+function selectAllProjects(state){
+  document.querySelectorAll('.proj-check').forEach(cb => {
+    cb.checked = state;
+    cb.closest('.proj-item').classList.toggle('checked', state);
+  });
+  updateProjCount();
+}
+
+function updateProjCount(){
+  const n = document.querySelectorAll('.proj-check:checked').length;
+  document.getElementById('proj-count').textContent =
+    n ? `${n} selected — only these will be used` : 'None selected — we\'ll auto-pick';
+}
+
+// Show the picker for catalogue themes; hide (and clear) it for custom themes.
+function refreshProjectPicker(){
+  const card = document.getElementById('proj-card');
+  const track = trackForTheme(currentTheme);
+  if (track === 'custom' || !CATALOGUE || !CATALOGUE[track]){
+    card.style.display = 'none';
+    pickerTrack = null;
+    return;
+  }
+  card.style.display = 'block';
+  if (track !== pickerTrack){   // track changed — re-render (IDs differ per track)
+    pickerTrack = track;
+    renderProjects(track);
+  }
+}
+
+function collectProjectIds(){
+  // Only meaningful for catalogue themes; custom themes ignore it.
+  if (document.getElementById('proj-card').style.display === 'none') return '';
+  return [...document.querySelectorAll('.proj-check:checked')].map(cb => cb.value).join(',');
 }
 
 function setDuration(d){
@@ -309,6 +403,7 @@ async function submit(){
   const venue    = document.getElementById('venue').value.trim();
   const brief    = document.getElementById('brief').value.trim();
   const maxGroup = document.getElementById('max-group').value || '10';
+  const projectIds = collectProjectIds();
 
   if (!name)  { alert('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
@@ -358,6 +453,7 @@ async function submit(){
       max_group_size: maxGroup,
       venue: venue,
       brief: brief,
+      project_ids: projectIds,
       user_email: email,
       user_name: name,
       request_id: requestId,
@@ -440,10 +536,15 @@ function showReady(downloadUrl){
   frame.style.display = 'block';
 }
 
-// Init — preload the worked example.
-document.addEventListener('DOMContentLoaded', () => {
+// Init — load the catalogue (for the project picker) and preload band rows.
+document.addEventListener('DOMContentLoaded', async () => {
   DEFAULT_BANDS.forEach(b => addBand(b.age, b.count));
   updateTally();
+  try {
+    const res = await fetch('courses.json', { cache: 'no-store' });
+    if (res.ok) CATALOGUE = await res.json();
+  } catch (_) { /* picker stays hidden if the catalogue can't load */ }
+  refreshProjectPicker();   // default theme is Arduino → show its projects
 });
 </script>
 
