@@ -1,0 +1,10 @@
+{
+  "id": "a11",
+  "track": "ai",
+  "title": "Good Data, Bad Data",
+  "diff": "Intermediate",
+  "age": "10-13 yrs",
+  "time": 75,
+  "desc": "Clean and sort data to see how the quality of data shapes what AI learns",
+  "content_html": "<h2>What we're doing</h2>\n<p>AI learns from data, and the data has to be fair and complete for the AI to be any good.  Bad data creates bad decisions — an AI can only be as good as what it learns from.</p>\n<h2>Activity</h2>\n<p>Run a quick class survey (e.g. favourite fruit) and record the results. Then interrogate the data together: Did everyone get to answer? Was anyone left out? Would the result change if you only asked half the class? Discuss how a missing or unfair sample would teach an AI the wrong thing.</p>\n<h2>Key takeaway</h2>\n<p>Fair, complete data in — trustworthy decisions out. Gaps and bias in the data become gaps and bias in the AI.</p>\n<h2>Quick check</h2>\n<p><strong>AI learns best from data that is:</strong></p>\n<ul><li>Random</li><li><strong>Fair and complete ✔</strong></li><li>Small</li></ul>\n"
+}

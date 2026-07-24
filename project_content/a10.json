@@ -1,0 +1,10 @@
+{
+  "id": "a10",
+  "track": "ai",
+  "title": "How AI systems work",
+  "diff": "Intermediate",
+  "age": "10-13 yrs",
+  "time": 60,
+  "desc": "Follow the input → model → output pipeline with hands-on examples",
+  "content_html": "<h2>What we're doing</h2>\n<p>Every AI system has three parts: an input, a process in the middle, and an output.  AI does not work on its own — a person designs what goes in, what happens, and what comes out.</p>\n<h2>Activity</h2>\n<p>Draw the pipeline on the board: INPUT → AI SYSTEM → OUTPUT. Work an example together — Input: your homework dates; Process: the app checks the calendar; Output: a reminder pops up. Then have each group pick three everyday AI tools (a photo filter, a voice assistant, a video recommendation) and label the input, the process, and the output for each.</p>\n<h2>Key takeaway</h2>\n<p>If you can name the input and the output, you understand what an AI system is doing.</p>\n<h2>Quick check</h2>\n<p><strong>What comes first in an AI system?</strong></p>\n<ul><li>Output</li><li><strong>Input ✔</strong></li><li>Result</li></ul>\n"
+}
