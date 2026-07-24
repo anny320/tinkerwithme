@@ -246,6 +246,21 @@ def _range_overlap(a, b):
     return max(0, min(a[1], b[1]) - max(a[0], b[0]) + 1)
 
 
+def resolve_selected_projects(selected_ids):
+    """Resolve explicit project IDs to project dicts across ALL tracks, in order.
+
+    Unlike assign_catalogue_projects (which is scoped to one track), this looks up
+    IDs in both the Arduino and AI catalogues, so an organiser can hand-pick a
+    mixed camp — e.g. traffic lights + alarm + smart city (Arduino) plus Teachable
+    Machine + AI art (AI). Unknown IDs are skipped.
+    """
+    by_id = {}
+    for _track, data in COURSE_DATA.items():
+        for p in data.get("projects", []):
+            by_id.setdefault(p["id"], p)
+    return [by_id[pid] for pid in selected_ids if pid in by_id]
+
+
 def assign_catalogue_projects(band_label, track, n, brief="", selected_ids=None):
     """Pick up to n age-appropriate catalogue projects for a band.
 
@@ -661,11 +676,19 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
         # numbered project cards stay in lock-step.
         programme_html = None
         topic_index = ""
-        if track in ("arduino", "ai"):
+        plan = None
+        # An explicit hand-picked list may span both tracks (a mixed Arduino + AI
+        # camp), so resolve it across the whole catalogue and give every band the
+        # same chosen topics. Otherwise fall back to per-track age-appropriate picks.
+        selected_projects = resolve_selected_projects(selected_ids) if selected_ids else []
+        if selected_projects:
+            plan = [(b, list(selected_projects)) for b in bands]
+            programme_html = build_camp_programme_from_cache(None, plan, groups, brief)
+        elif track in ("arduino", "ai"):
             plan = plan_band_projects(track, bands, is_full_day, brief, selected_ids)
             programme_html = build_camp_programme_from_cache(track, plan, groups, brief)
         if programme_html is not None:
-            print(f"🟢 Static path — assembled from cache (track: {track}), no AI tokens used")
+            print(f"🟢 Static path — assembled from cache, no AI tokens used")
             topic_index = build_topic_index(plan)   # numbering matches the cards
         else:
             print(f"✨ AI path — generating programme (track: {track})…")
