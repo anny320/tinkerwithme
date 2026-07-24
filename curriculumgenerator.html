@@ -259,40 +259,9 @@ const GITHUB_REPO  = 'anny320/tinkerwithme'; // must be a public repo for downlo
 const DISPATCH_PROXY = '';
 // ───────────────────────────────────────────────────────────────────────────────
 
-const DATA = {
-  arduino: {
-    projects: [
-      {id:'ar1',title:'Traffic light simulation',diff:'Beginner',age:'6-9 yrs',time:60},
-      {id:'ar2',title:'Button controlled LED',diff:'Beginner',age:'6-9 yrs',time:45},
-      {id:'ar3',title:'Fade an LED',diff:'Beginner',age:'6-9 yrs',time:45},
-      {id:'ar4',title:'RGB LED colour mixer',diff:'Beginner',age:'6-9 yrs',time:60},
-      {id:'ar5',title:'Capacitive touch sensor',diff:'Beginner',age:'10-12 yrs',time:60},
-      {id:'ar6',title:'Buzzer melody',diff:'Beginner',age:'6-9 yrs',time:60},
-      {id:'ar7',title:'Morse code blinker',diff:'Intermediate',age:'10-12 yrs',time:75},
-      {id:'ar8',title:'Temperature logger',diff:'Intermediate',age:'10-12 yrs',time:90},
-      {id:'ar9',title:'Ultrasonic distance sensor',diff:'Intermediate',age:'10-12 yrs',time:75},
-      {id:'ar10',title:'Servo motor control',diff:'Intermediate',age:'10-12 yrs',time:75},
-      {id:'ar11',title:'Light-activated LED',diff:'Beginner',age:'6-9 yrs',time:60},
-      {id:'ar12',title:'Digital dice',diff:'Intermediate',age:'10-12 yrs',time:90},
-      {id:'ar13',title:'Basic alarm system',diff:'Intermediate',age:'10-12 yrs',time:90},
-      {id:'ar14',title:'Fan control',diff:'Advanced',age:'13-15 yrs',time:90},
-      {id:'ar15',title:'Simon says game',diff:'Advanced',age:'13-15 yrs',time:120},
-    ]
-  },
-  ai: {
-    projects: [
-      {id:'a1',title:'Prompting power',diff:'Beginner',age:'7-10 yrs',time:60},
-      {id:'a2',title:'AI art studio',diff:'Beginner',age:'7-10 yrs',time:60},
-      {id:'a3',title:'AI music & sound',diff:'Beginner',age:'7-10 yrs',time:60},
-      {id:'a4',title:'AI storytelling',diff:'Beginner',age:'10-13 yrs',time:75},
-      {id:'a5',title:'Teachable Machine',diff:'Intermediate',age:'10-13 yrs',time:90},
-      {id:'a6',title:'Mashup madness',diff:'Intermediate',age:'10-13 yrs',time:90},
-      {id:'a7',title:'Bias detective',diff:'Intermediate',age:'13-16 yrs',time:75},
-      {id:'a8',title:'AI careers deep dive',diff:'Intermediate',age:'13-16 yrs',time:60},
-      {id:'a9',title:'Build your portfolio',diff:'Advanced',age:'13-16 yrs',time:120},
-    ]
-  }
-};
+// Catalogue is loaded at startup from the shared courses.json (single source of
+// truth). Add a project there once — this page picks it up automatically.
+let DATA = { arduino: { projects: [] }, ai: { projects: [] } };
 
 let currentTrack    = 'arduino';
 let currentAudience = 'classroom';
@@ -546,7 +515,14 @@ function showReady(downloadUrl) {
 }
 
 // Init
-document.addEventListener('DOMContentLoaded', updateProjects);
+async function loadCourses() {
+  try {
+    const res = await fetch('courses.json', { cache: 'no-store' });
+    if (res.ok) DATA = await res.json();
+  } catch (_) { /* keep empty catalogue; the custom/free-text paths still work */ }
+  updateProjects();
+}
+document.addEventListener('DOMContentLoaded', loadCourses);
 </script>
 
 </body>

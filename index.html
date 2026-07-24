@@ -615,44 +615,10 @@ footer a:hover{text-decoration:underline}
 <script>
 document.getElementById('yr').textContent=new Date().getFullYear();
 
-const DATA={
-  arduino:{
-    ages:['6-9 yrs','10-12 yrs','13-15 yrs','All ages'],
-    projects:[
-      {id:'ar1',icon:'ti-traffic-lights',title:'Traffic light simulation',diff:'Beginner',age:'6-9 yrs',time:60,desc:'3 LEDs mimic real traffic light sequences'},
-      {id:'ar2',icon:'ti-hand-click',title:'Button controlled LED',diff:'Beginner',age:'6-9 yrs',time:45,desc:'Push button toggles LED on/off'},
-      {id:'ar3',icon:'ti-brightness',title:'Fade an LED',diff:'Beginner',age:'6-9 yrs',time:45,desc:'PWM & analogWrite() to dim LED smoothly'},
-      {id:'ar4',icon:'ti-palette',title:'RGB LED colour mixer',diff:'Beginner',age:'6-9 yrs',time:60,desc:'3 potentiometers mix red, green & blue'},
-      {id:'ar5',icon:'ti-hand-finger',title:'Capacitive touch sensor',diff:'Beginner',age:'10-12 yrs',time:60,desc:'Touch sensor module toggles an LED'},
-      {id:'ar6',icon:'ti-music',title:'Buzzer melody',diff:'Beginner',age:'6-9 yrs',time:60,desc:'Piezo buzzer plays tunes like Ode to Joy'},
-      {id:'ar7',icon:'ti-dots',title:'Morse code blinker',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'LED blinks out Morse code messages'},
-      {id:'ar8',icon:'ti-temperature',title:'Temperature logger',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'DHT11 reads & displays temperature'},
-      {id:'ar9',icon:'ti-radar',title:'Ultrasonic distance sensor',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'HC-SR04 measures distance, LED warns on proximity'},
-      {id:'ar10',icon:'ti-rotate-clockwise',title:'Servo motor control',diff:'Intermediate',age:'10-12 yrs',time:75,desc:'Potentiometer steers servo to any position'},
-      {id:'ar11',icon:'ti-sun',title:'Light-activated LED',diff:'Beginner',age:'6-9 yrs',time:60,desc:'Photoresistor auto-lights LED when dark'},
-      {id:'ar12',icon:'ti-dice-5',title:'Digital dice',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'Multiple LEDs randomly show a dice roll'},
-      {id:'ar13',icon:'ti-bell',title:'Basic alarm system',diff:'Intermediate',age:'10-12 yrs',time:90,desc:'Motion sensor triggers buzzer & LED alarm'},
-      {id:'ar14',icon:'ti-wind',title:'Fan control',diff:'Advanced',age:'13-15 yrs',time:90,desc:'Temperature sensor controls relay-powered fan'},
-      {id:'ar15',icon:'ti-gamepad',title:'Simon says game',diff:'Advanced',age:'13-15 yrs',time:120,desc:'Classic memory game with LEDs, buttons & buzzer'},
-    ]
-  },
-  ai:{
-    ages:['7-10 yrs','10-13 yrs','13-16 yrs','All ages'],
-    projects:[
-      {id:'a1',icon:'ti-message-circle',title:'Prompting power',diff:'Beginner',age:'7-10 yrs',time:60,desc:'ChatGPT basics — ask better questions'},
-      {id:'a2',icon:'ti-photo-ai',title:'AI art studio',diff:'Beginner',age:'7-10 yrs',time:60,desc:'DALL-E image generation workshop'},
-      {id:'a3',icon:'ti-music',title:'AI music & sound',diff:'Beginner',age:'7-10 yrs',time:60,desc:'Generate soundtracks and beats'},
-      {id:'a4',icon:'ti-book-2',title:'AI storytelling',diff:'Beginner',age:'10-13 yrs',time:75,desc:'Write illustrated stories with AI'},
-      {id:'a5',icon:'ti-cpu',title:'Teachable Machine',diff:'Intermediate',age:'10-13 yrs',time:90,desc:'Train your own image classifier'},
-      {id:'a6',icon:'ti-palette',title:'Mashup madness',diff:'Intermediate',age:'10-13 yrs',time:90,desc:'Combine multiple AI tools creatively'},
-      {id:'a7',icon:'ti-scale',title:'Bias detective',diff:'Intermediate',age:'13-16 yrs',time:75,desc:'Find and discuss bias in AI tools'},
-      {id:'a8',icon:'ti-briefcase',title:'AI careers deep dive',diff:'Intermediate',age:'13-16 yrs',time:60,desc:'ML engineers, ethicists, data scientists'},
-      {id:'a9',icon:'ti-rocket',title:'Build your portfolio',diff:'Advanced',age:'13-16 yrs',time:120,desc:'GitHub, pitch deck, and showcase prep'},
-    ]
-  }
-};
-// Apply any course edits saved via admin.html
-try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
+// Catalogue is loaded at startup from the shared courses.json (single source of
+// truth, shared with the generators and pregenerate.py). Add a project there
+// once. Any local edits saved via admin.html are merged on top.
+let DATA={arduino:{ages:[],projects:[]},ai:{ages:[],projects:[]}};
 
 let track='arduino',selectedAge='All ages',selected=[],duration=null,planText='';
 
@@ -977,7 +943,16 @@ function renderCatalog(){
   }).join('');
 }
 
-renderAge();renderGrid();renderBasket();renderDur();renderCatalog();
+async function loadCourses(){
+  try{
+    const res=await fetch('courses.json',{cache:'no-store'});
+    if(res.ok){const d=await res.json();if(d.arduino)DATA.arduino=d.arduino;if(d.ai)DATA.ai=d.ai;}
+  }catch(e){}
+  // Apply any course edits saved via admin.html
+  try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
+  renderAge();renderGrid();renderBasket();renderDur();renderCatalog();
+}
+loadCourses();
 </script>
 
 <a class="sticky-wa" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20find%20out%20more%20about%20TinkerWithMe%20sessions." target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><i class="ti ti-brand-whatsapp"></i></a>

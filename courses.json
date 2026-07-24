@@ -1,0 +1,45 @@
+{
+  "arduino": {
+    "ages": ["6-9 yrs", "10-12 yrs", "13-15 yrs", "All ages"],
+    "projects": [
+      {"id": "ar1", "icon": "ti-traffic-lights", "title": "Traffic light simulation", "diff": "Beginner", "age": "6-9 yrs", "time": 60, "level": 1, "desc": "3 LEDs mimic real traffic light sequences"},
+      {"id": "ar2", "icon": "ti-hand-click", "title": "Button controlled LED", "diff": "Beginner", "age": "6-9 yrs", "time": 45, "level": 1, "desc": "Push button toggles LED on/off"},
+      {"id": "ar3", "icon": "ti-brightness", "title": "Fade an LED", "diff": "Beginner", "age": "6-9 yrs", "time": 45, "level": 1, "desc": "PWM & analogWrite() to dim LED smoothly"},
+      {"id": "ar4", "icon": "ti-palette", "title": "RGB LED colour mixer", "diff": "Beginner", "age": "6-9 yrs", "time": 60, "level": 1, "desc": "3 potentiometers mix red, green & blue"},
+      {"id": "ar5", "icon": "ti-hand-finger", "title": "Capacitive touch sensor", "diff": "Beginner", "age": "10-12 yrs", "time": 60, "level": 2, "desc": "Touch sensor module toggles an LED"},
+      {"id": "ar6", "icon": "ti-music", "title": "Buzzer melody", "diff": "Beginner", "age": "6-9 yrs", "time": 60, "level": 1, "desc": "Piezo buzzer plays tunes like Ode to Joy"},
+      {"id": "ar7", "icon": "ti-dots", "title": "Morse code blinker", "diff": "Intermediate", "age": "10-12 yrs", "time": 75, "level": 2, "desc": "LED blinks out Morse code messages"},
+      {"id": "ar8", "icon": "ti-temperature", "title": "Temperature logger", "diff": "Intermediate", "age": "10-12 yrs", "time": 90, "level": 2, "desc": "DHT11 reads & displays temperature"},
+      {"id": "ar9", "icon": "ti-radar", "title": "Ultrasonic distance sensor", "diff": "Intermediate", "age": "10-12 yrs", "time": 75, "level": 2, "desc": "HC-SR04 measures distance, LED warns on proximity"},
+      {"id": "ar10", "icon": "ti-rotate-clockwise", "title": "Servo motor control", "diff": "Intermediate", "age": "10-12 yrs", "time": 75, "level": 2, "desc": "Potentiometer steers servo to any position"},
+      {"id": "ar11", "icon": "ti-sun", "title": "Light-activated LED", "diff": "Beginner", "age": "6-9 yrs", "time": 60, "level": 1, "desc": "Photoresistor auto-lights LED when dark"},
+      {"id": "ar12", "icon": "ti-dice-5", "title": "Digital dice", "diff": "Intermediate", "age": "10-12 yrs", "time": 90, "level": 3, "desc": "Multiple LEDs randomly show a dice roll"},
+      {"id": "ar13", "icon": "ti-bell", "title": "Basic alarm system", "diff": "Intermediate", "age": "10-12 yrs", "time": 90, "level": 3, "desc": "Motion sensor triggers buzzer & LED alarm"},
+      {"id": "ar14", "icon": "ti-wind", "title": "Fan control", "diff": "Advanced", "age": "13-15 yrs", "time": 90, "level": 4, "desc": "Temperature sensor controls relay-powered fan"},
+      {"id": "ar15", "icon": "ti-gamepad", "title": "Simon says game", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 3, "desc": "Classic memory game with LEDs, buttons & buzzer"},
+      {"id": "ar16", "icon": "ti-robot", "title": "Line-following robot", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 4, "desc": "IR sensors steer a two-motor chassis along a track"},
+      {"id": "ar17", "icon": "ti-building-skyscraper", "title": "Smart city", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 4, "desc": "Coordinated traffic lights, street lights & a parking sensor on one build"},
+      {"id": "ar18", "icon": "ti-radar-2", "title": "Obstacle-avoiding robot", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 4, "desc": "Ultrasonic sensor steers the robot around obstacles"},
+      {"id": "ar19", "icon": "ti-cloud", "title": "Weather station", "diff": "Advanced", "age": "13-15 yrs", "time": 90, "level": 4, "desc": "DHT11 + LCD logs temperature & humidity"},
+      {"id": "ar20", "icon": "ti-microphone", "title": "Voice- / gesture-controlled robot", "diff": "Advanced", "age": "13-15 yrs", "time": 150, "level": 4, "desc": "A Teachable Machine model drives an Arduino robot — an AI × Arduino crossover"}
+    ]
+  },
+  "ai": {
+    "ages": ["7-10 yrs", "10-13 yrs", "13-16 yrs", "All ages"],
+    "projects": [
+      {"id": "a1", "icon": "ti-message-circle", "title": "Prompting power", "diff": "Beginner", "age": "7-10 yrs", "time": 60, "level": 1, "desc": "ChatGPT basics — ask better questions"},
+      {"id": "a2", "icon": "ti-photo-ai", "title": "AI art studio", "diff": "Beginner", "age": "7-10 yrs", "time": 60, "level": 1, "desc": "DALL-E image generation workshop"},
+      {"id": "a3", "icon": "ti-music", "title": "AI music & sound", "diff": "Beginner", "age": "7-10 yrs", "time": 60, "level": 1, "desc": "Generate soundtracks and beats"},
+      {"id": "a4", "icon": "ti-book-2", "title": "AI storytelling", "diff": "Beginner", "age": "10-13 yrs", "time": 75, "level": 3, "desc": "Write illustrated stories with AI"},
+      {"id": "a5", "icon": "ti-cpu", "title": "Teachable Machine", "diff": "Intermediate", "age": "10-13 yrs", "time": 90, "level": 2, "desc": "Train your own image classifier"},
+      {"id": "a6", "icon": "ti-palette", "title": "Mashup madness", "diff": "Intermediate", "age": "10-13 yrs", "time": 90, "level": 3, "desc": "Combine multiple AI tools creatively"},
+      {"id": "a7", "icon": "ti-scale", "title": "Bias detective", "diff": "Intermediate", "age": "13-16 yrs", "time": 75, "level": 4, "desc": "Find and discuss bias in AI tools"},
+      {"id": "a8", "icon": "ti-briefcase", "title": "AI careers deep dive", "diff": "Intermediate", "age": "13-16 yrs", "time": 60, "level": 5, "desc": "ML engineers, ethicists, data scientists"},
+      {"id": "a9", "icon": "ti-rocket", "title": "Build your portfolio", "diff": "Advanced", "age": "13-16 yrs", "time": 120, "level": 5, "desc": "GitHub, pitch deck, and showcase prep"},
+      {"id": "a10", "icon": "ti-sitemap", "title": "How AI systems work", "diff": "Intermediate", "age": "10-13 yrs", "time": 60, "level": 2, "desc": "Follow the input → model → output pipeline with hands-on examples"},
+      {"id": "a11", "icon": "ti-database", "title": "Good Data, Bad Data", "diff": "Intermediate", "age": "10-13 yrs", "time": 75, "level": 2, "desc": "Clean and sort data to see how the quality of data shapes what AI learns"},
+      {"id": "a12", "icon": "ti-shield-check", "title": "Ethical AI design", "diff": "Advanced", "age": "13-16 yrs", "time": 75, "level": 5, "desc": "Design an AI feature with fairness, privacy and safety in mind"},
+      {"id": "a13", "icon": "ti-presentation", "title": "Explain AI to others", "diff": "Intermediate", "age": "13-16 yrs", "time": 60, "level": 5, "desc": "Prepare and give a clear talk that teaches AI to a younger audience"}
+    ]
+  }
+}
