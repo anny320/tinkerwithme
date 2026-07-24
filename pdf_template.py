@@ -221,6 +221,111 @@ CSS = """
             background: none;
             padding: 0;
         }
+
+        /* ── Executive summary ─────────────────────────────────────────── */
+        .exec-summary {
+            background: #FAFAF7;
+            border: 1px solid #eee;
+            border-left: 4px solid #F07B1D;
+            border-radius: 8px;
+            padding: 1rem 1.2rem 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .exec-summary h2 { margin-top: 0.5rem; }
+        .exec-summary h2:first-child { margin-top: 0; }
+
+        .stats {
+            margin: 0.9rem 0 0.3rem;
+        }
+        .stat {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 0.45rem 0.7rem;
+            margin: 0 0.4rem 0.4rem 0;
+            min-width: 78px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .stat .n {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: #C45C00;
+            line-height: 1.2;
+        }
+        .stat .l {
+            display: block;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #B08060;
+            margin-top: 2px;
+        }
+
+        /* ── Programme: per-topic cards ────────────────────────────────── */
+        .band-head {
+            border-bottom: 2px solid #F07B1D;
+            padding-bottom: 0.35rem;
+            margin-top: 1.8rem;
+        }
+
+        .project {
+            margin: 1rem 0 1.4rem;
+        }
+        .project-head {
+            background: #2A1A0E;
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.55rem 0.85rem;
+            margin: 1.3rem 0 0.8rem;
+            break-after: avoid;
+            page-break-after: avoid;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .project-head .num {
+            display: inline-block;
+            background: #F07B1D;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .project-head .title {
+            font-size: 15px;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .project-head .meta {
+            display: block;
+            font-size: 9.5px;
+            color: #FFB870;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 3px;
+            margin-left: 30px;
+        }
+        /* Demote each project's internal section headers so the topic title
+           (the dark bar above) is clearly the dominant heading. */
+        .project-body h2 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #C45C00;
+            border: none;
+            margin: 0.9rem 0 0.35rem;
+            padding: 0;
+        }
+        .project-body h3 { font-size: 12.5px; }
 """
 
 
