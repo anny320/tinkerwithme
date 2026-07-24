@@ -167,14 +167,7 @@ footer a{color:var(--orange);text-decoration:none}
   <div class="card">
     <div class="card-title"><i class="ti ti-users"></i> Age Group</div>
     <div class="form-group">
-      <select id="age-group" onchange="updateProjects()">
-        <option value="6-9 yrs">6–9 years old</option>
-        <option value="10-12 yrs">10–12 years old</option>
-        <option value="13-15 yrs">13–15 years old</option>
-        <option value="7-10 yrs">7–10 years old (AI)</option>
-        <option value="10-13 yrs">10–13 years old (AI)</option>
-        <option value="13-16 yrs">13–16 years old (AI)</option>
-      </select>
+      <select id="age-group" onchange="updateProjects()"></select>
     </div>
   </div>
 
@@ -280,8 +273,20 @@ function setTrack(t) {
   document.getElementById('track-hint').innerHTML = isCustom
     ? 'We\'ll design a plan from scratch for whatever you type below.'
     : 'Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.';
-  if (!isCustom) updateProjects();
+  if (!isCustom) { populateAges(); updateProjects(); }
   updateBtn();
+}
+
+// Fill the age dropdown from the selected track's own bands, "All ages" first.
+function populateAges() {
+  const sel = document.getElementById('age-group');
+  const track = DATA[currentTrack];
+  const bands = (track && track.ages ? track.ages : []).filter(a => a !== 'All ages');
+  const prev = sel.value;
+  sel.innerHTML = ['All ages', ...bands]
+    .map(a => `<option value="${a}">${a === 'All ages' ? 'All ages' : a}</option>`).join('');
+  // keep the current choice if it still exists, else default to All ages
+  sel.value = [...sel.options].some(o => o.value === prev) ? prev : 'All ages';
 }
 
 function setAudience(a) {
@@ -297,7 +302,7 @@ function setAudience(a) {
 function updateProjects() {
   if (currentTrack === 'custom' || !DATA[currentTrack]) return;
   const ageGroup = document.getElementById('age-group').value;
-  const projects = DATA[currentTrack].projects.filter(p => p.age === ageGroup);
+  const projects = DATA[currentTrack].projects.filter(p => ageGroup === 'All ages' || p.age === ageGroup);
   const grid = document.getElementById('projects-grid');
   const selClass = currentTrack === 'arduino' ? 'sel-orange' : 'sel-green';
 
@@ -520,6 +525,7 @@ async function loadCourses() {
     const res = await fetch('courses.json', { cache: 'no-store' });
     if (res.ok) DATA = await res.json();
   } catch (_) { /* keep empty catalogue; the custom/free-text paths still work */ }
+  populateAges();
   updateProjects();
 }
 document.addEventListener('DOMContentLoaded', loadCourses);
