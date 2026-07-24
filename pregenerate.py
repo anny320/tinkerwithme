@@ -40,36 +40,15 @@ def git_push_file(path):
             time.sleep(2)
     print(f"    ⚠️  could not push {path.name} after retries (will retry on next run)")
 
-COURSE_DATA = {
-    "arduino": [
-        {"id": "ar1",  "title": "Traffic light simulation",    "diff": "Beginner",     "age": "6-9 yrs",   "time": 60,  "desc": "3 LEDs mimic real traffic light sequences"},
-        {"id": "ar2",  "title": "Button controlled LED",       "diff": "Beginner",     "age": "6-9 yrs",   "time": 45,  "desc": "Push button toggles LED on/off"},
-        {"id": "ar3",  "title": "Fade an LED",                 "diff": "Beginner",     "age": "6-9 yrs",   "time": 45,  "desc": "PWM & analogWrite() to dim LED smoothly"},
-        {"id": "ar4",  "title": "RGB LED colour mixer",        "diff": "Beginner",     "age": "6-9 yrs",   "time": 60,  "desc": "3 potentiometers mix red, green & blue"},
-        {"id": "ar5",  "title": "Capacitive touch sensor",     "diff": "Beginner",     "age": "10-12 yrs", "time": 60,  "desc": "Touch sensor module toggles an LED"},
-        {"id": "ar6",  "title": "Buzzer melody",               "diff": "Beginner",     "age": "6-9 yrs",   "time": 60,  "desc": "Piezo buzzer plays tunes like Ode to Joy"},
-        {"id": "ar7",  "title": "Morse code blinker",          "diff": "Intermediate", "age": "10-12 yrs", "time": 75,  "desc": "LED blinks out Morse code messages"},
-        {"id": "ar8",  "title": "Temperature logger",          "diff": "Intermediate", "age": "10-12 yrs", "time": 90,  "desc": "DHT11 reads & displays temperature"},
-        {"id": "ar9",  "title": "Ultrasonic distance sensor",  "diff": "Intermediate", "age": "10-12 yrs", "time": 75,  "desc": "HC-SR04 measures distance, LED warns on proximity"},
-        {"id": "ar10", "title": "Servo motor control",         "diff": "Intermediate", "age": "10-12 yrs", "time": 75,  "desc": "Potentiometer steers servo to any position"},
-        {"id": "ar11", "title": "Light-activated LED",         "diff": "Beginner",     "age": "6-9 yrs",   "time": 60,  "desc": "Photoresistor auto-lights LED when dark"},
-        {"id": "ar12", "title": "Digital dice",                "diff": "Intermediate", "age": "10-12 yrs", "time": 90,  "desc": "Multiple LEDs randomly show a dice roll"},
-        {"id": "ar13", "title": "Basic alarm system",          "diff": "Intermediate", "age": "10-12 yrs", "time": 90,  "desc": "Motion sensor triggers buzzer & LED alarm"},
-        {"id": "ar14", "title": "Fan control",                 "diff": "Advanced",     "age": "13-15 yrs", "time": 90,  "desc": "Temperature sensor controls relay-powered fan"},
-        {"id": "ar15", "title": "Simon says game",             "diff": "Advanced",     "age": "13-15 yrs", "time": 120, "desc": "Classic memory game with LEDs, buttons & buzzer"},
-    ],
-    "ai": [
-        {"id": "a1", "title": "Prompting power",      "diff": "Beginner",     "age": "7-10 yrs",  "time": 60,  "desc": "ChatGPT basics — ask better questions"},
-        {"id": "a2", "title": "AI art studio",        "diff": "Beginner",     "age": "7-10 yrs",  "time": 60,  "desc": "DALL-E image generation workshop"},
-        {"id": "a3", "title": "AI music & sound",     "diff": "Beginner",     "age": "7-10 yrs",  "time": 60,  "desc": "Generate soundtracks and beats"},
-        {"id": "a4", "title": "AI storytelling",      "diff": "Beginner",     "age": "10-13 yrs", "time": 75,  "desc": "Write illustrated stories with AI"},
-        {"id": "a5", "title": "Teachable Machine",    "diff": "Intermediate", "age": "10-13 yrs", "time": 90,  "desc": "Train your own image classifier"},
-        {"id": "a6", "title": "Mashup madness",       "diff": "Intermediate", "age": "10-13 yrs", "time": 90,  "desc": "Combine multiple AI tools creatively"},
-        {"id": "a7", "title": "Bias detective",       "diff": "Intermediate", "age": "13-16 yrs", "time": 75,  "desc": "Find and discuss bias in AI tools"},
-        {"id": "a8", "title": "AI careers deep dive", "diff": "Intermediate", "age": "13-16 yrs", "time": 60,  "desc": "ML engineers, ethicists, data scientists"},
-        {"id": "a9", "title": "Build your portfolio", "diff": "Advanced",     "age": "13-16 yrs", "time": 120, "desc": "GitHub, pitch deck, and showcase prep"},
-    ],
-}
+def load_courses():
+    """Return {track: [project, ...]} from the shared courses.json catalogue."""
+    path = Path(__file__).with_name("courses.json")
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return {track: info.get("projects", []) for track, info in data.items()}
+
+
+COURSE_DATA = load_courses()
 
 ARDUINO_PROMPT = """\
 You are an expert STEM educator writing reusable lesson content for TinkerWithMe, a hands-on Arduino programme for children in Nairobi.
