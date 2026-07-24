@@ -278,43 +278,87 @@ def assign_catalogue_projects(band_label, track, n, brief="", selected_ids=None)
     return ranked[:n]
 
 
-def build_camp_programme_from_cache(track, bands, groups, timetable_rows,
-                                    is_full_day, brief="", selected_ids=None):
+def plan_band_projects(track, bands, is_full_day, brief="", selected_ids=None):
+    """Decide each band's projects — shared by the topic index and the programme.
+
+    Returns a list of (band, picks). ``selected_ids`` restricts the pool to
+    projects the organiser explicitly chose.
+    """
+    n_projects = 3 if is_full_day else 2
+    return [
+        (b, assign_catalogue_projects(b["label"], track, n_projects, brief,
+                                      selected_ids=selected_ids))
+        for b in bands
+    ]
+
+
+def build_topic_index(plan):
+    """A numbered contents table (band → topics) that matches the project cards.
+
+    Each topic's number is the same as its numbered header in the programme, so a
+    reader can find any topic at a glance.
+    """
+    rows = ""
+    n = 0
+    for b, picks in plan:
+        items = []
+        for p in picks:
+            n += 1
+            items.append(f"{n}. {p['title']} <em>({p['diff']} · ~{p['time']} min)</em>")
+        rows += (f"<tr><td><strong>{b['label']}</strong><br>"
+                 f"<span style='color:#B08060;font-size:11px'>{b['count']} children</span></td>"
+                 f"<td>{'<br>'.join(items)}</td></tr>")
+    return (
+        "<h2>Topics in This Plan</h2>\n"
+        "<p>Every numbered topic matches a numbered project card in the programme "
+        "below, so you can jump straight to it.</p>\n"
+        "<table><thead><tr><th>Age band</th><th>Topics (in order)</th></tr></thead>"
+        f"<tbody>{rows}</tbody></table>\n"
+    )
+
+
+def build_camp_programme_from_cache(track, plan, groups, brief=""):
     """Assemble the per-band programme from cached project content — no AI call.
 
-    Returns the programme HTML, or None if any needed project isn't cached (so the
-    caller can fall back to AI generation). ``selected_ids`` restricts the pool to
-    projects the organiser explicitly chose.
+    Takes the shared ``plan`` (list of (band, picks)). Returns the programme HTML,
+    or None if any needed project isn't cached (so the caller can fall back to AI).
     """
     from generate_curriculum import load_pregenerated
 
-    n_projects = 3 if is_full_day else 2
-
-    # Decide every band's projects first, then confirm all are cached before we
-    # commit to the zero-token path.
-    plan = []
-    for b in bands:
-        picks = assign_catalogue_projects(b["label"], track, n_projects, brief,
-                                          selected_ids=selected_ids)
-        contents = {p["id"]: load_pregenerated(p["id"]) for p in picks}
-        if not picks or any(v is None for v in contents.values()):
+    # Confirm every project is cached before we commit to the zero-token path.
+    loaded = []
+    for b, picks in plan:
+        if not picks:
             return None
-        plan.append((b, picks, contents))
+        contents = {p["id"]: load_pregenerated(p["id"]) for p in picks}
+        if any(v is None for v in contents.values()):
+            return None
+        loaded.append((b, picks, contents))
 
     body = ("<h2>Programme by Age Band</h2>\n"
             "<p>Each band works through age-appropriate TinkerWithMe projects. Every "
-            "project below includes its materials, step-by-step instructions and full "
-            "code/build steps so a facilitator can run it directly.</p>\n")
-    for b, picks, contents in plan:
+            "project below is a self-contained topic card with its materials, "
+            "step-by-step instructions and full code/build steps so a facilitator can "
+            "run it directly.</p>\n")
+    n = 0
+    for b, picks, contents in loaded:
         n_groups = sum(1 for g in groups if g["band"] == b["label"])
         titles = ", ".join(p["title"] for p in picks)
-        body += (f"<h3>{b['label']} — {b['count']} children in {n_groups} group(s)</h3>\n"
-                 f"<p><strong>Projects for this band:</strong> {titles}. Each group's lead "
+        body += (f'<h2 class="band-head">{b["label"]} — {b["count"]} children in '
+                 f'{n_groups} group(s)</h2>\n'
+                 f"<p><strong>Topics for this band:</strong> {titles}. Each group's lead "
                  "facilitator preps the kit, keeps the group to the master timetable, and "
-                 "watches for the common mistakes noted in each project.</p>\n")
+                 "watches for the common mistakes noted in each topic.</p>\n")
         for p in picks:
-            body += (f"<h4>{p['title']} <em>({p['diff']} · ~{p['time']} min)</em></h4>\n"
-                     + contents[p["id"]] + "\n")
+            n += 1
+            body += (
+                '<section class="project">\n'
+                f'<div class="project-head"><span class="num">{n}</span>'
+                f'<span class="title">{p["title"]}</span>'
+                f'<span class="meta">{p["diff"]} · ~{p["time"]} min · {b["label"]}</span></div>\n'
+                f'<div class="project-body">{contents[p["id"]]}</div>\n'
+                '</section>\n'
+            )
 
     body += (
         "<h2>Materials — Scaling</h2>\n"
@@ -506,6 +550,54 @@ Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags.""
     )
 
 
+def build_executive_summary(theme, bands, groups, staff, duration_label,
+                            camp_date, venue):
+    """The high-level overview that opens the plan: what it is, the numbers at a
+    glance, and the learning outcomes. Detailed schedule/tables follow it."""
+    band_summary = ", ".join(f"{b['label']} ({b['count']})" for b in bands)
+    intro = (
+        f"<p>This is the full plan for a <strong>{theme}</strong> camp of "
+        f"<strong>{staff['total_children']} children</strong>"
+        f"{f' on {camp_date}' if camp_date else ''}"
+        f"{f' at {venue}' if venue else ''}. The intake is split into age bands — "
+        f"{band_summary} — and each band into small groups, so every child works at "
+        "the right level and gets plenty of hands-on time. The schedule, staffing, "
+        "topic index and full lesson content follow below.</p>\n"
+    )
+
+    stats = [
+        (staff["total_children"], "Children"),
+        (len(bands), "Age bands"),
+        (staff["n_groups"], "Groups"),
+        (staff["total_adults"], "Adults"),
+        (f"1:{staff['ratio']}", "Ratio"),
+        (duration_label.split("(")[0].strip().title(), "Length"),
+    ]
+    stat_html = "".join(
+        f'<span class="stat"><span class="n">{n}</span><span class="l">{l}</span></span>'
+        for n, l in stats
+    )
+
+    outcomes = [
+        "Every child builds and tests real projects pitched at their age and level.",
+        "Children work in small teams — sharing roles, debugging together and helping "
+        "one another.",
+        "Each group presents what they made at the end-of-day showcase, building "
+        "confidence and communication.",
+    ]
+    outcomes_html = "".join(f"<li>{o}</li>" for o in outcomes)
+
+    return (
+        '<div class="exec-summary">\n'
+        "<h2>Executive Summary</h2>\n"
+        + intro
+        + f'<div class="stats">{stat_html}</div>\n'
+        + "<h3>Learning outcomes</h3>\n<ul>"
+        + outcomes_html
+        + "</ul>\n</div>\n"
+    )
+
+
 def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
                            max_group_size=10, user_name="", user_email="",
                            venue="", brief="", project_ids=""):
@@ -542,14 +634,16 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
     try:
         # Fast path: catalogue themes assemble from the pre-generated cache with
         # ZERO AI tokens (full code included). Custom themes fall through to AI.
+        # The plan (band → picks) is decided once so the topic index and the
+        # numbered project cards stay in lock-step.
         programme_html = None
+        topic_index = ""
         if track in ("arduino", "ai"):
-            programme_html = build_camp_programme_from_cache(
-                track, bands, groups, timetable_rows, is_full_day, brief=brief,
-                selected_ids=selected_ids,
-            )
+            plan = plan_band_projects(track, bands, is_full_day, brief, selected_ids)
+            programme_html = build_camp_programme_from_cache(track, plan, groups, brief)
         if programme_html is not None:
             print(f"🟢 Static path — assembled from cache (track: {track}), no AI tokens used")
+            topic_index = build_topic_index(plan)   # numbering matches the cards
         else:
             print(f"✨ AI path — generating programme (track: {track})…")
             programme_html = build_ai_programme(
@@ -557,24 +651,16 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
                 duration_label, camp_date, brief=brief, selected_ids=selected_ids,
             )
 
-        band_summary = ", ".join(f"{b['label']} ({b['count']})" for b in bands)
-        overview = (
-            "<h2>Camp Overview</h2>\n"
-            f"<p>This is a full plan for a <strong>{theme}</strong> camp of "
-            f"<strong>{staff['total_children']} children</strong>"
-            f"{f' on {camp_date}' if camp_date else ''}"
-            f"{f' at {venue}' if venue else ''}. The intake is split into age "
-            f"bands — {band_summary} — and each band into small groups so every "
-            "child works at the right level and gets plenty of hands-on time. "
-            "The sections below give the group split, staffing, the master "
-            "timetable, and a tailored programme for each band.</p>\n"
+        # Order: executive summary → schedule → logistics → topic index → lessons.
+        exec_summary = build_executive_summary(
+            theme, bands, groups, staff, duration_label, camp_date, venue,
         )
-
         body_html = (
-            overview
+            exec_summary
+            + _timetable_table(timetable_rows)
             + _groups_table(groups)
             + _staffing_table(staff)
-            + _timetable_table(timetable_rows)
+            + topic_index
             + programme_html
         )
 
