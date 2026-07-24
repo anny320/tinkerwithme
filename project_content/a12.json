@@ -1,0 +1,10 @@
+{
+  "id": "a12",
+  "track": "ai",
+  "title": "Ethical AI design",
+  "diff": "Advanced",
+  "age": "13-16 yrs",
+  "time": 75,
+  "desc": "Design an AI feature with fairness, privacy and safety in mind",
+  "content_html": "<h2>What we're doing</h2>\n<p>Ethics guide responsible innovation — deciding not just what an AI *can* do, but what it *should* do.  Not everything that is possible to build should be built. Fairness, privacy and safety come first.</p>\n<h2>Reflection</h2>\n<p>As a group, agree on the values that should guide an AI you would be proud to build. Then take a real product idea (a face-scanning school gate, a homework-grading bot) and pressure-test it against those values: who could it treat unfairly? what data does it collect? how would someone appeal a wrong decision?</p>\n<h2>Key takeaway</h2>\n<p>Ethical AI is fair, transparent, and something you can explain and stand behind.</p>\n<h2>Quick check</h2>\n<p><strong>Ethical AI should be:</strong></p>\n<ul><li>Secret</li><li><strong>Fair and transparent ✔</strong></li></ul>\n"
+}
