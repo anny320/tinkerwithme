@@ -483,11 +483,20 @@ async function submit(){
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
     }
 
-    setStep('Done!', '');
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('success-box').style.display = 'block';
     document.getElementById('gen-btn').style.display = 'none';
-    pollForPlan(requestId);
+    document.getElementById('success-box').style.display = 'block';
+
+    if (DISPATCH_PROXY || GITHUB_TOKEN) {
+      // A trigger is configured — the workflow is running, so wait for the PDF.
+      setStep('Done!', '');
+      pollForPlan(requestId);
+    } else {
+      // No auto-trigger wired up — the run isn't kicked off from this page, so
+      // don't leave the visitor waiting for a PDF that won't appear. Their
+      // details were logged above; treat this as an inquiry we'll follow up on.
+      showInquirySubmitted(email);
+    }
 
   } catch (err) {
     document.getElementById('loading').style.display = 'none';
@@ -495,6 +504,18 @@ async function submit(){
     document.getElementById('error-msg').style.display = 'block';
     document.getElementById('gen-btn').disabled = false;
   }
+}
+
+// Shown when the page has no way to auto-trigger the workflow. Instead of
+// spinning on a PDF that never arrives, confirm the request was received and
+// set the expectation that the plan is prepared and emailed, not downloaded now.
+function showInquirySubmitted(email){
+  document.getElementById('generating-area').innerHTML = `
+    <h3 style="color:var(--green-dark)">✅ Your camp plan request has been received</h3>
+    <p style="margin-top:8px">Thanks! We've logged your request and will prepare your full
+    camp plan and send the PDF to <strong>${email}</strong>.</p>
+    <p style="margin-top:8px;font-size:13px;color:var(--text-3)">You don't need to keep this
+    page open — there's nothing to download here yet. We'll be in touch by email.</p>`;
 }
 
 async function pollForPlan(requestId){
