@@ -68,12 +68,18 @@ def get_project_details(track, project_ids):
 
 
 def load_pregenerated(project_id):
-    """Return pre-generated content HTML for a project, or None if not available."""
-    import json
+    """Return pre-generated content HTML for a project, or None if not usable.
+
+    Empty/whitespace content (e.g. a generation that came back blank) is treated
+    as missing so callers fall back to live generation instead of rendering a
+    blank section.
+    """
     path = Path("project_content") / f"{project_id}.json"
     if path.exists():
         with open(path) as f:
-            return json.load(f).get("content_html")
+            html = json.load(f).get("content_html")
+        if html and html.strip():
+            return html
     return None
 
 

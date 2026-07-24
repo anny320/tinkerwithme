@@ -130,9 +130,14 @@ def generate_project(client, track, project, out_dir, force=False):
 
     print(f"  → Generating {project['id']}: {project['title']}...", end="", flush=True)
     try:
+        # thinking disabled + a generous budget so the whole allowance goes to
+        # the HTML. (Sonnet 5 runs adaptive thinking by default, which on a
+        # complex prompt could eat the budget and return no text block — that's
+        # what produced an empty "Smart city" file.)
         message = client.messages.create(
             model="claude-sonnet-5",
-            max_tokens=6000,
+            max_tokens=12000,
+            thinking={"type": "disabled"},
             messages=[{"role": "user", "content": prompt}],
         )
         content_html = next(
@@ -142,6 +147,12 @@ def generate_project(client, track, project, out_dir, force=False):
         content_html = content_html.strip()
         if content_html.startswith("```"):
             content_html = content_html.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        # Never cache an empty result — leave the file absent so a re-run retries
+        # instead of a blank being treated as "already done".
+        if not content_html:
+            print(f" FAILED: empty response (stop_reason={message.stop_reason})")
+            return
 
         data = {
             "id": project["id"],
