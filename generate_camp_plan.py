@@ -246,8 +246,13 @@ def _range_overlap(a, b):
     return max(0, min(a[1], b[1]) - max(a[0], b[0]) + 1)
 
 
-def assign_catalogue_projects(band_label, track, n, brief=""):
+def assign_catalogue_projects(band_label, track, n, brief="", selected_ids=None):
     """Pick up to n age-appropriate catalogue projects for a band.
+
+    When ``selected_ids`` is given the pool is restricted to exactly those
+    catalogue projects (the organiser hand-picked the camp's projects); each
+    band then gets the best-fitting subset of that pool. Otherwise the whole
+    track catalogue is the pool.
 
     Ranked by age-band overlap, then boosted when the project matches keywords in
     the organiser's brief (so "focus on Teachable Machine" surfaces that project).
@@ -255,6 +260,10 @@ def assign_catalogue_projects(band_label, track, n, brief=""):
     projects = COURSE_DATA.get(track, {}).get("projects", [])
     if not projects:
         return []
+    if selected_ids:
+        chosen = [p for p in projects if p["id"] in selected_ids]
+        if chosen:
+            projects = chosen
     band_rng = _age_range(band_label)
     keywords = [w for w in re.findall(r"[a-z]{4,}", brief.lower())]
 
@@ -270,11 +279,12 @@ def assign_catalogue_projects(band_label, track, n, brief=""):
 
 
 def build_camp_programme_from_cache(track, bands, groups, timetable_rows,
-                                    is_full_day, brief=""):
+                                    is_full_day, brief="", selected_ids=None):
     """Assemble the per-band programme from cached project content — no AI call.
 
     Returns the programme HTML, or None if any needed project isn't cached (so the
-    caller can fall back to AI generation).
+    caller can fall back to AI generation). ``selected_ids`` restricts the pool to
+    projects the organiser explicitly chose.
     """
     from generate_curriculum import load_pregenerated
 
@@ -284,7 +294,8 @@ def build_camp_programme_from_cache(track, bands, groups, timetable_rows,
     # commit to the zero-token path.
     plan = []
     for b in bands:
-        picks = assign_catalogue_projects(b["label"], track, n_projects, brief)
+        picks = assign_catalogue_projects(b["label"], track, n_projects, brief,
+                                          selected_ids=selected_ids)
         contents = {p["id"]: load_pregenerated(p["id"]) for p in picks}
         if not picks or any(v is None for v in contents.values()):
             return None
@@ -320,9 +331,17 @@ def build_camp_programme_from_cache(track, bands, groups, timetable_rows,
     return body
 
 
-def catalogue_hint(track):
-    """Build a plain-text list of catalogue projects to steer Claude's picks."""
+def catalogue_hint(track, selected_ids=None):
+    """Build a plain-text list of catalogue projects to steer Claude's picks.
+
+    When ``selected_ids`` is given, only those projects are offered so the AI
+    honours the organiser's hand-picked selection.
+    """
     projects = COURSE_DATA.get(track, {}).get("projects", [])
+    if selected_ids:
+        chosen = [p for p in projects if p["id"] in selected_ids]
+        if chosen:
+            projects = chosen
     if not projects:
         return ""
     lines = [
@@ -380,11 +399,12 @@ def _timetable_table(rows):
 
 
 def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
-                       duration_label, camp_date, brief=""):
+                       duration_label, camp_date, brief="", selected_ids=None):
     """Ask Claude for the age-appropriate programme and supporting sections.
 
     Returns the inner HTML that slots in after the deterministic tables.
     `brief` carries any free-text organiser notes/requirements to honour.
+    `selected_ids` restricts the catalogue hint to the organiser's picks.
     """
     from generate_curriculum import stream_html
 
@@ -394,14 +414,20 @@ def build_ai_programme(theme, track, bands, groups, staff, timetable_rows,
         for b in bands
     )
     timetable_txt = "\n".join(f"{t}: {re.sub('<[^>]+>', '', a)}" for t, a in timetable_rows)
-    hint = catalogue_hint(track)
-    hint_block = (
-        f"\n\nTinkerWithMe already has these ready-made projects for this theme — "
-        f"prefer them where they fit, and say which project each group does:\n{hint}"
-        if hint else
-        "\n\nThis theme is outside the standard catalogue, so design fresh, "
-        "safe, hands-on activities for it."
-    )
+    hint = catalogue_hint(track, selected_ids=selected_ids)
+    if selected_ids and hint:
+        hint_block = (
+            f"\n\nThe organiser hand-picked these TinkerWithMe projects for the camp — "
+            f"use ONLY these, and assign each band the ones that best fit its age:\n{hint}"
+        )
+    else:
+        hint_block = (
+            f"\n\nTinkerWithMe already has these ready-made projects for this theme — "
+            f"prefer them where they fit, and say which project each group does:\n{hint}"
+            if hint else
+            "\n\nThis theme is outside the standard catalogue, so design fresh, "
+            "safe, hands-on activities for it."
+        )
     brief_block = (
         f"\n\n**Organiser's notes / special requirements (honour these closely):**\n{brief}"
         if brief else ""
@@ -482,12 +508,16 @@ Output only these HTML sections — no DOCTYPE, <html>, <head> or <body> tags.""
 
 def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
                            max_group_size=10, user_name="", user_email="",
-                           venue="", brief=""):
+                           venue="", brief="", project_ids=""):
     """Plan the camp and write the branded PDF. Returns the PDF path or None.
 
     `brief` is optional free-text organiser notes fed to the AI (e.g. "focus on
     Teachable Machine", "kids are beginners", "we only have 6 laptops").
+    `project_ids` is an optional comma/space-separated list of catalogue project
+    IDs the organiser hand-picked (e.g. "ar1,ar16,ar17"); when given, the camp
+    uses only those projects and each band gets the best-fitting subset.
     """
+    selected_ids = [pid for pid in re.split(r"[\s,]+", project_ids.strip()) if pid]
     try:
         bands = parse_age_bands(age_bands_raw)
     except ValueError as e:
@@ -506,6 +536,8 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
     print(f"📋 Camp: {theme} · {staff['total_children']} children · "
           f"{staff['n_groups']} groups · {staff['total_adults']} adults")
     print(f"📧 User email: {user_email}")
+    if selected_ids:
+        print(f"🎯 Organiser-selected projects: {', '.join(selected_ids)}")
 
     try:
         # Fast path: catalogue themes assemble from the pre-generated cache with
@@ -514,6 +546,7 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
         if track in ("arduino", "ai"):
             programme_html = build_camp_programme_from_cache(
                 track, bands, groups, timetable_rows, is_full_day, brief=brief,
+                selected_ids=selected_ids,
             )
         if programme_html is not None:
             print(f"🟢 Static path — assembled from cache (track: {track}), no AI tokens used")
@@ -521,7 +554,7 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
             print(f"✨ AI path — generating programme (track: {track})…")
             programme_html = build_ai_programme(
                 theme, track, bands, groups, staff, timetable_rows,
-                duration_label, camp_date, brief=brief,
+                duration_label, camp_date, brief=brief, selected_ids=selected_ids,
             )
 
         band_summary = ", ".join(f"{b['label']} ({b['count']})" for b in bands)
@@ -586,6 +619,7 @@ if __name__ == "__main__":
     user_name = os.getenv("USER_NAME", "").strip()
     user_email = os.getenv("USER_EMAIL", "user@example.com").strip()
     brief = os.getenv("BRIEF", "").strip()
+    project_ids = os.getenv("PROJECT_IDS", "").strip()
     try:
         max_group_size = int(os.getenv("MAX_GROUP_SIZE", "10"))
     except ValueError:
@@ -602,7 +636,7 @@ if __name__ == "__main__":
     result = generate_camp_plan_pdf(
         theme, age_bands, camp_date=camp_date, duration=duration,
         max_group_size=max_group_size, user_name=user_name,
-        user_email=user_email, venue=venue, brief=brief,
+        user_email=user_email, venue=venue, brief=brief, project_ids=project_ids,
     )
     if result is None:
         sys.exit(1)
