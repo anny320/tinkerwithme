@@ -42,6 +42,10 @@ on:
         description: 'Free-text notes / special requirements (e.g. "focus on Teachable Machine", "beginners, 6 laptops only")'
         required: false
         default: ''
+      project_ids:
+        description: 'Optional: specific catalogue project IDs to use, comma-separated (e.g. "ar1,ar16,ar17"). Leave blank to auto-pick.'
+        required: false
+        default: ''
       user_name:
         description: 'Name of the person the plan is prepared for'
         required: false
@@ -94,6 +98,7 @@ jobs:
           MAX_GROUP_SIZE: ${{ inputs.max_group_size || github.event.client_payload.max_group_size || '10' }}
           VENUE: ${{ inputs.venue || github.event.client_payload.venue }}
           BRIEF: ${{ inputs.brief || github.event.client_payload.brief }}
+          PROJECT_IDS: ${{ inputs.project_ids || github.event.client_payload.project_ids }}
           USER_NAME: ${{ inputs.user_name || github.event.client_payload.user_name }}
           USER_EMAIL: ${{ inputs.user_email || github.event.client_payload.user_email }}
         run: python generate_camp_plan.py
