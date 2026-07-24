@@ -292,80 +292,103 @@ def plan_band_projects(track, bands, is_full_day, brief="", selected_ids=None):
     ]
 
 
-def build_topic_index(plan):
-    """A numbered contents table (band → topics) that matches the project cards.
+def dedupe_topics(plan):
+    """Collapse the plan into unique topics, each tagged with the bands that run it.
 
-    Each topic's number is the same as its numbered header in the programme, so a
-    reader can find any topic at a glance.
+    A topic (project) picked for several age bands is listed once — no repeated
+    instructions — so the report shows the bands where it applies instead. Returns
+    ``(order, num_of, bands_for)``:
+      order      — unique project dicts in first-appearance order
+      num_of     — {project id: 1-based topic number}
+      bands_for  — {project id: [band dict, …]} in band order
     """
-    rows = ""
-    n = 0
+    order, bands_for = [], {}
     for b, picks in plan:
-        items = []
         for p in picks:
-            n += 1
-            items.append(f"{n}. {p['title']} <em>({p['diff']} · ~{p['time']} min)</em>")
+            if p["id"] not in bands_for:
+                order.append(p)
+                bands_for[p["id"]] = []
+            bands_for[p["id"]].append(b)
+    num_of = {p["id"]: i + 1 for i, p in enumerate(order)}
+    return order, num_of, bands_for
+
+
+def _bands_label(bands):
+    """'7-9 yrs (20), 13-15 yrs (12)' for a list of band dicts."""
+    return ", ".join(f"{b['label']} ({b['count']})" for b in bands)
+
+
+def build_topic_index(plan):
+    """A numbered contents table (band → its topics) matching the topic cards.
+
+    Topics are numbered once (deduped); a number can appear against more than one
+    band when several bands run the same topic, and always resolves to a single
+    card in the programme.
+    """
+    _, num_of, _ = dedupe_topics(plan)
+    rows = ""
+    for b, picks in plan:
+        items = [
+            f"{num_of[p['id']]}. {p['title']} <em>({p['diff']} · ~{p['time']} min)</em>"
+            for p in picks
+        ]
         rows += (f"<tr><td><strong>{b['label']}</strong><br>"
                  f"<span style='color:#B08060;font-size:11px'>{b['count']} children</span></td>"
-                 f"<td>{'<br>'.join(items)}</td></tr>")
+                 f"<td>{'<br>'.join(items) or '—'}</td></tr>")
     return (
         "<h2>Topics in This Plan</h2>\n"
-        "<p>Every numbered topic matches a numbered project card in the programme "
-        "below, so you can jump straight to it.</p>\n"
-        "<table><thead><tr><th>Age band</th><th>Topics (in order)</th></tr></thead>"
+        "<p>Each band's topics are listed by number below. A topic run by more than "
+        "one band appears once in the programme (with its bands noted), so its "
+        "instructions are never repeated — the same number just shows up for each "
+        "band that runs it.</p>\n"
+        "<table><thead><tr><th>Age band</th><th>Topics (by number)</th></tr></thead>"
         f"<tbody>{rows}</tbody></table>\n"
     )
 
 
 def build_camp_programme_from_cache(track, plan, groups, brief=""):
-    """Assemble the per-band programme from cached project content — no AI call.
+    """Assemble the programme from cached project content — no AI call.
 
-    Takes the shared ``plan`` (list of (band, picks)). Returns the programme HTML,
-    or None if any needed project isn't cached (so the caller can fall back to AI).
+    Each unique topic is rendered once with the bands that run it; shared topics
+    are not repeated. Returns the programme HTML, or None if any needed project
+    isn't cached (so the caller can fall back to AI).
     """
     from generate_curriculum import load_pregenerated
 
-    # Confirm every project is cached before we commit to the zero-token path.
-    loaded = []
-    for b, picks in plan:
-        if not picks:
-            return None
-        contents = {p["id"]: load_pregenerated(p["id"]) for p in picks}
-        if any(v is None for v in contents.values()):
-            return None
-        loaded.append((b, picks, contents))
+    order, num_of, bands_for = dedupe_topics(plan)
+    if not order:
+        return None
+    # Confirm every unique topic is cached before committing to the zero-token path.
+    contents = {p["id"]: load_pregenerated(p["id"]) for p in order}
+    if any(v is None for v in contents.values()):
+        return None
 
-    body = ("<h2>Programme by Age Band</h2>\n"
-            "<p>Each band works through age-appropriate TinkerWithMe projects. Every "
-            "project below is a self-contained topic card with its materials, "
-            "step-by-step instructions and full code/build steps so a facilitator can "
-            "run it directly.</p>\n")
-    n = 0
-    for b, picks, contents in loaded:
-        n_groups = sum(1 for g in groups if g["band"] == b["label"])
-        titles = ", ".join(p["title"] for p in picks)
-        body += (f'<h2 class="band-head">{b["label"]} — {b["count"]} children in '
-                 f'{n_groups} group(s)</h2>\n'
-                 f"<p><strong>Topics for this band:</strong> {titles}. Each group's lead "
-                 "facilitator preps the kit, keeps the group to the master timetable, and "
-                 "watches for the common mistakes noted in each topic.</p>\n")
-        for p in picks:
-            n += 1
-            body += (
-                '<section class="project">\n'
-                f'<div class="project-head"><span class="num">{n}</span>'
-                f'<span class="title">{p["title"]}</span>'
-                f'<span class="meta">{p["diff"]} · ~{p["time"]} min · {b["label"]}</span></div>\n'
-                f'<div class="project-body">{contents[p["id"]]}</div>\n'
-                '</section>\n'
-            )
+    body = ("<h2>Lesson Topics</h2>\n"
+            "<p>Each topic below is a self-contained card with its materials, "
+            "step-by-step instructions and full code/build steps. Where a topic is run "
+            "by more than one age band, it is shown <strong>once</strong> and the bands "
+            "that run it are listed on the card — the instructions are the same for "
+            "each, so there is no need to repeat them.</p>\n")
+    for p in order:
+        bands = bands_for[p["id"]]
+        n_groups = sum(1 for g in groups if g["band"] in {b["label"] for b in bands})
+        band_txt = _bands_label(bands)
+        body += (
+            '<section class="project">\n'
+            f'<div class="project-head"><span class="num">{num_of[p["id"]]}</span>'
+            f'<span class="title">{p["title"]}</span>'
+            f'<span class="meta">{p["diff"]} · ~{p["time"]} min · '
+            f'Bands: {band_txt} · {n_groups} group(s)</span></div>\n'
+            f'<div class="project-body">{contents[p["id"]]}</div>\n'
+            '</section>\n'
+        )
 
     body += (
         "<h2>Materials — Scaling</h2>\n"
-        "<p>Each project's materials list above is <strong>per group</strong>. Multiply it "
-        "by the number of groups in that band to get the totals to prepare. Shared kit "
-        "(laptops, power strips, extension leads) can rotate between groups rather than be "
-        "bought per group.</p>\n"
+        "<p>Each topic's materials list above is <strong>per group</strong>. Multiply it "
+        "by the number of groups that run the topic (shown on each card) to get the totals "
+        "to prepare. Shared kit (laptops, power strips, extension leads) can rotate between "
+        "groups rather than be bought per group.</p>\n"
     )
     body += _SAFETY_HTML
     body += _STAFF_CHECKLIST_HTML
