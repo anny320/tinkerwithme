@@ -21,7 +21,8 @@
       {"id": "ar17", "icon": "ti-building-skyscraper", "title": "Smart city", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 4, "desc": "Coordinated traffic lights, street lights & a parking sensor on one build"},
       {"id": "ar18", "icon": "ti-radar-2", "title": "Obstacle-avoiding robot", "diff": "Advanced", "age": "13-15 yrs", "time": 120, "level": 4, "desc": "Ultrasonic sensor steers the robot around obstacles"},
       {"id": "ar19", "icon": "ti-cloud", "title": "Weather station", "diff": "Advanced", "age": "13-15 yrs", "time": 90, "level": 4, "desc": "DHT11 + LCD logs temperature & humidity"},
-      {"id": "ar20", "icon": "ti-microphone", "title": "Voice- / gesture-controlled robot", "diff": "Advanced", "age": "13-15 yrs", "time": 150, "level": 4, "desc": "A Teachable Machine model drives an Arduino robot — an AI × Arduino crossover"}
+      {"id": "ar20", "icon": "ti-microphone", "title": "Voice- / gesture-controlled robot", "diff": "Advanced", "age": "13-15 yrs", "time": 150, "level": 4, "desc": "A Teachable Machine model drives an Arduino robot — an AI × Arduino crossover"},
+      {"id": "ar21", "icon": "ti-hand-move", "title": "Cardboard robotic arm", "diff": "Intermediate", "age": "All ages", "time": 120, "level": 3, "desc": "Build a cardboard arm and steer its servos live with potentiometers"}
     ]
   },
   "ai": {
