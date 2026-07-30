@@ -137,56 +137,6 @@ html.tw-locked{overflow:hidden}
 
 <div class="container">
 
-  <!-- PREMIUM COURSES — surfaced from premium_courses.json with a Premium tag -->
-  <style>
-  #premium-card{border:2px solid #C45C00;background:#FFF9F2}
-  .badge-premium{display:inline-block;background:#C45C00;color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle}
-  .pl-track{font-size:12px;font-weight:700;color:#6B4C30;margin:10px 0 5px;text-transform:uppercase;letter-spacing:.04em}
-  .pl-item{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(42,26,14,.1)}
-  .pl-item:last-child{border-bottom:none}
-  .pl-name{font-weight:600;font-size:14px;color:#2A1A0E}
-  .pl-meta{font-size:11px;color:#B08060}
-  .pl-actions{margin-left:auto;display:flex;gap:6px}
-  .pl-btn{font-size:12px;font-weight:600;text-decoration:none;padding:5px 11px;border-radius:8px;border:1.5px solid rgba(42,26,14,.24);color:#6B4C30}
-  .pl-btn.cur{background:#C45C00;color:#fff;border-color:#C45C00}
-  </style>
-  <div class="card" id="premium-card">
-    <div class="card-title" style="color:#C45C00"><i class="ti ti-diamond"></i> Premium Courses <span class="badge-premium">PREMIUM</span></div>
-    <p class="hint">Deep-dive, multi-session courses with a complete ready-to-teach curriculum. The free single-session generator is below.</p>
-    <div id="premium-list"><p class="hint">Loading…</p></div>
-    <p class="hint" style="margin-top:8px"><a href="premium.html">See all premium courses &amp; pricing →</a></p>
-  </div>
-  <script>
-  (async function(){
-    const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    let data, avail = new Set();
-    try {
-      data = await (await fetch('premium_courses.json',{cache:'no-store'})).json();
-      try { const ci = await fetch('curriculums/index.json',{cache:'no-store'}); if (ci.ok) avail = new Set((await ci.json()).available||[]); } catch(_){}
-    } catch(e){ document.getElementById('premium-list').innerHTML = '<p class="hint">Couldn\'t load premium courses.</p>'; return; }
-    const wrap = document.getElementById('premium-list'); wrap.innerHTML = '';
-    for (const [key,tr] of Object.entries(data.tracks)){
-      const courses = data.courses.filter(c=>c.track===key);
-      if (!courses.length) continue;
-      wrap.insertAdjacentHTML('beforeend', `<div class="pl-track">${tr.icon} ${esc(tr.label)}</div>`);
-      for (const c of courses){
-        const cur = avail.has(c.id) ? `<a class="pl-btn cur" href="curriculums/${c.id}.pdf" target="_blank" rel="noopener">📚 Curriculum</a>` : '';
-        wrap.insertAdjacentHTML('beforeend', `
-          <div class="pl-item">
-            <span>
-              <span class="pl-name">${esc(c.title)}</span> <span class="badge-premium">PREMIUM</span><br>
-              <span class="pl-meta">${esc(c.format)} · ${esc(c.age)} · from KES ${c.price.toLocaleString()}</span>
-            </span>
-            <span class="pl-actions">
-              ${cur}
-              <a class="pl-btn" href="proposals/${c.id}.pdf" target="_blank" rel="noopener">⬇ Outline</a>
-            </span>
-          </div>`);
-      }
-    }
-  })();
-  </script>
-
   <!-- ABOUT YOU -->
   <div class="card">
     <div class="card-title"><i class="ti ti-user"></i> About You</div>
@@ -297,6 +247,56 @@ html.tw-locked{overflow:hidden}
     </div>
   </div>
   <iframe id="print-frame" style="display:none" title="Print"></iframe>
+
+  <!-- PREMIUM COURSES — surfaced from premium_courses.json with a Premium tag -->
+  <style>
+  #premium-card{border:2px solid #C45C00;background:#FFF9F2}
+  .badge-premium{display:inline-block;background:#C45C00;color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle}
+  .pl-track{font-size:12px;font-weight:700;color:#6B4C30;margin:10px 0 5px;text-transform:uppercase;letter-spacing:.04em}
+  .pl-item{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(42,26,14,.1)}
+  .pl-item:last-child{border-bottom:none}
+  .pl-name{font-weight:600;font-size:14px;color:#2A1A0E}
+  .pl-meta{font-size:11px;color:#B08060}
+  .pl-actions{margin-left:auto;display:flex;gap:6px}
+  .pl-btn{font-size:12px;font-weight:600;text-decoration:none;padding:5px 11px;border-radius:8px;border:1.5px solid rgba(42,26,14,.24);color:#6B4C30}
+  .pl-btn.cur{background:#C45C00;color:#fff;border-color:#C45C00}
+  </style>
+  <div class="card" id="premium-card">
+    <div class="card-title" style="color:#C45C00"><i class="ti ti-diamond"></i> Premium Courses <span class="badge-premium">PREMIUM</span></div>
+    <p class="hint">Deep-dive, multi-session courses with a complete ready-to-teach curriculum. Want more depth than the free single-session plan above?</p>
+    <div id="premium-list"><p class="hint">Loading…</p></div>
+    <p class="hint" style="margin-top:8px"><a href="premium.html">See all premium courses &amp; pricing →</a></p>
+  </div>
+  <script>
+  (async function(){
+    const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    let data, avail = new Set();
+    try {
+      data = await (await fetch('premium_courses.json',{cache:'no-store'})).json();
+      try { const ci = await fetch('curriculums/index.json',{cache:'no-store'}); if (ci.ok) avail = new Set((await ci.json()).available||[]); } catch(_){}
+    } catch(e){ document.getElementById('premium-list').innerHTML = '<p class="hint">Couldn\'t load premium courses.</p>'; return; }
+    const wrap = document.getElementById('premium-list'); wrap.innerHTML = '';
+    for (const [key,tr] of Object.entries(data.tracks)){
+      const courses = data.courses.filter(c=>c.track===key);
+      if (!courses.length) continue;
+      wrap.insertAdjacentHTML('beforeend', `<div class="pl-track">${tr.icon} ${esc(tr.label)}</div>`);
+      for (const c of courses){
+        const cur = avail.has(c.id) ? `<a class="pl-btn cur" href="curriculums/${c.id}.pdf" target="_blank" rel="noopener">📚 Curriculum</a>` : '';
+        wrap.insertAdjacentHTML('beforeend', `
+          <div class="pl-item">
+            <span>
+              <span class="pl-name">${esc(c.title)}</span> <span class="badge-premium">PREMIUM</span><br>
+              <span class="pl-meta">${esc(c.format)} · ${esc(c.age)} · from KES ${c.price.toLocaleString()}</span>
+            </span>
+            <span class="pl-actions">
+              ${cur}
+              <a class="pl-btn" href="proposals/${c.id}.pdf" target="_blank" rel="noopener">⬇ Outline</a>
+            </span>
+          </div>`);
+      }
+    }
+  })();
+  </script>
 
   <div class="error-msg" id="error-msg"></div>
 
