@@ -118,6 +118,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
 const BOOKING_EMAIL = 'tinkerwithanne@gmail.com';
 let DATA = null;
 let activeFilter = 'all';
+let CURRICULA = new Set();   // ids that have a full-curriculum PDF (curriculums/index.json)
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -158,6 +159,7 @@ function cardHtml(course){
     <div class="actions">
       <a class="btn btn-book" href="${bookingHref(course)}">✉ Enquire / Book</a>
       <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
+      ${CURRICULA.has(course.id) ? `<a class="btn btn-pdf" href="curriculums/${course.id}.pdf" target="_blank" rel="noopener">📚 Full curriculum</a>` : ''}
     </div>
   </article>`;
 }
@@ -199,6 +201,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       '<p style="text-align:center;color:var(--text-2)">Couldn\'t load courses. Please refresh.</p>';
     return;
   }
+  // Best-effort: which courses have a full-curriculum PDF (may not exist yet).
+  try {
+    const ci = await fetch('curriculums/index.json', {cache:'no-store'});
+    if (ci.ok) CURRICULA = new Set((await ci.json()).available || []);
+  } catch(_) {}
   const r = DATA.price_range;
   document.getElementById('price-note').textContent =
     `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child · ${DATA.courses.length} courses`;
