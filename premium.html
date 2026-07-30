@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💎 TinkerWithMe — Premium Courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
+  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
+  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
+  --purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578;
+  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
+  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
+  --radius:14px;--radius-sm:8px;--radius-pill:99px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+
+/* Nav (matches the other pages) */
+.site-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 1.5rem;background:var(--brown);position:relative;z-index:10}
+.nav-brand{font-size:15px;font-weight:700;color:#fff;text-decoration:none}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-link{padding:7px 15px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.65);transition:all .15s}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.10)}
+.nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
+
+.hero{background:var(--brown);padding:2rem 1.5rem 2.5rem;text-align:center;color:#fff}
+.hero-badge{display:inline-block;background:rgba(240,123,29,0.25);color:#FFB870;font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(240,123,29,0.4)}
+.hero h1{font-size:clamp(24px,5vw,40px);font-weight:700;margin-bottom:8px}
+.hero p{font-size:15px;color:rgba(255,255,255,0.72);max-width:560px;margin:0 auto}
+.hero .price-note{margin-top:12px;font-size:13px;color:#FFB870;font-weight:600}
+
+.container{max-width:1040px;margin:0 auto;padding:2rem 1rem 4rem}
+
+/* Track filter chips */
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.filter{padding:9px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;color:var(--text-2);transition:all .15s}
+.filter.active{border-color:var(--orange);background:var(--orange);color:#fff}
+
+.track-section{margin-bottom:2.5rem}
+.track-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
+.track-title .count{font-size:12px;font-weight:600;color:var(--text-3)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem}
+
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;gap:.7rem}
+.pcard.t-arduino{border-top:4px solid var(--orange)}
+.pcard.t-ai{border-top:4px solid var(--green)}
+.pcard.t-combo{border-top:4px solid var(--purple)}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:var(--radius-pill);background:var(--bg);color:var(--text-2);border:1px solid var(--border)}
+.badge.track-arduino{background:var(--orange-light);color:var(--orange-dark);border-color:transparent}
+.badge.track-ai{background:var(--green-light);color:var(--green-dark);border-color:transparent}
+.badge.track-combo{background:var(--purple-light);color:var(--purple-dark);border-color:transparent}
+.badge.standalone{background:var(--blue-light);color:var(--blue-dark);border-color:transparent}
+.pcard h3{font-size:17px;font-weight:700;line-height:1.25}
+.price{font-size:15px;font-weight:700;color:var(--orange-dark)}
+.price .from{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
+.summary{font-size:13.5px;color:var(--text-2)}
+details{border-top:1px solid var(--border);padding-top:.6rem}
+summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--blue);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--blue)}
+details[open] summary::before{content:"▾ "}
+.programme{margin:.6rem 0 0 1.1rem;font-size:12.5px;color:var(--text-2)}
+.programme li{margin-bottom:.4rem}
+.programme li strong{color:var(--text)}
+.prereq{font-size:12px;color:var(--text-3)}
+.takeaway{font-size:12.5px;color:var(--text);background:var(--bg);border-radius:var(--radius-sm);padding:8px 11px}
+.pitch{font-size:13px;font-style:italic;color:var(--text-2);border-left:3px solid var(--orange);padding-left:11px}
+.actions{display:flex;gap:8px;margin-top:auto;padding-top:.4rem;flex-wrap:wrap}
+.btn{flex:1;min-width:130px;text-align:center;padding:11px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-book{background:var(--orange);color:#fff}
+.btn-book:hover{filter:brightness(1.08)}
+.btn-pdf{background:var(--surface);color:var(--text-2);border:1.5px solid var(--border-strong)}
+.btn-pdf:hover{border-color:var(--orange);color:var(--orange-dark)}
+
+footer{text-align:center;padding:2rem 1rem;color:var(--text-3);font-size:13px;border-top:1px solid var(--border)}
+footer a{color:var(--orange-dark);text-decoration:none}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-brand">🤖 TinkerWithMe</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Courses</a>
+    <a href="curriculumgenerator.html" class="nav-link">Generator</a>
+    <a href="camp-planner.html" class="nav-link">Camp Planner</a>
+    <a href="premium.html" class="nav-link active">Premium</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <span class="hero-badge">💎 Premium Courses</span>
+  <h1>Deep-dive courses &amp; camps</h1>
+  <p>Small-group, project-rich courses that go beyond the free activities — kids build something real and take it home. Single sessions, multi-session series, and full-day camps.</p>
+  <p class="price-note" id="price-note"></p>
+</header>
+
+<div class="container">
+  <div class="filters" id="filters"></div>
+  <div id="sections"></div>
+</div>
+
+<footer>
+  <p>Questions or bookings? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
+  <p style="margin-top:6px"><a href="index.html">← Free Course Picker</a> · <a href="camp-planner.html">Camp Planner</a></p>
+</footer>
+
+<script>
+const BOOKING_EMAIL = 'tinkerwithanne@gmail.com';
+let DATA = null;
+let activeFilter = 'all';
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function bookingHref(course){
+  const subject = `Booking enquiry: ${course.title}`;
+  const body =
+    `Hi TinkerWithMe,\n\nI'd like to book / ask about the "${course.title}" premium course.\n\n`+
+    `Format: ${course.format}\nChild's age: \nPreferred dates: \n\nThanks!`;
+  return `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function cardHtml(course){
+  const prog = course.sessions.map(s => `<li><strong>${esc(s.title)}.</strong> ${esc(s.desc)}</li>`).join('');
+  const prereq = course.standalone
+    ? `<span class="badge standalone">Standalone</span>`
+    : '';
+  const prereqLine = course.prereqs && course.prereqs.length
+    ? `<p class="prereq"><i class="ti ti-arrow-badge-right"></i> Prereq: ${course.prereqs.map(esc).join('; ')}</p>` : '';
+  return `
+  <article class="pcard t-${course.track}" data-track="${course.track}">
+    <div class="badges">
+      <span class="badge track-${course.track}">${esc(DATA.tracks[course.track].label)}</span>
+      <span class="badge">${esc(course.format)}</span>
+      <span class="badge">${esc(course.age)}</span>
+      <span class="badge">${esc(course.level)}</span>
+      ${prereq}
+    </div>
+    <h3>${esc(course.title)}</h3>
+    <div class="price"><span class="from">from</span> KES ${course.price.toLocaleString()}</div>
+    <p class="summary">${esc(course.summary)}</p>
+    ${prereqLine}
+    <details>
+      <summary>Programme (${course.sessions.length})</summary>
+      <ol class="programme">${prog}</ol>
+    </details>
+    <div class="takeaway">🎁 <strong>Take home:</strong> ${esc(course.takeaway)}</div>
+    <p class="pitch">${esc(course.pitch)}</p>
+    <div class="actions">
+      <a class="btn btn-book" href="${bookingHref(course)}">✉ Enquire / Book</a>
+      <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const sections = document.getElementById('sections');
+  sections.innerHTML = '';
+  for (const key of Object.keys(DATA.tracks)){
+    if (activeFilter !== 'all' && activeFilter !== key) continue;
+    const courses = DATA.courses.filter(c => c.track === key);
+    if (!courses.length) continue;
+    const t = DATA.tracks[key];
+    sections.insertAdjacentHTML('beforeend', `
+      <section class="track-section">
+        <div class="track-title">${t.icon} ${esc(t.label)} <span class="count">${courses.length} course${courses.length>1?'s':''}</span></div>
+        <div class="grid">${courses.map(cardHtml).join('')}</div>
+      </section>`);
+  }
+}
+
+function buildFilters(){
+  const f = document.getElementById('filters');
+  const chips = [['all','All courses'], ...Object.entries(DATA.tracks).map(([k,v])=>[k, `${v.icon} ${v.label}`])];
+  f.innerHTML = chips.map(([k,label]) =>
+    `<button class="filter${k==='all'?' active':''}" data-f="${k}">${esc(label)}</button>`).join('');
+  f.querySelectorAll('.filter').forEach(btn => btn.onclick = () => {
+    activeFilter = btn.dataset.f;
+    f.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b===btn));
+    render();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('premium_courses.json', {cache:'no-store'});
+    DATA = await res.json();
+  } catch(e){
+    document.getElementById('sections').innerHTML =
+      '<p style="text-align:center;color:var(--text-2)">Couldn\'t load courses. Please refresh.</p>';
+    return;
+  }
+  const r = DATA.price_range;
+  document.getElementById('price-note').textContent =
+    `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child · ${DATA.courses.length} courses`;
+  buildFilters();
+  render();
+});
+</script>
+</body>
+</html>
