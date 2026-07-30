@@ -90,9 +90,66 @@ def generate_one(course, out_dir):
     return out_file
 
 
+def build_curriculum_body(course, content_html):
+    """Full facilitator curriculum: the course facts, then the cached lesson HTML."""
+    return (
+        "<h2>Overview</h2>\n"
+        f"<p>{course['summary']}</p>\n"
+        + _facts_table(course)
+        + content_html
+    )
+
+
+def generate_curriculum_one(course, content_dir, out_dir):
+    """Render a full-curriculum PDF from cached premium_content, if present."""
+    cache = content_dir / f"{course['id']}.json"
+    if not cache.exists():
+        return None
+    content = json.loads(cache.read_text(encoding="utf-8")).get("content_html", "")
+    if not content.strip():
+        return None
+    prepared_html = ('Full facilitator curriculum'
+                     '<span class="session-badge">Premium</span>')
+    header_html = pdf_template.build_header(
+        title_line=f"{course['title']} · Full Curriculum",
+        subtitle_line=f"{course['format']} · {course['age']} · {course['level']}",
+        prepared_html=prepared_html,
+        current_date="",
+    )
+    full_html = pdf_template.render_document(
+        title=f"TinkerWithMe Premium Curriculum - {course['title']}",
+        header_html=header_html,
+        body_html=build_curriculum_body(course, content),
+    )
+    out_file = out_dir / f"{course['id']}.pdf"
+    pdf_template.write_pdf(full_html, out_file)
+    print(f"  📚 {course['id']}.pdf")
+    return out_file
+
+
 def main():
     data = json.loads(Path("premium_courses.json").read_text(encoding="utf-8"))
-    only = set(sys.argv[1:])
+    args = sys.argv[1:]
+    curriculum_mode = "--curriculums" in args
+    only = {a for a in args if not a.startswith("--")}
+
+    if curriculum_mode:
+        # Render full-curriculum PDFs from whatever premium_content is cached, and
+        # write an index so premium.html knows which courses have a curriculum.
+        content_dir = Path("premium_content")
+        out_dir = Path("curriculums")
+        out_dir.mkdir(exist_ok=True)
+        available = []
+        for course in data["courses"]:
+            if only and course["id"] not in only:
+                continue
+            if generate_curriculum_one(course, content_dir, out_dir):
+                available.append(course["id"])
+        (out_dir / "index.json").write_text(
+            json.dumps({"available": available}, indent=2), encoding="utf-8")
+        print(f"\nGenerated {len(available)} full-curriculum PDF(s) → curriculums/")
+        return
+
     out_dir = Path("proposals")
     out_dir.mkdir(exist_ok=True)
     n = 0
