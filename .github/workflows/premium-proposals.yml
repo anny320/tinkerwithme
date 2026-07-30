@@ -1,0 +1,56 @@
+name: Premium Course Outlines
+
+# Regenerates the branded outline PDF for every premium course into proposals/.
+# Runs when the catalogue changes on main, or manually from the Actions tab.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium_courses.json'
+      - 'generate_premium.py'
+      - 'pdf_template.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-outlines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies for WeasyPrint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libpango-1.0-0 \
+            libpangocairo-1.0-0 \
+            libgdk-pixbuf2.0-0 \
+            libffi-dev \
+            shared-mime-info \
+            fonts-liberation
+
+      - name: Install Python dependencies
+        run: pip install weasyprint
+
+      - name: Generate premium outline PDFs
+        run: python generate_premium.py
+
+      - name: Commit regenerated PDFs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add proposals/
+          if git diff --cached --quiet; then
+            echo "No changes to premium outlines."
+          else
+            git commit -m "Regenerate premium course outlines"
+            git push origin HEAD:main
+          fi

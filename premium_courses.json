@@ -1,0 +1,293 @@
+{
+  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES.",
+  "price_range": {"min": 5000, "max": 8000},
+  "tracks": {
+    "arduino": {"label": "Arduino Robotics & Electronics", "icon": "🔧"},
+    "ai": {"label": "AI Skills for Kids", "icon": "🤖"},
+    "combo": {"label": "Combo (Arduino + AI)", "icon": "🔗"}
+  },
+  "courses": [
+    {
+      "id": "smart-home-builder",
+      "track": "arduino",
+      "title": "Smart Home Builder",
+      "format": "3-session series (90 min each)",
+      "age": "10–14 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 8000,
+      "standalone": false,
+      "prereqs": ["Traffic light simulation OR Button controlled LED (free)"],
+      "summary": "Kids build a working smart home model with three integrated systems, wired into one house.",
+      "sessions": [
+        {"title": "Smart Lighting", "desc": "Photoresistor + relay auto-lights rooms at dusk; a PIR motion sensor activates hallway lights."},
+        {"title": "Climate Control", "desc": "DHT11 temperature sensor triggers a fan via relay; an LCD displays the current temperature."},
+        {"title": "Security System", "desc": "Ultrasonic door sensor + buzzer alarm + servo-powered door lock, all wired into one house model."}
+      ],
+      "takeaway": "Cardboard smart house model with all circuits installed",
+      "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works."
+    },
+    {
+      "id": "self-driving-car",
+      "track": "arduino",
+      "title": "Self-Driving Car",
+      "format": "3-session series (2 hrs each)",
+      "age": "11–15 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 8000,
+      "standalone": false,
+      "prereqs": ["Servo motor control (free)"],
+      "summary": "Build a chassis-based car that navigates on its own, finishing with a race day.",
+      "sessions": [
+        {"title": "Motorised Chassis", "desc": "DC motors, an L298N motor driver, and basic forward/reverse/turn controls."},
+        {"title": "Line Follower", "desc": "IR sensors detect a black track so the car follows it autonomously."},
+        {"title": "Obstacle Avoidance", "desc": "An HC-SR04 ultrasonic sensor lets the car detect and steer around objects. Final race day!"}
+      ],
+      "takeaway": "Working self-driving car kit",
+      "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old."
+    },
+    {
+      "id": "smart-city",
+      "track": "arduino",
+      "title": "Smart City",
+      "format": "Full-day camp (5 hrs)",
+      "age": "10–14 yrs",
+      "level": "Intermediate",
+      "price": 7000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Teams of 3–4 each build one city subsystem, then connect them on a shared city board.",
+      "sessions": [
+        {"title": "Street Lights", "desc": "Photoresistor-activated LEDs that turn on at \"night\"."},
+        {"title": "Traffic System", "desc": "Multi-intersection traffic lights with a pedestrian crossing button."},
+        {"title": "Parking Garage", "desc": "Ultrasonic sensor counts cars in/out; an LED sign shows FULL/OPEN."},
+        {"title": "Weather Station", "desc": "DHT11 + LDR display conditions on an LCD."}
+      ],
+      "takeaway": "Their subsystem module + a group photo of the full city",
+      "pitch": "Kids collaborate like real city engineers — each team owns a piece, then they integrate it all."
+    },
+    {
+      "id": "robot-arm-claw",
+      "track": "arduino",
+      "title": "Robot Arm & Claw",
+      "format": "2-session series (2 hrs each)",
+      "age": "12–15 yrs",
+      "level": "Advanced",
+      "price": 7000,
+      "standalone": false,
+      "prereqs": ["Servo motor control (free)"],
+      "summary": "Assemble and program a 3-DOF robot arm with a gripper claw and a joystick controller.",
+      "sessions": [
+        {"title": "Build & Wire", "desc": "Assemble a 3-DOF (degree-of-freedom) arm using SG90 servos and build a joystick controller with two analog sticks."},
+        {"title": "Program & Challenge", "desc": "Calibrate movement ranges and add a gripper claw servo. Challenge: pick up and sort coloured objects by zone."}
+      ],
+      "takeaway": "Assembled robot arm",
+      "pitch": "The same principles behind factory robots and surgical arms — in your child's hands."
+    },
+    {
+      "id": "wearable-tech-lab",
+      "track": "arduino",
+      "title": "Wearable Tech Lab",
+      "format": "Single session (2.5 hrs)",
+      "age": "9–13 yrs",
+      "level": "Beginner → Intermediate",
+      "price": 5000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Kids design and build a wearable gadget they wire, code and wear home.",
+      "sessions": [
+        {"title": "Build", "desc": "Sew or attach a NeoPixel LED strip to a wristband or cap."},
+        {"title": "Program", "desc": "Program light patterns: rainbow cycle, heartbeat pulse, and colour-react-to-sound using a sound sensor module."},
+        {"title": "Personalise", "desc": "Finish and personalise the wearable with craft materials."}
+      ],
+      "takeaway": "Their custom LED wearable",
+      "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home."
+    },
+    {
+      "id": "iot-garden-monitor",
+      "track": "arduino",
+      "title": "IoT Garden Monitor",
+      "format": "2-session series (90 min each)",
+      "age": "10–14 yrs",
+      "level": "Intermediate",
+      "price": 6000,
+      "standalone": false,
+      "prereqs": ["Temperature logger (free, recommended)"],
+      "summary": "Build a sensor kit that keeps a real seedling alive, then automate its care.",
+      "sessions": [
+        {"title": "Sense", "desc": "Soil moisture sensor + DHT11 (humidity/temp) + LDR (sunlight), with readings on an LCD. Plant a real seedling."},
+        {"title": "Automate", "desc": "Set thresholds — if the soil is dry a relay triggers a small water pump; a buzzer alerts when conditions are off."}
+      ],
+      "takeaway": "Sensor kit + a seedling in a monitored pot",
+      "pitch": "STEM meets nature. They build tech that actually keeps a plant alive."
+    },
+    {
+      "id": "musical-instrument-builder",
+      "track": "arduino",
+      "title": "Musical Instrument Builder",
+      "format": "Single session (2.5 hrs)",
+      "age": "8–12 yrs",
+      "level": "Beginner → Intermediate",
+      "price": 5000,
+      "standalone": false,
+      "prereqs": ["Buzzer melody (free, recommended)"],
+      "summary": "Build a playable electronic instrument on a breadboard.",
+      "sessions": [
+        {"title": "Ultrasonic theremin", "desc": "Hand distance controls the pitch."},
+        {"title": "Button piano", "desc": "Eight tactile buttons mapped to a full octave."},
+        {"title": "Tempo & recording", "desc": "Tempo control with a potentiometer; record and play back a short melody."}
+      ],
+      "takeaway": "Their instrument circuit on a breadboard",
+      "pitch": "Music + code + electronics = the coolest instrument they've ever made."
+    },
+    {
+      "id": "ai-game-designer",
+      "track": "ai",
+      "title": "AI Game Designer",
+      "format": "Full-day camp (5 hrs)",
+      "age": "10–14 yrs",
+      "level": "Intermediate",
+      "price": 7000,
+      "standalone": false,
+      "prereqs": ["Prompting power (free, recommended)"],
+      "summary": "Design and build a playable game using AI tools.",
+      "sessions": [
+        {"title": "Morning — Design", "desc": "Use ChatGPT to brainstorm concepts, write rules and generate character backstories; use DALL-E for character art and board/card designs."},
+        {"title": "Afternoon — Build", "desc": "Create the game in Scratch or a no-code platform, add AI-generated sound effects, then playtest with peers and iterate."}
+      ],
+      "takeaway": "Playable game + a design portfolio PDF",
+      "pitch": "They don't just play games — they create them, using the same AI tools professionals use."
+    },
+    {
+      "id": "ai-movie-studio",
+      "track": "ai",
+      "title": "AI Movie Studio",
+      "format": "Full-day camp (5 hrs)",
+      "age": "10–14 yrs",
+      "level": "Beginner → Intermediate",
+      "price": 7000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Produce a short film powered entirely by AI, then premiere it for parents.",
+      "sessions": [
+        {"title": "Script", "desc": "ChatGPT-assisted story writing and dialogue."},
+        {"title": "Visuals", "desc": "AI image generation for storyboards and backgrounds."},
+        {"title": "Audio", "desc": "AI-generated music, sound effects and optional voice narration."},
+        {"title": "Edit & Premiere", "desc": "Assemble in CapCut or a similar free editor, then screen the films for parents at pickup."}
+      ],
+      "takeaway": "Their finished short film (shared via link)",
+      "pitch": "A full film production — written, illustrated, scored, and edited — in one day."
+    },
+    {
+      "id": "ai-entrepreneur",
+      "track": "ai",
+      "title": "AI Entrepreneur",
+      "format": "3-session series (90 min each)",
+      "age": "12–16 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 8000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Launch a mini-business using AI tools, ending with a pitch to a panel.",
+      "sessions": [
+        {"title": "Idea & Brand", "desc": "AI-assisted market research, business-name generation, logo design (DALL-E/Canva AI) and a brand colour palette."},
+        {"title": "Product & Marketing", "desc": "Create a product mockup or digital product, write marketing copy with ChatGPT, and design social media posts."},
+        {"title": "Pitch Day", "desc": "Build a pitch deck, rehearse with AI feedback, and present to a panel (parents invited)."}
+      ],
+      "takeaway": "Brand kit + pitch deck + digital product prototype",
+      "pitch": "Business school for kids. They leave with a brand, a product, and a pitch."
+    },
+    {
+      "id": "deepfake-detective",
+      "track": "ai",
+      "title": "Deepfake Detective & AI Safety",
+      "format": "Single session (2.5 hrs)",
+      "age": "12–16 yrs",
+      "level": "Intermediate",
+      "price": 5000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Critical thinking meets cutting-edge AI: spot fakes, understand misinformation, and write a personal AI safety code.",
+      "sessions": [
+        {"title": "Spot the fakes", "desc": "Detect deepfake images, videos and audio using detective techniques."},
+        {"title": "Trace misinformation", "desc": "Understand how misinformation spreads by tracing a fake story's path."},
+        {"title": "Build a classifier", "desc": "Build a \"Fake or Real?\" quiz using Teachable Machine (image classifier)."},
+        {"title": "AI Safety Code & debate", "desc": "Draft a personal AI Safety Code, then debate: \"Should AI-generated art be allowed in school?\""}
+      ],
+      "takeaway": "AI Safety Code poster + Fake-or-Real classifier",
+      "pitch": "Every child will encounter deepfakes. This session teaches them to think before they believe."
+    },
+    {
+      "id": "ai-music-producer",
+      "track": "ai",
+      "title": "AI Music Producer",
+      "format": "2-session series (90 min each)",
+      "age": "10–14 yrs",
+      "level": "Beginner → Intermediate",
+      "price": 6000,
+      "standalone": false,
+      "prereqs": ["AI music & sound (free, recommended)"],
+      "summary": "Go deeper than the free session and produce a real EP with cover art.",
+      "sessions": [
+        {"title": "Compose", "desc": "Use Suno/Udio to generate tracks across genres, learn song structure (verse, chorus, bridge), and remix and layer."},
+        {"title": "Produce", "desc": "Mix multiple AI tracks, add voice recordings, create album art with DALL-E, and \"release\" on a class playlist."}
+      ],
+      "takeaway": "3-track EP with custom album art",
+      "pitch": "They produce an actual album. Genre, lyrics, cover art — all created by your child with AI."
+    },
+    {
+      "id": "computer-vision-explorer",
+      "track": "ai",
+      "title": "Computer Vision Explorer",
+      "format": "2-session series (2 hrs each)",
+      "age": "11–15 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 7000,
+      "standalone": false,
+      "prereqs": ["Teachable Machine (free)"],
+      "summary": "Build on the free Teachable Machine session to make a working computer-vision app.",
+      "sessions": [
+        {"title": "Advanced Classifiers", "desc": "Train models to sort waste (recyclable vs. landfill), identify plant species, or read hand gestures. Discuss training-data quality and bias."},
+        {"title": "Real-World Application", "desc": "Build a gesture-controlled presentation (wave = next slide) or a waste-sorting advisor, and connect the classifier to a simple web app."}
+      ],
+      "takeaway": "Working computer-vision app they can demo",
+      "pitch": "Self-driving cars see the world through computer vision. Your child just built their own version."
+    },
+    {
+      "id": "ai-for-social-good",
+      "track": "ai",
+      "title": "AI for Social Good",
+      "format": "3-session series (90 min each)",
+      "age": "12–16 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 8000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Solve a real community problem with AI, ending with a pitch and a Changemaker badge.",
+      "sessions": [
+        {"title": "Research", "desc": "Pick a local challenge (water access, matatu routes, waste management, school safety) and use AI to research, interview and map the problem."},
+        {"title": "Prototype", "desc": "Build an AI-assisted solution — a chatbot, a classifier, a data dashboard, or an awareness campaign with AI-generated content."},
+        {"title": "Present", "desc": "Pitch the solution to peers and parents. Best project wins the \"TinkerWith_ Changemaker\" badge."}
+      ],
+      "takeaway": "Project portfolio + Changemaker certificate",
+      "pitch": "AI isn't just about tech — it's about impact. They tackle a real problem their community faces."
+    },
+    {
+      "id": "smart-city-2-ai-powered",
+      "track": "combo",
+      "title": "Smart City 2.0 — AI-Powered",
+      "format": "2-day camp (5 hrs/day)",
+      "age": "12–15 yrs",
+      "level": "Advanced",
+      "price": 8000,
+      "standalone": false,
+      "prereqs": ["Any 2 free Arduino activities", "Prompting power (free)"],
+      "summary": "The ultimate crossover: build an Arduino smart city, then give it an AI brain.",
+      "sessions": [
+        {"title": "Day 1 — Build", "desc": "Teams assemble Arduino smart-city modules (traffic, parking, street lights, environment sensors)."},
+        {"title": "Day 2 — Add Intelligence", "desc": "Use Teachable Machine to add a \"vision\" layer — a camera classifies traffic density and the AI recommends light timing. ChatGPT generates a city-planning report from sensor data. Teams present their AI-enhanced city to parents."}
+      ],
+      "takeaway": "Their city module + an AI analysis report",
+      "pitch": "Hardware meets AI. Two days, one smart city, built and brain-powered by kids."
+    }
+  ]
+}
