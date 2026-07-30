@@ -72,6 +72,62 @@ footer a{color:var(--orange);text-decoration:none}
 </style>
 </head>
 <body>
+<!-- ─── Password gate (soft, client-side) ──────────────────────────────────
+     NOTE: This is a deterrent, not real security — a static page cannot truly
+     enforce a password (anyone can View Source / use DevTools). Default
+     password is "Tinker2026!". To change it: open this page, then in the browser
+     console run  await twSha256('your-new-password')  and paste the printed hex
+     value into PASSWORD_SHA256 below. -->
+<style>
+#tw-gate{position:fixed;inset:0;z-index:99999;background:#2A1A0E;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-family:'Inter',system-ui,sans-serif}
+#tw-gate .box{background:#fff;border-radius:14px;padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#tw-gate h2{font-size:20px;font-weight:700;color:#2A1A0E;margin:0 0 6px}
+#tw-gate p{font-size:13px;color:#6B4C30;margin:0 0 1.2rem;line-height:1.5}
+#tw-gate input{width:100%;padding:12px 14px;border:1.5px solid rgba(42,26,14,.24);border-radius:8px;font-size:15px;margin-bottom:10px;font-family:inherit}
+#tw-gate input:focus{outline:none;border-color:#F07B1D}
+#tw-gate button{width:100%;padding:12px;border:none;border-radius:8px;background:#F07B1D;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+#tw-gate button:hover{filter:brightness(1.08)}
+#tw-gate .err{color:#C0392B;font-size:12.5px;min-height:16px;margin-top:8px}
+html.tw-locked{overflow:hidden}
+</style>
+<div id="tw-gate" role="dialog" aria-modal="true" aria-label="Password required">
+  <div class="box">
+    <div style="font-size:34px">🔒</div>
+    <h2>TinkerWithMe</h2>
+    <p>This tool is password-protected. Please enter the password to continue.</p>
+    <input id="tw-pw" type="password" placeholder="Password" autocomplete="current-password" autofocus>
+    <button id="tw-go" type="button">Unlock</button>
+    <div class="err" id="tw-err"></div>
+  </div>
+</div>
+<script>
+(function(){
+  // SHA-256 of the password. Default password: "tinker2026" (see note above to change).
+  const PASSWORD_SHA256 = "08846fa88c899bb66360f40c9cf97855785e12dbab8d3bac31fae21c3829a858";
+  const KEY = "tw_unlocked";
+  window.twSha256 = async function(s){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  };
+  const gate = document.getElementById('tw-gate');
+  if (sessionStorage.getItem(KEY) === PASSWORD_SHA256){ gate.remove(); return; }
+  document.documentElement.classList.add('tw-locked');
+  async function tryUnlock(){
+    const h = await window.twSha256(document.getElementById('tw-pw').value);
+    if (h === PASSWORD_SHA256){
+      sessionStorage.setItem(KEY, PASSWORD_SHA256);
+      document.documentElement.classList.remove('tw-locked');
+      gate.remove();
+    } else {
+      document.getElementById('tw-err').textContent = 'Incorrect password. Try again.';
+      document.getElementById('tw-pw').select();
+    }
+  }
+  document.getElementById('tw-go').addEventListener('click', tryUnlock);
+  document.getElementById('tw-pw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+})();
+</script>
+<!-- ─── end password gate ─── -->
 
 <header class="hero">
   <div class="hero-badge">Free for educators</div>
