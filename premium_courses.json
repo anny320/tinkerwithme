@@ -140,6 +140,43 @@
       "pitch": "Music + code + electronics = the coolest instrument they've ever made."
     },
     {
+      "id": "smart-plant-carer",
+      "track": "arduino",
+      "title": "Smart Plant Carer",
+      "format": "Single session (2.5 hrs)",
+      "age": "9–13 yrs",
+      "level": "Beginner → Intermediate",
+      "price": 5000,
+      "standalone": true,
+      "prereqs": [],
+      "summary": "Build a self-watering planter that senses dry soil and pumps water to a real seedling all by itself.",
+      "sessions": [
+        {"title": "Sense the soil", "desc": "Wire a soil-moisture sensor and calibrate the dry vs. wet readings on the Serial Monitor."},
+        {"title": "Pump on demand", "desc": "Drive a small water pump through a relay module and set a moisture threshold so it waters only when the soil is dry."},
+        {"title": "Build the planter", "desc": "Assemble the pump, tubing and water reservoir around a potted seedling and run a full automatic watering cycle."}
+      ],
+      "takeaway": "Self-watering planter kit + a seedling",
+      "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works."
+    },
+    {
+      "id": "bluetooth-control-lab",
+      "track": "arduino",
+      "title": "Bluetooth Control Lab",
+      "format": "2-session series (2 hrs each)",
+      "age": "11–15 yrs",
+      "level": "Intermediate → Advanced",
+      "price": 7000,
+      "standalone": false,
+      "prereqs": ["Button controlled LED (free, recommended)"],
+      "summary": "Control an Arduino gadget wirelessly from a phone over Bluetooth, then build a custom app to command it.",
+      "sessions": [
+        {"title": "Connect & command", "desc": "Wire an HC-05 Bluetooth module, pair it with a phone, and send commands from a terminal app to switch LEDs and drive a motor — understanding the serial link underneath."},
+        {"title": "Build your app", "desc": "Use MIT App Inventor to make a custom phone app with your own buttons, and send live sensor readings (distance or temperature) back to the phone for true two-way communication."}
+      ],
+      "takeaway": "Bluetooth-controlled gadget + their own phone app",
+      "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other."
+    },
+    {
       "id": "ai-game-designer",
       "track": "ai",
       "title": "AI Game Designer",
