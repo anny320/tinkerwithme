@@ -43,6 +43,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#f
 .proj-btn{padding:12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:all 0.15s;font-family:inherit;text-align:left;font-size:13px;color:var(--text)}
 .proj-btn small{display:block;font-size:11px;color:var(--text-3);margin-top:4px}
 .proj-btn.sel-orange{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark);font-weight:600}
+.proj-btn.sel-premium{border-color:#C45C00;background:#FFF3E6;color:#C45C00;font-weight:600}
 .proj-btn.sel-green{border-color:var(--green);background:var(--green-light);color:var(--green-dark);font-weight:600}
 .dur-row{display:flex;gap:8px;flex-wrap:wrap}
 .dur-btn{padding:8px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-weight:500;font-size:13px;font-family:inherit;transition:all 0.15s;color:var(--text-2)}
@@ -187,9 +188,10 @@ html.tw-locked{overflow:hidden}
   <!-- TRACK -->
   <div class="card">
     <div class="card-title"><i class="ti ti-layout-grid"></i> Track</div>
-    <div class="toggle-row" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="toggle-row" style="grid-template-columns:1fr 1fr;gap:10px">
       <button class="toggle-btn active-orange" data-track="arduino" onclick="setTrack('arduino')">⚙️ Arduino Robotics</button>
       <button class="toggle-btn" data-track="ai" onclick="setTrack('ai')">🤖 AI Skills</button>
+      <button class="toggle-btn" data-track="premium" onclick="setTrack('premium')">💎 Premium Courses</button>
       <button class="toggle-btn" data-track="custom" onclick="setTrack('custom')">✨ Custom topic</button>
     </div>
     <p class="hint" style="margin-top:10px" id="track-hint">Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.</p>
@@ -229,13 +231,13 @@ html.tw-locked{overflow:hidden}
 
   <!-- PROJECTS -->
   <div class="card" id="projects-card">
-    <div class="card-title"><i class="ti ti-apps"></i> Select Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(pick one or more)</span></div>
+    <div class="card-title"><i class="ti ti-apps"></i> <span id="projects-label">Select Projects</span> <span class="hint" id="projects-sublabel" style="display:inline;text-transform:none;letter-spacing:0">(pick one or more)</span></div>
     <div id="projects-grid"></div>
     <p class="hint" style="margin-top:10px" id="projects-hint"></p>
   </div>
 
   <!-- DURATION -->
-  <div class="card">
+  <div class="card" id="duration-card">
     <div class="card-title"><i class="ti ti-clock"></i> Session Duration</div>
     <div class="dur-row">
       <button class="dur-btn" data-dur="90" onclick="setDuration('90')">90 min</button>
@@ -272,56 +274,6 @@ html.tw-locked{overflow:hidden}
     </div>
   </div>
 
-  <!-- PREMIUM COURSES — surfaced from premium_courses.json with a Premium tag -->
-  <style>
-  #premium-card{border:2px solid #C45C00;background:#FFF9F2}
-  .badge-premium{display:inline-block;background:#C45C00;color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle}
-  .pl-track{font-size:12px;font-weight:700;color:#6B4C30;margin:10px 0 5px;text-transform:uppercase;letter-spacing:.04em}
-  .pl-item{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(42,26,14,.1)}
-  .pl-item:last-child{border-bottom:none}
-  .pl-name{font-weight:600;font-size:14px;color:#2A1A0E}
-  .pl-meta{font-size:11px;color:#B08060}
-  .pl-actions{margin-left:auto;display:flex;gap:6px}
-  .pl-btn{font-size:12px;font-weight:600;text-decoration:none;padding:5px 11px;border-radius:8px;border:1.5px solid rgba(42,26,14,.24);color:#6B4C30}
-  .pl-btn.cur{background:#C45C00;color:#fff;border-color:#C45C00}
-  </style>
-  <div class="card" id="premium-card">
-    <div class="card-title" style="color:#C45C00"><i class="ti ti-diamond"></i> Premium Courses <span class="badge-premium">PREMIUM</span></div>
-    <p class="hint">Deep-dive, multi-session courses with a complete ready-to-teach curriculum. Want more depth than the free single-session plan above?</p>
-    <div id="premium-list"><p class="hint">Loading…</p></div>
-    <p class="hint" style="margin-top:8px"><a href="premium.html">See all premium courses &amp; pricing →</a></p>
-  </div>
-  <script>
-  (async function(){
-    const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    let data, avail = new Set();
-    try {
-      data = await (await fetch('premium_courses.json',{cache:'no-store'})).json();
-      try { const ci = await fetch('curriculums/index.json',{cache:'no-store'}); if (ci.ok) avail = new Set((await ci.json()).available||[]); } catch(_){}
-    } catch(e){ document.getElementById('premium-list').innerHTML = '<p class="hint">Couldn\'t load premium courses.</p>'; return; }
-    const wrap = document.getElementById('premium-list'); wrap.innerHTML = '';
-    for (const [key,tr] of Object.entries(data.tracks)){
-      const courses = data.courses.filter(c=>c.track===key);
-      if (!courses.length) continue;
-      wrap.insertAdjacentHTML('beforeend', `<div class="pl-track">${tr.icon} ${esc(tr.label)}</div>`);
-      for (const c of courses){
-        const hasCur = avail.has(c.id);
-        const cur = hasCur ? `<a class="pl-btn cur" href="curriculums/${c.id}.pdf" target="_blank" rel="noopener">📚 Curriculum</a>` : '';
-        wrap.insertAdjacentHTML('beforeend', `
-          <div class="pl-item">
-            <span>
-              <span class="pl-name">${esc(c.title)}</span> <span class="badge-premium">PREMIUM</span><br>
-              <span class="pl-meta">${esc(c.format)} · ${esc(c.age)} · from KES ${c.price.toLocaleString()}</span>
-            </span>
-            <span class="pl-actions">
-              ${cur}
-              <a class="pl-btn" href="proposals/${c.id}.pdf" target="_blank" rel="noopener">⬇ Outline</a>
-            </span>
-          </div>`);
-      }
-    }
-  })();
-  </script>
 
   <div class="error-msg" id="error-msg"></div>
 
@@ -362,6 +314,8 @@ const DISPATCH_PROXY = '';
 // Catalogue is loaded at startup from the shared courses.json (single source of
 // truth). Add a project there once — this page picks it up automatically.
 let DATA = { arduino: { projects: [] }, ai: { projects: [] } };
+let PREMIUM = { courses: [], tracks: {} };   // premium_courses.json
+let PREM_READY = new Set();                  // ids with a pre-generated curriculum
 
 let currentTrack    = 'arduino';
 let currentAudience = 'classroom';
@@ -374,12 +328,21 @@ function setTrack(t) {
   document.querySelectorAll('[data-track]').forEach(btn => {
     btn.className = 'toggle-btn' + (btn.dataset.track === t ? ' active-orange' : '');
   });
-  const isCustom = t === 'custom';
+  const isCustom  = t === 'custom';
+  const isPremium = t === 'premium';
   document.getElementById('custom-card').style.display   = isCustom ? 'block' : 'none';
   document.getElementById('projects-card').style.display = isCustom ? 'none'  : 'block';
-  document.getElementById('track-hint').innerHTML = isCustom
-    ? 'We\'ll design a plan from scratch for whatever you type below.'
-    : 'Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.';
+  // Premium courses ship with their own fixed format, so duration doesn't apply.
+  document.getElementById('duration-card').style.display = isPremium ? 'none' : 'block';
+  document.getElementById('projects-label').textContent    = isPremium ? 'Select a Course' : 'Select Projects';
+  document.getElementById('projects-sublabel').textContent = isPremium ? '(pick one)' : '(pick one or more)';
+  document.getElementById('gen-btn').innerHTML = isPremium
+    ? '<i class="ti ti-diamond"></i> Get My Premium Curriculum'
+    : '<i class="ti ti-wand"></i> Generate My Curriculum PDF';
+  document.getElementById('track-hint').innerHTML =
+      isCustom  ? 'We\'ll design a plan from scratch for whatever you type below.'
+    : isPremium ? 'Deep-dive multi-session courses. Pick one — the full curriculum is ready to download instantly.'
+    :             'Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.';
   if (!isCustom) { populateAges(); updateProjects(); }
   updateBtn();
 }
@@ -387,8 +350,13 @@ function setTrack(t) {
 // Fill the age dropdown from the selected track's own bands, "All ages" first.
 function populateAges() {
   const sel = document.getElementById('age-group');
-  const track = DATA[currentTrack];
-  const bands = (track && track.ages ? track.ages : []).filter(a => a !== 'All ages');
+  let bands;
+  if (currentTrack === 'premium') {
+    bands = [...new Set(PREMIUM.courses.map(c => c.age))];
+  } else {
+    const track = DATA[currentTrack];
+    bands = (track && track.ages ? track.ages : []).filter(a => a !== 'All ages');
+  }
   const prev = sel.value;
   sel.innerHTML = ['All ages', ...bands]
     .map(a => `<option value="${a}">${a === 'All ages' ? 'All ages' : a}</option>`).join('');
@@ -407,7 +375,9 @@ function setAudience(a) {
 }
 
 function updateProjects() {
-  if (currentTrack === 'custom' || !DATA[currentTrack]) return;
+  if (currentTrack === 'custom') return;
+  if (currentTrack === 'premium') { updatePremiumProjects(); return; }
+  if (!DATA[currentTrack]) return;
   const ageGroup = document.getElementById('age-group').value;
   const projects = DATA[currentTrack].projects.filter(p => ageGroup === 'All ages' || p.age === ageGroup);
   const grid = document.getElementById('projects-grid');
@@ -429,6 +399,41 @@ function updateProjects() {
 
   document.getElementById('projects-hint').textContent =
     projects.length + ' project' + (projects.length !== 1 ? 's' : '') + ' available for this age group.';
+}
+
+// Premium courses use the same picker UI, but only one course at a time —
+// each one is a complete standalone curriculum, not a session to combine.
+function updatePremiumProjects() {
+  const ageGroup = document.getElementById('age-group').value;
+  const courses = PREMIUM.courses.filter(c => ageGroup === 'All ages' || c.age === ageGroup);
+  const grid = document.getElementById('projects-grid');
+
+  if (!courses.length) {
+    grid.innerHTML = '<p style="color:var(--text-3);font-size:13px">No premium courses for this age group. Try another age group.</p>';
+    document.getElementById('projects-hint').textContent = '';
+    return;
+  }
+
+  grid.innerHTML = courses.map(c => {
+    const sel   = selectedProjects.includes(c.id);
+    const icon  = (PREMIUM.tracks[c.track] || {}).icon || '💎';
+    const ready = PREM_READY.has(c.id);
+    return `
+    <button class="proj-btn ${sel ? 'sel-premium' : ''}" data-id="${c.id}"
+            onclick="togglePremium('${c.id}')">
+      ${icon} ${c.title}
+      <small>${c.format} · ${c.age}<br>from KES ${c.price.toLocaleString()}${ready ? '' : ' · outline only'}</small>
+    </button>`;
+  }).join('');
+
+  document.getElementById('projects-hint').textContent =
+    courses.length + ' premium course' + (courses.length !== 1 ? 's' : '') + ' — pick one.';
+}
+
+function togglePremium(id) {
+  selectedProjects = selectedProjects.includes(id) ? [] : [id];  // single-select
+  updatePremiumProjects();
+  updateBtn();
 }
 
 function toggleProject(id) {
@@ -462,6 +467,8 @@ function updateBtn() {
   let ok;
   if (freeform.length > 0) {
     ok = true;  // free-text drives everything on its own
+  } else if (currentTrack === 'premium') {
+    ok = selectedProjects.length > 0;
   } else if (currentTrack === 'custom') {
     const topic = document.getElementById('custom-topic').value.trim();
     ok = topic.length > 0 && selectedDuration !== null;
@@ -469,6 +476,43 @@ function updateBtn() {
     ok = selectedProjects.length > 0 && selectedDuration !== null;
   }
   btn.disabled = !ok;
+}
+
+// Log the lead (best-effort) then hand over the pre-built premium PDF.
+async function deliverPremium(name, email, org, country, role) {
+  const id = selectedProjects[0];
+  const course = PREMIUM.courses.find(c => c.id === id);
+  if (!course) return;
+  const ready = PREM_READY.has(id);
+  const url = ready ? `curriculums/${id}.pdf` : `proposals/${id}.pdf`;
+
+  if (GOOGLE_FORM_ID && GOOGLE_FORM_ID !== 'YOUR_GOOGLE_FORM_ID') {
+    try {
+      await fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
+        method: 'POST', mode: 'no-cors',
+        body: new URLSearchParams({
+          [GF.name]: name, [GF.email]: email, [GF.org]: org,
+          [GF.country]: country, [GF.role]: role,
+        }),
+      });
+    } catch (_) { /* don't block delivery on the form */ }
+  }
+
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('success-box').style.display = 'block';
+  document.getElementById('generating-area').style.display = 'none';
+  const readyArea = document.getElementById('ready-area');
+  readyArea.style.display = 'block';
+  readyArea.querySelector('h3').textContent =
+    ready ? `✅ ${course.title} — full curriculum ready!`
+          : `📄 ${course.title} — course outline ready`;
+  const prev = document.getElementById('btn-preview');
+  const dl   = document.getElementById('btn-download');
+  prev.href = url;
+  dl.href = url; dl.setAttribute('download', `${id}.pdf`);
+  document.getElementById('pdf-frame').src = url;
+  document.getElementById('pdf-frame').style.display = 'block';
+  document.getElementById('success-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function submit() {
@@ -482,6 +526,9 @@ async function submit() {
   if (!name)  { alert('Please enter your name.'); return; }
   if (!email) { alert('Please enter your email address.'); return; }
   if (!email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  // Premium curricula are pre-generated — no workflow run, deliver immediately.
+  if (currentTrack === 'premium') { deliverPremium(name, email, org, country, role); return; }
 
   document.getElementById('loading').style.display  = 'block';
   document.getElementById('error-msg').style.display = 'none';
@@ -631,6 +678,12 @@ async function loadCourses() {
   try {
     const res = await fetch('courses.json', { cache: 'no-store' });
     if (res.ok) DATA = await res.json();
+    try {
+      const pr = await fetch('premium_courses.json', { cache: 'no-store' });
+      if (pr.ok) PREMIUM = await pr.json();
+      const ci = await fetch('curriculums/index.json', { cache: 'no-store' });
+      if (ci.ok) PREM_READY = new Set((await ci.json()).available || []);
+    } catch (_) { /* premium track simply stays empty */ }
   } catch (_) { /* keep empty catalogue; the custom/free-text paths still work */ }
   populateAges();
   updateProjects();
