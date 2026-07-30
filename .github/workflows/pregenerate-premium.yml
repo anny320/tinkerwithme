@@ -1,0 +1,80 @@
+name: Pre-generate Premium Curriculums
+
+# Generates the FULL facilitator curriculum for every premium course (one AI call
+# per course), caches it to premium_content/, then renders a full-curriculum PDF
+# per course into curriculums/. Uses the Anthropic API — run when you want the
+# curriculums (re)built. Content is committed incrementally so a timeout never
+# loses finished work; re-running skips courses already generated unless "force".
+#
+# Run from the Actions tab → "Pre-generate Premium Curriculums" → Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Regenerate curriculums that already exist'
+        required: false
+        type: boolean
+        default: false
+      only:
+        description: 'Optional: only these course IDs (space-separated, e.g. "smart-city ai-movie-studio"). Blank = all 15.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  pregenerate-premium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies for WeasyPrint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libpango-1.0-0 \
+            libpangocairo-1.0-0 \
+            libgdk-pixbuf2.0-0 \
+            libffi-dev \
+            shared-mime-info \
+            fonts-liberation
+
+      - name: Install Python dependencies
+        run: pip install anthropic weasyprint
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Each course's curriculum is committed + pushed the moment it's generated
+      # (COMMIT_EACH=1), so a cancel/timeout never loses finished work.
+      - name: Generate premium curriculums (AI)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COMMIT_EACH: '1'
+        run: |
+          ARGS="${{ inputs.only }}"
+          if [ "${{ inputs.force }}" = "true" ]; then ARGS="--force $ARGS"; fi
+          echo "Running: python pregenerate_premium.py $ARGS"
+          python pregenerate_premium.py $ARGS
+
+      - name: Render full-curriculum PDFs
+        run: python generate_premium.py --curriculums
+
+      - name: Commit curriculums + any remaining content
+        run: |
+          git add premium_content/ curriculums/
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "Render premium full-curriculum PDFs"
+            git push origin HEAD:main
+          fi
