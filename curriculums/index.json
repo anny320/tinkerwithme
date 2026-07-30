@@ -1,6 +1,11 @@
 {
   "available": [
     "smart-home-builder",
+    "self-driving-car",
+    "smart-city",
+    "robot-arm-claw",
+    "wearable-tech-lab",
+    "iot-garden-monitor",
     "ai-movie-studio"
   ]
 }
