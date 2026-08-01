@@ -271,6 +271,7 @@ html.tw-locked{overflow:hidden}
         <a id="btn-download" class="btn-dl btn-download" download>⬇ Download PDF</a>
       </div>
       <iframe id="pdf-frame" class="pdf-frame" title="Curriculum preview"></iframe>
+      <iframe id="print-frame" style="display:none" title="Print"></iframe>
     </div>
   </div>
 
@@ -506,7 +507,13 @@ function deliverPremium(name, email, org, country, role) {
             : `\ud83d\udcc4 ${course.title} — course outline ready`;
 
     const dl = document.getElementById('btn-download');
-    document.getElementById('btn-preview').href = url;
+    const prev = document.getElementById('btn-preview');
+    prev.onclick = null; dl.onclick = null;          // clear local-build handlers
+    prev.textContent = '\ud83d\udc41 Preview';
+    dl.textContent   = '\u2b07 Download PDF';
+    prev.setAttribute('target', '_blank');
+    document.getElementById('pdf-frame').removeAttribute('srcdoc');
+    prev.href = url;
     dl.href = url;
     dl.setAttribute('download', `${id}.pdf`);
 
@@ -550,6 +557,219 @@ async function verifyPremiumUrl(id, course) {
            : `\ud83d\udcc4 ${course.title} — course outline ready`;
 }
 
+// Holds the assembled document + its filename for the current result
+let lastDocHtml = '';
+let currentFilename = 'TinkerWithMe_Curriculum';
+
+function showBuiltDoc(fullHtml) {
+  document.getElementById('generating-area').style.display = 'none';
+  const ready = document.getElementById('ready-area');
+  ready.style.display = 'block';
+  ready.querySelector('h3').textContent = '\u2705 Your curriculum is ready!';
+
+  // These anchors normally link straight to a premium PDF. For a locally
+  // assembled plan there is no file to link to, so drive the print dialog.
+  const prev = document.getElementById('btn-preview');
+  const dl   = document.getElementById('btn-download');
+  prev.removeAttribute('href'); prev.removeAttribute('target');
+  dl.removeAttribute('href');   dl.removeAttribute('download');
+  prev.style.cursor = 'pointer'; dl.style.cursor = 'pointer';
+  prev.textContent = '\ud83d\udc41 Open in new tab';
+  dl.textContent   = '\u2b07 Save as PDF';
+  prev.onclick = (e) => { e.preventDefault(); openInTab(); };
+  dl.onclick   = (e) => { e.preventDefault(); savePdf();  };
+
+  const frame = document.getElementById('pdf-frame');
+  frame.style.display = 'block';
+  frame.removeAttribute('src');
+  frame.srcdoc = fullHtml;
+  document.getElementById('success-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Open the browser print dialog on the assembled document → visitor picks "Save as PDF".
+// The document's <title> becomes the suggested PDF filename.
+function savePdf() {
+  const pf = document.getElementById('print-frame');
+  pf.onload = () => {
+    try {
+      pf.contentWindow.focus();
+      pf.contentWindow.print();
+    } catch (_) {
+      openInTab();
+    }
+  };
+  pf.srcdoc = lastDocHtml;
+}
+
+function openInTab() {
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.open();
+  w.document.write(lastDocHtml);
+  w.document.close();
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Deterministic assembly of the selected projects — mirrors build_static_curriculum()
+// in generate_curriculum.py. No AI, no network beyond the cached JSON already fetched.
+function buildStaticInner(projects, contentMap, ageGroup, durationMins, durationLabel, isHomeschool) {
+  const n = projects.length;
+  const titles = projects.map(p => escapeHtml(p.title)).join(', ');
+  const overview =
+    `<h2>Session Overview</h2>\n<p>This session covers ${n} hands-on project${n !== 1 ? 's' : ''} ` +
+    `for <strong>${escapeHtml(ageGroup)}</strong>: <strong>${titles}</strong>. Total planned time is ` +
+    `${durationLabel}. Each project below includes materials, step-by-step instructions, full code or ` +
+    `prompts, common mistakes, discussion questions, and extension challenges.</p>\n`;
+
+  const totalWeight = projects.reduce((s, p) => s + (p.time || 60), 0) || 1;
+  const intro = Math.max(5, Math.round(durationMins * 0.08));
+  const wrap  = Math.max(5, Math.round(durationMins * 0.07));
+  const bodyMins = Math.max(1, durationMins - intro - wrap);
+  let rows = `<tr><td>Welcome &amp; setup</td><td>${intro} min</td></tr>\n`;
+  for (const p of projects) {
+    const alloc = Math.max(1, Math.round(bodyMins * (p.time || 60) / totalWeight));
+    rows += `<tr><td>${escapeHtml(p.title)}</td><td>${alloc} min</td></tr>\n`;
+  }
+  rows += `<tr><td>Wrap-up &amp; reflection</td><td>${wrap} min</td></tr>\n`;
+  const schedule =
+    `<h2>Schedule</h2>\n<table><thead><tr><th>Activity</th><th>Suggested time</th></tr></thead>` +
+    `<tbody>${rows}</tbody></table>\n`;
+
+  let body = '';
+  for (const p of projects) {
+    body += `<h1>${escapeHtml(p.title)}</h1>\n<p><em>${escapeHtml(p.diff)} · ${escapeHtml(p.age)} · ` +
+            `~${p.time} min</em></p>\n${contentMap[p.id] || ''}\n`;
+  }
+
+  const tips = isHomeschool
+    ? `<h2>Parent Guidance Tips</h2>\n<ul>` +
+      `<li>Let your child lead — step in only when they're stuck for more than a minute or two.</li>` +
+      `<li>Ask "what do you think will happen?" before each step to build prediction skills.</li>` +
+      `<li>Mistakes are part of it — a project that doesn't work first time is a learning moment, not a failure.</li>` +
+      `<li>Take a short break between projects to keep energy up.</li>` +
+      `<li>Celebrate the finished build — take a photo and talk about what they'd change next time.</li></ul>\n`
+    : `<h2>Classroom Management Tips</h2>\n<ul>` +
+      `<li>Pair students so faster finishers can buddy up with those who need more time.</li>` +
+      `<li>Set a visible timer for each activity block to keep the session on track.</li>` +
+      `<li>Circulate during build steps — most issues are wiring or a missing semicolon.</li>` +
+      `<li>Use the extension challenges to keep early finishers engaged.</li>` +
+      `<li>End with a quick show-and-tell so every group demonstrates their build.</li></ul>\n`;
+
+  return overview + schedule + body + tips;
+}
+
+// Full standalone HTML document with TinkerWithMe branding + print styles.
+// Mirrors the WeasyPrint template in generate_curriculum.py.
+const DOC_CSS = `
+  @page { size: A4; margin: 18mm 16mm;
+    @bottom-center { content: "TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com"; font-size: 9pt; color: #B08060; }
+    @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 9pt; color: #B08060; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; line-height: 1.6; color: #2A1A0E; background: white; padding: 24px; }
+  @media print { body { background: white; padding: 0; } a { color: #F07B1D; text-decoration: none; } }
+  header { position: relative; border-bottom: 2.5px solid #F07B1D; padding-bottom: 1rem; margin-bottom: 2rem; }
+  .header-brand { font-size: 18px; font-weight: 700; color: #2A1A0E; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .header-title { font-size: 13px; color: #6B4C30; margin-bottom: 0.25rem; }
+  .header-subtitle { font-size: 11px; color: #B08060; }
+  .header-prepared { margin-top: 0.6rem; font-size: 12px; color: #2A1A0E; }
+  .session-badge { display: inline-block; background: #FEF0E0; color: #C45C00; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .header-meta { font-size: 11px; color: #6B4C30; text-align: right; line-height: 1.7; position: absolute; right: 0; top: 0; }
+  h1 { font-size: 28px; font-weight: 700; margin: 1.5rem 0 0.5rem; color: #2A1A0E; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+  h2 { font-size: 18px; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #2A1A0E; border-bottom: 1px solid #eee; padding-bottom: 0.35rem; }
+  h3 { font-size: 14px; font-weight: 700; margin: 1rem 0 0.5rem; color: #2A1A0E; }
+  p { margin-bottom: 0.75rem; line-height: 1.75; }
+  ul, ol { margin: 0.75rem 0 0.75rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 12px; }
+  th { background: #FAFAF7; padding: 0.5rem; text-align: left; font-weight: 700; border-bottom: 2px solid #B08060; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #B08060; }
+  td { padding: 0.5rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  strong { font-weight: 600; color: #2A1A0E; }
+  em { font-style: italic; color: #6B4C30; }
+  pre { background: #F5F0EB; border-left: 3px solid #F07B1D; padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 10px; line-height: 1.55; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  code { font-family: 'Courier New', Courier, monospace; font-size: 10px; background: #F5F0EB; padding: 0 3px; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+`;
+
+function buildCurriculumDoc(o) {
+  const inner = buildStaticInner(o.projects, o.contentMap, o.ageGroup, o.durationMins, o.durationLabel, o.isHomeschool);
+  const audienceLabel = o.isHomeschool ? 'Homeschool' : 'Classroom';
+  const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const prepared = o.userName ? `Prepared for <strong>${escapeHtml(o.userName)}</strong>` : 'Lesson plan';
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">` +
+    `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
+    `<header>` +
+    `<div class="header-meta">tinkerwithanne@gmail.com<br>Nairobi, Kenya<br>${currentDate}</div>` +
+    `<div class="header-brand">TinkerWithMe</div>` +
+    `<div class="header-title">${escapeHtml(o.trackLabel)} · ${escapeHtml(o.ageGroup)}</div>` +
+    `<div class="header-subtitle">${o.projects.length} project(s) · ${o.durationLabel}</div>` +
+    `<div class="header-prepared">${prepared}<span class="session-badge">${audienceLabel} session</span></div>` +
+    `</header><main>${inner}</main></body></html>`;
+}
+
+// Init
+
+// Content for every catalogue project is pre-generated into project_content/,
+// so a normal (non-custom) plan can be assembled right here in the browser —
+// no workflow run, no dispatch proxy, no token. Same output as the static
+// build path in generate_curriculum.py.
+const CONTENT_BASE = 'project_content/';
+
+async function buildLocally(name, email, org, country, role, age) {
+  const setStep = (msg, sub) => {
+    document.getElementById('loading-msg').textContent = msg;
+    document.getElementById('loading-sub').textContent = sub || '';
+  };
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('gen-btn').disabled = true;
+
+  try {
+    setStep('Building your curriculum\u2026', '');
+    const durationMins  = selectedDuration === 'full' ? 330 : parseInt(selectedDuration, 10);
+    const durationLabel = selectedDuration === 'full' ? 'full day (5-6 hours)' : `${durationMins} minutes`;
+    const projects = selectedProjects
+      .map(id => DATA[currentTrack].projects.find(p => p.id === id))
+      .filter(Boolean);
+    if (!projects.length) throw new Error('Please select at least one project.');
+
+    const contentMap = {};
+    for (const p of projects) {
+      const res = await fetch(CONTENT_BASE + p.id + '.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Couldn't load content for "${p.title}". Please try again.`);
+      contentMap[p.id] = (await res.json()).content_html || '';
+    }
+
+    const titles = projects.map(p => p.title.replace(/\s+/g, '_'));
+    currentFilename = titles.length === 1
+      ? `TinkerWithMe_${titles[0]}`
+      : `TinkerWithMe_${titles[0]}_and_${titles.length - 1}_more`;
+
+    lastDocHtml = buildCurriculumDoc({
+      projects, contentMap, ageGroup: age, durationMins, durationLabel,
+      isHomeschool: currentAudience === 'homeschool', userName: name,
+      trackLabel: currentTrack === 'arduino' ? 'Arduino Robotics & Electronics' : 'AI Skills for Kids',
+      title: currentFilename,
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('gen-btn').style.display = 'none';
+    showBuiltDoc(lastDocHtml);
+    logLead(name, email, org, country, role);
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-msg').textContent = '\u274c ' + err.message;
+    document.getElementById('error-msg').style.display = 'block';
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
 // Shared by submit() and deliverPremium(). The Google Forms POST is no-cors,
 // so its response is opaque and it can hang indefinitely — always bound it.
 function fetchWithTimeout(url, opts, ms = 6000) {
@@ -584,6 +804,14 @@ async function submit() {
 
   // Premium curricula are pre-generated — no workflow run, deliver immediately.
   if (currentTrack === 'premium') { deliverPremium(name, email, org, country, role); return; }
+
+  // A plain picker-based plan is assembled from cached content in the browser.
+  // Only free-text briefs and custom topics genuinely need an AI run.
+  const freeText = document.getElementById('freeform').value.trim();
+  if (!freeText && currentTrack !== 'custom' && selectedProjects.length) {
+    buildLocally(name, email, org, country, role, age);
+    return;
+  }
 
   document.getElementById('loading').style.display  = 'block';
   document.getElementById('error-msg').style.display = 'none';
@@ -636,6 +864,7 @@ async function submit() {
       request_id: requestId,
       ref: 'refs/heads/main',
     };
+    let dispatched = false;
     if (DISPATCH_PROXY) {
       setStep('Queuing curriculum generation…', 'Step 2 of 2');
       const res = await fetchWithTimeout(DISPATCH_PROXY, {
@@ -644,6 +873,7 @@ async function submit() {
         body: JSON.stringify({ event_type: 'generate-curriculum', client_payload: clientPayload }),
       }, 10000);
       if (!res.ok) throw new Error('Workflow trigger failed. Please try again.');
+      dispatched = true;
     } else if (GITHUB_TOKEN) {
       setStep('Queuing curriculum generation…', 'Step 2 of 2');
       const ghRes = await fetchWithTimeout(
@@ -660,6 +890,23 @@ async function submit() {
         10000,
       );
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
+      dispatched = true;
+    }
+
+    // With neither a proxy nor a token configured nothing can start the run.
+    // Say so instead of showing a progress bar for a job that was never queued.
+    if (!dispatched) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('gen-btn').disabled = false;
+      const box = document.getElementById('error-msg');
+      box.innerHTML = "<strong>Automatic generation isn't switched on yet.</strong><br>" +
+        'Your details were saved, but this site has no dispatch proxy configured, ' +
+        'so the curriculum run can\'t be started from the browser. ' +
+        'Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a> ' +
+        'and we\'ll send the plan over, or browse the ready-made Premium courses above.';
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
 
     // Show generating state and start polling for the PDF

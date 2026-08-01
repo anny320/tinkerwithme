@@ -459,6 +459,7 @@ async function submit(){
       request_id: requestId,
       ref: 'refs/heads/main',
     };
+    let dispatched = false;
     if (DISPATCH_PROXY) {
       setStep('Queuing your camp plan…', 'Step 2 of 2');
       const res = await fetchWithTimeout(DISPATCH_PROXY, {
@@ -467,6 +468,7 @@ async function submit(){
         body: JSON.stringify({ event_type: 'plan-camp', client_payload: clientPayload }),
       }, 10000);
       if (!res.ok) throw new Error('Workflow trigger failed. Please try again.');
+      dispatched = true;
     } else if (GITHUB_TOKEN) {
       setStep('Queuing your camp plan…', 'Step 2 of 2');
       const ghRes = await fetchWithTimeout(
@@ -481,6 +483,21 @@ async function submit(){
           body: JSON.stringify({ event_type: 'plan-camp', client_payload: clientPayload }),
         }, 10000);
       if (!ghRes.ok) throw new Error('Workflow trigger failed. Please try again.');
+      dispatched = true;
+    }
+
+    // Nothing can start the run without a proxy or token — don't fake progress.
+    if (!dispatched) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('gen-btn').disabled = false;
+      const box = document.getElementById('error-msg');
+      box.innerHTML = "<strong>Automatic generation isn't switched on yet.</strong><br>" +
+        'Your details were saved, but this site has no dispatch proxy configured, ' +
+        'so the camp plan run can\'t be started from the browser. Email ' +
+        '<a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a> and we\'ll send it over.';
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
 
     document.getElementById('loading').style.display = 'none';
