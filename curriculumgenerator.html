@@ -70,9 +70,25 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#f
 .hint{font-size:11px;color:var(--text-3);margin-top:4px}
 footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
 footer a{color:var(--orange);text-decoration:none}
+
+/* This page is a form, never the deliverable. If it is printed directly --
+   iOS share-sheet, Cmd-P -- show a note instead of dumping the whole form. */
+@media print {
+  body > *:not(#print-note) { display: none !important; }
+  #print-note {
+    display: block !important;
+    font: 16px/1.6 'Inter', system-ui, sans-serif;
+    padding: 3rem 2rem; text-align: center; color: #2A1A0E;
+  }
+}
+#print-note { display: none; }
 </style>
 </head>
 <body>
+<div id="print-note">
+  <strong>This is the curriculum generator form, not your lesson plan.</strong><br>
+  Generate your curriculum, then use the <em>Save as PDF</em> button on the result.
+</div>
 <!-- ─── Password gate (soft, client-side) ──────────────────────────────────
      NOTE: This is a deterrent, not real security — a static page cannot truly
      enforce a password (anyone can View Source / use DevTools). Default
@@ -588,25 +604,50 @@ function showBuiltDoc(fullHtml) {
 
 // Open the browser print dialog on the assembled document → visitor picks "Save as PDF".
 // The document's <title> becomes the suggested PDF filename.
+// iOS Safari/Chrome cannot print an iframe — calling print() on one prints the
+// PARENT page instead, which produced PDFs of the form itself. So always render
+// the document into a real window: it has its own title (which becomes the
+// suggested filename) and prints only its own content.
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function renderDocWindow(autoPrint) {
+  const w = window.open('', '_blank');
+  if (!w) return null;                       // popup blocked
+  w.document.open();
+  w.document.write(lastDocHtml);
+  w.document.close();
+  if (autoPrint) {
+    const go = () => { try { w.focus(); w.print(); } catch (_) { /* user can print manually */ } };
+    if (w.document.readyState === 'complete') setTimeout(go, 350);
+    else w.addEventListener('load', () => setTimeout(go, 350));
+  }
+  return w;
+}
+
 function savePdf() {
+  if (renderDocWindow(true)) return;
+
+  // Popup blocked. The hidden-iframe route is a desktop-only fallback; on iOS
+  // it would print this page instead of the curriculum, so don't attempt it.
+  if (isIOS()) {
+    const box = document.getElementById('error-msg');
+    box.innerHTML = '<strong>Please allow pop-ups for this site</strong><br>' +
+      'Your curriculum opens in a new tab, then use Share \u2192 Print \u2192 Save to Files.';
+    box.style.display = 'block';
+    return;
+  }
   const pf = document.getElementById('print-frame');
   pf.onload = () => {
-    try {
-      pf.contentWindow.focus();
-      pf.contentWindow.print();
-    } catch (_) {
-      openInTab();
-    }
+    try { pf.contentWindow.focus(); pf.contentWindow.print(); } catch (_) { openInTab(); }
   };
   pf.srcdoc = lastDocHtml;
 }
 
 function openInTab() {
-  const w = window.open('', '_blank');
-  if (!w) return;
-  w.document.open();
-  w.document.write(lastDocHtml);
-  w.document.close();
+  renderDocWindow(false);
 }
 
 function escapeHtml(s) {
