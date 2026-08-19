@@ -6,20 +6,22 @@
 <title>💎 TinkerWithMe — Premium Courses</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
-  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
-  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
+  /* Retargeted to the brand.css palette. Names kept so the rules below follow. */
+  --orange:#FF7F32;--orange-dark:#E0641B;--orange-light:#FFEDE0;
+  --brown:#220111;--green:#84BD00;--green-light:#F0F7DE;--green-dark:#5E8700;
+  --blue:#004C97;--blue-light:#E2EBF5;--blue-dark:#003A73;
   --purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578;
-  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
-  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
-  --radius:14px;--radius-sm:8px;--radius-pill:99px;
+  --bg:#F7F3F0;--surface:#fff;--border:rgba(34,1,17,0.10);--border-strong:rgba(34,1,17,0.20);
+  --text:#220111;--text-2:#5A4A50;--text-3:#A89E97;
+  --radius:18px;--radius-sm:12px;--radius-pill:99px;
 }
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+body{font-family:var(--font-display);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
 
 /* Nav (matches the other pages) */
 .site-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 1.5rem;background:var(--brown);position:relative;z-index:10}
@@ -33,13 +35,39 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .hero-badge{display:inline-block;background:rgba(240,123,29,0.25);color:#FFB870;font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(240,123,29,0.4)}
 .hero h1{font-size:clamp(24px,5vw,40px);font-weight:700;margin-bottom:8px}
 .hero p{font-size:15px;color:rgba(255,255,255,0.72);max-width:560px;margin:0 auto}
-.hero .price-note{margin-top:12px;font-size:13px;color:#FFB870;font-weight:600}
+.price-note{margin-top:12px;font-size:14px;color:var(--orange-dark);font-weight:600}
 
 .container{max-width:1040px;margin:0 auto;padding:2rem 1rem 4rem}
 
+/* ── SELF-PACED ── */
+.selfpaced{margin-bottom:3rem}
+.sp-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.6rem}
+.sp-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:10px}
+.sp-head h2,.sp-divider h2{font-size:clamp(24px,3.2vw,32px);font-weight:600;line-height:1.15;margin-bottom:10px}
+.sp-head p,.sp-divider p{font-size:16px;color:var(--text-2);max-width:56ch}
+.sp-all{color:var(--blue);font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap}
+.sp-all:hover{text-decoration:underline}
+.sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.sp-card{background:var(--surface);border:2px solid var(--ink,#220111);border-radius:var(--radius);
+  box-shadow:6px 6px 0 var(--ink,#220111);padding:1.6rem;display:flex;flex-direction:column;gap:10px;
+  transition:transform .12s ease,box-shadow .12s ease}
+.sp-card:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink,#220111)}
+.sp-free{background:var(--orange-light)}
+.sp-tag{align-self:flex-start;font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;padding:5px 12px;border-radius:var(--radius-pill);border:2px solid var(--ink,#220111);background:#fff}
+.sp-paid{background:var(--blue-light)}
+.sp-soon{background:var(--bg);color:var(--text-2)}
+.sp-card h3{font-size:19px;font-weight:600;line-height:1.25}
+.sp-meta{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.sp-card p{font-size:14.5px;color:var(--text-2)}
+.sp-btn{margin-top:auto;padding-top:8px;color:var(--blue);font-weight:600;font-size:15px;text-decoration:none;align-self:flex-start}
+.sp-btn:hover{text-decoration:underline}
+.sp-divider{border-top:2px solid var(--border-strong);padding-top:2.25rem;margin-bottom:1.8rem}
+@media(max-width:900px){.sp-grid{grid-template-columns:1fr}}
+
 /* Track filter chips */
 .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
-.filter{padding:9px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;color:var(--text-2);transition:all .15s}
+.filter{padding:9px 18px;border-radius:var(--radius-pill);border:2px solid var(--ink,#220111);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;color:var(--text-2);transition:all .15s}
 .filter.active{border-color:var(--orange);background:var(--orange);color:#fff}
 
 .track-section{margin-bottom:2.5rem}
@@ -48,7 +76,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem}
 
-.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;gap:.7rem}
+.pcard{background:var(--surface);border:2px solid var(--ink,#220111);box-shadow:6px 6px 0 var(--ink,#220111);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;gap:.7rem}
 .pcard.t-arduino{border-top:4px solid var(--orange)}
 .pcard.t-ai{border-top:4px solid var(--green)}
 .pcard.t-combo{border-top:4px solid var(--purple)}
@@ -87,33 +115,131 @@ footer a{color:var(--orange-dark);text-decoration:none}
 </head>
 <body>
 
-<nav class="site-nav">
-  <a href="index.html" class="nav-brand">🤖 TinkerWithMe</a>
-  <div class="nav-links">
-    <a class="nav-link" href="index.html">Home</a>
-    <a href="picker.html" class="nav-link">Courses</a>
-    <a href="curriculumgenerator.html" class="nav-link">Generator</a>
-    <a href="camp-planner.html" class="nav-link">Camp Planner</a>
-    <a href="premium.html" class="nav-link active">Premium</a>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="index.html">Home</a>
+      <a class="tw-nav-link" href="picker.html">Projects</a>
+      <a class="tw-nav-link is-active" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="index.html#tools">Tools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+      <a class="tw-nav-link" href="blog.html">Blog</a>
+      <a class="tw-nav-link" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="courses.html">Start free</a>
+    </div>
   </div>
 </nav>
 
 <header class="hero">
-  <span class="hero-badge">💎 Premium Courses</span>
-  <h1>Deep-dive courses &amp; camps</h1>
-  <p>Small-group, project-rich courses that go beyond the free activities — kids build something real and take it home. Single sessions, multi-session series, and full-day camps.</p>
-  <p class="price-note" id="price-note"></p>
+  <span class="hero-badge">Courses</span>
+  <h1>Everything you can enrol in</h1>
+  <p>Self-paced courses you start today on MakersHub, and small-group deep-dives and camps where kids build something real and take it home.</p>
 </header>
 
 <div class="container">
+
+  <!-- ── SELF-PACED (MakersHub / TutorLMS) ── -->
+  <section class="selfpaced">
+    <div class="sp-head">
+      <div>
+        <span class="sp-eyebrow">Self-paced &middot; MakersHub</span>
+        <h2>Start today, learn at your own pace</h2>
+        <p>Enrol online and work through the lessons whenever suits. Your progress is saved as you go.</p>
+      </div>
+      <a class="sp-all" href="https://tinkerwith.me/courses" target="_blank" rel="noopener">All MakersHub courses &rarr;</a>
+    </div>
+    <div class="sp-grid">
+      <article class="sp-card sp-free">
+        <div class="sp-tag">Free</div>
+        <h3>AI Skills for Kids</h3>
+        <p class="sp-meta">Ages 7&ndash;9 &middot; Beginner &middot; 1h 30m</p>
+        <p>Understand what AI is, how it learns, and how to use it responsibly &mdash; no coding, no expensive devices, no constant internet.</p>
+        <a class="sp-btn" href="https://tinkerwith.me/courses/ai-skills-for-kids-ages-7-9/" target="_blank" rel="noopener">Enrol free &rarr;</a>
+      </article>
+      <article class="sp-card">
+        <div class="sp-tag sp-paid">Paid</div>
+        <h3>What is Artificial Intelligence?</h3>
+        <p class="sp-meta">Ages 10+ &middot; All levels &middot; 1h 30m</p>
+        <p>An introduction to AI and ethics for parents, kids and teachers &mdash; what AI actually is, and how to think clearly about it.</p>
+        <a class="sp-btn" href="https://tinkerwith.me/courses/new-what-is-artificial-intelligence/" target="_blank" rel="noopener">View course &rarr;</a>
+      </article>
+      <article class="sp-card">
+        <div class="sp-tag sp-soon">Coming soon</div>
+        <h3>Robotics 101</h3>
+        <p class="sp-meta">Beginner &middot; Hands-on</p>
+        <p>Foundational robotics and coding through hands-on builds &mdash; circuit assembly, basic code, and the debugging habit.</p>
+        <a class="sp-btn" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20please%20let%20me%20know%20when%20Robotics%20101%20opens." target="_blank" rel="noopener">Get notified &rarr;</a>
+      </article>
+    </div>
+  </section>
+
+  <div class="sp-divider">
+    <span class="sp-eyebrow">Live &amp; in person</span>
+    <h2>Deep-dive courses &amp; camps</h2>
+    <p>Small-group, project-rich sessions that go beyond the free activities. Single sessions, multi-session series, and full-day camps.</p>
+    <p class="price-note" id="price-note"></p>
+  </div>
+
   <div class="filters" id="filters"></div>
   <div id="sections"></div>
 </div>
 
-<footer>
-  <p>Questions or bookings? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
-  <p style="margin-top:6px"><a href="picker.html">← Free Course Picker</a> · <a href="camp-planner.html">Camp Planner</a></p>
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
 </footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
 
 <script>
 const BOOKING_EMAIL = 'tinkerwithanne@gmail.com';
