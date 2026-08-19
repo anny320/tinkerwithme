@@ -542,24 +542,8 @@
       <span class="tw-eyebrow">Success stories</span>
       <h2 class="tw-h2">What families tell us.</h2>
     </div>
-    <div class="quotes">
-      <figure class="quote">
-        <blockquote>My son went from just playing with gadgets to actually building his own! He&rsquo;s so proud of the little robot he made, and I&rsquo;ve never seen him this excited about learning.</blockquote>
-        <figcaption><strong>Sarah M</strong><span>Parent of an 8-year-old</span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>I built a robot that follows me around &mdash; and my friends think it&rsquo;s the coolest thing ever!</blockquote>
-        <figcaption><strong>Ethan R</strong><span>10 years old</span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>The AI course blew my mind. I went from zero coding knowledge to making my own chatbot in just a few weeks.</blockquote>
-        <figcaption><strong>Marissa Young</strong><span>Teen student</span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>I always loved tech, but these courses showed me how to actually make things work. Now I&rsquo;m working on a project that could enter our school&rsquo;s science fair!</blockquote>
-        <figcaption><strong>Taylor M</strong><span>Teen student</span></figcaption>
-      </figure>
-    </div>
+    <div class="quotes" id="quotes"></div>
+  
   </div>
 </section>
 
@@ -639,10 +623,10 @@
 
 <script>
 /* ── CONFIG ───────────────────────────────────────────────
-   ⚠ PLACEHOLDER. Point this at the real WordPress/TutorLMS host
-   that serves MakersHub, then every "MakersHub" link on the site
-   updates from this one line.                                   */
-const HUB_URL = 'https://hub.tinkerwith.me';
+   Every "MakersHub" link on the site resolves from this one line.
+   Today MakersHub is the TutorLMS install on the live WordPress
+   site; if it moves to its own subdomain, change it here only.  */
+const HUB_URL = 'https://tinkerwith.me/courses';
 
 document.querySelectorAll('[data-hub]').forEach(a => { a.href = HUB_URL; });
 document.getElementById('yr').textContent = new Date().getFullYear();
@@ -743,6 +727,24 @@ $grid.addEventListener('click', e => {
   renderGrid();
   renderSummary();
 });
+
+fetch('testimonials.json')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(d => {
+    // Only entries explicitly marked published ever reach the page.
+    const live = (d.testimonials || []).filter(t => t.published);
+    const box = document.getElementById('quotes');
+    if (!live.length) { box.closest('section').style.display = 'none'; return; }
+    box.innerHTML = live.map(t => `
+      <figure class="quote">
+        <blockquote>${esc(t.quote)}</blockquote>
+        <figcaption><strong>${esc(t.name)}</strong><span>${esc(t.role)}</span></figcaption>
+      </figure>`).join('');
+  })
+  .catch(() => {
+    const box = document.getElementById('quotes');
+    if (box) box.closest('section').style.display = 'none';
+  });
 
 fetch('courses.json')
   .then(r => r.ok ? r.json() : Promise.reject(r.status))
