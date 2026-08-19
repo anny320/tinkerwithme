@@ -1,0 +1,32 @@
+{
+  "_comment": "Blog posts for blog.html and post.html. Add an entry here and it appears on both, newest first. Dates are ISO. 'body' is HTML.",
+  "posts": [
+    {
+      "slug": "why-ai-literacy-matters",
+      "title": "Why AI literacy matters for kids — and why coding isn't the starting point",
+      "date": "2026-08-12",
+      "tag": "AI",
+      "readingTime": 4,
+      "excerpt": "Children are growing up surrounded by AI. Almost none of them are being taught how it works, how it learns, or how to use it responsibly.",
+      "body": "<p>Children are growing up surrounded by artificial intelligence. It is in their phones, their social media feeds, the tools they use at school, and the games they play after it. For most of them, AI is simply part of the weather.</p><p>Yet almost none of them are ever taught how AI actually works, how it learns, or how to use it responsibly. We hand children an extraordinarily powerful technology and then say nothing about it.</p><h2>Coding is not the first step</h2><p>The instinct is to jump to programming. Teach them Python, the thinking goes, and understanding will follow. In our experience it rarely does — and it puts a hard barrier in front of children who do not have a laptop at home, a reliable connection, or an adult who can debug with them.</p><p>Understanding comes first. A child who can explain, in their own words, that a model learns from examples — and that biased examples produce biased answers — has something more durable than a child who can copy a script.</p><h2>What we teach instead</h2><p>Our AI Skills for Kids course is built for ages 7 to 9, and it needs no coding, no expensive devices, and no constant internet access. Learners work through what AI is, how it learns from data, where it goes wrong, and what it means to use it honestly.</p><p>The goal is not to produce young engineers. It is to produce young people who can look at a confident-sounding answer on a screen and ask the right question: how does it know that?</p><p>The course is free. If your child is curious, that is the only prerequisite.</p>"
+    },
+    {
+      "slug": "screen-time-to-skill-time",
+      "title": "From screen time to skill time",
+      "date": "2026-07-29",
+      "tag": "Parents",
+      "readingTime": 3,
+      "excerpt": "Your child is already spending hours on a screen. The question is whether they come away from it having made something.",
+      "body": "<p>Is your child spending hours scrolling — but not building? It is the question we hear most often from parents, usually with a note of guilt attached to it.</p><p>The honest answer is that screen time is not the problem. Passive screen time is. There is an enormous difference between a child consuming an endless feed and a child using the same device to write a story, design a character, or work out why their code will not run.</p><h2>The shift is smaller than it looks</h2><p>Children who are handed a concrete project tend to stop scrolling on their own. Not because they were told to, but because making something is more interesting than watching something — provided the making is achievable and the first win comes quickly.</p><p>That is the whole design principle behind our workbook. It is built for ages 8 to 16, needs no prior experience, and moves a child from their first prompt to a finished, sharable project they can point at.</p><h2>What they come away with</h2><p>Not a certificate. A thing they made: a story they wrote with AI as a collaborator, a project they built and debugged, and — more importantly — the discovery that they are someone who makes things.</p><p>That discovery tends to outlast the specific tools. The tools will change. The self-image does not.</p>"
+    },
+    {
+      "slug": "inside-robotics-101",
+      "title": "What kids actually learn in Robotics 101",
+      "date": "2026-07-15",
+      "tag": "Robotics",
+      "readingTime": 3,
+      "excerpt": "Circuits, code and critical thinking — taught through builds children can hold in their hands at the end of the session.",
+      "body": "<p>Robotics sounds intimidating to a lot of parents, and to a fair number of children. The word suggests engineering degrees and expensive kits. In practice, the entry point is a great deal friendlier than that.</p><h2>The three strands</h2><p>Robotics 101 introduces young learners to foundational robotics and coding through hands-on activities and problem-solving projects. Three things run through every session:</p><ul><li><strong>Electronic circuit assembly</strong> — how components connect, what each one does, and why a circuit fails when it fails.</li><li><strong>Basic coding</strong> — enough to make something move, respond, and behave the way the child intended.</li><li><strong>Critical thinking</strong> — the debugging habit. Something is not working; what changed, and what will you test first?</li></ul><h2>Why hands-on matters</h2><p>Complex topics become accessible when a child can hold the thing they are learning about. A servo that turns the wrong way teaches more in thirty seconds than a diagram teaches in ten minutes.</p><p>The projects are collaborative by design. Children work in pairs and small groups, which does two useful things: it makes the debugging social rather than lonely, and it means the child who understands the circuit explains it to the child who understands the code.</p><p>They leave with skills in technology, electronics and coding — and with something they built themselves.</p>"
+    }
+  ]
+}
