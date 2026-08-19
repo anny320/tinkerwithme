@@ -1,0 +1,68 @@
+{
+  "_comment": "Testimonials shown on index.html. Set \"published\": false to hold one back without deleting it — only published entries ever render. Keep \"consent\" honest: it records that the person agreed in writing to be quoted. Never publish a quote you did not receive.",
+  "_fields": {
+    "quote": "their words, unedited except for obvious typos",
+    "name": "first name + last initial is enough, and is the right call for children",
+    "role": "who they are — 'Parent of an 8-year-old', 'Teen student'",
+    "source": "where it came from — whatsapp, email, in-person, google-review",
+    "date": "ISO date you received it",
+    "consent": true,
+    "published": true
+  },
+  "testimonials": [
+    {
+      "quote": "My son went from just playing with gadgets to actually building his own! He's so proud of the little robot he made, and I've never seen him this excited about learning.",
+      "name": "Sarah M",
+      "role": "Parent of an 8-year-old",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": true
+    },
+    {
+      "quote": "I built a robot that follows me around — and my friends think it's the coolest thing ever!",
+      "name": "Ethan R",
+      "role": "10 years old",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": true
+    },
+    {
+      "quote": "The AI course blew my mind. I went from zero coding knowledge to making my own chatbot in just a few weeks.",
+      "name": "Marissa Young",
+      "role": "Teen student",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": true
+    },
+    {
+      "quote": "I always loved tech, but these courses showed me how to actually make things work. Now I'm working on a project that could enter our school's science fair!",
+      "name": "Taylor M",
+      "role": "Teen student",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": true
+    },
+    {
+      "quote": "I thought robotics was only for engineers, but Tinker With Me made it easy and fun. Now I'm building projects I never imagined I could do.",
+      "name": "Whitney R",
+      "role": "Adult learner",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": false
+    },
+    {
+      "quote": "Learning here feels like playing. Every project gives me a little win and a big smile.",
+      "name": "Daniel W",
+      "role": "Adult learner",
+      "source": "migrated-from-wordpress",
+      "date": null,
+      "consent": null,
+      "published": false
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="forms.js" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -283,7 +284,7 @@ html.tw-locked{overflow:hidden}
 <footer>
   <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
   <p style="margin-top:6px">Running a big group? Try the <a href="camp-planner.html">Full-Day Camp Planner →</a></p>
-  <p style="margin-top:6px"><a href="index.html">← Back to Course Picker</a> · <a href="premium.html">💎 Premium Courses</a></p>
+  <p style="margin-top:6px"><a href="picker.html">← Back to Course Picker</a> · <a href="premium.html">💎 Premium Courses</a></p>
 </footer>
 
 <script>
@@ -779,7 +780,14 @@ function fetchWithTimeout(url, opts, ms = 6000) {
 }
 
 // Fire-and-forget lead logging. Never awaited by a delivery path.
+// Routed through forms.js so the destination is configured in one place;
+// falls back to the original Google Forms post if that module is absent.
 function logLead(name, email, org, country, role) {
+  if (window.twSubmitForm) {
+    window.twSubmitForm('lead', { name, email, org, country, role },
+      { timeout: 6000 }).catch(() => { /* never block the user */ });
+    return;
+  }
   if (!GOOGLE_FORM_ID || GOOGLE_FORM_ID === 'YOUR_GOOGLE_FORM_ID') return;
   fetchWithTimeout(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
     method: 'POST', mode: 'no-cors',
