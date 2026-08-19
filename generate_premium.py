@@ -7,7 +7,7 @@ proposals/<id>.pdf for each course using the shared pdf_template chrome — the
 same look as the curriculum generator and camp planner.
 
 These outlines are fully authored (no AI, no personalisation), so they are
-generated once and committed; premium.html links straight to the static files,
+generated once and committed; courses.html links straight to the static files,
 so a parent downloads instantly with no workflow trigger.
 
 Run:  python generate_premium.py            # all courses
@@ -135,7 +135,7 @@ def main():
 
     if curriculum_mode:
         # Render full-curriculum PDFs from whatever premium_content is cached, and
-        # write an index so premium.html knows which courses have a curriculum.
+        # write an index so courses.html knows which courses have a curriculum.
         content_dir = Path("premium_content")
         out_dir = Path("curriculums")
         out_dir.mkdir(exist_ok=True)
