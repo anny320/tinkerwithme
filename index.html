@@ -357,7 +357,7 @@ footer a:hover{text-decoration:underline}
 <div class="proof-strip">
   <div class="proof-strip-inner">
     <div class="proof-stat"><div class="proof-num">170+</div><div class="proof-label">Kids taught</div></div>
-    <div class="proof-stat"><div class="proof-num">15</div><div class="proof-label">Projects</div></div>
+    <div class="proof-stat"><div class="proof-num" id="proof-projects">34</div><div class="proof-label">Projects</div></div>
     <div class="proof-stat"><div class="proof-num">6</div><div class="proof-label">Partner schools</div></div>
     <div class="proof-stat"><div class="proof-num">6–16</div><div class="proof-label">Age range</div></div>
   </div>
@@ -952,6 +952,8 @@ async function loadCourses(){
   // Apply any course edits saved via admin.html
   try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
   hydrateFromURL();
+  const _pc=document.getElementById('proof-projects');
+  if(_pc)_pc.textContent=DATA.arduino.projects.length+DATA.ai.projects.length;
   renderAge();renderGrid();renderBasket();renderDur();renderCatalog();
 }
 
