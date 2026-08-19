@@ -51,6 +51,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 /* TRACK TABS */
 .track-tabs{display:flex;gap:8px;margin-bottom:1.5rem}
+.section-tabs{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.section-tab{padding:10px 20px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text-2);font-family:inherit;display:flex;align-items:center;gap:7px}
+.section-tab.active{background:var(--brown);border-color:var(--brown);color:#fff}
+.notice{background:var(--orange-light);border:1px solid var(--orange);border-radius:var(--radius-sm);padding:12px 15px;font-size:13px;color:var(--brown);margin-bottom:1rem;line-height:1.5}
+.pill-yes{background:var(--green-light);color:var(--green-dark);padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700}
+.pill-no{background:#F4E4E4;color:#8C2020;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700}
+.quote-cell{max-width:340px;font-size:12.5px;color:var(--text-2)}
 .track-tab{padding:9px 22px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text-2);transition:all 0.15s}
 .track-tab.active-arduino{background:var(--orange-light);border-color:var(--orange);color:var(--orange-dark)}
 .track-tab.active-ai{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
@@ -184,6 +191,14 @@ textarea{resize:vertical;min-height:70px}
 
 <div class="container">
 
+  <!-- Which content are we editing? -->
+  <div class="section-tabs">
+    <button class="section-tab active" data-section="courses" onclick="setSection('courses')"><i class="ti ti-list-check"></i> Courses</button>
+    <button class="section-tab" data-section="testimonials" onclick="setSection('testimonials')"><i class="ti ti-quote"></i> Testimonials</button>
+    <button class="section-tab" data-section="posts" onclick="setSection('posts')"><i class="ti ti-article"></i> Blog posts</button>
+  </div>
+
+<div id="sec-courses">
   <!-- Stats -->
   <div class="stats-row" id="stats-row"></div>
 
@@ -218,6 +233,42 @@ textarea{resize:vertical;min-height:70px}
     </table>
     <div id="empty-state" class="empty-state" style="display:none">No activities yet — click <strong>Add activity</strong> to get started.</div>
   </div>
+</div>
+
+<!-- ── TESTIMONIALS ── -->
+<div id="sec-testimonials" style="display:none">
+  <div class="notice">
+    <strong>Only publish what you were actually given.</strong>
+    Unpublished entries stay in the file but never appear on the site, so you can park a
+    quote until you have written permission. Record who gave it and when.
+  </div>
+  <div class="toolbar">
+    <h2>Testimonials</h2>
+    <button class="btn btn-secondary btn-sm" onclick="exportJSON('testimonials')"><i class="ti ti-download"></i> Export testimonials.json</button>
+    <button class="btn btn-primary" onclick="openT()"><i class="ti ti-plus"></i> Add testimonial</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Quote</th><th>Name</th><th>Role</th><th>Source</th><th>Consent</th><th>Live</th><th></th></tr></thead>
+      <tbody id="t-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── BLOG POSTS ── -->
+<div id="sec-posts" style="display:none">
+  <div class="toolbar">
+    <h2>Blog posts</h2>
+    <button class="btn btn-secondary btn-sm" onclick="exportJSON('posts')"><i class="ti ti-download"></i> Export posts.json</button>
+    <button class="btn btn-primary" onclick="openP()"><i class="ti ti-plus"></i> Add post</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Title</th><th>Tag</th><th>Date</th><th>Read</th><th>Slug</th><th></th></tr></thead>
+      <tbody id="p-table"></tbody>
+    </table>
+  </div>
+</div>
 
 </div>
 
@@ -523,6 +574,132 @@ async function tryLogin() {
   }
 }
 
+// ── SECTIONS: testimonials + blog posts ─────────────────────────────
+// Same contract as the course editor: edit against a localStorage copy,
+// then Export to get the JSON file to commit.
+const T_KEY = 'twm_testimonials', P_KEY = 'twm_posts';
+let TDATA = [], PDATA = [];
+const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function setSection(name) {
+  document.querySelectorAll('.section-tab').forEach(b =>
+    b.classList.toggle('active', b.dataset.section === name));
+  ['courses','testimonials','posts'].forEach(n =>
+    document.getElementById('sec-' + n).style.display = (n === name ? '' : 'none'));
+}
+
+async function loadJSON(file, key, fallback) {
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) return JSON.parse(stored);
+  } catch (e) {}
+  try {
+    const r = await fetch(file, {cache:'no-store'});
+    if (r.ok) return await r.json();
+  } catch (e) {}
+  return fallback;
+}
+
+async function loadExtras() {
+  const t = await loadJSON('testimonials.json', T_KEY, {testimonials:[]});
+  TDATA = t.testimonials || [];
+  const p = await loadJSON('posts.json', P_KEY, {posts:[]});
+  PDATA = p.posts || [];
+  renderT(); renderP();
+}
+
+function persistT() { localStorage.setItem(T_KEY, JSON.stringify({testimonials:TDATA})); renderT(); }
+function persistP() { localStorage.setItem(P_KEY, JSON.stringify({posts:PDATA})); renderP(); }
+
+function renderT() {
+  document.getElementById('t-table').innerHTML = TDATA.map((t, i) => `
+    <tr>
+      <td class="quote-cell">${esc(t.quote).slice(0,150)}${t.quote.length>150?'…':''}</td>
+      <td>${esc(t.name)}</td>
+      <td>${esc(t.role)}</td>
+      <td>${esc(t.source || '—')}</td>
+      <td><span class="${t.consent ? 'pill-yes' : 'pill-no'}">${t.consent ? 'yes' : 'not recorded'}</span></td>
+      <td><span class="${t.published ? 'pill-yes' : 'pill-no'}">${t.published ? 'live' : 'hidden'}</span></td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="toggleT(${i})">${t.published ? 'Hide' : 'Publish'}</button>
+        <button class="btn btn-secondary btn-sm" onclick="openT(${i})">Edit</button>
+        <button class="btn btn-secondary btn-sm" onclick="delT(${i})">Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="7" style="padding:1.5rem;text-align:center;color:#B08060">No testimonials yet.</td></tr>';
+}
+
+function toggleT(i) { TDATA[i].published = !TDATA[i].published; persistT(); }
+function delT(i) { if (confirm('Delete this testimonial?')) { TDATA.splice(i,1); persistT(); } }
+
+function openT(i) {
+  const t = (i === undefined) ? {quote:'',name:'',role:'',source:'whatsapp',date:new Date().toISOString().slice(0,10),consent:false,published:false} : TDATA[i];
+  const quote = prompt('Their words, exactly as given:', t.quote); if (quote === null) return;
+  const name  = prompt('Name (first name + last initial is enough):', t.name); if (name === null) return;
+  const role  = prompt('Who they are — e.g. "Parent of an 8-year-old":', t.role); if (role === null) return;
+  const source= prompt('Where it came from (whatsapp / email / in-person / google-review):', t.source || 'whatsapp'); if (source === null) return;
+  const date  = prompt('Date received (YYYY-MM-DD):', t.date || new Date().toISOString().slice(0,10)); if (date === null) return;
+  const consent = confirm('Did they give permission, in writing, to publish this?\n\nOK = yes    Cancel = not yet');
+  const rec = {quote, name, role, source, date, consent, published: consent && (i !== undefined ? t.published : true)};
+  if (i === undefined) TDATA.push(rec); else TDATA[i] = rec;
+  persistT();
+  if (!consent) showToast('Saved, but held back — no consent recorded');
+  else showToast('Testimonial saved');
+}
+
+function renderP() {
+  document.getElementById('p-table').innerHTML = PDATA
+    .slice().sort((a,b) => b.date.localeCompare(a.date)).map(p => {
+      const i = PDATA.indexOf(p);
+      return `<tr>
+        <td><strong>${esc(p.title)}</strong></td>
+        <td>${esc(p.tag)}</td>
+        <td>${esc(p.date)}</td>
+        <td>${esc(p.readingTime)} min</td>
+        <td style="font-family:monospace;font-size:11.5px">${esc(p.slug)}</td>
+        <td>
+          <button class="btn btn-secondary btn-sm" onclick="openP(${i})">Edit</button>
+          <button class="btn btn-secondary btn-sm" onclick="delP(${i})">Delete</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:#B08060">No posts yet.</td></tr>';
+}
+
+function delP(i) { if (confirm('Delete this post?')) { PDATA.splice(i,1); persistP(); } }
+
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+}
+
+function openP(i) {
+  const p = (i === undefined)
+    ? {slug:'',title:'',date:new Date().toISOString().slice(0,10),tag:'AI',readingTime:3,excerpt:'',body:''}
+    : PDATA[i];
+  const title = prompt('Post title:', p.title); if (title === null) return;
+  const tag   = prompt('Tag (AI / Robotics / Parents / Schools):', p.tag); if (tag === null) return;
+  const date  = prompt('Publish date (YYYY-MM-DD):', p.date); if (date === null) return;
+  const excerpt = prompt('One-line summary for the blog index:', p.excerpt); if (excerpt === null) return;
+  const body = prompt('Body — HTML. Use <p>…</p> for paragraphs and <h2>…</h2> for headings:', p.body); if (body === null) return;
+  const words = body.replace(/<[^>]+>/g,' ').split(/\s+/).filter(Boolean).length;
+  const rec = {
+    slug: p.slug || slugify(title),
+    title, date, tag,
+    readingTime: Math.max(1, Math.round(words / 200)),
+    excerpt, body
+  };
+  if (i === undefined) PDATA.push(rec); else PDATA[i] = rec;
+  persistP();
+  showToast('Post saved — export posts.json to publish');
+}
+
+function exportJSON(which) {
+  const payload = which === 'testimonials'
+    ? {_comment:'Testimonials shown on home.html. Set "published": false to hold one back.', testimonials: TDATA}
+    : {_comment:'Blog posts for blog.html and post.html.', posts: PDATA};
+  const text = JSON.stringify(payload, null, 2);
+  document.getElementById('export-box').textContent = text;
+  document.getElementById('export-modal').classList.add('open');
+}
+
 function logout() {
   sessionStorage.removeItem(SESSION_KEY);
   location.reload();
@@ -569,6 +746,7 @@ document.head.appendChild(style);
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 loadDefaultCourses().then(()=>{ if(sessionStorage.getItem(SESSION_KEY)==="1") render(); });
+loadExtras();
 </script>
 </body>
 </html>
