@@ -23,7 +23,10 @@ window.TW_FORMS = {
   ENDPOINTS: {
     // ⚠ REPLACE THESE with your real Formspree endpoints.
     lead:       'https://formspree.io/f/moeapgkr',
-    newsletter: 'https://formspree.io/f/REPLACE_NEWSLETTER_ID',
+    // Sharing the lead endpoint for now. Every payload carries `source`, so
+    // signups and booking requests stay filterable and can be split later by
+    // pointing this at its own form (or at an ESP that can send campaigns).
+    newsletter: 'https://formspree.io/f/moeapgkr',
   },
 
   // Legacy fallback — only used when provider is 'google'.
