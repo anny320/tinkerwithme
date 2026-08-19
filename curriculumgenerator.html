@@ -3,23 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Curriculum Generator — TinkerWithMe</title>
+<title>Curriculum Generator — TinkerWith_</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+/* Sticker treatment, matching the home page. */
+.card,.panel,.band,.step,.feature,.pcard,.plan-card,.result-card,.benefit,.faq-item,.why-card,.week-row{
+  border:2px solid #220111!important;box-shadow:6px 6px 0 #220111;
+}
+.btn,.cta-btn,.gen-btn,.submit-btn,.join-btn,.hero-btn{border:2px solid #220111}
+.btn:active,.cta-btn:active,.gen-btn:active,.submit-btn:active{transform:translateY(2px)}
+input:not(.tw-nav-toggle),select,textarea{border:2px solid var(--border-strong)!important;border-radius:var(--radius-sm)!important}
+input:focus,select:focus,textarea:focus{border-color:var(--orange)!important;outline:none}
+</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="forms.js" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
-  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
-  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
-  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
-  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
-  --radius:12px;--radius-sm:8px;--radius-pill:99px;
+  /* Retargeted to the brand.css palette. Names kept so the rules below follow. */
+  --orange:#FF7F32;--orange-dark:#E0641B;--orange-light:#FFEDE0;
+  --brown:#220111;--brown-mid:#5A4A50;--green:#84BD00;--green-light:#F0F7DE;--green-dark:#5E8700;
+  --blue:#004C97;--blue-light:#E2EBF5;--blue-dark:#003A73;
+  --wa:#84BD00;--wa-dark:#5E8700;--wa-light:#F0F7DE;
+  --purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578;
+  --bg:#F7F3F0;--surface:#FFFFFF;--border:rgba(34,1,17,0.10);--border-strong:rgba(34,1,17,0.20);
+  --text:#220111;--text-2:#5A4A50;--text-3:#A89E97;
+  --radius:18px;--radius-sm:12px;--radius-pill:99px;
 }
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+body{font-family:var(--font-display);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
 .hero{background:var(--brown);padding:2.5rem 1.5rem 2rem;text-align:center;color:#fff}
 .hero h1{font-size:clamp(22px,5vw,38px);font-weight:700;margin-bottom:8px}
 .hero p{font-size:15px;color:rgba(255,255,255,0.70);max-width:480px;margin:0 auto}
@@ -74,6 +88,30 @@ footer a{color:var(--orange);text-decoration:none}
 </style>
 </head>
 <body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="index.html">Home</a>
+      <a class="tw-nav-link" href="picker.html">Projects</a>
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link is-active" href="index.html#tools">Tools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+      <a class="tw-nav-link" href="blog.html">Blog</a>
+      <a class="tw-nav-link" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="courses.html">Start free</a>
+    </div>
+  </div>
+</nav>
 <!-- ─── Password gate (soft, client-side) ──────────────────────────────────
      NOTE: This is a deterrent, not real security — a static page cannot truly
      enforce a password (anyone can View Source / use DevTools). Default
@@ -81,7 +119,7 @@ footer a{color:var(--orange);text-decoration:none}
      console run  await twSha256('your-new-password')  and paste the printed hex
      value into PASSWORD_SHA256 below. -->
 <style>
-#tw-gate{position:fixed;inset:0;z-index:99999;background:#2A1A0E;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-family:'Inter',system-ui,sans-serif}
+#tw-gate{position:fixed;inset:0;z-index:99999;background:#2A1A0E;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-family:var(--font-display)}
 #tw-gate .box{background:#fff;border-radius:14px;padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 #tw-gate h2{font-size:20px;font-weight:700;color:#2A1A0E;margin:0 0 6px}
 #tw-gate p{font-size:13px;color:#6B4C30;margin:0 0 1.2rem;line-height:1.5}
@@ -95,7 +133,7 @@ html.tw-locked{overflow:hidden}
 <div id="tw-gate" role="dialog" aria-modal="true" aria-label="Password required">
   <div class="box">
     <div style="font-size:34px">🔒</div>
-    <h2>TinkerWithMe</h2>
+    <h2>TinkerWith_</h2>
     <p>This tool is password-protected. Please enter the password to continue.</p>
     <input id="tw-pw" type="password" placeholder="Password" autocomplete="current-password" autofocus>
     <button id="tw-go" type="button">Unlock</button>
@@ -281,11 +319,51 @@ html.tw-locked{overflow:hidden}
 
 </div>
 
-<footer>
-  <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
-  <p style="margin-top:6px">Running a big group? Try the <a href="camp-planner.html">Full-Day Camp Planner →</a></p>
-  <p style="margin-top:6px"><a href="picker.html">← Back to Course Picker</a> · <a href="courses.html">💎 Premium Courses</a></p>
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
 </footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────────────────────
@@ -560,7 +638,7 @@ async function verifyPremiumUrl(id, course) {
 
 // Holds the assembled document + its filename for the current result
 let lastDocHtml = '';
-let currentFilename = 'TinkerWithMe_Curriculum';
+let currentFilename = 'TinkerWith__Curriculum';
 
 function showBuiltDoc(fullHtml) {
   document.getElementById('generating-area').style.display = 'none';
@@ -664,11 +742,11 @@ function buildStaticInner(projects, contentMap, ageGroup, durationMins, duration
   return overview + schedule + body + tips;
 }
 
-// Full standalone HTML document with TinkerWithMe branding + print styles.
+// Full standalone HTML document with TinkerWith_ branding + print styles.
 // Mirrors the WeasyPrint template in generate_curriculum.py.
 const DOC_CSS = `
   @page { size: A4; margin: 18mm 16mm;
-    @bottom-center { content: "TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com"; font-size: 9pt; color: #B08060; }
+    @bottom-center { content: "TinkerWith_ · Nairobi, Kenya · tinkerwithanne@gmail.com"; font-size: 9pt; color: #B08060; }
     @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 9pt; color: #B08060; }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -706,7 +784,7 @@ function buildCurriculumDoc(o) {
     `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
     `<header>` +
     `<div class="header-meta">tinkerwithanne@gmail.com<br>Nairobi, Kenya<br>${currentDate}</div>` +
-    `<div class="header-brand">TinkerWithMe</div>` +
+    `<div class="header-brand">TinkerWith_</div>` +
     `<div class="header-title">${escapeHtml(o.trackLabel)} · ${escapeHtml(o.ageGroup)}</div>` +
     `<div class="header-subtitle">${o.projects.length} project(s) · ${o.durationLabel}</div>` +
     `<div class="header-prepared">${prepared}<span class="session-badge">${audienceLabel} session</span></div>` +
@@ -748,8 +826,8 @@ async function buildLocally(name, email, org, country, role, age) {
 
     const titles = projects.map(p => p.title.replace(/\s+/g, '_'));
     currentFilename = titles.length === 1
-      ? `TinkerWithMe_${titles[0]}`
-      : `TinkerWithMe_${titles[0]}_and_${titles.length - 1}_more`;
+      ? `TinkerWith__${titles[0]}`
+      : `TinkerWith__${titles[0]}_and_${titles.length - 1}_more`;
 
     lastDocHtml = buildCurriculumDoc({
       projects, contentMap, ageGroup: age, durationMins, durationLabel,
@@ -997,5 +1075,20 @@ async function loadCourses() {
 document.addEventListener('DOMContentLoaded', loadCourses);
 </script>
 
+<script>
+// Shared nav + footer wiring, same as the other pages.
+(function(){
+  document.querySelectorAll('[data-hub]').forEach(a => { a.href = 'https://tinkerwith.me/courses'; });
+  const nav = document.getElementById('nav');
+  if (nav) { const f = () => nav.classList.toggle('is-stuck', window.scrollY > 8);
+    addEventListener('scroll', f, {passive:true}); f(); }
+  const burger = document.querySelector('.tw-nav-burger');
+  if (burger) burger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('nav-toggle').click(); }
+  });
+  const yr = document.getElementById('yr');
+  if (yr) yr.textContent = new Date().getFullYear();
+})();
+</script>
 </body>
 </html>

@@ -3,38 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TinkerWithMe — Parent Community</title>
-<meta name="description" content="Join the TinkerWithMe WhatsApp community — connect with parents, get updates on workshops, and share your child's making journey.">
+<title>TinkerWith_ — Parent Community</title>
+<meta name="description" content="Join the TinkerWith_ WhatsApp community — connect with parents, get updates on workshops, and share your child's making journey.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+/* Sticker treatment, matching the home page. */
+.card,.panel,.band,.step,.feature,.pcard,.plan-card,.result-card,.benefit,.faq-item,.why-card,.week-row{
+  border:2px solid #220111!important;box-shadow:6px 6px 0 #220111;
+}
+.btn,.cta-btn,.gen-btn,.submit-btn,.join-btn,.hero-btn{border:2px solid #220111}
+.btn:active,.cta-btn:active,.gen-btn:active,.submit-btn:active{transform:translateY(2px)}
+input:not(.tw-nav-toggle),select,textarea{border:2px solid var(--border-strong)!important;border-radius:var(--radius-sm)!important}
+input:focus,select:focus,textarea:focus{border-color:var(--orange)!important;outline:none}
+</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --orange:#F07B1D;
-  --orange-dark:#C45C00;
-  --orange-light:#FEF0E0;
-  --brown:#2A1A0E;
-  --brown-mid:#5C3A1E;
-  --green:#4CAF2A;
-  --green-light:#EBF7E3;
-  --green-dark:#1A5C08;
-  --wa:#25D366;
-  --wa-dark:#128C4B;
-  --wa-light:#E9FBF0;
-  --bg:#FAFAF7;
-  --surface:#FFFFFF;
-  --border:rgba(42,26,14,0.10);
-  --border-strong:rgba(42,26,14,0.22);
-  --text:#2A1A0E;
-  --text-2:#6B4C30;
-  --text-3:#B08060;
-  --radius:14px;
-  --radius-sm:8px;
-  --radius-pill:99px;
+  /* Retargeted to the brand.css palette. Names kept so the rules below follow. */
+  --orange:#FF7F32;--orange-dark:#E0641B;--orange-light:#FFEDE0;
+  --brown:#220111;--brown-mid:#5A4A50;--green:#84BD00;--green-light:#F0F7DE;--green-dark:#5E8700;
+  --blue:#004C97;--blue-light:#E2EBF5;--blue-dark:#003A73;
+  --wa:#84BD00;--wa-dark:#5E8700;--wa-light:#F0F7DE;
+  --purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578;
+  --bg:#F7F3F0;--surface:#FFFFFF;--border:rgba(34,1,17,0.10);--border-strong:rgba(34,1,17,0.20);
+  --text:#220111;--text-2:#5A4A50;--text-3:#A89E97;
+  --radius:18px;--radius-sm:12px;--radius-pill:99px;
 }
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+body{font-family:var(--font-display);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
 
 /* ── HERO ── */
 .hero{background:var(--brown);padding:3rem 1.5rem 4rem;text-align:center;position:relative;overflow:hidden}
@@ -136,17 +135,32 @@ footer a:hover{text-decoration:underline}
 
 <!-- HERO -->
 <header class="hero">
-<nav class="site-nav">
-  <a class="nav-brand" href="index.html">TinkerWithMe</a>
-  <div class="nav-links">
-    <a class="nav-link" href="index.html">Home</a>
-    <a class="nav-link" href="picker.html">Course Picker</a>
-    <a class="nav-link active" href="community.html">Community</a>
-    <a class="nav-link" href="admin.html">Editor</a>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="index.html">Home</a>
+      <a class="tw-nav-link" href="picker.html">Projects</a>
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="index.html#tools">Tools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+      <a class="tw-nav-link" href="blog.html">Blog</a>
+      <a class="tw-nav-link is-active" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="courses.html">Start free</a>
+    </div>
   </div>
 </nav>
   <!-- Logo placeholder — swap src for real logo -->
-  <div style="height:90px;width:180px;background:rgba(255,255,255,0.08);border-radius:12px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;position:relative;z-index:1">TinkerWithMe</div>
+  <div style="height:90px;width:180px;background:rgba(255,255,255,0.08);border-radius:12px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;position:relative;z-index:1">TinkerWith_</div>
 
   <div class="hero-pill">
     <!-- WhatsApp icon inline SVG -->
@@ -225,7 +239,7 @@ footer a:hover{text-decoration:underline}
 
   <div class="testimonials">
     <div class="testimonial">
-      <p class="testimonial-body">My son has always been curious about electronics. After two sessions at TinkerWithMe, he won't stop talking about circuits. The WhatsApp group keeps us in the loop perfectly.</p>
+      <p class="testimonial-body">My son has always been curious about electronics. After two sessions at TinkerWith_, he won't stop talking about circuits. The WhatsApp group keeps us in the loop perfectly.</p>
       <div class="testimonial-author">
         <div class="author-avatar">NM</div>
         <div>
@@ -268,14 +282,66 @@ footer a:hover{text-decoration:underline}
 
 </main>
 
-<footer>
-  <p style="font-weight:600;color:var(--text-2)">TinkerWithMe</p>
-  <p style="margin-top:4px">Nairobi, Kenya &nbsp;·&nbsp; <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
-  <div class="footer-links">
-    <a href="picker.html">Course Picker</a>
-    <a href="https://chat.whatsapp.com/JW6jzGdOaXZF3SKdu4ty2u" target="_blank" rel="noopener">WhatsApp Community</a>
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
 
+<script>
+// Shared nav + footer wiring, same as the other pages.
+(function(){
+  document.querySelectorAll('[data-hub]').forEach(a => { a.href = 'https://tinkerwith.me/courses'; });
+  const nav = document.getElementById('nav');
+  if (nav) { const f = () => nav.classList.toggle('is-stuck', window.scrollY > 8);
+    addEventListener('scroll', f, {passive:true}); f(); }
+  const burger = document.querySelector('.tw-nav-burger');
+  if (burger) burger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('nav-toggle').click(); }
+  });
+  const yr = document.getElementById('yr');
+  if (yr) yr.textContent = new Date().getFullYear();
+})();
+</script>
 </body>
 </html>

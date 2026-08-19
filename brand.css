@@ -101,7 +101,7 @@ a{color:inherit}
 .tw-nav-meta{font-family:var(--font-mono);font-size:12px;color:var(--ink);text-decoration:none;white-space:nowrap}
 .tw-nav-meta:hover{color:var(--orange-deep)}
 
-.tw-nav-toggle{position:absolute;opacity:0;pointer-events:none}
+.tw-nav-toggle{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
 .tw-nav-burger{
   display:none;margin-left:auto;background:none;border:0;cursor:pointer;
   color:var(--ink);padding:8px;line-height:0;border-radius:8px;
