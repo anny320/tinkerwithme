@@ -1,5 +1,5 @@
 {
-  "_comment": "Testimonials shown on home.html. Set \"published\": false to hold one back without deleting it — only published entries ever render. Keep \"consent\" honest: it records that the person agreed in writing to be quoted. Never publish a quote you did not receive.",
+  "_comment": "Testimonials shown on index.html. Set \"published\": false to hold one back without deleting it — only published entries ever render. Keep \"consent\" honest: it records that the person agreed in writing to be quoted. Never publish a quote you did not receive.",
   "_fields": {
     "quote": "their words, unedited except for obvious typos",
     "name": "first name + last initial is enough, and is the right call for children",
