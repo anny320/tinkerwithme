@@ -22,7 +22,7 @@ window.TW_FORMS = {
 
   ENDPOINTS: {
     // ⚠ REPLACE THESE with your real Formspree endpoints.
-    lead:       'https://formspree.io/f/REPLACE_LEAD_ID',
+    lead:       'https://formspree.io/f/moeapgkr',
     newsletter: 'https://formspree.io/f/REPLACE_NEWSLETTER_ID',
   },
 
