@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="forms.js" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -809,6 +810,21 @@ function generatePlan(){
 }
 
 function triggerEmail(pName,pEmail,cName,cAge,trackLabel,durLabel,picks,plan){
+  // Send the request to Anne directly, as well as offering the mailto link
+  // below. Plenty of people have no mail app configured — especially on
+  // phones — and every one of those was a lead that never arrived.
+  if(window.twSubmitForm){
+    window.twSubmitForm('lead',{
+      _subject:'Session request'+(cName?' — '+cName:''),
+      _replyto:pEmail||'',
+      parentName:pName||'', parentEmail:pEmail||'',
+      childName:cName||'', childAge:cAge||'',
+      track:trackLabel, duration:durLabel,
+      projects:picks.map(p=>p.title).join(', '),
+      source:'course-picker'
+    },{timeout:8000}).catch(()=>{ /* the mailto below is the backup */ });
+  }
+
   const subject='Session Booking Request'+(cName?' — '+cName:'')+(cAge?' (Age '+cAge+')':'');
   const greeting='Hi Anne,\n\n';
   const intro='I would like to book a TinkerWithMe session'+(cName?' for '+cName:'')+' and find out more about pricing and available slots.\n\n';
