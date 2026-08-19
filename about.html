@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About TinkerWith_ — turning curiosity into creation</title>
+<meta name="description" content="We are not just about teaching; we are about inspiring. Practical tools, step-by-step guides and interactive lessons in electronics, robotics and AI for ages 6 and up.">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<script src="forms.js" defer></script>
+<style>
+.page-head{background:var(--orange);padding:3.5rem 0 3.25rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:14px 0 14px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:50ch}
+
+.mission{display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center}
+.mission-quote{
+  background:var(--ink);color:var(--white);border-radius:var(--radius-lg);
+  padding:2.2rem;font-size:26px;font-weight:600;line-height:1.25;
+  box-shadow:6px 6px 0 var(--orange);
+}
+.mission-quote span{color:var(--orange)}
+@media(max-width:860px){.mission{grid-template-columns:1fr;gap:2rem}}
+
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.subject{
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:6px 6px 0 var(--ink);padding:1.8rem;display:flex;flex-direction:column;gap:12px;
+  border-top:9px solid var(--accent);
+}
+.subject h3{font-size:22px;font-weight:600}
+.subject .lead{font-size:15px;color:var(--text-2)}
+.subject h4{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin-top:6px;
+}
+.subject ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:var(--text-2)}
+.subject li::before{content:'—';color:var(--accent);margin-right:9px;font-weight:600}
+@media(max-width:900px){.subjects{grid-template-columns:1fr}}
+
+.anne{display:grid;grid-template-columns:.8fr 1.2fr;gap:3rem;align-items:center}
+.anne-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:6px 6px 0 var(--ink);padding:12px}
+.anne-card .tw-photo{aspect-ratio:1/1;border-radius:var(--radius)}
+.anne .tw-h2{margin-bottom:16px}
+@media(max-width:820px){.anne{grid-template-columns:1fr;gap:2rem}}
+
+.quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.quote{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:6px 6px 0 var(--ink);padding:1.6rem;display:flex;flex-direction:column;gap:16px}
+.quote blockquote{font-size:17px;line-height:1.5;color:var(--ink)}
+.quote blockquote::before{content:'\201C';color:var(--orange);font-size:34px;line-height:0;vertical-align:-6px;margin-right:3px}
+.quote figcaption{display:flex;flex-direction:column;gap:2px;margin-top:auto}
+.quote figcaption strong{font-size:15px;font-weight:600}
+.quote figcaption span{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--text-2)}
+@media(max-width:760px){.quotes{grid-template-columns:1fr}}
+
+.cta{background:var(--orange);padding:4rem 0;text-align:center}
+.cta h2{color:var(--ink);max-width:20ch;margin:0 auto}
+.cta p{color:var(--text-hero);font-size:17px;margin:16px auto 0;max-width:48ch}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="index.html">Home</a>
+      <a class="tw-nav-link" href="picker.html">Projects</a>
+      <a class="tw-nav-link" href="#" data-hub>MakersHub</a>
+      <a class="tw-nav-link" href="index.html#courses">Courses</a>
+      <a class="tw-nav-link" href="index.html#tools">Tools</a>
+      <a class="tw-nav-link is-active" href="about.html">About</a>
+      <a class="tw-nav-link" href="blog.html">Blog</a>
+      <a class="tw-nav-link" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">About us</span>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Behind the brand.</h1>
+    <p>We&rsquo;re not just about teaching &mdash; we&rsquo;re about inspiring.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container mission">
+    <div>
+      <span class="tw-eyebrow">Our mission</span>
+      <h2 class="tw-h2"><span class="tw-squiggle">Turn curiosity into creation.</span></h2>
+      <p class="tw-lede" style="margin-top:24px">Founded by educators and tech enthusiasts, TinkerWith_ curates practical tools, step-by-step guides and interactive lessons that make learning electronics, robotics and AI accessible to everyone &mdash; from beginners who have never touched a circuit board to teens ready to code their first robot.</p>
+      <p class="tw-lede" style="margin-top:16px">Our courses are built for children aged 6 and up, whatever their starting point. Learning should be a fun and interactive experience, not a lecture.</p>
+    </div>
+    <div class="mission-quote">
+      We are not just teaching skills. We are nurturing the next generation of <span>thinkers, makers and doers.</span>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="tw-section-head">
+      <span class="tw-eyebrow">What we teach</span>
+      <h2 class="tw-h2">Three strands, one workbench.</h2>
+      <p class="tw-lede">They overlap constantly &mdash; a robot needs circuits, and an AI needs somewhere to live.</p>
+    </div>
+    <div class="subjects">
+      <article class="subject" style="--accent:var(--orange)">
+        <h3>Robotics</h3>
+        <p class="lead">Robots aren&rsquo;t just science fiction &mdash; they&rsquo;re part of daily life. We teach kids and teens to design, build and program robots from scratch.</p>
+        <h4>What you&rsquo;ll do</h4>
+        <ul>
+          <li>Program basic movement with block-based coding</li>
+          <li>Build line-following bots and obstacle avoiders</li>
+          <li>Take on a robotic arm or an autonomous vehicle</li>
+        </ul>
+      </article>
+      <article class="subject" style="--accent:var(--green)">
+        <h3>Technology</h3>
+        <p class="lead">Behind every great invention is a foundation in circuits, sensors and microcontrollers. This is the gateway to those building blocks.</p>
+        <h4>What you&rsquo;ll do</h4>
+        <ul>
+          <li>Resistors, capacitors, LEDs and breadboards</li>
+          <li>Arduino, Raspberry Pi and Micro:bit</li>
+          <li>Sensors and actuators &mdash; make things react</li>
+        </ul>
+      </article>
+      <article class="subject" style="--accent:var(--blue)">
+        <h3>AI</h3>
+        <p class="lead">Artificial intelligence isn&rsquo;t just for engineers. It&rsquo;s for dreamers, thinkers and creators &mdash; and it can be understood without writing a line of code.</p>
+        <h4>What you&rsquo;ll do</h4>
+        <ul>
+          <li>What makes a machine &ldquo;smart&rdquo;, and how it learns</li>
+          <li>Train a model with Teachable Machine</li>
+          <li>Build something real &mdash; a sorting bin, a chatbot</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container anne">
+    <div class="anne-card"><div class="tw-photo p-green">photo: Anne</div></div>
+    <div>
+      <span class="tw-eyebrow">Meet your teacher</span>
+      <h2 class="tw-h2">Anne Salim</h2>
+      <p class="tw-lede">Product manager, entrepreneur, consultant and teacher. Anne curates every lesson on TinkerWith_ so that students actually get their hands on electronics and robotics &mdash; not just read about them.</p>
+      <p class="tw-lede" style="margin-top:14px">Our instructors bring real experience in robotics and electronics, so your child gets proper guidance rather than a worksheet.</p>
+      <div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap">
+        <a class="tw-btn tw-btn-ink" href="index.html#courses">See the courses</a>
+        <a class="tw-btn tw-btn-outline" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20talk%20about%20sessions%20for%20my%20child." target="_blank" rel="noopener">Talk to Anne</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="tw-section-head">
+      <span class="tw-eyebrow">Success stories</span>
+      <h2 class="tw-h2">What families tell us.</h2>
+    </div>
+    <div class="quotes" id="quotes"></div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="tw-container">
+    <h2 class="tw-h2">Ready to start building?</h2>
+    <p>Tell us your child&rsquo;s age and what they&rsquo;re curious about, and we&rsquo;ll take it from there.</p>
+    <div class="cta-btns">
+      <a class="tw-btn tw-btn-ink" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20find%20out%20more%20about%20TinkerWith_%20for%20my%20child." target="_blank" rel="noopener">Chat with Anne on WhatsApp</a>
+      <a class="tw-btn tw-btn-white" href="picker.html">Build a session plan</a>
+    </div>
+  </div>
+</section>
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="premium.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>
+const HUB_URL = 'https://tinkerwith.me/courses';
+document.querySelectorAll('[data-hub]').forEach(a => { a.href = HUB_URL; });
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('testimonials.json')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(d => {
+    const live = (d.testimonials || []).filter(t => t.published);
+    const box = document.getElementById('quotes');
+    if (!live.length) { box.closest('section').style.display = 'none'; return; }
+    box.innerHTML = live.map(t => `
+      <figure class="quote">
+        <blockquote>${esc(t.quote)}</blockquote>
+        <figcaption><strong>${esc(t.name)}</strong><span>${esc(t.role)}</span></figcaption>
+      </figure>`).join('');
+  })
+  .catch(() => {
+    const box = document.getElementById('quotes');
+    if (box) box.closest('section').style.display = 'none';
+  });
+</script>
+</body>
+</html>

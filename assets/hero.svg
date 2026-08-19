@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 620" role="img" aria-labelledby="t d">
+<title id="t">A microcontroller board wired to a small robot</title>
+<desc id="d">Flat illustration in the TinkerWith_ palette: a dark circuit board with orange pin headers, coloured LEDs and jumper wires running to a friendly two-wheeled robot.</desc>
+<defs>
+  <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1.6" fill="#220111" opacity=".10"/>
+  </pattern>
+  <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+
+<rect width="800" height="620" rx="26" fill="#F7F3F0"/>
+<rect width="800" height="620" rx="26" fill="url(#dots)"/>
+
+<!-- jumper wires, board to robot -->
+<g fill="none" stroke-width="7" stroke-linecap="round">
+  <path d="M300 300 C400 300 400 214 494 214" stroke="#FF7F32"/>
+  <path d="M300 330 C420 330 430 262 494 262" stroke="#84BD00"/>
+  <path d="M300 360 C410 360 440 312 494 312" stroke="#004C97"/>
+</g>
+
+<!-- board -->
+<g>
+  <rect x="70" y="196" width="232" height="248" rx="16" fill="#220111"/>
+  <rect x="70" y="196" width="232" height="74" rx="16" fill="url(#glow)"/>
+  <!-- pin headers -->
+  <g fill="#FF7F32">
+    <rect x="86" y="212" width="200" height="17" rx="6"/>
+    <rect x="86" y="412" width="200" height="17" rx="6"/>
+  </g>
+  <g fill="#220111" opacity=".55">
+    <rect x="94" y="216" width="7" height="9" rx="2"/><rect x="112" y="216" width="7" height="9" rx="2"/>
+    <rect x="130" y="216" width="7" height="9" rx="2"/><rect x="148" y="216" width="7" height="9" rx="2"/>
+    <rect x="166" y="216" width="7" height="9" rx="2"/><rect x="184" y="216" width="7" height="9" rx="2"/>
+    <rect x="202" y="216" width="7" height="9" rx="2"/><rect x="220" y="216" width="7" height="9" rx="2"/>
+    <rect x="238" y="216" width="7" height="9" rx="2"/><rect x="256" y="216" width="7" height="9" rx="2"/>
+  </g>
+  <!-- chip -->
+  <rect x="128" y="286" width="116" height="72" rx="10" fill="#3A1020"/>
+  <circle cx="146" cy="304" r="5" fill="#F7F3F0" opacity=".5"/>
+  <g stroke="#FF7F32" stroke-width="4" stroke-linecap="round" opacity=".8">
+    <path d="M128 300h-18M128 322h-18M128 344h-18M244 300h18M244 322h18M244 344h18"/>
+  </g>
+  <!-- LEDs -->
+  <circle cx="112" cy="268" r="10" fill="#84BD00"/>
+  <circle cx="146" cy="268" r="10" fill="#FF7F32"/>
+  <circle cx="180" cy="268" r="10" fill="#004C97"/>
+  <circle cx="112" cy="268" r="17" fill="#84BD00" opacity=".22"/>
+  <circle cx="146" cy="268" r="17" fill="#FF7F32" opacity=".22"/>
+  <!-- traces -->
+  <g fill="none" stroke="#84BD00" stroke-width="3" opacity=".45" stroke-linecap="round">
+    <path d="M100 384h58v-14h44"/><path d="M100 400h96"/>
+  </g>
+</g>
+
+<!-- robot -->
+<g>
+  <!-- antenna -->
+  <path d="M600 118v34" stroke="#220111" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="600" cy="110" r="14" fill="#FF7F32"/>
+  <!-- head -->
+  <rect x="494" y="152" width="212" height="152" rx="34" fill="#220111"/>
+  <rect x="518" y="182" width="164" height="82" rx="22" fill="#F7F3F0"/>
+  <circle cx="566" cy="223" r="19" fill="#004C97"/>
+  <circle cx="634" cy="223" r="19" fill="#004C97"/>
+  <circle cx="572" cy="217" r="6" fill="#fff"/>
+  <circle cx="640" cy="217" r="6" fill="#fff"/>
+  <!-- smile -->
+  <path d="M572 262q28 22 56 0" stroke="#220111" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- body -->
+  <rect x="516" y="316" width="168" height="126" rx="26" fill="#FF7F32"/>
+  <rect x="548" y="346" width="104" height="46" rx="12" fill="#220111" opacity=".22"/>
+  <circle cx="600" cy="415" r="12" fill="#220111" opacity=".3"/>
+  <!-- arms -->
+  <path d="M516 356h-40v52" stroke="#220111" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M684 356h40v52" stroke="#220111" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- wheels -->
+  <circle cx="548" cy="466" r="30" fill="#220111"/><circle cx="548" cy="466" r="12" fill="#F7F3F0"/>
+  <circle cx="652" cy="466" r="30" fill="#220111"/><circle cx="652" cy="466" r="12" fill="#F7F3F0"/>
+</g>
+
+<!-- petal confetti, lifted from the logo mark -->
+<g opacity=".9">
+  <path d="M726 176c14 12 22 22 8 34s-30 0-22-14z" fill="#84BD00"/>
+  <path d="M430 118c12 10 19 19 7 29s-26 0-19-12z" fill="#004C97"/>
+  <path d="M372 486c12 10 19 19 7 29s-26 0-19-12z" fill="#FF7F32"/>
+  <path d="M700 520c10 8 16 16 6 24s-22 0-16-10z" fill="#004C97"/>
+</g>
+</svg>

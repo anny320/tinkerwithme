@@ -37,7 +37,7 @@
   background:rgba(255,255,255,.30);border-radius:var(--radius-lg);
   padding:14px;box-shadow:var(--shadow-lg);
 }
-.hero-visual .tw-photo{border-radius:var(--radius);aspect-ratio:4/3.1}
+.hero-visual img{border-radius:var(--radius);width:100%;height:auto;display:block}
 @media(max-width:900px){
   .hero{padding:3rem 0 3.5rem}
   .hero-grid{grid-template-columns:1fr;gap:2.25rem}
@@ -273,7 +273,11 @@
 
 <!-- ═══════════════════════════════════════════════════════════
      MakersHub lives on WordPress/TutorLMS at its own subdomain.
-     Every link to it carries data-hub, and the HUB_URL constant at
+     Generic "MakersHub" links carry data-hub and resolve from the
+     HUB_URL constant below. Course and product buttons deep-link
+     straight to their own page instead, so a visitor pays the slow
+     WordPress load once and lands where they meant to go.
+     The HUB_URL constant at
      the bottom of this file rewrites them all in one place.
      ⚠ HUB_URL below is a PLACEHOLDER — confirm the real hostname.
      ═══════════════════════════════════════════════════════════ -->
@@ -294,6 +298,7 @@
       <a class="tw-nav-link" href="#" data-hub>MakersHub</a>
       <a class="tw-nav-link" href="#courses">Courses</a>
       <a class="tw-nav-link" href="#tools">Tools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
       <a class="tw-nav-link" href="blog.html">Blog</a>
       <a class="tw-nav-link" href="community.html">Community</a>
     </div>
@@ -318,7 +323,7 @@
       <p class="hero-note">Free AI course for ages 7&ndash;9 &middot; live sessions from KES 2,500</p>
     </div>
     <div class="hero-visual">
-      <div class="tw-photo">hero: kids building a robot</div>
+      <img src="assets/hero.svg" alt="A circuit board wired up to a small two-wheeled robot" width="800" height="620">
     </div>
   </div>
 </header>
@@ -348,14 +353,14 @@
         <h3 class="tw-h3">AI Skills for Kids</h3>
         <p class="enrol-age">Ages 7&ndash;9 &middot; Beginner &middot; 1h 30m</p>
         <p>Children grow up surrounded by AI but are rarely taught how it works, how it learns, or how to use it responsibly. This course fills that gap &mdash; no coding, no expensive devices, no constant internet needed.</p>
-        <a class="tw-btn tw-btn-orange" href="#" data-hub>Enrol free <span aria-hidden="true">&rarr;</span></a>
+        <a class="tw-btn tw-btn-orange" href="https://tinkerwith.me/courses/ai-skills-for-kids-ages-7-9/" target="_blank" rel="noopener">Enrol free <span aria-hidden="true">&rarr;</span></a>
       </article>
 
       <article class="enrol">
         <h3 class="tw-h3">What is Artificial Intelligence?</h3>
         <p class="enrol-age">Ages 10+ &middot; All levels &middot; 1h 30m</p>
         <p>An introduction to AI and ethics for parents, kids and teachers &mdash; what AI actually is, and how to think clearly about it.</p>
-        <a class="tw-link-arrow" href="#" data-hub>View course <span aria-hidden="true">&rarr;</span></a>
+        <a class="tw-link-arrow" href="https://tinkerwith.me/courses/new-what-is-artificial-intelligence/" target="_blank" rel="noopener">View course <span aria-hidden="true">&rarr;</span></a>
       </article>
 
       <article class="enrol">
@@ -371,7 +376,7 @@
         <p class="enrol-age">Ages 8&ndash;16 &middot; Instant download</p>
         <p>From screen time to skill time &mdash; the hands-on workbook that turns your child into a confident creator, writing stories and building real projects with AI tools.</p>
         <p class="enrol-price">KES 1,000 <s>1,300</s></p>
-        <a class="tw-btn tw-btn-ink" href="https://tinkerwith.me/store" target="_blank" rel="noopener">Buy the workbook</a>
+        <a class="tw-btn tw-btn-ink" href="https://tinkerwith.me/product/ai-skills-for-kids-workbook-from-screen-time-to-skill-time/" target="_blank" rel="noopener">Buy the workbook</a>
       </article>
 
       <article class="enrol enrol-buy">
@@ -380,7 +385,7 @@
         <p class="enrol-age">Ages 7&ndash;18 &middot; Online bundle</p>
         <p>The full online course bundle covering both tracks &mdash; AI skills and hands-on robotics &mdash; for a single price.</p>
         <p class="enrol-price">KES 1,999 <s>3,000</s></p>
-        <a class="tw-btn tw-btn-ink" href="https://tinkerwith.me/store" target="_blank" rel="noopener">Buy the bundle</a>
+        <a class="tw-btn tw-btn-ink" href="https://tinkerwith.me/product/onlinecourses/" target="_blank" rel="noopener">Buy the bundle</a>
       </article>
     </div>
 
@@ -652,6 +657,7 @@
     <div>
       <h4>Company</h4>
       <ul>
+        <li><a href="about.html">About</a></li>
         <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
         <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
