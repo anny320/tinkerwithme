@@ -951,7 +951,34 @@ async function loadCourses(){
   }catch(e){}
   // Apply any course edits saved via admin.html
   try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
+  hydrateFromURL();
   renderAge();renderGrid();renderBasket();renderDur();renderCatalog();
+}
+
+// The home-page mini picker hands its selection over as
+// ?track=arduino&age=10-12+yrs&sel=ar1,ar9 so a parent never has to
+// pick the same projects twice.
+function hydrateFromURL(){
+  const q=new URLSearchParams(location.search);
+  if(!q.has('track')&&!q.has('age')&&!q.has('sel'))return;
+  const t=q.get('track');
+  if(t==='arduino'||t==='ai'){
+    track=t;
+    document.querySelectorAll('.track-tab').forEach(el=>el.classList.remove('active'));
+    const tab=document.querySelector('.track-tab.'+t);if(tab)tab.classList.add('active');
+    const gb=document.getElementById('gen-btn');if(gb)gb.className='gen-btn gen-'+t;
+  }
+  const a=q.get('age');
+  if(a&&DATA[track].ages.includes(a))selectedAge=a;
+  const sel=q.get('sel');
+  if(sel){
+    const valid=new Set([...DATA.arduino.projects,...DATA.ai.projects].map(p=>p.id));
+    selected=sel.split(',').filter(id=>valid.has(id));
+  }
+  requestAnimationFrame(()=>{
+    const el=document.querySelector('.track-tabs');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+  });
 }
 loadCourses();
 </script>
