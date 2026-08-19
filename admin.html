@@ -175,8 +175,8 @@ textarea{resize:vertical;min-height:70px}
 <nav class="site-nav">
   <a class="nav-brand" href="index.html">TinkerWithMe</a>
   <div class="nav-links">
-    <a class="nav-link" href="home.html">Home</a>
-    <a class="nav-link" href="index.html">Course Picker</a>
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="picker.html">Course Picker</a>
     <a class="nav-link" href="blog.html">Blog</a>
     <a class="nav-link" href="community.html">Community</a>
     <a class="nav-link active" href="admin.html">Editor</a>
@@ -341,7 +341,7 @@ textarea{resize:vertical;min-height:70px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DEFAULT DATA (mirrors index.html) ─────────────────────────────────────
+// ── DEFAULT DATA (mirrors picker.html) ─────────────────────────────────────
 // ── CATALOGUE ─────────────────────────────────────────────────────────────
 // Loaded from the shared courses.json at startup (single source of truth). The
 // editor works on a localStorage copy; Export produces courses.json to commit.
@@ -693,7 +693,7 @@ function openP(i) {
 
 function exportJSON(which) {
   const payload = which === 'testimonials'
-    ? {_comment:'Testimonials shown on home.html. Set "published": false to hold one back.', testimonials: TDATA}
+    ? {_comment:'Testimonials shown on index.html. Set "published": false to hold one back.', testimonials: TDATA}
     : {_comment:'Blog posts for blog.html and post.html.', posts: PDATA};
   const text = JSON.stringify(payload, null, 2);
   document.getElementById('export-box').textContent = text;
