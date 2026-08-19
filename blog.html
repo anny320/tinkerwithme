@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — TinkerWith_</title>
+<meta name="description" content="Notes on AI literacy, robotics and hands-on learning from the TinkerWith_ team.">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:var(--orange);padding:3.5rem 0 3rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:17px;max-width:52ch}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.6rem}
+.post-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:6px 6px 0 var(--ink);padding:1.7rem;display:flex;flex-direction:column;gap:12px;
+  text-decoration:none;color:var(--ink);transition:transform .12s ease,box-shadow .12s ease}
+.post-card:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.post-meta{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);
+  display:flex;gap:9px;flex-wrap:wrap}
+.post-meta span+span::before,.article-meta span+span::before{content:'\00B7';margin-right:9px;color:var(--text-3)}
+.post-card h2{font-size:21px;font-weight:600;line-height:1.22}
+.post-card p{font-size:15px;color:var(--text-2)}
+.post-card .more{margin-top:auto;color:var(--blue);font-weight:600;font-size:15px}
+.empty{font-family:var(--font-mono);font-size:13px;color:var(--text-2)}
+</style>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="home.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="home.html">Home</a>
+      <a class="tw-nav-link" href="index.html">Projects</a>
+      <a class="tw-nav-link" href="#" data-hub>MakersHub</a>
+      <a class="tw-nav-link" href="home.html#courses">Courses</a>
+      <a class="tw-nav-link" href="home.html#tools">Tools</a>
+      <a class="tw-nav-link is-active" href="blog.html">Blog</a>
+      <a class="tw-nav-link" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="home.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">The blog</span>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,50px)">Notes from the workbench.</h1>
+    <p>Ideas on AI literacy, robotics and hands-on learning &mdash; written for the parents and teachers who ask us these questions most often.</p>
+  </div>
+</header>
+
+<main class="tw-section">
+  <div class="tw-container">
+    <div class="post-grid" id="posts"><p class="empty">Loading posts&hellip;</p></div>
+  </div>
+</main>
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="index.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="premium.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="index.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>
+const HUB_URL = 'https://hub.tinkerwith.me';
+document.querySelectorAll('[data-hub]').forEach(a => { a.href = HUB_URL; });
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+fetch('posts.json')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(d => {
+    const posts = [...d.posts].sort((a,b) => b.date.localeCompare(a.date));
+    document.getElementById('posts').innerHTML = posts.map(p => `
+      <a class="post-card" href="post.html?slug=${encodeURIComponent(p.slug)}">
+        <div class="post-meta"><span>${esc(p.tag)}</span><span>${fmt(p.date)}</span><span>${p.readingTime} min read</span></div>
+        <h2>${esc(p.title)}</h2>
+        <p>${esc(p.excerpt)}</p>
+        <span class="more">Read the post &rarr;</span>
+      </a>`).join('');
+  })
+  .catch(() => {
+    document.getElementById('posts').innerHTML =
+      '<p class="empty">Posts could not be loaded. <a href="home.html" style="color:var(--blue)">Back to the home page</a>.</p>';
+  });
+</script>
+</body>
+</html>
