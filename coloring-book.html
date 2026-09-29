@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Big Book of Robots — TinkerWith_ coloring book</title>
+<meta name="description" content="Color 12 real robots right on screen, answer a quiz on every page, then take the Big Robot Quiz and print your Robot Expert certificate. Ages 5–8.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="The Big Book of Robots — color 12 real robots">
+<meta property="og:description" content="An interactive robot coloring book with a quiz on every page. Ages 5–8.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<script src="assets/robot-coloring-art.js"></script>
+<style>
+.page-head{background:var(--orange);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:46ch}
+.head-btns{display:flex;gap:12px;flex-wrap:wrap}
+
+.panel{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink)}
+
+/* ── Robot picker strip ── */
+.picker{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;margin-bottom:1.75rem}
+.pick{
+  position:relative;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);
+  padding:6px 4px 5px;cursor:pointer;font:inherit;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .12s,box-shadow .12s;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.pick svg{width:100%;height:auto;aspect-ratio:521/413;display:block}
+.pick span{font-family:var(--font-mono);font-size:10px;font-weight:700}
+.pick:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+.pick[aria-current="true"]{background:var(--orange-soft);border-color:var(--orange-deep);box-shadow:3px 3px 0 var(--orange-deep)}
+.pick .star{position:absolute;top:-9px;right:-7px;width:22px;height:22px;border-radius:50%;
+  background:var(--green);border:2px solid var(--ink);color:var(--ink);font-size:12px;line-height:18px;text-align:center;display:none}
+.pick.done .star{display:block}
+@media(max-width:900px){.picker{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:460px){.picker{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* ── Colouring stage ── */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1.75rem;align-items:start}
+@media(max-width:940px){.studio{grid-template-columns:1fr}}
+.stage{padding:1.25rem}
+.stage-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:10px}
+.stage-top h2{font-size:clamp(26px,3.4vw,36px);font-weight:600;line-height:1.1}
+.badge{font-family:var(--font-mono);font-size:12px;font-weight:700;background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:5px 13px;white-space:nowrap}
+.canvas{border:2px solid var(--ink);border-radius:var(--radius);background:#fff;overflow:hidden;touch-action:manipulation}
+.canvas svg{display:block;width:100%;height:auto}
+.canvas path{stroke:#1E1B18;stroke-width:4.3;stroke-linejoin:round;stroke-linecap:round;cursor:pointer;transition:fill .15s}
+.canvas path:hover{filter:brightness(.96)}
+.hint{font-size:14px;color:var(--text-2);margin-top:10px}
+
+.tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tbtn{
+  font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--white);
+  border:2px solid var(--ink);border-radius:var(--radius-pill);padding:8px 15px;cursor:pointer;
+  box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:6px;
+}
+.tbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.tbtn[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.tbtn:disabled{opacity:.4;cursor:default}
+
+.side{display:flex;flex-direction:column;gap:1.25rem}
+.side .panel{padding:1.1rem 1.2rem}
+.side h3{font-size:16px;font-weight:600;margin-bottom:10px}
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.sw{aspect-ratio:1;border-radius:50%;border:2px solid var(--ink);cursor:pointer;padding:0;position:relative}
+.sw[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:3px}
+.sw.eraser{background:repeating-conic-gradient(#e6e0da 0 25%,#fff 0 50%) 50%/12px 12px}
+.custom{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;color:var(--text-2)}
+.custom input{width:40px;height:32px;border:2px solid var(--ink);border-radius:8px;padding:0;background:none;cursor:pointer}
+.current{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px}
+.current i{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);display:inline-block}
+
+.fact{background:#FFF1C2}
+.fact p{font-size:15px;color:var(--text-2)}
+.quiz-q{font-weight:600;font-size:15.5px;margin-bottom:10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:center;gap:10px;text-align:left;font:inherit;font-size:15px;color:var(--ink);
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 10px;cursor:pointer;
+}
+.opt b{flex:0 0 26px;height:26px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:13px}
+.opt.right{background:var(--green-soft);border-color:var(--green-deep)}
+.opt.right b{background:var(--green);}
+.opt.wrong{background:#FFE3E3;border-color:#C23B3B}
+.opt.wrong b{background:#FF9C9C}
+.feedback{font-size:14px;font-weight:600;margin-top:10px;min-height:1.3em}
+.feedback.ok{color:var(--green-deep)}
+.feedback.no{color:#B0302F}
+.nav-row{display:flex;justify-content:space-between;gap:10px;margin-top:1.25rem}
+
+/* ── Progress ── */
+.progress{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:15px;color:var(--text-2);margin-bottom:1.25rem}
+.bar{flex:1 1 200px;height:14px;border:2px solid var(--ink);border-radius:99px;background:var(--white);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+
+/* ── Big quiz ── */
+.bq{padding:1.6rem;margin-bottom:1.75rem}
+.bq-tag{display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:700;background:#3CC6C0;border:2px solid var(--ink);border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.bq h3{font-size:clamp(22px,2.8vw,28px);font-weight:600;margin-bottom:4px}
+.bq > p{color:var(--text-2);font-size:15px;margin-bottom:1.1rem}
+.bq-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:1.1rem}
+.score{font-weight:600;font-size:15px}
+
+.match{display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.mi{
+  display:flex;align-items:center;gap:10px;font:inherit;font-size:15px;text-align:left;color:var(--ink);
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;min-height:44px;
+}
+.mi .tag{margin-left:auto;font-family:var(--font-mono);font-size:12px;font-weight:700;min-width:26px;height:26px;border-radius:50%;
+  border:2px solid var(--ink);display:grid;place-items:center;background:var(--cream)}
+.mi.sel{background:var(--orange-soft);border-color:var(--orange-deep)}
+.mi.right{background:var(--green-soft);border-color:var(--green-deep)}
+.mi.wrong{background:#FFE3E3;border-color:#C23B3B}
+.mi .letter{font-family:var(--font-mono);font-weight:700;min-width:22px}
+@media(max-width:640px){.match{grid-template-columns:1fr}}
+
+.tf{display:flex;flex-direction:column;gap:8px}
+.tf-row{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 12px}
+.tf-row .n{font-family:var(--font-mono);font-weight:700;min-width:20px}
+.tf-row .q{flex:1;font-size:15px}
+.tf-row.right{background:var(--green-soft)}
+.tf-row.wrong{background:#FFE3E3}
+.tfb{font:inherit;font-weight:700;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:var(--white);cursor:pointer}
+.tfb[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+
+.spot{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:620px}
+.spot .canvas{position:relative;cursor:crosshair}
+.spot .canvas path{cursor:crosshair;stroke-width:3}
+.spot .canvas path:hover{filter:none}
+.spot circle.found{fill:none;stroke:#E0341B;stroke-width:4}
+.spot circle.miss{fill:none;stroke:#A89E97;stroke-width:3;stroke-dasharray:5 5}
+.found-row{display:flex;align-items:center;gap:8px;margin-top:1rem;font-weight:600}
+.found-row i{width:30px;height:30px;border:2px solid var(--ink);border-radius:8px;display:grid;place-items:center;font-style:normal;background:var(--white)}
+.found-row i.on{background:var(--green)}
+.found-list{font-size:14px;color:var(--text-2);margin-top:8px}
+
+.bonus{background:#FFF1C2;border:2px solid var(--ink);border-radius:var(--radius);padding:1.1rem 1.2rem;margin-top:1.4rem}
+.bonus h4{font-size:16px;font-weight:600;margin-bottom:4px}
+.bonus p{font-size:14.5px;color:var(--text-2);margin-bottom:10px}
+.pad{display:block;width:100%;height:260px;background:#fff;border:2px solid var(--ink);border-radius:var(--radius-sm);touch-action:none;cursor:crosshair}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;margin-top:12px}
+.field input{font:inherit;font-size:16px;font-weight:500;padding:10px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm);background:#fff;color:var(--ink)}
+
+/* ── Certificate ── */
+.cert{padding:2.2rem 1.6rem;text-align:center;border-width:3px;position:relative;overflow:hidden}
+.cert::before{content:'';position:absolute;inset:12px;border:2px dashed var(--orange);border-radius:20px;pointer-events:none}
+.cert .tw-eyebrow{margin-bottom:6px}
+.cert h3{font-size:clamp(30px,4.5vw,46px);font-weight:600;line-height:1.05}
+.cert .who{font-size:clamp(24px,3.6vw,34px);font-weight:600;color:var(--orange-deep);border-bottom:2px solid var(--ink);display:inline-block;min-width:60%;padding:4px 10px;margin:10px 0 12px}
+.cert .stars{font-size:28px;color:#FFB800;letter-spacing:6px;margin:8px 0}
+.cert .meta{display:flex;justify-content:center;gap:3rem;font-family:var(--font-mono);font-size:12px;margin-top:10px;flex-wrap:wrap}
+.cert.locked > :not(.no-print){opacity:.5}
+.checks{list-style:none;display:flex;flex-direction:column;gap:6px;margin:0 auto 1rem;max-width:420px;text-align:left;font-size:15px}
+.checks li::before{content:'○';margin-right:8px;font-weight:700}
+.checks li.ok::before{content:'✓';color:var(--green-deep)}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;
+  padding:12px 20px;border-radius:99px;font-weight:600;z-index:90;transition:transform .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media print{
+  body{background:#fff}
+  .tw-nav,.page-head,.tw-footer,.tw-footer-tail,.picker,.progress,.side,.tools-row,.nav-row,.hint,#bigquiz,.no-print,.toast{display:none!important}
+  .tw-section{padding:0}
+  .panel{box-shadow:none}
+  body.print-cert .studio-wrap{display:none}
+  body.print-cert #certificate{display:block!important}
+  body:not(.print-cert) #certificate{display:none}
+  .studio{display:block}
+}
+</style>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="index.html">Home</a>
+      <a class="tw-nav-link" href="picker.html">Projects</a>
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link is-active" href="index.html#tools">Tools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+      <a class="tw-nav-link" href="blog.html">Blog</a>
+      <a class="tw-nav-link" href="community.html">Community</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <div>
+      <span class="tw-eyebrow-pill">Coloring book · Ages 5–8</span>
+      <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">The Big Book of Robots</h1>
+      <p>Color 12 real robots, answer a quiz on every page, then finish the Big Robot Quiz to earn your certificate.</p>
+    </div>
+    <div class="head-btns">
+      <a class="tw-btn tw-btn-ink" href="#color">Start coloring</a>
+      <a class="tw-btn tw-btn-white" href="downloads/robot-coloring-book.pdf" download>Print the paper book</a>
+    </div>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight" id="color">
+  <div class="tw-container studio-wrap">
+    <div class="progress">
+      <strong style="color:var(--ink)" id="progress-label">0 of 12 robots colored</strong>
+      <div class="bar" aria-hidden="true"><i id="progress-bar"></i></div>
+    </div>
+
+    <div class="picker" id="picker" role="tablist" aria-label="Choose a robot"></div>
+
+    <div class="studio">
+      <div class="panel stage">
+        <div class="stage-top">
+          <h2 id="robot-name">Humanoid Robot</h2>
+          <span class="badge" id="robot-count">Robot 01 of 12</span>
+        </div>
+        <div class="canvas" id="canvas"></div>
+        <p class="hint">Pick a color, then tap any part of the robot to fill it.</p>
+        <div class="tools-row">
+          <button class="tbtn" id="undo" type="button" disabled>↶ Undo</button>
+          <button class="tbtn" id="clear" type="button">Start over</button>
+          <button class="tbtn" id="surprise" type="button">✨ Surprise me</button>
+          <button class="tbtn" id="save" type="button">⬇ Save picture</button>
+          <button class="tbtn" id="print" type="button">🖨 Print page</button>
+        </div>
+        <div class="nav-row">
+          <button class="tbtn" id="prev" type="button">← Previous robot</button>
+          <button class="tbtn" id="next" type="button">Next robot →</button>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h3>Crayons</h3>
+          <div class="swatches" id="swatches"></div>
+          <label class="custom">Mix your own <input type="color" id="custom" value="#8a5cf6"></label>
+          <div class="current">Coloring with <i id="current-chip"></i> <span id="current-name">Orange</span></div>
+        </div>
+        <div class="panel fact">
+          <h3>Did you know?</h3>
+          <p id="fact"></p>
+        </div>
+        <div class="panel">
+          <h3>Quiz · tap the answer</h3>
+          <p class="quiz-q" id="quiz-q"></p>
+          <div class="opts" id="quiz-opts"></div>
+          <p class="feedback" id="quiz-fb" aria-live="polite"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight" id="bigquiz" style="padding-top:1rem">
+  <div class="tw-container">
+    <div class="tw-section-head">
+      <span class="tw-eyebrow">After coloring</span>
+      <h2 class="tw-h2"><span class="tw-squiggle">The Big Robot Quiz</span></h2>
+    </div>
+
+    <div class="panel bq">
+      <span class="bq-tag">Big Quiz · Part 1</span>
+      <h3>Match the robot to its job</h3>
+      <p>Tap a robot, then tap the job it does. Tap a robot again to change your answer.</p>
+      <div class="match">
+        <div class="match-col" id="match-robots"></div>
+        <div class="match-col" id="match-jobs"></div>
+      </div>
+      <div class="bq-actions">
+        <button class="tw-btn tw-btn-orange tw-btn-sm" id="match-check" type="button">Check my answers</button>
+        <button class="tbtn" id="match-reset" type="button">Reset</button>
+        <span class="score" id="match-score" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <div class="panel bq">
+      <span class="bq-tag">Big Quiz · Part 2</span>
+      <h3>True or false?</h3>
+      <p>Tap T if it&rsquo;s true. Tap F if it&rsquo;s false.</p>
+      <div class="tf" id="tf"></div>
+      <div class="bq-actions">
+        <button class="tw-btn tw-btn-orange tw-btn-sm" id="tf-check" type="button">Check my answers</button>
+        <button class="tbtn" id="tf-reset" type="button">Reset</button>
+        <span class="score" id="tf-score" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <div class="panel bq">
+      <span class="bq-tag">Big Quiz · Part 3</span>
+      <h3>Spot the difference</h3>
+      <p>These two robots look the same&hellip; almost! Find 5 differences and tap them.</p>
+      <div class="spot">
+        <div class="canvas" id="spot-left"></div>
+        <div class="canvas" id="spot-right"></div>
+      </div>
+      <div class="found-row">I found: <span id="found-boxes" style="display:flex;gap:6px"></span></div>
+      <p class="found-list" id="found-list" aria-live="polite"></p>
+      <div class="bq-actions">
+        <button class="tbtn" id="spot-reset" type="button">Reset</button>
+        <button class="tbtn" id="spot-show" type="button">Show me</button>
+      </div>
+
+      <div class="bonus">
+        <h4>Bonus: design your own robot</h4>
+        <p>What job would your robot do? Draw it here with your crayon color, and give it a name.</p>
+        <canvas class="pad" id="pad" aria-label="Drawing pad"></canvas>
+        <div class="tools-row">
+          <button class="tbtn" id="pad-clear" type="button">Clear drawing</button>
+          <button class="tbtn" id="pad-save" type="button">⬇ Save drawing</button>
+        </div>
+        <label class="field">My robot&rsquo;s name <input id="bot-name" maxlength="40" placeholder="e.g. Sparky the Garden Helper"></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight" style="padding-top:0">
+  <div class="tw-container">
+    <div class="panel cert locked" id="certificate">
+      <span class="tw-eyebrow">Tinkerwith_ · Certificate of awesome</span>
+      <h3>Robot Expert</h3>
+      <p style="margin-top:10px">This certifies that</p>
+      <div class="who" id="cert-name">Your name</div>
+      <p>colored all 12 robots and finished the Big Robot Quiz.</p>
+      <div class="stars" aria-hidden="true">★★★★★</div>
+      <div class="meta"><span>Date: <b id="cert-date"></b></span><span>makers.tinkerwith.me</span></div>
+      <div class="no-print" style="margin-top:1.6rem">
+        <ul class="checks" id="cert-checks"></ul>
+        <label class="field" style="max-width:360px;margin:0 auto 14px;text-align:left">Name on the certificate <input id="kid-name" maxlength="40" placeholder="Type your name"></label>
+        <button class="tw-btn tw-btn-orange" id="cert-print" type="button" disabled>🖨 Print my certificate</button>
+        <details style="margin-top:1.2rem;font-size:14px;color:var(--text-2)">
+          <summary style="cursor:pointer;font-weight:600">Answers for grown-ups</summary>
+          <div id="answers" style="text-align:left;max-width:560px;margin:10px auto 0;line-height:1.7"></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Projects</a></li>
+        <li><a href="#" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+const HUB_URL = 'https://tinkerwith.me/courses';
+document.querySelectorAll('[data-hub]').forEach(a => { a.href = HUB_URL; });
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── Book content (from TinkerWith_Robot_Coloring_Book.pdf) ── */
+const ROBOTS = [
+  {name:'Humanoid Robot', fact:'Humanoid robots have two arms and two legs so they can use the same stairs, doors and tools that people do.',
+   q:'Why do humanoid robots have legs like people?', opts:['To walk where people walk','To swim super fast','To fly over clouds'], a:0},
+  {name:'Robot Dog', fact:'Four-legged robots can climb stairs and cross bumpy ground where wheels would get stuck.',
+   q:'How many legs does a robot dog have?', opts:['Two','Four','Six'], a:1},
+  {name:'Delivery Robot', fact:'Sidewalk robots roll at walking speed and use cameras to stop for people, pets and puddles.',
+   q:'What does a delivery robot carry?', opts:['Rain clouds','Snacks and parcels','Elephants'], a:1},
+  {name:'Drone', fact:'Drones fly by spinning their propellers really fast, pushing air down so they lift up.',
+   q:'What helps a drone fly?', opts:['Wheels','Spinning propellers','Flippers'], a:1},
+  {name:'Robot Arm', fact:'Factory robot arms can lift heavy car parts and repeat the same move thousands of times without getting tired.',
+   q:'Where do you often find robot arms at work?', opts:['In factories','Deep in the ocean','Up in the clouds'], a:0},
+  {name:'Mars Rover', fact:'Messages from Earth can take up to about 20 minutes to reach Mars, so rovers make some choices on their own.',
+   q:'Which planet do rovers like Perseverance explore?', opts:['Jupiter','The Sun','Mars'], a:2},
+  {name:'Underwater Robot', fact:'Underwater robots dive deeper than any person can, using bright lights and cameras to see in the dark sea.',
+   q:'What do underwater robots use to see in the dark?', opts:['Sunglasses','Lights and cameras','Candles'], a:1},
+  {name:'Robot Vacuum', fact:'Robot vacuums use bump sensors and cliff sensors so they turn around before falling down the stairs.',
+   q:'What does a robot vacuum clean up?', opts:['The sky','Your homework','Crumbs and dust'], a:2},
+  {name:'Surgical Robot', fact:'A doctor always controls a surgical robot. Its steady arms help make moves smaller than a grain of rice.',
+   q:'Who controls a surgical robot?', opts:['A cat','A doctor','Nobody'], a:1},
+  {name:'Self-Driving Car', fact:'Self-driving cars use cameras, radar and laser sensors to spot lanes, signs and people crossing the street.',
+   q:'What helps a self-driving car see the road?', opts:['A magnifying glass','Sensors and cameras','Its horn'], a:1},
+  {name:'Companion Robot', fact:'Companion robots can chat, play games and remind someone to drink water or take a walk.',
+   q:'What can a companion robot do?', opts:['Tell stories and play games','Lay eggs','Grow leaves'], a:0},
+  {name:'Warehouse Robot', fact:'Warehouse robots lift whole shelves and bring them to the people who pack your orders.',
+   q:'What does a warehouse robot carry?', opts:['Fish','Clouds','Shelves of boxes'], a:2},
+];
+const JOBS = ['Builds cars in factories','Drives people around','Uses tools like a person','Cleans up crumbs',
+  'Brings snacks to your door','Moves shelves of boxes','Explores another planet','Walks over rocks and stairs',
+  'Tells stories and plays games','Takes photos from the sky','Helps doctors operate','Studies coral reefs'];
+const MATCH_KEY = 'CHEJAGLDKBIF'; // robot i → job letter
+const TF = [
+  ['A robot dog has four legs.',true],
+  ['Drones fly using spinning propellers.',true],
+  ['Mars rovers explore oceans on the Moon.',false],
+  ['A surgical robot works with no doctor at all.',false],
+  ['Robot vacuums have sensors so they don’t fall down stairs.',true],
+  ['Underwater robots can dive deeper than people.',true],
+  ['Delivery robots zoom down the sidewalk faster than cars.',false],
+  ['Factory robot arms get tired after one hour.',false],
+  ['Self-driving cars use cameras to see the road.',true],
+  ['Companion robots can tell stories.',true],
+];
+/* Differences on the right-hand robot, in the 254×319 spot-art box. */
+const DIFFS = [
+  {x:127, y:64,  r:20, label:'Antenna ball is missing'},
+  {x:108, y:110, r:18, label:'Left eye is smaller'},
+  {x:127, y:130, r:24, label:'Mouth is shorter'},
+  {x:127, y:210, r:17, label:'Chest button is missing'},
+  {x:62,  y:222, r:20, label:'Left hand is smaller'},
+];
+const COLORS = [
+  ['Orange','#FF7F32'],['Red','#EF4444'],['Pink','#F472B6'],['Purple','#8B5CF6'],['Blue','#3B82F6'],['Sky','#7DD3FC'],
+  ['Teal','#3CC6C0'],['Green','#84BD00'],['Leaf','#22A35A'],['Yellow','#FFD23F'],['Brown','#9A6A3F'],['Silver','#C8CDD3'],
+  ['Grey','#6B7280'],['Black','#2B2B2B'],['Peach','#FFC9A3'],['Navy','#004C97'],['Lilac','#D8C7FF'],['Eraser',null],
+];
+const WHITE = '#FFFFFF';
+const ART = window.ROBOT_ART;
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+/* ── State (kept in this browser only) ── */
+const STORE = 'tw-robot-book-v1';
+let S = {fills: ROBOTS.map((_, i) => ART.robots[i].map(() => null)), quiz:{}, match:{}, matchChecked:false,
+         tf:{}, tfChecked:false, spot:[], kid:'', bot:'', cur:0};
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+  if (saved && Array.isArray(saved.fills)) {
+    S = Object.assign(S, saved);
+    S.fills = ROBOTS.map((_, i) => ART.robots[i].map((_, j) => (saved.fills[i] || [])[j] || null));
+  }
+} catch (e) {}
+const persist = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} };
+
+let color = COLORS[0][1], colorName = COLORS[0][0];
+const history = [];
+
+const $ = id => document.getElementById(id);
+const pad2 = n => String(n).padStart(2, '0');
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); };
+
+function svg(w, h, paths, fills, cls) {
+  const s = document.createElementNS(SVGNS, 'svg');
+  s.setAttribute('viewBox', `-4 -4 ${w + 8} ${h + 8}`);
+  if (cls) s.setAttribute('class', cls);
+  paths.forEach((d, j) => {
+    const p = document.createElementNS(SVGNS, 'path');
+    p.setAttribute('d', d);
+    p.setAttribute('fill', (fills && fills[j]) || WHITE);
+    p.dataset.i = j;
+    s.appendChild(p);
+  });
+  return s;
+}
+const isColored = i => S.fills[i].filter(Boolean).length >= Math.ceil(S.fills[i].length / 2);
+
+/* ── Picker ── */
+function renderPicker() {
+  const box = $('picker');
+  box.innerHTML = '';
+  ROBOTS.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'pick' + (isColored(i) ? ' done' : '');
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-current', i === S.cur ? 'true' : 'false');
+    b.setAttribute('aria-label', `${r.name}${isColored(i) ? ' (colored)' : ''}`);
+    b.title = r.name;
+    const t = svg(521, 413, ART.robots[i], S.fills[i]);
+    t.querySelectorAll('path').forEach(p => p.setAttribute('stroke', '#1E1B18'));
+    t.setAttribute('stroke-width', '9'); t.setAttribute('stroke-linejoin', 'round');
+    b.appendChild(t);
+    b.insertAdjacentHTML('beforeend', `<span>${pad2(i + 1)}</span><i class="star" aria-hidden="true">✓</i>`);
+    b.onclick = () => show(i);
+    box.appendChild(b);
+  });
+  const n = ROBOTS.filter((_, i) => isColored(i)).length;
+  $('progress-label').textContent = `${n} of 12 robots colored`;
+  $('progress-bar').style.width = (n / 12 * 100) + '%';
+}
+
+/* ── Colouring stage ── */
+function show(i) {
+  S.cur = i; history.length = 0; $('undo').disabled = true;
+  const r = ROBOTS[i];
+  $('robot-name').textContent = r.name;
+  $('robot-count').textContent = `Robot ${pad2(i + 1)} of 12`;
+  const c = $('canvas'); c.innerHTML = '';
+  const s = svg(521, 413, ART.robots[i], S.fills[i]);
+  s.setAttribute('role', 'img'); s.setAttribute('aria-label', `${r.name} to color`);
+  s.addEventListener('click', e => {
+    const p = e.target.closest('path'); if (!p) return;
+    const j = +p.dataset.i, prev = S.fills[i][j];
+    const next = color;
+    if (prev === next) return;
+    history.push([j, prev]); $('undo').disabled = false;
+    S.fills[i][j] = next; p.setAttribute('fill', next || WHITE);
+    const wasDone = document.querySelector(`.pick:nth-child(${i + 1})`).classList.contains('done');
+    persist(); renderPicker(); renderCert();
+    if (!wasDone && isColored(i)) toast(`Nice work! ${r.name} is colored ⭐`);
+  });
+  c.appendChild(s);
+  $('fact').textContent = r.fact;
+  renderQuiz();
+  $('prev').disabled = i === 0; $('next').disabled = i === 11;
+  persist(); renderPicker();
+}
+
+function renderQuiz() {
+  const i = S.cur, r = ROBOTS[i], pick = S.quiz[i];
+  $('quiz-q').textContent = r.q;
+  const box = $('quiz-opts'); box.innerHTML = '';
+  r.opts.forEach((o, k) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt';
+    if (pick !== undefined && k === pick) b.classList.add(k === r.a ? 'right' : 'wrong');
+    b.innerHTML = `<b>${'ABC'[k]}</b><span></span>`; b.querySelector('span').textContent = o;
+    b.onclick = () => { S.quiz[i] = k; persist(); renderQuiz(); renderCert(); };
+    box.appendChild(b);
+  });
+  const fb = $('quiz-fb');
+  if (pick === undefined) { fb.textContent = ''; fb.className = 'feedback'; }
+  else if (pick === r.a) { fb.textContent = 'Yes! That’s right. 🎉'; fb.className = 'feedback ok'; }
+  else { fb.textContent = 'Not quite — read the fact and try again!'; fb.className = 'feedback no'; }
+}
+
+$('undo').onclick = () => {
+  const h = history.pop(); if (!h) return;
+  S.fills[S.cur][h[0]] = h[1];
+  $('canvas').querySelector(`path[data-i="${h[0]}"]`).setAttribute('fill', h[1] || WHITE);
+  $('undo').disabled = !history.length; persist(); renderPicker(); renderCert();
+};
+$('clear').onclick = () => {
+  if (!S.fills[S.cur].some(Boolean) || !confirm('Clear all the colors on this robot?')) return;
+  S.fills[S.cur] = S.fills[S.cur].map(() => null); show(S.cur); renderCert();
+};
+$('surprise').onclick = () => {
+  const pool = COLORS.filter(c => c[1]).map(c => c[1]);
+  S.fills[S.cur] = S.fills[S.cur].map(() => pool[Math.floor(Math.random() * pool.length)]);
+  show(S.cur); renderCert();
+};
+$('prev').onclick = () => { show(Math.max(0, S.cur - 1)); $('color').scrollIntoView({behavior:'smooth'}); };
+$('next').onclick = () => { show(Math.min(11, S.cur + 1)); $('color').scrollIntoView({behavior:'smooth'}); };
+$('print').onclick = () => { document.body.classList.remove('print-cert'); window.print(); };
+
+function download(url, name) { const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+$('save').onclick = () => {
+  const src = $('canvas').querySelector('svg').cloneNode(true);
+  src.setAttribute('xmlns', SVGNS); src.setAttribute('width', 1042); src.setAttribute('height', 842);
+  src.querySelectorAll('path').forEach(p => { p.setAttribute('stroke', '#1E1B18'); p.setAttribute('stroke-width', '4.3'); p.setAttribute('stroke-linejoin', 'round'); });
+  const img = new Image();
+  img.onload = () => {
+    const cv = document.createElement('canvas'); cv.width = 1042; cv.height = 960;
+    const g = cv.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+    g.drawImage(img, 0, 0, 1042, 842);
+    g.fillStyle = '#220111'; g.font = '600 40px Jost, sans-serif';
+    g.fillText(ROBOTS[S.cur].name, 40, 910);
+    g.fillStyle = '#E0641B'; g.font = '700 20px "Space Mono", monospace';
+    g.textAlign = 'right'; g.fillText('makers.tinkerwith.me', 1002, 910);
+    download(cv.toDataURL('image/png'), `my-${ROBOTS[S.cur].name.toLowerCase().replace(/[^a-z]+/g, '-')}.png`);
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(src));
+};
+
+/* ── Crayons ── */
+function renderSwatches() {
+  const box = $('swatches'); box.innerHTML = '';
+  COLORS.forEach(([n, c]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'sw' + (c ? '' : ' eraser');
+    if (c) b.style.background = c;
+    b.title = n; b.setAttribute('aria-label', n);
+    b.setAttribute('aria-pressed', c === color && n === colorName ? 'true' : 'false');
+    b.onclick = () => setColor(c, n);
+    box.appendChild(b);
+  });
+  $('current-chip').style.background = color || 'repeating-conic-gradient(#e6e0da 0 25%,#fff 0 50%) 50%/10px 10px';
+  $('current-name').textContent = colorName;
+}
+function setColor(c, n) { color = c; colorName = n; renderSwatches(); }
+$('custom').addEventListener('input', e => setColor(e.target.value, 'your own color'));
+
+/* ── Big Quiz 1: match ── */
+let matchSel = null;
+function renderMatch() {
+  const rb = $('match-robots'), jb = $('match-jobs'); rb.innerHTML = ''; jb.innerHTML = '';
+  ROBOTS.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mi';
+    const got = S.match[i];
+    if (S.matchChecked && got) b.classList.add(got === MATCH_KEY[i] ? 'right' : 'wrong');
+    if (matchSel === i) b.classList.add('sel');
+    b.innerHTML = `<span></span><span class="tag">${got || '?'}</span>`;
+    b.firstChild.textContent = r.name;
+    b.onclick = () => { matchSel = matchSel === i ? null : i; renderMatch(); };
+    rb.appendChild(b);
+  });
+  JOBS.forEach((j, k) => {
+    const L = 'ABCDEFGHIJKL'[k];
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mi';
+    if (Object.values(S.match).includes(L)) b.style.opacity = '.55';
+    b.innerHTML = `<span class="letter">${L}</span><span></span>`;
+    b.lastChild.textContent = j;
+    b.onclick = () => {
+      if (matchSel === null) { toast('Tap a robot first, then its job'); return; }
+      for (const k2 in S.match) if (S.match[k2] === L) delete S.match[k2];
+      S.match[matchSel] = L; S.matchChecked = false;
+      const nextOpen = ROBOTS.findIndex((_, x) => !S.match[x]);
+      matchSel = nextOpen === -1 ? null : nextOpen;
+      persist(); renderMatch(); renderCert();
+    };
+    jb.appendChild(b);
+  });
+  const done = Object.keys(S.match).length;
+  if (S.matchChecked) {
+    const ok = ROBOTS.filter((_, i) => S.match[i] === MATCH_KEY[i]).length;
+    $('match-score').textContent = ok === 12 ? 'All 12 right! Robot genius! 🎉' : `${ok} of 12 right — fix the red ones and check again.`;
+  } else $('match-score').textContent = done ? `${done} of 12 matched` : '';
+}
+$('match-check').onclick = () => {
+  if (Object.keys(S.match).length < 12) { toast('Match all 12 robots first'); return; }
+  S.matchChecked = true; persist(); renderMatch(); renderCert();
+};
+$('match-reset').onclick = () => { S.match = {}; S.matchChecked = false; matchSel = 0; persist(); renderMatch(); renderCert(); };
+
+/* ── Big Quiz 2: true/false ── */
+function renderTF() {
+  const box = $('tf'); box.innerHTML = '';
+  TF.forEach(([q, a], i) => {
+    const row = document.createElement('div');
+    row.className = 'tf-row';
+    if (S.tfChecked && S.tf[i] !== undefined) row.classList.add(S.tf[i] === a ? 'right' : 'wrong');
+    row.innerHTML = `<span class="n">${i + 1}</span><span class="q"></span>`;
+    row.querySelector('.q').textContent = q;
+    [['T', true], ['F', false]].forEach(([l, v]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'tfb'; b.textContent = l;
+      b.setAttribute('aria-label', `${l === 'T' ? 'True' : 'False'}: ${q}`);
+      b.setAttribute('aria-pressed', S.tf[i] === v ? 'true' : 'false');
+      b.onclick = () => { S.tf[i] = v; S.tfChecked = false; persist(); renderTF(); renderCert(); };
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+  });
+  if (S.tfChecked) {
+    const ok = TF.filter(([, a], i) => S.tf[i] === a).length;
+    $('tf-score').textContent = ok === 10 ? 'All 10 right! 🎉' : `${ok} of 10 right — try the red ones again.`;
+  } else $('tf-score').textContent = '';
+}
+$('tf-check').onclick = () => {
+  if (Object.keys(S.tf).length < 10) { toast('Answer all 10 first'); return; }
+  S.tfChecked = true; persist(); renderTF(); renderCert();
+};
+$('tf-reset').onclick = () => { S.tf = {}; S.tfChecked = false; persist(); renderTF(); renderCert(); };
+
+/* ── Big Quiz 3: spot the difference ── */
+function renderSpot(reveal) {
+  ['left', 'right'].forEach(side => {
+    const box = $('spot-' + side); box.innerHTML = '';
+    const s = svg(254, 319, ART.spot[side]);
+    s.setAttribute('role', 'img');
+    s.setAttribute('aria-label', side === 'left' ? 'First robot' : 'Second robot, with 5 differences');
+    DIFFS.forEach((d, k) => {
+      if (!S.spot.includes(k) && !reveal) return;
+      const c = document.createElementNS(SVGNS, 'circle');
+      c.setAttribute('cx', d.x); c.setAttribute('cy', d.y); c.setAttribute('r', d.r + 4);
+      c.setAttribute('class', S.spot.includes(k) ? 'found' : 'miss');
+      s.appendChild(c);
+    });
+    s.addEventListener('click', e => {
+      const pt = s.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(s.getScreenCTM().inverse());
+      const k = DIFFS.findIndex(d => Math.hypot(p.x - d.x, p.y - d.y) <= d.r + 6);
+      if (k === -1) { toast('Not there — keep looking!'); return; }
+      if (S.spot.includes(k)) return;
+      S.spot.push(k); persist(); renderSpot(); renderCert();
+      toast(S.spot.length === 5 ? 'You found all 5! 🎉' : `Found one! ${5 - S.spot.length} to go`);
+    });
+    box.appendChild(s);
+  });
+  $('found-boxes').innerHTML = DIFFS.map((_, k) => `<i class="${k < S.spot.length ? 'on' : ''}">${k < S.spot.length ? '✓' : ''}</i>`).join('');
+  $('found-list').textContent = S.spot.length ? 'Found: ' + S.spot.map(k => DIFFS[k].label.toLowerCase()).join(', ') + '.' : '';
+}
+$('spot-reset').onclick = () => { S.spot = []; persist(); renderSpot(); renderCert(); };
+$('spot-show').onclick = () => renderSpot(true);
+
+/* ── Bonus drawing pad ── */
+(() => {
+  const cv = $('pad'), g = cv.getContext('2d');
+  let drawing = false, last = null, snapshot = null;
+  const fit = () => {
+    const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    if (cv.width) snapshot = cv.toDataURL();
+    cv.width = r.width * dpr; cv.height = r.height * dpr;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.fillStyle = '#fff'; g.fillRect(0, 0, r.width, r.height);
+    if (snapshot) { const im = new Image(); im.onload = () => g.drawImage(im, 0, 0, r.width, r.height); im.src = snapshot; }
+  };
+  fit(); window.addEventListener('resize', fit);
+  const at = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener('pointerdown', e => { drawing = true; last = at(e); cv.setPointerCapture(e.pointerId); stroke(e); });
+  cv.addEventListener('pointermove', e => drawing && stroke(e));
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => cv.addEventListener(t, () => { drawing = false; }));
+  function stroke(e) {
+    const p = at(e);
+    g.strokeStyle = color || '#fff'; g.lineWidth = color ? 6 : 22; g.lineCap = g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(last[0], last[1]); g.lineTo(p[0] + .01, p[1]); g.stroke(); last = p;
+  }
+  $('pad-clear').onclick = () => { snapshot = null; const r = cv.getBoundingClientRect(); g.fillStyle = '#fff'; g.fillRect(0, 0, r.width, r.height); };
+  $('pad-save').onclick = () => download(cv.toDataURL('image/png'), (($('bot-name').value || 'my-robot').toLowerCase().replace(/[^a-z0-9]+/g, '-')) + '.png');
+})();
+$('bot-name').value = S.bot || '';
+$('bot-name').addEventListener('input', e => { S.bot = e.target.value; persist(); });
+
+/* ── Certificate ── */
+function renderCert() {
+  const colored = ROBOTS.filter((_, i) => isColored(i)).length;
+  const quizzes = ROBOTS.filter((r, i) => S.quiz[i] === r.a).length;
+  const matchOk = S.matchChecked && ROBOTS.every((_, i) => S.match[i] === MATCH_KEY[i]);
+  const tfOk = S.tfChecked && TF.every(([, a], i) => S.tf[i] === a);
+  const spotOk = S.spot.length === 5;
+  const items = [
+    [colored === 12, `Color all 12 robots (${colored}/12)`],
+    [quizzes === 12, `Answer every page quiz right (${quizzes}/12)`],
+    [matchOk, 'Big Quiz 1: match every robot to its job'],
+    [tfOk, 'Big Quiz 2: get all 10 true-or-false right'],
+    [spotOk, `Big Quiz 3: spot all 5 differences (${S.spot.length}/5)`],
+  ];
+  $('cert-checks').innerHTML = items.map(([ok, t]) => `<li class="${ok ? 'ok' : ''}">${t}</li>`).join('');
+  const all = items.every(x => x[0]);
+  $('certificate').classList.toggle('locked', !all);
+  $('cert-print').disabled = !all;
+  $('cert-print').title = all ? '' : 'Finish the checklist to unlock your certificate';
+  $('cert-name').textContent = S.kid || 'Your name';
+}
+$('kid-name').value = S.kid || '';
+$('kid-name').addEventListener('input', e => { S.kid = e.target.value.trim(); persist(); renderCert(); });
+$('cert-date').textContent = new Date().toLocaleDateString(undefined, {day:'numeric', month:'long', year:'numeric'});
+$('cert-print').onclick = () => {
+  document.body.classList.add('print-cert'); window.print();
+  setTimeout(() => document.body.classList.remove('print-cert'), 500);
+};
+
+$('answers').innerHTML =
+  '<b>Page quizzes</b><br>' + ROBOTS.map((r, i) => `${pad2(i + 1)} ${r.name} — ${'ABC'[r.a]}`).join('<br>') +
+  '<br><br><b>Match the job</b><br>' + ROBOTS.map((r, i) => `${r.name} — ${MATCH_KEY[i]}`).join('<br>') +
+  '<br><br><b>True or false</b><br>' + TF.map(([, a], i) => `${i + 1}. ${a ? 'True' : 'False'}`).join('<br>') +
+  '<br><br><b>Spot the difference</b><br>' + DIFFS.map((d, i) => `${i + 1}. ${d.label}`).join('<br>');
+
+if (matchSel === null) matchSel = ROBOTS.findIndex((_, x) => !S.match[x]);
+if (matchSel === -1) matchSel = null;
+renderSwatches();
+show(Math.min(11, Math.max(0, S.cur | 0)));
+renderMatch(); renderTF(); renderSpot(); renderCert();
+</script>
+</body>
+</html>
