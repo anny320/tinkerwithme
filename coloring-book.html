@@ -179,6 +179,15 @@
   .studio{display:block}
 }
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-26H8GCM572"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-26H8GCM572');
+</script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -489,6 +498,12 @@ const persist = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } 
 let color = COLORS[0][1], colorName = COLORS[0][0];
 const history = [];
 
+/* Google Analytics events — shows how far kids get, not just page views.
+   Safe no-op when gtag is blocked (ad blockers, offline). */
+const track = (name, params) => { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} };
+const tracked = new Set();
+const trackOnce = (name, params) => { const k = name + JSON.stringify(params || {}); if (tracked.has(k)) return; tracked.add(k); track(name, params); };
+
 const $ = id => document.getElementById(id);
 const pad2 = n => String(n).padStart(2, '0');
 const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); };
@@ -550,7 +565,12 @@ function show(i) {
     S.fills[i][j] = next; p.setAttribute('fill', next || WHITE);
     const wasDone = document.querySelector(`.pick:nth-child(${i + 1})`).classList.contains('done');
     persist(); renderPicker(); renderCert();
-    if (!wasDone && isColored(i)) toast(`Nice work! ${r.name} is colored ⭐`);
+    trackOnce('coloring_start');
+    if (!wasDone && isColored(i)) {
+      toast(`Nice work! ${r.name} is colored ⭐`);
+      trackOnce('coloring_robot_complete', {robot_name: r.name});
+      if (ROBOTS.every((_, x) => isColored(x))) trackOnce('coloring_all_robots_complete');
+    }
   });
   c.appendChild(s);
   $('fact').textContent = r.fact;
@@ -568,7 +588,10 @@ function renderQuiz() {
     b.type = 'button'; b.className = 'opt';
     if (pick !== undefined && k === pick) b.classList.add(k === r.a ? 'right' : 'wrong');
     b.innerHTML = `<b>${'ABC'[k]}</b><span></span>`; b.querySelector('span').textContent = o;
-    b.onclick = () => { S.quiz[i] = k; persist(); renderQuiz(); renderCert(); };
+    b.onclick = () => {
+      S.quiz[i] = k; persist(); renderQuiz(); renderCert();
+      track('coloring_quiz_answer', {robot_name: r.name, correct: k === r.a});
+    };
     box.appendChild(b);
   });
   const fb = $('quiz-fb');
@@ -591,13 +614,19 @@ $('surprise').onclick = () => {
   const pool = COLORS.filter(c => c[1]).map(c => c[1]);
   S.fills[S.cur] = S.fills[S.cur].map(() => pool[Math.floor(Math.random() * pool.length)]);
   show(S.cur); renderCert();
+  track('coloring_surprise', {robot_name: ROBOTS[S.cur].name});
+  if (ROBOTS.every((_, x) => isColored(x))) trackOnce('coloring_all_robots_complete');
 };
 $('prev').onclick = () => { show(Math.max(0, S.cur - 1)); $('color').scrollIntoView({behavior:'smooth'}); };
 $('next').onclick = () => { show(Math.min(11, S.cur + 1)); $('color').scrollIntoView({behavior:'smooth'}); };
-$('print').onclick = () => { document.body.classList.remove('print-cert'); window.print(); };
+$('print').onclick = () => {
+  track('coloring_print_page', {robot_name: ROBOTS[S.cur].name});
+  document.body.classList.remove('print-cert'); window.print();
+};
 
 function download(url, name) { const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
 $('save').onclick = () => {
+  track('coloring_save_picture', {robot_name: ROBOTS[S.cur].name});
   const src = $('canvas').querySelector('svg').cloneNode(true);
   src.setAttribute('xmlns', SVGNS); src.setAttribute('width', 1042); src.setAttribute('height', 842);
   src.querySelectorAll('path').forEach(p => { p.setAttribute('stroke', '#1E1B18'); p.setAttribute('stroke-width', '4.3'); p.setAttribute('stroke-linejoin', 'round'); });
@@ -675,6 +704,7 @@ function renderMatch() {
 $('match-check').onclick = () => {
   if (Object.keys(S.match).length < 12) { toast('Match all 12 robots first'); return; }
   S.matchChecked = true; persist(); renderMatch(); renderCert();
+  track('coloring_big_quiz_check', {part: 'match', score: ROBOTS.filter((_, i) => S.match[i] === MATCH_KEY[i]).length});
 };
 $('match-reset').onclick = () => { S.match = {}; S.matchChecked = false; matchSel = 0; persist(); renderMatch(); renderCert(); };
 
@@ -705,6 +735,7 @@ function renderTF() {
 $('tf-check').onclick = () => {
   if (Object.keys(S.tf).length < 10) { toast('Answer all 10 first'); return; }
   S.tfChecked = true; persist(); renderTF(); renderCert();
+  track('coloring_big_quiz_check', {part: 'true_false', score: TF.filter(([, a], i) => S.tf[i] === a).length});
 };
 $('tf-reset').onclick = () => { S.tf = {}; S.tfChecked = false; persist(); renderTF(); renderCert(); };
 
@@ -729,6 +760,7 @@ function renderSpot(reveal) {
       if (k === -1) { toast('Not there — keep looking!'); return; }
       if (S.spot.includes(k)) return;
       S.spot.push(k); persist(); renderSpot(); renderCert();
+      if (S.spot.length === 5) track('coloring_big_quiz_check', {part: 'spot_difference', score: 5});
       toast(S.spot.length === 5 ? 'You found all 5! 🎉' : `Found one! ${5 - S.spot.length} to go`);
     });
     box.appendChild(s);
@@ -762,7 +794,7 @@ $('spot-show').onclick = () => renderSpot(true);
     g.beginPath(); g.moveTo(last[0], last[1]); g.lineTo(p[0] + .01, p[1]); g.stroke(); last = p;
   }
   $('pad-clear').onclick = () => { snapshot = null; const r = cv.getBoundingClientRect(); g.fillStyle = '#fff'; g.fillRect(0, 0, r.width, r.height); };
-  $('pad-save').onclick = () => download(cv.toDataURL('image/png'), (($('bot-name').value || 'my-robot').toLowerCase().replace(/[^a-z0-9]+/g, '-')) + '.png');
+  $('pad-save').onclick = () => track('coloring_save_drawing') || download(cv.toDataURL('image/png'), (($('bot-name').value || 'my-robot').toLowerCase().replace(/[^a-z0-9]+/g, '-')) + '.png');
 })();
 $('bot-name').value = S.bot || '';
 $('bot-name').addEventListener('input', e => { S.bot = e.target.value; persist(); });
@@ -792,6 +824,7 @@ $('kid-name').value = S.kid || '';
 $('kid-name').addEventListener('input', e => { S.kid = e.target.value.trim(); persist(); renderCert(); });
 $('cert-date').textContent = new Date().toLocaleDateString(undefined, {day:'numeric', month:'long', year:'numeric'});
 $('cert-print').onclick = () => {
+  track('coloring_certificate_print');
   document.body.classList.add('print-cert'); window.print();
   setTimeout(() => document.body.classList.remove('print-cert'), 500);
 };
