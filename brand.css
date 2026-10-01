@@ -108,7 +108,7 @@ a{color:inherit}
 }
 .tw-nav-burger:hover{background:rgba(34,1,17,.06)}
 
-@media(max-width:940px){
+@media(max-width:880px){
   .tw-nav-inner{flex-wrap:wrap;gap:.75rem}
   .tw-nav-burger{display:block}
   .tw-nav-links,.tw-nav-tail{
