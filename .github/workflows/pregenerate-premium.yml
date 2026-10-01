@@ -1,10 +1,17 @@
 name: Pre-generate Premium Curriculums
 
 # Generates the FULL facilitator curriculum for every premium course (one AI call
-# per course), caches it to premium_content/, then renders a full-curriculum PDF
-# per course into curriculums/. Uses the Anthropic API — run when you want the
-# curriculums (re)built. Content is committed incrementally so a timeout never
-# loses finished work; re-running skips courses already generated unless "force".
+# per course) and renders a full-curriculum PDF per course. Uses the Anthropic API.
+#
+# These are paid content, so they are NEVER committed to this public repo
+# (curriculums/ and premium_content/ are git-ignored). The run uploads them as a
+# private-ish build artifact that expires after 1 day: download it from the run
+# page, save it to the private Google Drive folder, then delete the artifact.
+# Note: on a public repo any signed-in GitHub user can download artifacts while
+# they exist, which is why retention is kept to 1 day.
+#
+# Nothing is cached between runs, so each run regenerates the courses you ask
+# for — use "only" to limit it (and the API cost) to the courses you need.
 #
 # Run from the Actions tab → "Pre-generate Premium Curriculums" → Run workflow.
 
@@ -17,12 +24,12 @@ on:
         type: boolean
         default: false
       only:
-        description: 'Optional: only these course IDs (space-separated, e.g. "smart-city ai-movie-studio"). Blank = all 15.'
+        description: 'Optional: only these course IDs (space-separated, e.g. "smart-city ai-movie-studio"). Blank = all courses.'
         required: false
         default: ''
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   pregenerate-premium:
@@ -49,17 +56,9 @@ jobs:
       - name: Install Python dependencies
         run: pip install anthropic weasyprint
 
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      # Each course's curriculum is committed + pushed the moment it's generated
-      # (COMMIT_EACH=1), so a cancel/timeout never loses finished work.
       - name: Generate premium curriculums (AI)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          COMMIT_EACH: '1'
         run: |
           ARGS="${{ inputs.only }}"
           if [ "${{ inputs.force }}" = "true" ]; then ARGS="--force $ARGS"; fi
@@ -69,12 +68,12 @@ jobs:
       - name: Render full-curriculum PDFs
         run: python generate_premium.py --curriculums
 
-      - name: Commit curriculums + any remaining content
-        run: |
-          git add premium_content/ curriculums/
-          if git diff --cached --quiet; then
-            echo "Nothing new to commit."
-          else
-            git commit -m "Render premium full-curriculum PDFs"
-            git push origin HEAD:main
-          fi
+      - name: Upload curriculums (download, save to Drive, then delete)
+        uses: actions/upload-artifact@v4
+        with:
+          name: premium-curriculums
+          path: |
+            curriculums/
+            premium_content/
+          retention-days: 1
+          if-no-files-found: error
