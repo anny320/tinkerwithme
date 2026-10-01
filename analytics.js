@@ -9,6 +9,7 @@
      whatsapp_click   any wa.me link        (link_text, page)
      community_join_click  the WhatsApp community group invite link
      email_click      any mailto: link
+     shop_click       a link to the HustleSasa store (product purchases)
      promo_click      elements with data-ga="promo-…" (the monthly
                       promo ribbon and banner on the homepage)
      outbound_click   links from makers to the WordPress courses / shop
@@ -42,6 +43,8 @@
         gtag('event', 'community_join_click', { link_text: text, page: page });
       } else if (/^https?:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) {
         gtag('event', 'whatsapp_click', { link_text: text, page: page });
+      } else if (/^https?:\/\/[a-z0-9-]+\.hustlesasa\.shop\//.test(href)) {
+        gtag('event', 'shop_click', { link_text: text, link_url: href, page: page });
       } else if (href.indexOf('mailto:') === 0) {
         gtag('event', 'email_click', { link_text: text, page: page });
       } else if (/^https?:\/\/(www\.)?tinkerwith\.me\//.test(href) &&
