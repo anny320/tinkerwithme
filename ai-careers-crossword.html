@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Careers Crossword — TinkerWith_</title>
+<meta name="description" content="A free AI careers crossword for ages 9–13. Solve 15 clues about the jobs of the future — from robotics engineers to AI ethicists — and earn your AI Career Explorer certificate.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="AI Careers Crossword — jobs of the future">
+<meta property="og:description" content="A free crossword about the careers AI is creating. Ages 9–13.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:var(--blue);padding:3rem 0 2.75rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+.page-head h1{color:var(--white);margin:14px 0 12px}
+.page-head p{color:rgba(255,255,255,.86);font-size:18px;max-width:46ch}
+.page-head .tw-eyebrow-pill{background:var(--white);color:var(--blue)}
+
+.panel{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink)}
+
+.game{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:1.75rem;align-items:start}
+@media(max-width:940px){.game{grid-template-columns:1fr}}
+
+.board{padding:1.1rem}
+.progress{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--text-2);margin-bottom:12px;flex-wrap:wrap}
+.progress strong{color:var(--ink)}
+.bar{flex:1 1 140px;height:12px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--white)}
+.bar i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
+
+/* Current clue — sticky so it stays visible above the keyboard on phones */
+.now{position:sticky;top:76px;z-index:5;background:var(--orange-soft);border:2px solid var(--ink);border-radius:var(--radius-sm);
+  padding:10px 14px;margin-bottom:12px;font-size:15.5px;line-height:1.4;min-height:48px}
+.now b{font-family:var(--font-mono);font-size:12px;margin-right:8px;color:var(--orange-deep)}
+@media(max-width:880px){.now{top:68px}}
+
+.grid{display:grid;gap:2px;width:100%;max-width:560px;margin:0 auto;user-select:none}
+.cell{position:relative;aspect-ratio:1;background:transparent}
+.cell.on{background:var(--white);outline:2px solid var(--ink);outline-offset:-1px;border-radius:3px}
+.cell input{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;text-align:center;
+  font:700 clamp(12px,3.4vw,20px)/1 var(--font-display);color:var(--ink);text-transform:uppercase;padding:0;
+  caret-color:transparent;border-radius:3px;cursor:pointer}
+.cell input:focus{outline:none}
+.cell .num{position:absolute;top:1px;left:2px;font:700 clamp(7px,1.6vw,10px)/1 var(--font-mono);color:var(--text-2);pointer-events:none;z-index:1}
+.cell.in-word input{background:#FFF1C2}
+.cell.cur input{background:#FFD23F}
+.cell.ok input{color:var(--green-deep)}
+.cell.bad input{color:#C23B3B;background:#FFE3E3}
+.cell.revealed input{color:var(--blue)}
+
+.tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center}
+.tbtn{font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--white);border:2px solid var(--ink);
+  border-radius:var(--radius-pill);padding:8px 15px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.tbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.hint-line{text-align:center;font-size:14px;color:var(--text-2);margin-top:10px;min-height:1.3em}
+
+.clues{padding:1.2rem 1.3rem}
+.clues h2{font-size:17px;font-weight:600;margin:4px 0 8px;display:flex;align-items:center;gap:8px}
+.clues h2 span{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+.clue-list{list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:14px}
+.clue-list li{display:flex;gap:10px;padding:6px 8px;border-radius:10px;cursor:pointer;font-size:14.5px;line-height:1.4;color:var(--text-2)}
+.clue-list li b{font-family:var(--font-mono);color:var(--ink);min-width:20px}
+.clue-list li:hover{background:var(--cream)}
+.clue-list li.active{background:#FFF1C2;color:var(--ink)}
+.clue-list li.solved{color:var(--green-deep)}
+.clue-list li.solved::after{content:'✓';margin-left:auto;font-weight:700}
+
+.unlocked{padding:1.3rem;margin-top:1.75rem}
+.unlocked h2{font-size:20px;font-weight:600;margin-bottom:4px}
+.unlocked > p{color:var(--text-2);font-size:15px;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{border:2px solid var(--ink);border-radius:var(--radius);padding:12px 14px;background:var(--cream)}
+.card .field{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-deep)}
+.card h3{font-size:16px;font-weight:600;margin:4px 0}
+.card p{font-size:13.5px;color:var(--text-2)}
+.card .eg{margin-top:6px;font-size:13px}
+.card.locked{background:repeating-linear-gradient(-45deg,var(--cream-dim) 0 10px,#F3EDE8 10px 20px);color:var(--text-3);display:grid;place-items:center;min-height:96px;font-family:var(--font-mono);font-size:12px}
+
+.cert{padding:2.2rem 1.6rem;text-align:center;border-width:3px;position:relative;margin-top:1.75rem}
+.cert::before{content:'';position:absolute;inset:12px;border:2px dashed var(--blue);border-radius:20px;pointer-events:none}
+.cert h2{font-size:clamp(28px,4.2vw,42px);font-weight:600;line-height:1.05}
+.cert .who{font-size:clamp(22px,3.4vw,32px);font-weight:600;color:var(--blue);border-bottom:2px solid var(--ink);display:inline-block;min-width:60%;padding:4px 10px;margin:10px 0 12px}
+.cert .meta{display:flex;justify-content:center;gap:3rem;font-family:var(--font-mono);font-size:12px;margin-top:10px;flex-wrap:wrap}
+.cert.locked > :not(.no-print){opacity:.45}
+.field-in{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;max-width:340px;margin:16px auto 12px;text-align:left}
+.field-in input{font:inherit;font-size:16px;font-weight:500;padding:10px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm)}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(140px);background:var(--ink);color:#fff;
+  padding:12px 20px;border-radius:99px;font-weight:600;z-index:90;transition:transform .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast{opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+/* Phones: give the 15×15 grid every pixel so squares stay finger-sized. */
+@media(max-width:600px){
+  #play > .tw-container{padding:0 8px}
+  .board{padding:8px;box-shadow:4px 4px 0 var(--ink)}
+  .grid{gap:1px}
+  .now{font-size:14.5px;padding:8px 10px}
+}
+
+@media print{
+  body{background:#fff}
+  .tw-nav,.page-head,.tw-footer,.tw-footer-tail,.tools-row,.hint-line,.now,.progress,.unlocked,.no-print,.toast{display:none!important}
+  .panel{box-shadow:none}
+  .game{grid-template-columns:1fr 1fr}
+  body.print-cert .game,body.print-cert .more{display:none}
+  body:not(.print-cert) .cert{display:none}
+  .cell.cur input,.cell.in-word input{background:transparent}
+}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link is-active" href="coloring-book.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <div>
+      <span class="tw-eyebrow-pill">Free puzzle · Ages 9–13</span>
+      <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">AI Careers Crossword</h1>
+      <p>AI is creating brand-new jobs. Solve 15 clues to discover them &mdash; and unlock a card for every career you find.</p>
+    </div>
+    <a class="tw-btn tw-btn-white" href="#play">Start the puzzle</a>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight" id="play">
+  <div class="tw-container">
+    <div class="game">
+      <div class="panel board">
+        <div class="progress"><strong id="prog-label">0 of 15 solved</strong><div class="bar" aria-hidden="true"><i id="prog-bar"></i></div></div>
+        <div class="now" id="now" aria-live="polite">Tap a square or a clue to start.</div>
+        <div class="grid" id="grid" role="grid" aria-label="Crossword grid"></div>
+        <div class="tools-row">
+          <button class="tbtn" type="button" id="b-check">✓ Check</button>
+          <button class="tbtn" type="button" id="b-hint">💡 Hint</button>
+          <button class="tbtn" type="button" id="b-letter">Reveal letter</button>
+          <button class="tbtn" type="button" id="b-word">Reveal word</button>
+          <button class="tbtn" type="button" id="b-clear">Start over</button>
+          <button class="tbtn" type="button" id="b-print">🖨 Print</button>
+        </div>
+        <p class="hint-line" id="hint-line"></p>
+      </div>
+      <div class="panel clues">
+        <h2>Across <span>→</span></h2>
+        <ol class="clue-list" id="clues-A"></ol>
+        <h2>Down <span>↓</span></h2>
+        <ol class="clue-list" id="clues-D"></ol>
+      </div>
+    </div>
+
+    <div class="more">
+      <div class="panel unlocked">
+        <h2>Careers you&rsquo;ve unlocked</h2>
+        <p>Every word you solve reveals what that person actually does.</p>
+        <div class="cards" id="cards"></div>
+      </div>
+    </div>
+
+    <div class="panel cert locked" id="cert">
+      <span class="tw-eyebrow">Tinkerwith_ · Certificate</span>
+      <h2>AI Career Explorer</h2>
+      <p style="margin-top:10px">This certifies that</p>
+      <div class="who" id="cert-name">Your name</div>
+      <p>discovered all 15 careers of the future in the AI Careers Crossword.</p>
+      <div class="meta"><span>Date: <b id="cert-date"></b></span><span>makers.tinkerwith.me</span></div>
+      <div class="no-print">
+        <p id="cert-status" style="margin-top:1.2rem;font-weight:600"></p>
+        <label class="field-in">Name on the certificate <input id="kid-name" maxlength="40" placeholder="Type your name"></label>
+        <button class="tw-btn tw-btn-orange" type="button" id="cert-print" disabled>🖨 Print my certificate</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── Puzzle (careers from the "AI Careers: Jobs of the Future" lesson) ──
+   Layout generated once and fixed: 15×15, every word crosses another. */
+const ROWS = 15, COLS = 15;
+const WORDS = [
+  {answer:'PRIVACY',   row:1,  col:1,  dir:'A', clue:'___ Engineer: protects people’s personal data when AI collects information',
+   title:'Privacy Engineer', field:'Responsible AI', what:'Protects people’s data when AI systems collect information.', eg:'Building data protection systems'},
+  {answer:'TECHNICIAN',row:3,  col:5,  dir:'A', clue:'AI Robotics ___: keeps AI-powered robots running and repairs them',
+   title:'AI Robotics Technician', field:'Emerging AI', what:'Maintains and repairs AI-powered robots.', eg:'Robot maintenance in factories and warehouses'},
+  {answer:'DESIGNER',  row:7,  col:4,  dir:'A', clue:'AI Interaction ___: plans how people talk to voice assistants and chatbots',
+   title:'AI Interaction Designer', field:'Creative AI', what:'Designs how humans interact with AI systems.', eg:'Voice assistants and chatbot screens'},
+  {answer:'POLICY',    row:9,  col:0,  dir:'A', clue:'AI ___ Specialist: helps governments write rules and laws for safe AI',
+   title:'AI Policy Specialist', field:'Responsible AI', what:'Helps governments create rules and laws for safe AI use.', eg:'AI regulations'},
+  {answer:'FARMING',   row:10, col:6,  dir:'A', clue:'Agricultural Technologists use AI to make ___ smarter, like watering crops at just the right time',
+   title:'Agricultural Technologist', field:'Agriculture & environment', what:'Uses AI to improve farming and crop production.', eg:'Smart irrigation systems'},
+  {answer:'VISION',    row:12, col:9,  dir:'A', clue:'Computer ___ Engineer: teaches computers to understand pictures and videos',
+   title:'Computer Vision Engineer', field:'Core AI', what:'Builds systems that let computers understand images and video.', eg:'Self-driving cars, face recognition'},
+  {answer:'ROBOTICS',  row:14, col:6,  dir:'A', clue:'___ Engineer: designs and programs robots that do tasks by themselves',
+   title:'Robotics Engineer', field:'Core AI', what:'Designs and programs robots that perform tasks automatically.', eg:'Factory robots, delivery robots'},
+  {answer:'CREATOR',   row:0,  col:2,  dir:'D', clue:'AI Content ___: makes videos, graphics and stories with AI tools',
+   title:'AI Content Creator', field:'Creative AI', what:'Creates videos, graphics and stories using AI tools.', eg:'Educational videos'},
+  {answer:'SCIENTIST', row:0,  col:6,  dir:'D', clue:'Data ___: studies huge sets of data to find patterns and predict trends',
+   title:'Data Scientist', field:'Core AI', what:'Studies large sets of data to discover patterns and insights.', eg:'Predicting trends'},
+  {answer:'ARTIST',    row:0,  col:10, dir:'D', clue:'AI ___: uses AI tools to create digital art, music and animations',
+   title:'AI Artist', field:'Creative AI', what:'Uses AI tools to create digital art, music and animations.', eg:'AI-generated artwork'},
+  {answer:'TRAINER',   row:0,  col:12, dir:'D', clue:'AI ___: labels and sorts data so an AI system can learn from it',
+   title:'AI Trainer', field:'Business & industry', what:'Trains AI systems by labelling and organising data.', eg:'Training chatbots'},
+  {answer:'MEDICAL',   row:5,  col:4,  dir:'D', clue:'___ Imaging Specialist: uses AI to study X-rays and scans to help doctors',
+   title:'Medical Imaging Specialist', field:'Science & medicine', what:'Uses AI to analyse medical scans and images.', eg:'Spotting problems in X-rays'},
+  {answer:'PROMPT',    row:7,  col:1,  dir:'D', clue:'___ Engineer: writes the instructions that help AI give useful answers',
+   title:'Prompt Engineer', field:'Emerging AI', what:'Writes instructions that help AI produce useful results.', eg:'Getting the best answers from AI tools'},
+  {answer:'ETHICIST',  row:7,  col:10, dir:'D', clue:'AI ___: makes sure AI is fair, safe and used responsibly',
+   title:'AI Ethicist', field:'Responsible AI', what:'Makes sure AI systems are fair, safe and used responsibly.', eg:'Preventing bias in algorithms'},
+  {answer:'GAME',      row:9,  col:7,  dir:'D', clue:'AI ___ Developer: makes the characters in video games smarter',
+   title:'AI Game Developer', field:'Creative AI', what:'Uses AI to make games more interactive and challenging.', eg:'Smart game characters'},
+];
+
+/* ── Build the grid model ── */
+const cellAt = {};               // "r,c" -> {r,c,ans,words:[idx...]}
+WORDS.forEach((w, i) => {
+  w.cells = [];
+  for (let k = 0; k < w.answer.length; k++) {
+    const r = w.row + (w.dir === 'D' ? k : 0), c = w.col + (w.dir === 'A' ? k : 0);
+    const key = r + ',' + c;
+    const cell = cellAt[key] || (cellAt[key] = { r, c, ans: w.answer[k], words: [] });
+    if (cell.ans !== w.answer[k]) throw new Error('Crossing mismatch at ' + key);
+    cell.words.push(i);
+    w.cells.push(key);
+  }
+});
+// Standard numbering: reading order, a number on each cell that starts a word.
+let n = 0;
+const starts = {};
+Object.values(cellAt).sort((a, b) => a.r - b.r || a.c - b.c).forEach(cell => {
+  const key = cell.r + ',' + cell.c;
+  const startsHere = WORDS.filter(w => w.cells[0] === key);
+  if (startsHere.length) { n++; starts[key] = n; startsHere.forEach(w => { w.num = n; }); }
+});
+
+/* ── State (this browser only) ── */
+const STORE = 'tw-ai-careers-xw-v1';
+let S = { letters: {}, revealed: {}, solved: [], kid: '', reveals: 0 };
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(STORE) || '{}')); } catch (_) {}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (_) {} };
+
+const track = (name, params) => { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (_) {} };
+const $ = id => document.getElementById(id);
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400); };
+
+let curWord = 0, curKey = WORDS[0].cells[0];
+
+/* ── Render grid ── */
+const grid = $('grid');
+grid.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
+const inputs = {};
+for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+  const key = r + ',' + c, cell = cellAt[key];
+  const div = document.createElement('div');
+  div.className = 'cell' + (cell ? ' on' : '');
+  if (cell) {
+    div.dataset.key = key;
+    if (starts[key]) div.insertAdjacentHTML('beforeend', `<span class="num">${starts[key]}</span>`);
+    const inp = document.createElement('input');
+    inp.setAttribute('maxlength', '2');
+    inp.setAttribute('autocomplete', 'off');
+    inp.setAttribute('autocapitalize', 'characters');
+    inp.setAttribute('spellcheck', 'false');
+    inp.setAttribute('inputmode', 'text');
+    inp.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}`);
+    inp.value = S.letters[key] || '';
+    inp.addEventListener('focus', () => select(key, null));
+    inp.addEventListener('click', () => { if (curKey === key && cell.words.length > 1) toggleDir(); });
+    inp.addEventListener('input', onInput);
+    inp.addEventListener('keydown', onKey);
+    div.appendChild(inp);
+    inputs[key] = inp;
+  }
+  grid.appendChild(div);
+}
+
+/* ── Clues ── */
+['A', 'D'].forEach(d => {
+  $('clues-' + d).innerHTML = WORDS.map((w, i) => w.dir === d
+    ? `<li data-i="${i}" id="clue-${i}"><b>${w.num}</b><span>${w.clue} <em style="font-style:normal;color:var(--text-3)">(${w.answer.length})</em></span></li>` : '')
+    .join('');
+  $('clues-' + d).addEventListener('click', e => {
+    const li = e.target.closest('li'); if (!li) return;
+    const w = WORDS[+li.dataset.i];
+    const firstEmpty = w.cells.find(k => !inputs[k].value) || w.cells[0];
+    curWord = +li.dataset.i; focusCell(firstEmpty);
+  });
+});
+
+/* ── Selection ── */
+function select(key, wordIdx) {
+  const cell = cellAt[key];
+  if (wordIdx != null) curWord = wordIdx;
+  else if (!cell.words.includes(curWord)) curWord = cell.words[0];
+  curKey = key;
+  paint();
+}
+function toggleDir() {
+  const cell = cellAt[curKey];
+  const other = cell.words.find(i => i !== curWord);
+  if (other != null) { curWord = other; paint(); }
+}
+function focusCell(key) { inputs[key].focus({ preventScroll: true }); select(key, curWord); }
+
+function paint() {
+  const w = WORDS[curWord];
+  document.querySelectorAll('.cell.on').forEach(el => {
+    el.classList.toggle('in-word', w.cells.includes(el.dataset.key));
+    el.classList.toggle('cur', el.dataset.key === curKey);
+  });
+  document.querySelectorAll('.clue-list li').forEach(li => li.classList.toggle('active', +li.dataset.i === curWord));
+  $('now').innerHTML = `<b>${w.num} ${w.dir === 'A' ? 'ACROSS' : 'DOWN'}</b>${w.clue} <span style="color:var(--text-3)">(${w.answer.length})</span>`;
+  $('hint-line').textContent = '';
+}
+
+/* ── Typing ── */
+function onInput(e) {
+  const key = e.target.parentNode.dataset.key;
+  const ch = (e.target.value.toUpperCase().match(/[A-Z]/g) || []).pop() || '';
+  e.target.value = ch;
+  setLetter(key, ch);
+  if (ch) advance(1);
+}
+function onKey(e) {
+  const key = e.target.parentNode.dataset.key;
+  const w = WORDS[curWord];
+  if (e.key === 'Backspace') {
+    e.preventDefault();
+    if (inputs[key].value) { inputs[key].value = ''; setLetter(key, ''); }
+    else { advance(-1); const k = curKey; inputs[k].value = ''; setLetter(k, ''); }
+  } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const [r, c] = key.split(',').map(Number);
+    const d = { ArrowRight: [0, 1], ArrowLeft: [0, -1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key];
+    const wantDir = d[0] ? 'D' : 'A';
+    const cell = cellAt[key];
+    const same = cell.words.find(i => WORDS[i].dir === wantDir);
+    if (same != null && same !== curWord) { curWord = same; paint(); return; }
+    for (let step = 1; step < 15; step++) {
+      const k = (r + d[0] * step) + ',' + (c + d[1] * step);
+      if (cellAt[k]) { const cw = cellAt[k].words.find(i => WORDS[i].dir === wantDir); curWord = cw != null ? cw : cellAt[k].words[0]; focusCell(k); return; }
+    }
+  } else if (e.key === 'Enter' || e.key === 'Tab') {
+    e.preventDefault();
+    const order = WORDS.map((_, i) => i).sort((a, b) => (WORDS[a].dir > WORDS[b].dir) - (WORDS[a].dir < WORDS[b].dir) || WORDS[a].num - WORDS[b].num);
+    const at = order.indexOf(curWord);
+    curWord = order[(at + (e.shiftKey ? -1 : 1) + order.length) % order.length];
+    focusCell(WORDS[curWord].cells.find(k => !inputs[k].value) || WORDS[curWord].cells[0]);
+  } else if (e.key === ' ') {
+    e.preventDefault(); toggleDir();
+  }
+}
+function advance(step) {
+  const w = WORDS[curWord];
+  const at = w.cells.indexOf(curKey);
+  const next = w.cells[at + step];
+  if (next) focusCell(next);
+}
+
+let started = Object.keys(S.letters).length > 0;
+function setLetter(key, ch) {
+  if (!started && ch) { started = true; track('crossword_start'); }
+  if (ch) S.letters[key] = ch; else delete S.letters[key];
+  const el = inputs[key].parentNode;
+  el.classList.remove('bad');
+  if (!ch) { delete S.revealed[key]; el.classList.remove('revealed'); }
+  save();
+  cellAt[key].words.forEach(checkSolved);
+}
+
+/* ── Solving ── */
+function wordCorrect(i) { return WORDS[i].cells.every(k => S.letters[k] === cellAt[k].ans); }
+function checkSolved(i) {
+  const was = S.solved.includes(i), now = wordCorrect(i);
+  if (now && !was) {
+    S.solved.push(i); save();
+    WORDS[i].cells.forEach(k => inputs[k].parentNode.classList.add('ok'));
+    toast(`✓ ${WORDS[i].title} unlocked!`);
+    track('crossword_word_solved', { answer: WORDS[i].answer });
+    if (S.solved.length === WORDS.length) {
+      track('crossword_complete', { reveals_used: S.reveals });
+      setTimeout(() => { toast('🎉 You found all 15 careers! Your certificate is ready.'); $('cert').scrollIntoView({ behavior: 'smooth' }); }, 900);
+    }
+  } else if (!now && was) {
+    S.solved = S.solved.filter(x => x !== i); save();
+  }
+  if (!now) WORDS[i].cells.forEach(k => { if (!S.solved.some(j => WORDS[j].cells.includes(k))) inputs[k].parentNode.classList.remove('ok'); });
+  renderProgress();
+}
+
+function renderProgress() {
+  const n = S.solved.length;
+  $('prog-label').textContent = `${n} of ${WORDS.length} solved`;
+  $('prog-bar').style.width = (n / WORDS.length * 100) + '%';
+  document.querySelectorAll('.clue-list li').forEach(li => li.classList.toggle('solved', S.solved.includes(+li.dataset.i)));
+  $('cards').innerHTML = WORDS.map((w, i) => S.solved.includes(i)
+    ? `<div class="card"><span class="field">${w.field}</span><h3>${w.title}</h3><p>${w.what}</p><p class="eg"><strong>Example:</strong> ${w.eg}</p></div>`
+    : `<div class="card locked">🔒 ${w.num} ${w.dir === 'A' ? 'across' : 'down'}</div>`).join('');
+  const done = n === WORDS.length;
+  $('cert').classList.toggle('locked', !done);
+  $('cert-print').disabled = !done;
+  $('cert-status').textContent = done
+    ? (S.reveals ? `Finished! (You used ${S.reveals} reveal${S.reveals > 1 ? 's' : ''} — try again without any for bragging rights.)` : 'Finished with no reveals — brilliant!')
+    : `Solve all 15 clues to unlock your certificate (${n}/15).`;
+}
+
+/* ── Buttons ── */
+$('b-check').onclick = () => {
+  let wrong = 0, filled = 0;
+  Object.keys(cellAt).forEach(k => {
+    if (!S.letters[k]) return;
+    filled++;
+    const bad = S.letters[k] !== cellAt[k].ans;
+    inputs[k].parentNode.classList.toggle('bad', bad);
+    if (bad) wrong++;
+  });
+  toast(!filled ? 'Fill in some letters first!' : wrong ? `${wrong} letter${wrong > 1 ? 's' : ''} to fix — they’re in red.` : 'Everything so far is correct! ✓');
+  track('crossword_check', { wrong });
+};
+$('b-hint').onclick = () => {
+  const w = WORDS[curWord];
+  $('hint-line').textContent = `Hint: this career is in ${w.field} and starts with “${w.answer[0]}”.`;
+};
+function reveal(keys) {
+  keys.forEach(k => {
+    if (S.letters[k] === cellAt[k].ans) return;
+    inputs[k].value = cellAt[k].ans; S.letters[k] = cellAt[k].ans; S.revealed[k] = 1;
+    inputs[k].parentNode.classList.add('revealed'); inputs[k].parentNode.classList.remove('bad');
+    S.reveals++;
+  });
+  save();
+  new Set(keys.flatMap(k => cellAt[k].words)).forEach(checkSolved);
+}
+$('b-letter').onclick = () => {
+  const w = WORDS[curWord];
+  const k = (S.letters[curKey] !== cellAt[curKey].ans) ? curKey : w.cells.find(x => S.letters[x] !== cellAt[x].ans);
+  if (k) { reveal([k]); track('crossword_reveal', { kind: 'letter' }); }
+};
+$('b-word').onclick = () => { reveal(WORDS[curWord].cells); track('crossword_reveal', { kind: 'word', answer: WORDS[curWord].answer }); };
+$('b-clear').onclick = () => {
+  if (!Object.keys(S.letters).length || !confirm('Clear the whole puzzle and start again?')) return;
+  S = { letters: {}, revealed: {}, solved: [], kid: S.kid, reveals: 0 }; save();
+  Object.values(inputs).forEach(i => { i.value = ''; i.parentNode.classList.remove('ok', 'bad', 'revealed'); });
+  renderProgress(); focusCell(WORDS[0].cells[0]);
+};
+$('b-print').onclick = () => { document.body.classList.remove('print-cert'); window.print(); };
+
+$('kid-name').value = S.kid || '';
+$('cert-name').textContent = S.kid || 'Your name';
+$('kid-name').addEventListener('input', e => { S.kid = e.target.value.trim(); $('cert-name').textContent = S.kid || 'Your name'; save(); });
+$('cert-date').textContent = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+$('cert-print').onclick = () => {
+  track('crossword_certificate_print');
+  document.body.classList.add('print-cert'); window.print();
+  setTimeout(() => document.body.classList.remove('print-cert'), 500);
+};
+
+/* ── Start ── */
+Object.keys(S.revealed).forEach(k => inputs[k] && inputs[k].parentNode.classList.add('revealed'));
+S.solved.forEach(i => WORDS[i].cells.forEach(k => inputs[k].parentNode.classList.add('ok')));
+renderProgress();
+select(WORDS[0].cells[0], 0);
+</script>
+</body>
+</html>
