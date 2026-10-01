@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free for kids — TinkerWith_</title>
+<meta name="description" content="Free robotics and AI activities for kids: a robot coloring book with quizzes (ages 5–8) and an AI careers crossword (ages 9–13). Play online or print — no sign-up.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Free robotics & AI activities for kids — TinkerWith_">
+<meta property="og:description" content="A robot coloring book and an AI careers crossword. Free, no sign-up.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:var(--orange);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:50ch}
+
+.acts{display:grid;grid-template-columns:repeat(2,1fr);gap:1.75rem}
+@media(max-width:820px){.acts{grid-template-columns:1fr}}
+.act{
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);
+  display:flex;flex-direction:column;overflow:hidden;text-decoration:none;color:var(--ink);
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+.act:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.act-art{display:grid;place-items:center;padding:1.4rem;border-bottom:2px solid var(--ink);height:250px}
+@media(max-width:820px){.act-art{height:auto;min-height:180px}}
+.act-art img{width:100%;height:100%;max-height:210px;object-fit:contain}
+.act.color .act-art{background:#FFD23F}
+.act.puzzle .act-art{background:var(--blue-soft)}
+.act-body{padding:1.5rem 1.6rem 1.7rem;display:flex;flex-direction:column;gap:10px;flex:1}
+.act-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:4px 11px;background:var(--white)}
+.tag.age{background:var(--ink);color:var(--white)}
+.act h2{font-size:clamp(24px,3vw,30px);font-weight:600;line-height:1.1}
+.act p{font-size:15.5px;color:var(--text-2)}
+.act ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--text-2)}
+.act li::before{content:'★';color:var(--orange-deep);margin-right:9px}
+.act .go{margin-top:auto;padding-top:8px}
+
+.note{display:flex;gap:1.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:1.8rem 2rem;margin-top:2.5rem}
+.note h3{font-size:20px;font-weight:600;margin-bottom:4px}
+.note p{color:var(--on-ink);font-size:15.5px;max-width:52ch}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link is-active" href="free-for-kids.html" aria-current="page">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Free · No sign-up</span>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Free for kids</h1>
+    <p>Robotics and AI activities to play on screen or print at home. Every one ends with a certificate to keep.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+    <div class="acts">
+      <a class="act color" href="coloring-book.html" data-ga="free-for-kids-coloring-book">
+        <div class="act-art"><img src="assets/coloring-preview.svg" alt="Three colored robots from the coloring book: a humanoid robot, a robot dog and a drone" width="960" height="260"></div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag age">Ages 5&ndash;8</span><span class="tag">Coloring</span><span class="tag">Printable</span></div>
+          <h2>The Big Book of Robots</h2>
+          <p>Color 12 real robots on screen and learn what each one does.</p>
+          <ul>
+            <li>12 robots, from Mars rovers to robot dogs</li>
+            <li>A quiz on every page, plus the Big Robot Quiz</li>
+            <li>Robot Expert certificate at the end</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">Start coloring <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
+
+      <a class="act puzzle" href="ai-careers-crossword.html" data-ga="free-for-kids-ai-careers-crossword">
+        <div class="act-art"><img src="assets/crossword-preview.svg" alt="A corner of the AI careers crossword with PRIVACY, TECHNICIAN and ARTIST filled in" width="458" height="278"></div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag age">Ages 9&ndash;13</span><span class="tag">Crossword</span><span class="tag">Printable</span></div>
+          <h2>AI Careers Crossword</h2>
+          <p>AI is creating brand-new jobs. Solve 15 clues to discover them.</p>
+          <ul>
+            <li>From robotics engineers to AI ethicists</li>
+            <li>Unlock a card for every career you find</li>
+            <li>AI Career Explorer certificate at the end</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">Start the puzzle <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
+    </div>
+
+    <div class="note">
+      <div>
+        <h3>Ready for the real thing?</h3>
+        <p>When the puzzles aren&rsquo;t enough, kids can build real robots and AI projects with Anne &mdash; online or across Nairobi.</p>
+      </div>
+      <a class="tw-btn tw-btn-orange" href="courses.html">See courses &amp; camps</a>
+    </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
