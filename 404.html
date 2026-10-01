@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page not found — TinkerWith_</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FF7F32">
+<!-- GitHub Pages serves this file for any missing address, at that address,
+     so every link here is absolute (starts with /). -->
+<link rel="icon" href="/assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/brand.css">
+<style>
+body{min-height:100vh;display:flex;flex-direction:column}
+.nf{flex:1;display:flex;align-items:center;padding:4rem 0;background:var(--orange);position:relative;overflow:hidden}
+.nf::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.nf .tw-container{position:relative;z-index:1;width:100%}
+.nf-card{
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:8px 8px 0 var(--ink);padding:2.4rem;max-width:620px;
+}
+.nf-card h1{font-size:clamp(28px,4.4vw,40px);font-weight:600;line-height:1.1;margin:14px 0 12px}
+.nf-card p{font-size:17px;color:var(--text-2)}
+.nf-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.nf-code{font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-top:22px;word-break:break-all}
+</style>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="/">
+      <img src="/assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="/courses.html">Courses</a>
+      <a class="tw-nav-link" href="/picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="/coloring-book.html">Free for kids</a>
+      <a class="tw-nav-link" href="/about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="/#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<main class="nf">
+  <div class="tw-container">
+    <div class="nf-card" id="nf">
+      <span class="tw-eyebrow-pill">Page not found</span>
+      <h1>We couldn&rsquo;t find that page.</h1>
+      <p>It may have moved, or the link may be out of date. These are good places to start:</p>
+      <div class="nf-btns">
+        <a class="tw-btn tw-btn-ink" href="/">Go to the homepage</a>
+        <a class="tw-btn tw-btn-white" href="/courses.html">See all courses</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* Old links to a premium full curriculum (/curriculums/<id>.pdf). Those are
+   paid content and no longer on the site, so explain how to get one instead
+   of showing a bare "not found". */
+(function () {
+  var m = location.pathname.match(/^\/curriculums\/([a-z0-9-]+)\.pdf$/i);
+  if (!m) return;
+  var id = m[1].toLowerCase();
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  function show(title) {
+    var name = title ? '<strong>' + esc(title) + '</strong>' : 'this course';
+    var wa = 'https://wa.me/254117784724?text=' + encodeURIComponent(
+      "Hi Anne, I'd like to book " + (title || 'a premium course') + ' and get the full curriculum.');
+    document.title = 'Full curriculum — TinkerWith_';
+    document.getElementById('nf').innerHTML =
+      '<span class="tw-eyebrow-pill">Premium course</span>' +
+      '<h1>The full curriculum is sent after booking.</h1>' +
+      '<p>The complete session-by-session curriculum for ' + name + ' comes with your booking. ' +
+      'Have a look at the course outline, or message Anne to book.</p>' +
+      '<div class="nf-btns">' +
+        (title ? '<a class="tw-btn tw-btn-orange" href="/proposals/' + esc(id) + '.pdf" target="_blank" rel="noopener">⬇ Course outline</a>' : '') +
+        '<a class="tw-btn tw-btn-ink" href="' + wa + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
+        '<a class="tw-btn tw-btn-white" href="/courses.html">See all courses</a>' +
+      '</div>';
+  }
+  fetch('/premium_courses.json').then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      var c = d && (d.courses || []).filter(function (x) { return x.id === id; })[0];
+      show(c ? c.title : '');
+    })
+    .catch(function () { show(''); });
+})();
+</script>
+</body>
+</html>
