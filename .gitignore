@@ -4,3 +4,8 @@ __pycache__/
 
 # Generated output
 output/
+
+# Paid content — premium full curriculums are kept privately (Google Drive),
+# never in this public repo. See .github/workflows/pregenerate-premium.yml.
+curriculums/
+premium_content/

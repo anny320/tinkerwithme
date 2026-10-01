@@ -93,8 +93,8 @@ footer a{color:var(--orange);text-decoration:none}
 </div>
 <!-- ─── Password gate (soft, client-side) ──────────────────────────────────
      NOTE: This is a deterrent, not real security — a static page cannot truly
-     enforce a password (anyone can View Source / use DevTools). Default
-     password is "Tinker2026!". To change it: open this page, then in the browser
+     enforce a password (anyone can View Source / use DevTools). Never write
+     the password itself in this file. To change it: open this page, then in the browser
      console run  await twSha256('your-new-password')  and paste the printed hex
      value into PASSWORD_SHA256 below. -->
 <style>
@@ -121,8 +121,10 @@ html.tw-locked{overflow:hidden}
 </div>
 <script>
 (function(){
-  // SHA-256 of the password. Default password: "Tinker2026!" (see note above to change).
-  const PASSWORD_SHA256 = "08846fa88c899bb66360f40c9cf97855785e12dbab8d3bac31fae21c3829a858";
+  // SHA-256 of the password. Only the hash lives here, never the password itself.
+  // To change it: open DevTools on this page, run  await twSha256("new password"),
+  // and paste the result below.
+  const PASSWORD_SHA256 = "8515c7b97c39bdad32dbd88c3267b98213abd24ca8ae086b3f6732936fe8c710";
   const KEY = "tw_unlocked";
   window.twSha256 = async function(s){
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
@@ -356,11 +358,11 @@ function setTrack(t) {
   document.getElementById('projects-label').textContent    = isPremium ? 'Select a Course' : 'Select Projects';
   document.getElementById('projects-sublabel').textContent = isPremium ? '(pick one)' : '(pick one or more)';
   document.getElementById('gen-btn').innerHTML = isPremium
-    ? '<i class="ti ti-diamond"></i> Get My Premium Curriculum'
+    ? '<i class="ti ti-diamond"></i> Get the Course Outline'
     : '<i class="ti ti-wand"></i> Generate My Curriculum PDF';
   document.getElementById('track-hint').innerHTML =
       isCustom  ? 'We\'ll design a plan from scratch for whatever you type below.'
-    : isPremium ? 'Deep-dive multi-session courses. Pick one — the full curriculum is ready to download instantly.'
+    : isPremium ? 'Deep-dive multi-session courses. Pick one to get its course outline — the full curriculum is sent after booking.'
     :             'Pick a ready-made track, or choose <strong>Custom topic</strong> to request anything else.';
   if (!isCustom) { populateAges(); updateProjects(); }
   updateBtn();
