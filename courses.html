@@ -111,6 +111,25 @@ details[open] summary::before{content:"▾ "}
 footer{text-align:center;padding:2rem 1rem;color:var(--text-3);font-size:13px;border-top:1px solid var(--border)}
 footer a{color:var(--orange-dark);text-decoration:none}
 .hidden{display:none}
+
+/* ── HOW TO PAY ── */
+.pay{margin:3rem 0 1rem;background:var(--white,#fff);border:2px solid var(--ink,#220111);border-radius:28px;
+  box-shadow:6px 6px 0 var(--ink,#220111);padding:2rem}
+.pay h2{font-size:clamp(24px,3.2vw,32px);font-weight:600;line-height:1.15;margin-bottom:8px}
+.pay > p{font-size:16px;color:var(--text-2);max-width:60ch}
+.pay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem;margin-top:1.4rem}
+@media(max-width:640px){.pay-grid{grid-template-columns:1fr}.pay{padding:1.4rem}}
+.pay-opt{border:2px solid var(--ink,#220111);border-radius:18px;padding:1.2rem;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.pay-opt.mpesa{background:#EAF7E4}
+.pay-tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-2)}
+.pay-opt h3{font-size:18px;font-weight:600}
+.pay-opt p{font-size:14.5px;color:var(--text-2)}
+.till{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.till b{font-family:var(--font-mono);font-size:28px;letter-spacing:.06em;color:var(--ink,#220111)}
+.till button{font:inherit;font-size:13px;font-weight:600;border:2px solid var(--ink,#220111);border-radius:99px;background:#fff;padding:5px 12px;cursor:pointer}
+.pay-opt a.pay-link{margin-top:auto;font-weight:600;color:var(--blue);text-decoration:none}
+.pay-steps{font-size:14px;color:var(--text-2);padding-left:1.1rem;margin:2px 0 0}
+.pay-steps li{margin:2px 0}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -153,9 +172,8 @@ footer a{color:var(--orange-dark);text-decoration:none}
       <div>
         <span class="sp-eyebrow">Self-paced &middot; MakersHub</span>
         <h2>Start today, learn at your own pace</h2>
-        <p>Enrol online and work through the lessons whenever suits. Your progress is saved as you go.</p>
+        <p>Message Anne on WhatsApp to enrol, then work through the lessons whenever suits.</p>
       </div>
-      <a class="sp-all" href="https://tinkerwith.me/courses" target="_blank" rel="noopener">All MakersHub courses &rarr;</a>
     </div>
     <div class="sp-grid">
       <article class="sp-card sp-free">
@@ -163,14 +181,14 @@ footer a{color:var(--orange-dark);text-decoration:none}
         <h3>AI Skills for Kids</h3>
         <p class="sp-meta">Ages 7&ndash;9 &middot; Beginner &middot; 1h 30m</p>
         <p>Understand what AI is, how it learns, and how to use it responsibly &mdash; no coding, no expensive devices, no constant internet.</p>
-        <a class="sp-btn" href="https://tinkerwith.me/courses/ai-skills-for-kids-ages-7-9/" target="_blank" rel="noopener">Enrol free &rarr;</a>
+        <a class="sp-btn" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enrol%20my%20child%20in%20the%20free%20AI%20Skills%20for%20Kids%20course." target="_blank" rel="noopener">Enrol free on WhatsApp &rarr;</a>
       </article>
       <article class="sp-card">
         <div class="sp-tag sp-paid">Paid</div>
         <h3>What is Artificial Intelligence?</h3>
         <p class="sp-meta">Ages 10+ &middot; All levels &middot; 1h 30m</p>
         <p>An introduction to AI and ethics for parents, kids and teachers &mdash; what AI actually is, and how to think clearly about it.</p>
-        <a class="sp-btn" href="https://tinkerwith.me/courses/new-what-is-artificial-intelligence/" target="_blank" rel="noopener">View course &rarr;</a>
+        <a class="sp-btn" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enrol%20in%20the%20What%20is%20Artificial%20Intelligence%3F%20course." target="_blank" rel="noopener">Enrol on WhatsApp &rarr;</a>
       </article>
       <article class="sp-card">
         <div class="sp-tag sp-soon">Coming soon</div>
@@ -191,6 +209,44 @@ footer a{color:var(--orange-dark);text-decoration:none}
 
   <div class="filters" id="filters"></div>
   <div id="sections"></div>
+
+  <!-- ── HOW TO PAY ── -->
+  <section class="pay" id="pay" aria-labelledby="pay-title">
+    <span class="sp-eyebrow">Booking &amp; payment</span>
+    <h2 id="pay-title">How to pay</h2>
+    <p>Book first with <strong>Enquire / Book</strong> or on WhatsApp &mdash; we&rsquo;ll confirm dates and the total &mdash; then pay whichever way suits you.</p>
+    <div class="pay-grid">
+      <div class="pay-opt mpesa">
+        <span class="pay-tag">M-Pesa</span>
+        <h3>Lipa na M-Pesa</h3>
+        <div class="till"><b id="till">3022049</b><button type="button" id="copy-till">Copy</button></div>
+        <ol class="pay-steps">
+          <li>Lipa na M-Pesa &rarr; <strong>Buy Goods and Services</strong></li>
+          <li>Till number <strong>3022049</strong></li>
+          <li>The name shown is <strong>Wakara Technologies Limited</strong> &mdash; the company behind TinkerWith_</li>
+        </ol>
+        <a class="pay-link" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27ve%20paid%20by%20M-Pesa.%20My%20confirmation%20code%20is%3A%20" target="_blank" rel="noopener">Send your M-Pesa confirmation &rarr;</a>
+      </div>
+      <div class="pay-opt">
+        <span class="pay-tag">Card</span>
+        <h3>Visa or Mastercard</h3>
+        <p>Paying from abroad or prefer card? Message us after booking and we&rsquo;ll send you a secure card payment link.</p>
+        <a class="pay-link" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20pay%20by%20card%20for%20my%20booking." target="_blank" rel="noopener">Ask for a card link &rarr;</a>
+      </div>
+      <div class="pay-opt">
+        <span class="pay-tag">Schools &amp; organisations</span>
+        <h3>Invoice &amp; bank transfer</h3>
+        <p>We&rsquo;ll send an invoice from Wakara Technologies Limited with our bank details, for payment by transfer.</p>
+        <a class="pay-link" href="mailto:tinkerwithanne@gmail.com?subject=Invoice%20request&amp;body=Hi%20Anne%2C%0A%0APlease%20send%20an%20invoice%20for%3A%20%0AOrganisation%3A%20%0A%0AThanks!">Request an invoice &rarr;</a>
+      </div>
+      <div class="pay-opt">
+        <span class="pay-tag">Workbook</span>
+        <h3>Buy online</h3>
+        <p>The AI Skills for Kids Workbook is sold in our online store &mdash; pay there and the download comes straight to you.</p>
+        <a class="pay-link" href="https://tinkerwithme.hustlesasa.shop/products/69e1ffbdca2bdb1097c3f83d" target="_blank" rel="noopener">Go to the store &rarr;</a>
+      </div>
+    </div>
+  </section>
 </div>
 
 <footer class="tw-footer">
@@ -206,7 +262,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
       <h4>Learn</h4>
       <ul>
         <li><a href="picker.html">Plan a session</a></li>
-        <li><a href="https://tinkerwith.me/courses" data-hub>MakersHub</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
         <li><a href="courses.html">Courses &amp; camps</a></li>
         <li><a href="community.html">Community</a></li>
         <li><a href="blog.html">Blog</a></li>
@@ -330,6 +386,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child · ${DATA.courses.length} courses`;
   buildFilters();
   render();
+});
+
+document.getElementById('copy-till').addEventListener('click', e => {
+  const b = e.currentTarget;
+  const done = ok => { b.textContent = ok ? 'Copied ✓' : 'Till: 3022049'; setTimeout(() => { b.textContent = 'Copy'; }, 2000); };
+  try { navigator.clipboard.writeText('3022049').then(() => done(true), () => done(false)); } catch (_) { done(false); }
 });
 </script>
 </body>
