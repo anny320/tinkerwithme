@@ -267,6 +267,43 @@
 .cta h2{color:var(--ink);max-width:20ch;margin:0 auto}
 .cta p{color:var(--text-hero);font-size:17px;margin:16px auto 0;max-width:48ch}
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+/* ── MONTHLY PROMO ──────────────────────────────────────── */
+/* Swap the copy, image and links below each month to feature
+   something new; the ribbon above the nav points at the same thing. */
+.promo-ribbon{
+  display:block;background:var(--ink);color:var(--white);text-decoration:none;
+  text-align:center;padding:10px 1.25rem;font-size:14.5px;font-weight:500;line-height:1.4;
+}
+.promo-ribbon b{color:#FFD23F;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-right:8px}
+.promo-ribbon u{text-decoration:none;color:var(--orange);font-weight:600;white-space:nowrap;margin-left:6px}
+.promo-ribbon:hover u{text-decoration:underline}
+
+.promo{padding:3.5rem 0 0}
+.promo-card{
+  position:relative;background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:8px 8px 0 var(--ink);padding:2.4rem;
+  display:grid;grid-template-columns:.95fr 1.05fr;gap:2.5rem;align-items:center;
+}
+.promo-flag{
+  position:absolute;top:-17px;left:2rem;background:var(--orange);color:var(--white);
+  font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:var(--radius-pill);padding:7px 16px;transform:rotate(-2deg);
+}
+.promo-card .tw-eyebrow{color:var(--ink);opacity:.75}
+.promo-card h2{color:var(--ink);margin-bottom:14px}
+.promo-card .tw-lede{color:#3A2A10}
+.promo-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:18px 0 26px;font-size:15.5px;color:var(--ink)}
+.promo-list li::before{content:'★';color:var(--orange-deep);margin-right:10px}
+.promo-btns{display:flex;gap:12px;flex-wrap:wrap}
+.promo-art{text-decoration:none;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:1.25rem 1rem;display:block}
+.promo-art img{width:100%;height:auto;transition:transform .2s}
+.promo-art:hover img{transform:scale(1.03) rotate(-1deg)}
+.promo-art span{display:block;text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--text-2);margin-top:10px}
+@media(max-width:900px){
+  .promo{padding-top:3rem}
+  .promo-card{grid-template-columns:1fr;gap:1.75rem;padding:2.2rem 1.4rem 1.6rem}
+  .promo-art{order:-1}
+}
 </style>
 </head>
 <body>
@@ -282,6 +319,9 @@
      ⚠ HUB_URL below is a PLACEHOLDER — confirm the real hostname.
      ═══════════════════════════════════════════════════════════ -->
 
+<a class="promo-ribbon" href="coloring-book.html">
+  <b>This month</b>Free robot coloring book for ages 5&ndash;8 &mdash; color it online or print it <u>Start coloring &rarr;</u>
+</a>
 <nav class="tw-nav" id="nav">
   <div class="tw-nav-inner">
     <a class="tw-brand" href="index.html">
@@ -336,6 +376,33 @@
     <div class="stat"><div class="stat-num" style="color:var(--orange)">170+</div><div class="stat-label">young makers taught</div></div>
   </div>
 </div>
+
+<!-- ── THIS MONTH'S PROMO ───────────────────────────────── -->
+<section class="promo" aria-labelledby="promo-title">
+  <div class="tw-container">
+    <div class="promo-card">
+      <span class="promo-flag">&#9733; This month&rsquo;s feature</span>
+      <div>
+        <span class="tw-eyebrow">Free &middot; Ages 5&ndash;8 &middot; No sign-up</span>
+        <h2 class="tw-h2" id="promo-title">The Big Book of Robots</h2>
+        <p class="tw-lede">A coloring book that teaches. Kids color 12 real robots right on screen and learn what each one does.</p>
+        <ul class="promo-list">
+          <li>12 robots to color, from Mars rovers to robot dogs</li>
+          <li>A quiz on every page, plus the Big Robot Quiz</li>
+          <li>A printable Robot Expert certificate at the end</li>
+        </ul>
+        <div class="promo-btns">
+          <a class="tw-btn tw-btn-ink" href="coloring-book.html">Start coloring <span aria-hidden="true">&rarr;</span></a>
+          <a class="tw-btn tw-btn-white" href="downloads/robot-coloring-book.pdf" download>Download the PDF</a>
+        </div>
+      </div>
+      <a class="promo-art" href="coloring-book.html" tabindex="-1" aria-hidden="true">
+        <img src="assets/coloring-preview.svg" alt="" width="960" height="260">
+        <span>tap a part, fill it with color</span>
+      </a>
+    </div>
+  </div>
+</section>
 
 <!-- ── ENROL NOW ────────────────────────────────────────── -->
 <section class="tw-section" id="courses">
