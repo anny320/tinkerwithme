@@ -5,6 +5,7 @@
 
    Besides page views it records clicks that matter for the business:
      whatsapp_click   any wa.me link        (link_text, page)
+     community_join_click  the WhatsApp community group invite link
      email_click      any mailto: link
      promo_click      elements with data-ga="promo-…" (the monthly
                       promo ribbon and banner on the homepage)
@@ -34,7 +35,9 @@
       if (a.dataset && a.dataset.ga) {
         gtag('event', 'promo_click', { promo_id: a.dataset.ga, link_text: text, link_url: href, page: page });
       }
-      if (/^https?:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) {
+      if (/^https?:\/\/chat\.whatsapp\.com\//.test(href)) {
+        gtag('event', 'community_join_click', { link_text: text, page: page });
+      } else if (/^https?:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) {
         gtag('event', 'whatsapp_click', { link_text: text, page: page });
       } else if (href.indexOf('mailto:') === 0) {
         gtag('event', 'email_click', { link_text: text, page: page });
