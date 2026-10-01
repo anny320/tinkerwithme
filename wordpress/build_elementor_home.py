@@ -120,9 +120,10 @@ fonts = re.search(r'<link href="https://fonts\.googleapis\.com/css2[^"]*" rel="s
 
 snippet = f"""<!-- TinkerWith_ homepage — generated from makers.tinkerwith.me by
      wordpress/build_elementor_home.py. Don't edit here: change the makers
-     site, re-run the script, and paste the new output. -->
+     site, re-run the script, and paste the new output.
+     Google Analytics is NOT included here: it is added once for the whole
+     WordPress site (see wordpress/README.md), so visits aren't counted twice. -->
 {fonts}
-<script src="{MAKERS}analytics.js"></script>
 <script src="{MAKERS}forms.js" defer></script>
 <style>
 {css}

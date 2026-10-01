@@ -30,8 +30,30 @@ picker load live from makers.tinkerwith.me, so those never need a re-paste.
 
 - All styles are scoped under `#twm`, so they don't touch the rest of the
   WordPress site (courses, lessons, shop), and theme styles don't leak in.
-- The snippet loads Google Analytics from makers (`analytics.js`). If WordPress
-  already has Google Analytics for the same property (e.g. Site Kit), remove the
-  `analytics.js` line from the pasted HTML to avoid counting visits twice.
+- The snippet does **not** include Google Analytics. Add it once for the whole
+  WordPress site instead (next section), so every page is tracked and the
+  homepage isn't counted twice.
 - Course and shop buttons point at the WordPress courses and products, as on makers.
   Other links (Plan a session, coloring book, camp planner…) go to makers.tinkerwith.me.
+
+## Google Analytics on the whole WordPress site
+
+The free version of Elementor has no place for site-wide code, so use the free
+**WPCode** plugin (by WPCode, "Insert Headers and Footers"):
+
+1. **Plugins → Add New**, search `WPCode`, **Install Now**, **Activate**.
+2. **Code Snippets → Header & Footer**.
+3. Paste this into the **Header** box and click **Save Changes**:
+
+   ```html
+   <script src="https://makers.tinkerwith.me/analytics.js"></script>
+   ```
+
+This loads the same tag as makers (property `G-26H8GCM572`) with the same click
+events, so both sites report to one place. Remove any other Google Analytics
+plugin (Site Kit, MonsterInsights…) so visits aren't counted twice.
+
+In Google Analytics, **Admin → Data streams → (the stream) → Configure tag
+settings → Configure your domains**: add `tinkerwith.me` and
+`makers.tinkerwith.me`, so moving between the two sites counts as one visit.
+Use the **Hostname** dimension in reports to tell the two sites apart.
