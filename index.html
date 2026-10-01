@@ -269,7 +269,8 @@
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
 /* ── MONTHLY PROMO ──────────────────────────────────────── */
 /* Swap the copy, image and links below each month to feature
-   something new; the ribbon above the nav points at the same thing. */
+   something new; the ribbon above the nav points at the same thing.
+   data-ga values show up as promo_click events in Google Analytics. */
 .promo-ribbon{
   display:block;background:var(--ink);color:var(--white);text-decoration:none;
   text-align:center;padding:10px 1.25rem;font-size:14.5px;font-weight:500;line-height:1.4;
@@ -305,6 +306,7 @@
   .promo-art{order:-1}
 }
 </style>
+<script src="analytics.js"></script>
 </head>
 <body>
 
@@ -319,7 +321,7 @@
      ⚠ HUB_URL below is a PLACEHOLDER — confirm the real hostname.
      ═══════════════════════════════════════════════════════════ -->
 
-<a class="promo-ribbon" href="coloring-book.html">
+<a class="promo-ribbon" href="coloring-book.html" data-ga="promo-ribbon">
   <b>This month</b>Free robot coloring book for ages 5&ndash;8 &mdash; color it online or print it <u>Start coloring &rarr;</u>
 </a>
 <nav class="tw-nav" id="nav">
@@ -392,11 +394,11 @@
           <li>A printable Robot Expert certificate at the end</li>
         </ul>
         <div class="promo-btns">
-          <a class="tw-btn tw-btn-ink" href="coloring-book.html">Start coloring <span aria-hidden="true">&rarr;</span></a>
-          <a class="tw-btn tw-btn-white" href="downloads/robot-coloring-book.pdf" download>Download the PDF</a>
+          <a class="tw-btn tw-btn-ink" href="coloring-book.html" data-ga="promo-banner-start">Start coloring <span aria-hidden="true">&rarr;</span></a>
+          <a class="tw-btn tw-btn-white" href="downloads/robot-coloring-book.pdf" download data-ga="promo-banner-pdf">Download the PDF</a>
         </div>
       </div>
-      <a class="promo-art" href="coloring-book.html" tabindex="-1" aria-hidden="true">
+      <a class="promo-art" href="coloring-book.html" tabindex="-1" aria-hidden="true" data-ga="promo-banner-image">
         <img src="assets/coloring-preview.svg" alt="" width="960" height="260">
         <span>tap a part, fill it with color</span>
       </a>
@@ -620,7 +622,7 @@
         <strong>Deep-dive courses</strong>
         <p>17 project-rich courses and camps, KES 5,000–8,000.</p>
       </a>
-      <a class="tool" href="coloring-book.html">
+      <a class="tool" href="coloring-book.html" data-ga="tools-coloring-book">
         <span class="tool-tag">For kids</span>
         <strong>Robot coloring book</strong>
         <p>Color 12 real robots on screen, with a quiz on every page and a certificate at the end.</p>
