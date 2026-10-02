@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free for kids — TinkerWith_</title>
-<meta name="description" content="Free robotics and AI activities for kids: a robot coloring book with quizzes (ages 5–8) and an AI careers crossword (ages 9–13). Play online or print — no sign-up.">
+<meta name="description" content="Free robotics and AI activities for kids: a robot coloring book with quizzes (ages 5–8), an AI careers crossword (ages 9–13) and a Train an AI game (ages 9–12). Play online or print — no sign-up.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:title" content="Free robotics & AI activities for kids — TinkerWith_">
-<meta property="og:description" content="A robot coloring book and an AI careers crossword. Free, no sign-up.">
+<meta property="og:description" content="A robot coloring book, an AI careers crossword and a Train an AI game. Free, no sign-up.">
 <meta property="og:image" content="assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,8 @@
 .page-head h1{color:var(--ink);margin:14px 0 12px}
 .page-head p{color:var(--text-hero);font-size:18px;max-width:50ch}
 
-.acts{display:grid;grid-template-columns:repeat(2,1fr);gap:1.75rem}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+@media(max-width:1080px){.acts{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:820px){.acts{grid-template-columns:1fr}}
 .act{
   background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);
@@ -35,6 +36,7 @@
 .act-art img{width:100%;height:100%;max-height:210px;object-fit:contain}
 .act.color .act-art{background:#FFD23F}
 .act.puzzle .act-art{background:var(--blue-soft)}
+.act.ai .act-art{background:var(--green-soft)}
 .act-body{padding:1.5rem 1.6rem 1.7rem;display:flex;flex-direction:column;gap:10px;flex:1}
 .act-tags{display:flex;gap:8px;flex-wrap:wrap}
 .tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
@@ -117,6 +119,20 @@
           <span class="go"><span class="tw-btn tw-btn-ink">Start the puzzle <span aria-hidden="true">&rarr;</span></span></span>
         </div>
       </a>
+      <a class="act ai" href="train-an-ai.html" data-ga="free-for-kids-train-an-ai">
+        <div class="act-art"><img src="assets/train-ai-preview.svg" alt="Four alien creatures from the game, each labelled friendly or grumpy" width="460" height="170"></div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag age">Ages 9&ndash;12</span><span class="tag">Game</span><span class="tag">AI</span></div>
+          <h2>Train an AI</h2>
+          <p>Teach Robo the robot to sort alien creatures, test it and fix its mistakes.</p>
+          <ul>
+            <li>3 missions on how machine learning really works</li>
+            <li>See inside Robo&rsquo;s &ldquo;brain map&rdquo; as it learns</li>
+            <li>Junior AI Trainer certificate at the end</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">Start training <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
     </div>
 
     <div class="note">
@@ -156,6 +172,7 @@
         <li><a href="camp-planner.html">Camp planner</a></li>
         <li><a href="coloring-book.html">Robot coloring book</a></li>
         <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
         <li><a href="admin.html">Course editor</a></li>
       </ul>
     </div>
