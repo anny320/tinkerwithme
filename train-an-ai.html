@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Train an AI — TinkerWith_</title>
+<meta name="description" content="A free game for ages 9–12. Teach Robo the robot to sort alien creatures, test it, and fix its mistakes. Three missions on how machine learning works — and a Junior AI Trainer certificate at the end.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Train an AI — a free machine learning game for kids">
+<meta property="og:description" content="Teach Robo to sort alien creatures and discover how AI learns. Ages 9–12, no sign-up.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+:root{--friendly:#5E8700;--friendly-bg:#E4F2C4;--grumpy:#B8336A;--grumpy-bg:#FBDDE8}
+.page-head{background:var(--green);padding:3rem 0 2.75rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.10) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:48ch}
+
+.panel{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink)}
+
+/* Mission tabs */
+.missions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.mtab{font:inherit;text-align:left;background:var(--white);color:var(--ink);border:2px solid var(--ink);border-radius:var(--radius);
+  padding:12px 14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:flex;flex-direction:column;gap:2px}
+.mtab small{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.mtab strong{font-size:16px;font-weight:600;line-height:1.2}
+.mtab.cur{background:#FFD23F}
+.mtab.done small{color:var(--green-deep)}
+.mtab:disabled{cursor:not-allowed;background:var(--cream-dim);color:var(--text-3);box-shadow:0 4px 0 var(--border-strong);border-color:var(--border-strong)}
+.mtab:disabled small{color:var(--text-3)}
+@media(max-width:640px){.mtab strong{font-size:14px}.mtab{padding:10px}}
+
+.mission{padding:1.5rem}
+@media(max-width:600px){.mission{padding:1rem;box-shadow:4px 4px 0 var(--ink)}}
+.brief{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.25rem}
+.robo{font-size:44px;line-height:1;flex:none}
+.bubble{background:var(--cream);border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;font-size:16px;position:relative}
+.bubble::before{content:'';position:absolute;left:-10px;top:16px;width:16px;height:16px;background:var(--cream);border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg)}
+.bubble h2{font-size:clamp(20px,2.6vw,26px);font-weight:600;line-height:1.15;margin-bottom:4px}
+.bubble p{color:var(--text-2)}
+@media(max-width:600px){.brief{flex-direction:column;gap:.5rem}.robo{font-size:36px}.bubble::before{left:18px;top:-10px;transform:rotate(135deg)}}
+.guide{margin-top:10px;background:var(--white);border:2px dashed var(--ink);border-radius:var(--radius-sm);padding:10px 12px;font-size:15px}
+.guide b{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--orange-deep)}
+
+.work{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:1.5rem;align-items:start}
+@media(max-width:900px){.work{grid-template-columns:1fr}}
+.step-h{font-size:17px;font-weight:600;margin:0 0 8px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.step-h span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.step-p{font-size:14.5px;color:var(--text-2);margin:-2px 0 10px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px}
+.cc{border:2px solid var(--ink);border-radius:var(--radius-sm);background:var(--white);padding:6px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.cc svg{width:84px;height:84px;display:block}
+.cc.l-F{background:var(--friendly-bg)}
+.cc.l-G{background:var(--grumpy-bg)}
+.cc.new{outline:3px solid #FFD23F;outline-offset:1px}
+.lbls{display:flex;flex-direction:column;gap:4px;width:100%}
+.lb{font:inherit;font-size:13px;font-weight:600;border:2px solid var(--ink);border-radius:var(--radius-pill);background:var(--white);color:var(--ink);padding:5px 2px;cursor:pointer;white-space:nowrap}
+.lb[aria-pressed="true"].F{background:var(--friendly);color:#fff}
+.lb[aria-pressed="true"].G{background:var(--grumpy);color:#fff}
+.rm{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);background:var(--white);font:700 13px/1 var(--font-display);cursor:pointer;color:var(--ink)}
+.catch{width:100%;font:inherit;font-size:13px;font-weight:600;border:2px solid var(--ink);border-radius:var(--radius-pill);background:#FFD23F;color:var(--ink);padding:5px;cursor:pointer}
+.pool{margin-top:1.25rem;padding:12px;border:2px dashed var(--ink);border-radius:var(--radius);background:var(--cream)}
+.pool .cc{background:var(--white)}
+
+.go-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:1.25rem}
+.go-row .msg{font-size:14.5px;color:var(--text-2)}
+.tw-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* Brain map */
+.map-box{position:sticky;top:84px}
+@media(max-width:900px){.map-box{position:static}}
+.map-box .panel-in{border:2px solid var(--ink);border-radius:var(--radius);padding:12px;background:var(--white)}
+.map-box svg{width:100%;height:auto;display:block}
+.map-box p{font-size:14px;color:var(--text-2);margin-top:8px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:14px;border:2px solid var(--ink);border-radius:4px;vertical-align:-2px;margin-right:5px}
+
+/* Test results */
+.results{margin-top:1.5rem;border-top:2px dashed var(--border-strong);padding-top:1.25rem}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.score strong{font-size:clamp(26px,4vw,36px);font-weight:600;line-height:1}
+.bar{flex:1 1 160px;height:14px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--white)}
+.bar i{display:block;height:100%;width:0;background:var(--green);transition:width .5s}
+.tests{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.tc{border:2px solid var(--ink);border-radius:var(--radius-sm);padding:4px 4px 6px;text-align:center;font-size:12.5px;font-weight:600;background:var(--white);
+  opacity:0;transform:scale(.8);transition:opacity .2s,transform .2s}
+.tc.show{opacity:1;transform:none}
+.tc svg{width:64px;height:64px;display:block;margin:0 auto}
+.tc.ok{background:#EEF7DA}
+.tc.no{background:#FFE3E3;border-color:#C23B3B}
+.tc .mark{display:block;font-size:12px;font-weight:700}
+.tc.ok .mark{color:var(--green-deep)}
+.tc.no .mark{color:#C23B3B}
+.verdict{margin-top:14px;border:2px solid var(--ink);border-radius:var(--radius);padding:14px 16px;font-size:15.5px}
+.verdict.win{background:var(--green-soft)}
+.verdict.lose{background:var(--orange-soft)}
+.verdict h3{font-size:19px;font-weight:600;margin-bottom:4px}
+.verdict p + p{margin-top:6px}
+.verdict .tw-btn{margin-top:12px}
+
+/* Lessons */
+.lessons{padding:1.4rem;margin-top:1.75rem}
+.lessons h2{font-size:20px;font-weight:600;margin-bottom:4px}
+.lessons > p{color:var(--text-2);font-size:15px;margin-bottom:14px}
+.lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.lcard{border:2px solid var(--ink);border-radius:var(--radius);padding:12px 14px;background:var(--cream)}
+.lcard .field{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-deep)}
+.lcard h3{font-size:16px;font-weight:600;margin:4px 0}
+.lcard p{font-size:13.5px;color:var(--text-2)}
+.lcard.locked{background:repeating-linear-gradient(-45deg,var(--cream-dim) 0 10px,#F3EDE8 10px 20px);color:var(--text-3);display:grid;place-items:center;min-height:110px;font-family:var(--font-mono);font-size:12px}
+
+.cert{padding:2.2rem 1.6rem;text-align:center;border-width:3px;position:relative;margin-top:1.75rem}
+.cert::before{content:'';position:absolute;inset:12px;border:2px dashed var(--green-deep);border-radius:20px;pointer-events:none}
+.cert h2{font-size:clamp(28px,4.2vw,42px);font-weight:600;line-height:1.05}
+.cert .who{font-size:clamp(22px,3.4vw,32px);font-weight:600;color:var(--green-deep);border-bottom:2px solid var(--ink);display:inline-block;min-width:60%;padding:4px 10px;margin:10px 0 12px}
+.cert .meta{display:flex;justify-content:center;gap:3rem;font-family:var(--font-mono);font-size:12px;margin-top:10px;flex-wrap:wrap}
+.cert.locked > :not(.no-print){opacity:.45}
+.field-in{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;max-width:340px;margin:16px auto 12px;text-align:left}
+.field-in input{font:inherit;font-size:16px;font-weight:500;padding:10px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm)}
+.lb-panel{padding:1.4rem;margin-top:1.75rem}
+.lb-panel h2{font-size:20px;font-weight:600;margin-bottom:4px}
+.lb-panel > p{color:var(--text-2);font-size:15px;margin-bottom:14px}
+.lb-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:1.5rem;align-items:start}
+@media(max-width:820px){.lb-grid{grid-template-columns:1fr}}
+.lb-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.lb-list li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:8px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm);background:var(--white);font-size:15px}
+.lb-list li:nth-child(1){background:#FFD23F}
+.lb-list li:nth-child(2){background:#F1ECE6}
+.lb-list li:nth-child(3){background:var(--orange-soft)}
+.lb-list li.me{outline:3px solid var(--green);outline-offset:1px}
+.lb-list .rk{font-family:var(--font-mono);font-weight:700;font-size:13px}
+.lb-list .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-list .pts{font-family:var(--font-mono);font-weight:700;font-size:14px;text-align:right}
+.lb-list .pts small{display:block;font-weight:400;font-size:11px;color:var(--text-2)}
+.lb-empty{color:var(--text-2);font-size:14.5px;padding:10px 0}
+.lb-me{border:2px dashed var(--ink);border-radius:var(--radius);padding:14px 16px;background:var(--cream)}
+.lb-me h3{font-size:17px;font-weight:600;margin-bottom:6px}
+.lb-me .big{font-size:32px;font-weight:600;line-height:1;margin:4px 0}
+.lb-me p{font-size:14px;color:var(--text-2)}
+.lb-me .field-in{margin:12px 0 8px;max-width:none}
+.lb-me .err{color:#C23B3B;font-weight:600;font-size:14px;min-height:1.2em;margin-top:6px}
+.reset{font:inherit;font-size:13px;background:none;border:0;color:var(--text-2);text-decoration:underline;cursor:pointer;margin-top:1rem}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(140px);background:var(--ink);color:#fff;opacity:0;
+  padding:12px 20px;border-radius:99px;font-weight:600;z-index:90;transition:transform .25s,opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(prefers-reduced-motion:reduce){.tc{transition:none}.bar i{transition:none}}
+
+@media print{
+  body{background:#fff}
+  .tw-nav,.page-head,.tw-footer,.tw-footer-tail,.missions,.mission,.lessons,.lb-panel,.no-print,.toast{display:none!important}
+  .panel{box-shadow:none}
+}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link is-active" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <div>
+      <span class="tw-eyebrow-pill">Free game · Ages 9–12</span>
+      <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Train an AI</h1>
+      <p>Robo the robot is looking after alien pets, but nobody has told it which ones bite. Teach it with examples, test it, and fix its mistakes &mdash; just like real AI engineers do.</p>
+    </div>
+    <a class="tw-btn tw-btn-ink" href="#play">Start training</a>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight" id="play">
+  <div class="tw-container">
+    <div class="missions" id="tabs" role="tablist" aria-label="Missions"></div>
+
+    <div class="panel mission" id="mission">
+      <div class="brief">
+        <div class="robo" aria-hidden="true">🤖</div>
+        <div class="bubble">
+          <h2 id="m-title"></h2>
+          <p id="m-story"></p>
+          <div class="guide"><b>Your field guide</b><span id="m-guide"></span></div>
+        </div>
+      </div>
+
+      <div class="work">
+        <div>
+          <h3 class="step-h">Robo&rsquo;s training examples <span id="m-count"></span></h3>
+          <p class="step-p" id="m-task"></p>
+          <div class="cards" id="train"></div>
+          <div class="pool" id="pool-box" hidden>
+            <h3 class="step-h">Creature catcher <span>Tap to add</span></h3>
+            <p class="step-p">These Zorps were just spotted nearby. Catch the ones Robo needs to see, then label them.</p>
+            <div class="cards" id="pool"></div>
+          </div>
+          <div class="go-row">
+            <button class="tw-btn tw-btn-orange" type="button" id="b-test">🤖 Train Robo &amp; test it</button>
+            <span class="msg" id="go-msg"></span>
+          </div>
+        </div>
+
+        <div class="map-box">
+          <div class="panel-in">
+            <h3 class="step-h">Robo&rsquo;s brain map</h3>
+            <svg id="map" viewBox="0 0 300 290" role="img" aria-label="Robo's brain map: a chart of creature color against size, shaded by what Robo would guess"></svg>
+            <div class="legend"><span><i style="background:var(--friendly-bg)"></i>Robo guesses friendly</span><span><i style="background:var(--grumpy-bg)"></i>Robo guesses grumpy</span></div>
+            <p>Robo puts every creature on this map by its color and size. When it meets a new creature, it finds the <strong>closest example you taught it</strong> and copies that label. Watch the colors change as you teach!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="results" id="results" hidden>
+        <h3 class="step-h">Test results <span>12 creatures Robo has never seen</span></h3>
+        <div class="score"><strong id="score">0 / 12</strong><div class="bar" aria-hidden="true"><i id="score-bar"></i></div></div>
+        <div class="tests" id="tests"></div>
+        <div class="verdict" id="verdict" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="panel lessons">
+      <h2>What you&rsquo;ve learned about AI</h2>
+      <p>Finish a mission to unlock a big idea that real AI engineers use every day.</p>
+      <div class="lcards" id="lessons"></div>
+    </div>
+
+    <div class="panel lb-panel" id="lb" hidden>
+      <h2>🏆 Top Robo trainers</h2>
+      <p>Finish all 3 missions in as few tests as you can &mdash; and quickly &mdash; to climb the board. Think before you press Test!</p>
+      <div class="lb-grid">
+        <div>
+          <ol class="lb-list" id="lb-list" aria-live="polite"></ol>
+          <p class="lb-empty" id="lb-empty">Loading the leaderboard&hellip;</p>
+        </div>
+        <div class="lb-me" id="lb-me"></div>
+      </div>
+    </div>
+
+    <div class="panel cert locked" id="cert">
+      <span class="tw-eyebrow">Tinkerwith_ · Certificate</span>
+      <h2>Junior AI Trainer</h2>
+      <p style="margin-top:10px">This certifies that</p>
+      <div class="who" id="cert-name">Your name</div>
+      <p>trained Robo the robot through all 3 missions and learned how machine learning works.</p>
+      <div class="meta"><span>Date: <b id="cert-date"></b></span><span>makers.tinkerwith.me</span></div>
+      <div class="no-print">
+        <p id="cert-status" style="margin-top:1.2rem;font-weight:600"></p>
+        <label class="field-in">Name on the certificate <input id="kid-name" maxlength="40" placeholder="Type your name"></label>
+        <button class="tw-btn tw-btn-orange" type="button" id="cert-print" disabled>🖨 Print my certificate</button>
+        <br><button class="reset" type="button" id="b-reset">Start all missions again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── Creatures ──
+   Every creature has two features, each from 0 to 1:
+     c = color (0 bluest → 1 orangest; below 0.5 is blue, above is orange)
+     s = size  (0 smallest → 1 biggest; below 0.5 is small, above is big)
+   Robo is a 1-nearest-neighbour classifier on (c, s). The data below was
+   tuned so each mission scores 12/12 only once the kid fixes the right thing. */
+const LABEL = { F: '😊 Friendly', G: '😠 Grumpy' };
+const P = a => a.map(([c, s]) => ({ c, s }));
+
+const MISSIONS = [
+  {
+    key: 'blips', species: 'blip', name: 'Blips', tab: 'Teach Robo',
+    title: 'Mission 1: Teach Robo',
+    story: 'These are Blips. Some love a cuddle and some are grumpy. Robo can’t tell them apart yet — it learns only from examples you label.',
+    guide: '<strong>Orange</strong> Blips are friendly 😊. <strong>Blue</strong> Blips are grumpy 😠. Size doesn’t matter.',
+    task: 'Label every Blip using the field guide. Then train Robo and see if it can sort Blips it has never met.',
+    rule: x => x.c > .5 ? 'F' : 'G',
+    train: P([[.1,.2],[.85,.35],[.25,.85],[.9,.8],[.3,.35],[.8,.15],[.15,.65],[.7,.65]]).map(x => ({ ...x, l: null })),
+    pool: [],
+    test: P([[.2,.1],[.65,.1],[.35,.6],[.95,.95],[.05,.9],[.75,.45],[.3,.75],[.62,.85],[.1,.45],[.92,.6],[.38,.2],[.7,.3]]),
+    fail: () => 'Some of your labels don’t match the field guide. Find the cards that are wrong, switch their labels, and test Robo again.',
+    lesson: { field: 'Big idea 1', title: 'AI learns from examples',
+      text: 'Nobody told Robo the rule — it worked it out from the examples you labelled. That’s machine learning! Photo apps learn what a cat looks like the same way, from thousands of labelled cat photos.' },
+  },
+  {
+    key: 'zorps', species: 'zorp', name: 'Zorps', tab: 'Missing data',
+    title: 'Mission 2: The missing Zorps',
+    story: 'A new creature! Another trainer already labelled some Zorps for Robo. Every label is correct… so why does Robo keep getting it wrong?',
+    guide: '<strong>Small</strong> Zorps are friendly 😊. <strong>Big</strong> Zorps are grumpy 😠. Color doesn’t matter.',
+    task: 'Train Robo with these examples first and look at the results. Then use the creature catcher to give Robo what it’s missing.',
+    rule: x => x.s < .5 ? 'F' : 'G',
+    train: P([[.8,.15],[.1,.85],[.92,.32],[.25,.7],[.7,.25],[.18,.95]]).map(x => ({ ...x, l: x.s < .5 ? 'F' : 'G', given: true })),
+    pool: P([[.15,.2],[.75,.8],[.85,.1],[.3,.3],[.9,.72],[.2,.78]]),
+    test: P([[.1,.38],[.7,.62],[.3,.15],[.85,.58],[.22,.42],[.92,.85],[.05,.25],[.62,.9],[.8,.3],[.12,.65],[.95,.1],[.35,.9]]),
+    fail: (st) => st.train.length === MISSIONS[1].train.length
+      ? 'Look closely at Robo’s examples: every friendly Zorp is orange and every grumpy Zorp is blue. So Robo thinks <strong>color</strong> is what matters! Catch some Zorps that show Robo it’s wrong — like a small blue one and a big orange one.'
+      : 'Better! But Robo still has a gap. Check its map: is there a corner with no examples? And make sure every Zorp you caught has the right label.',
+    lesson: { field: 'Big idea 2', title: 'AI only knows what’s in its data',
+      text: 'Robo’s first examples left out small blue and big orange Zorps, so it learned the wrong rule. When training data leaves out some kinds of people or things, AI can treat them unfairly. Engineers call this bias.' },
+  },
+  {
+    key: 'fuzzles', species: 'fuzzle', name: 'Fuzzles', tab: 'Glitch’s trick',
+    title: 'Mission 3: Glitch’s trick',
+    story: 'Uh-oh. Glitch, a mischievous robot, sneaked into the lab and swapped some of Robo’s labels. Robo trusts every label it’s given — even the wrong ones.',
+    guide: '<strong>Big</strong> Fuzzles are friendly 😊. <strong>Small</strong> Fuzzles are grumpy 😠. Color doesn’t matter.',
+    task: 'Test Robo to see the damage. Then hunt down the labels Glitch swapped and fix them.',
+    rule: x => x.s > .5 ? 'F' : 'G',
+    // Indices 1, 8 and 10 carry Glitch's swapped labels.
+    train: P([[.1,.1],[.42,.22],[.75,.15],[.9,.3],[.58,.28],[.2,.3],[.15,.75],[.35,.95],[.6,.7],[.85,.85],[.95,.7],[.3,.72]])
+      .map((x, i) => { const ok = x.s > .5 ? 'F' : 'G'; return { ...x, l: [1, 8, 10].includes(i) ? (ok === 'F' ? 'G' : 'F') : ok }; }),
+    pool: [],
+    test: P([[.45,.18],[.62,.7],[.38,.32],[.55,.68],[.05,.25],[.92,.7],[.7,.3],[1,.55],[.8,.05],[.25,.85],[.1,.62],[.75,.92]]),
+    fail: (st) => {
+      const bad = st.train.filter(x => x.l !== MISSIONS[2].rule(x)).length;
+      return `Glitch’s swapped labels are still messing up Robo’s brain. <strong>${bad} label${bad === 1 ? ' is' : 's are'} still wrong.</strong> Tip: on the brain map, look for a lonely dot sitting in the wrong color patch.`;
+    },
+    lesson: { field: 'Big idea 3', title: 'Wrong labels teach wrong lessons',
+      text: 'Just three bad labels broke whole patches of Robo’s map. Engineers say “garbage in, garbage out”. That’s why AI trainers spend lots of time checking that labels are correct.' },
+  },
+];
+
+/* ── Drawing a creature ── */
+function bodyColor(c) {
+  return c < .5 ? `hsl(214 68% ${34 + c * 40}%)` : `hsl(24 96% ${70 - (c - .5) * 36}%)`;
+}
+function creature(x, species) {
+  const r = 15 + x.s * 27, cx = 50, cy = 92 - r, fill = bodyColor(x.c);
+  const st = 'stroke="#220111" stroke-width="2.5" stroke-linejoin="round"';
+  let body = '', extra = '';
+  if (species === 'blip') {
+    body = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${st}/>`;
+    extra = `<path d="M${cx} ${cy - r} L${cx + 6} ${cy - r - 9}" ${st} fill="none"/><circle cx="${cx + 6}" cy="${cy - r - 11}" r="3.5" fill="#FFD23F" ${st}/>`;
+  } else if (species === 'zorp') {
+    body = `<rect x="${cx - r}" y="${cy - r}" width="${2 * r}" height="${2 * r}" rx="${r * .4}" fill="${fill}" ${st}/>`;
+  } else {
+    const pts = [];
+    for (let i = 0; i < 20; i++) { const a = i / 20 * Math.PI * 2, rr = i % 2 ? r * .82 : r * 1.04; pts.push((cx + Math.sin(a) * rr).toFixed(1) + ',' + (cy - Math.cos(a) * rr).toFixed(1)); }
+    body = `<polygon points="${pts.join(' ')}" fill="${fill}" ${st}/>`;
+  }
+  const er = Math.max(3.5, r * .2), ey = cy - r * .15;
+  const eyes = species === 'zorp'
+    ? [cx - r * .45, cx, cx + r * .45].map(ex => eye(ex, ey, er * .8)).join('')
+    : [cx - r * .35, cx + r * .35].map(ex => eye(ex, ey, er)).join('');
+  const feet = `<path d="M${cx - r * .45} 92 v4 M${cx + r * .45} 92 v4" stroke="#220111" stroke-width="3" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${feet}${body}${extra}${eyes}</svg>`;
+}
+function eye(x, y, r) { return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="#220111" stroke-width="1.8"/><circle cx="${x}" cy="${y + r * .2}" r="${r * .45}" fill="#220111"/>`; }
+function describe(x, m) { return `${x.s < .5 ? 'small' : 'big'} ${x.c < .5 ? 'blue' : 'orange'} ${m.name.slice(0, -1)}`; }
+
+/* ── Robo's brain: 1-nearest-neighbour ── */
+function guess(train, x) {
+  let best = null, bd = Infinity;
+  train.forEach(t => { if (!t.l) return; const d = (t.c - x.c) ** 2 + (t.s - x.s) ** 2; if (d < bd) { bd = d; best = t; } });
+  return best ? best.l : null;
+}
+
+/* ── Leaderboard (Supabase) ──
+   Paste the project URL and its publishable (or legacy anon) key here, from
+   Supabase → Project Settings → API keys. Both are safe to publish: the
+   database only lets the page read scores and call submit_train_ai_score()
+   (see supabase/train-an-ai-leaderboard.sql). Leave them empty to hide the board. */
+const LEADERBOARD = { url: '', key: '' };
+
+/* Same rule as submit_train_ai_score() in the SQL file — keep them in step.
+   3,000 for finishing in 3 tests, −250 per extra test, + speed bonus. */
+const trainScore = (tests, secs) => Math.max(0, 3000 - 250 * (tests - 3)) + Math.max(0, 1000 - 2 * secs);
+
+/* ── State ── */
+const STORE = 'tw-train-an-ai-v1';
+const newRun = () => ({ tests: 0, secs: 0, submitted: null });
+let S = { done: [false, false, false], kid: '', cur: 0, started: false, run: newRun(), nick: '' };
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(STORE) || '{}')); } catch (_) {}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (_) {} };
+if (!S.run) S.run = newRun();
+const runActive = () => S.started && !S.done.every(Boolean);
+const track = (name, params) => { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (_) {} };
+const $ = id => document.getElementById(id);
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); };
+
+let ST;  // working state for the open mission: { train, pool, tries }
+function openMission(i) {
+  S.cur = i; save();
+  const m = MISSIONS[i];
+  ST = { train: m.train.map(x => ({ ...x })), pool: m.pool.map((x, j) => ({ ...x, id: j })), tries: 0 };
+  $('m-title').textContent = m.title;
+  $('m-story').textContent = m.story;
+  $('m-guide').innerHTML = m.guide;
+  $('m-task').textContent = m.task;
+  $('pool-box').hidden = !m.pool.length;
+  $('results').hidden = true;
+  renderTabs(); renderTrain(); renderMap();
+}
+
+/* ── Rendering ── */
+function renderTabs() {
+  $('tabs').innerHTML = MISSIONS.map((m, i) => {
+    const open = i === 0 || S.done[i - 1];
+    return `<button class="mtab${i === S.cur ? ' cur' : ''}${S.done[i] ? ' done' : ''}" type="button" role="tab" aria-selected="${i === S.cur}" data-i="${i}"${open ? '' : ' disabled'}>
+      <small>${S.done[i] ? '✓ Done' : open ? 'Mission ' + (i + 1) : '🔒 Mission ' + (i + 1)}</small><strong>${m.tab}</strong></button>`;
+  }).join('');
+}
+$('tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled) openMission(+b.dataset.i); });
+
+function card(x, i, m) {
+  const btn = l => `<button class="lb ${l}" type="button" data-i="${i}" data-l="${l}" aria-pressed="${x.l === l}">${LABEL[l]}</button>`;
+  return `<div class="cc${x.l ? ' l-' + x.l : ''}${x.caught ? ' new' : ''}" role="group" aria-label="${describe(x, m)}">
+    ${x.caught ? `<button class="rm" type="button" data-rm="${i}" aria-label="Let this one go">×</button>` : ''}
+    ${creature(x, m.species)}<div class="lbls">${btn('F')}${btn('G')}</div></div>`;
+}
+function renderTrain() {
+  const m = MISSIONS[S.cur];
+  $('train').innerHTML = ST.train.map((x, i) => card(x, i, m)).join('');
+  $('pool').innerHTML = ST.pool.map(x => `<div class="cc" role="group" aria-label="${describe(x, m)}">${creature(x, m.species)}
+    <button class="catch" type="button" data-catch="${x.id}">+ Catch</button></div>`).join('') || '<p class="step-p">You caught them all!</p>';
+  const unl = ST.train.filter(x => !x.l).length;
+  $('m-count').textContent = `${ST.train.length} examples`;
+  $('b-test').disabled = unl > 0;
+  $('go-msg').textContent = unl ? `Label ${unl} more ${unl === 1 ? 'example' : 'examples'} first.` : '';
+}
+$('train').addEventListener('click', e => {
+  const rm = e.target.closest('[data-rm]');
+  if (rm) {
+    const x = ST.train.splice(+rm.dataset.rm, 1)[0];
+    ST.pool.push({ c: x.c, s: x.s, id: x.id }); ST.pool.sort((a, b) => a.id - b.id);
+    renderTrain(); renderMap(); return;
+  }
+  const b = e.target.closest('.lb'); if (!b) return;
+  const x = ST.train[+b.dataset.i];
+  x.l = b.dataset.l;
+  if (!S.started) { S.started = true; save(); track('trainai_start'); }
+  renderTrain(); renderMap();
+  const again = $('train').querySelector(`.lb[data-i="${b.dataset.i}"][data-l="${b.dataset.l}"]`);
+  if (again) again.focus({ preventScroll: true });
+});
+$('pool').addEventListener('click', e => {
+  const b = e.target.closest('[data-catch]'); if (!b) return;
+  const id = +b.dataset.catch, at = ST.pool.findIndex(x => x.id === id);
+  const x = ST.pool.splice(at, 1)[0];
+  ST.train.push({ c: x.c, s: x.s, id, l: null, caught: true });
+  renderTrain(); renderMap();
+  toast(`Caught a ${describe(x, MISSIONS[S.cur])}! Now give it a label.`);
+});
+
+/* ── Brain map ── */
+const MX = 46, MY = 8, MW = 240, MH = 240, N = 24;
+function renderMap(results) {
+  const m = MISSIONS[S.cur];
+  const px = c => MX + c * MW, py = s => MY + (1 - s) * MH;
+  let out = '';
+  const any = ST.train.some(x => x.l);
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const g = any ? guess(ST.train, { c: (i + .5) / N, s: 1 - (j + .5) / N }) : null;
+    out += `<rect x="${MX + i * MW / N}" y="${MY + j * MH / N}" width="${MW / N + .3}" height="${MH / N + .3}" fill="${g === 'F' ? '#E4F2C4' : g === 'G' ? '#FBDDE8' : '#F7F3F0'}"/>`;
+  }
+  out += `<rect x="${MX}" y="${MY}" width="${MW}" height="${MH}" fill="none" stroke="#220111" stroke-width="2"/>`;
+  out += `<line x1="${px(.5)}" y1="${MY}" x2="${px(.5)}" y2="${MY + MH}" stroke="#220111" stroke-opacity=".15" stroke-dasharray="4 4"/>`;
+  out += `<line x1="${MX}" y1="${py(.5)}" x2="${MX + MW}" y2="${py(.5)}" stroke="#220111" stroke-opacity=".15" stroke-dasharray="4 4"/>`;
+  if (!any) out += `<text x="${MX + MW / 2}" y="${MY + MH / 2}" text-anchor="middle" font-family="Jost,sans-serif" font-size="13" fill="#6B5560">Label an example to wake Robo up</text>`;
+  // Test results as small rings / crosses.
+  (results || []).forEach(r => {
+    const x = px(r.c), y = py(r.s);
+    out += r.ok
+      ? `<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#5E8700" stroke-width="2.5"/>`
+      : `<path d="M${x - 5} ${y - 5} L${x + 5} ${y + 5} M${x + 5} ${y - 5} L${x - 5} ${y + 5}" stroke="#C23B3B" stroke-width="3" stroke-linecap="round"/>`;
+  });
+  // Training examples.
+  ST.train.forEach(t => {
+    const x = px(t.c), y = py(t.s);
+    out += `<circle cx="${x}" cy="${y}" r="9" fill="${bodyColor(t.c)}" stroke="#220111" stroke-width="2"/>`;
+    if (t.l) out += `<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-size="10">${t.l === 'F' ? '😊' : '😠'}</text>`;
+  });
+  // Axes.
+  out += `<rect x="${MX}" y="${MY + MH + 6}" width="${MW / 2}" height="8" fill="hsl(214 68% 44%)"/><rect x="${MX + MW / 2}" y="${MY + MH + 6}" width="${MW / 2}" height="8" fill="hsl(24 96% 56%)"/>`;
+  out += `<text x="${MX}" y="${MY + MH + 28}" font-family="Space Mono,monospace" font-size="10" fill="#220111">BLUE</text><text x="${MX + MW}" y="${MY + MH + 28}" text-anchor="end" font-family="Space Mono,monospace" font-size="10" fill="#220111">ORANGE</text><text x="${MX + MW / 2}" y="${MY + MH + 28}" text-anchor="middle" font-family="Jost,sans-serif" font-size="11" font-weight="600" fill="#220111">color →</text>`;
+  out += `<text x="${MX - 8}" y="${MY + 10}" text-anchor="end" font-family="Space Mono,monospace" font-size="10" fill="#220111">BIG</text><text x="${MX - 8}" y="${MY + MH}" text-anchor="end" font-family="Space Mono,monospace" font-size="10" fill="#220111">SMALL</text>`;
+  out += `<text transform="translate(${MX - 14} ${MY + MH / 2}) rotate(-90)" text-anchor="middle" font-family="Jost,sans-serif" font-size="11" font-weight="600" fill="#220111">size →</text>`;
+  $('map').innerHTML = out;
+}
+
+/* ── Testing ── */
+let testTimer;
+$('b-test').onclick = () => {
+  const m = MISSIONS[S.cur];
+  ST.tries++;
+  if (runActive()) { S.run.tests++; save(); }
+  const res = m.test.map(x => { const g = guess(ST.train, x); return { ...x, g, ok: g === m.rule(x) }; });
+  const right = res.filter(r => r.ok).length;
+  track('trainai_test', { mission: S.cur + 1, score: right, tries: ST.tries });
+  $('results').hidden = false;
+  $('verdict').innerHTML = '';
+  $('score').textContent = `0 / ${res.length}`;
+  $('score-bar').style.width = '0';
+  $('tests').innerHTML = res.map(r => `<div class="tc ${r.ok ? 'ok' : 'no'}" aria-label="${describe(r, m)}: Robo guessed ${r.g === 'F' ? 'friendly' : 'grumpy'}, ${r.ok ? 'correct' : 'wrong'}">
+    ${creature(r, m.species)}${r.g === 'F' ? '😊 Friendly' : '😠 Grumpy'}<span class="mark">${r.ok ? '✓ Right' : '✗ Wrong'}</span></div>`).join('');
+  renderMap(res);
+  $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Reveal the test creatures one at a time, counting up the score.
+  const cells = [...$('tests').children];
+  const step = matchMedia('(prefers-reduced-motion: reduce)').matches ? cells.length : 1;
+  let k = 0, shown = 0;
+  clearInterval(testTimer);
+  $('b-test').disabled = true;
+  testTimer = setInterval(() => {
+    for (const end = Math.min(k + step, cells.length); k < end; k++) { cells[k].classList.add('show'); if (res[k].ok) shown++; }
+    $('score').textContent = `${shown} / ${res.length}`;
+    $('score-bar').style.width = (shown / res.length * 100) + '%';
+    if (k < cells.length) return;
+    clearInterval(testTimer);
+    $('b-test').disabled = false;
+    finish(right, res.length);
+  }, 110);
+};
+
+function finish(right, total) {
+  const m = MISSIONS[S.cur], i = S.cur;
+  const v = $('verdict');
+  if (right === total) {
+    const first = !S.done[i];
+    S.done[i] = true; save();
+    if (first) track('trainai_mission_complete', { mission: i + 1, tries: ST.tries });
+    const next = i < MISSIONS.length - 1;
+    v.className = 'verdict win';
+    v.innerHTML = `<h3>🎉 Perfect score! Robo sorted every ${m.name.slice(0, -1)} correctly.</h3>
+      <p><strong>Big idea unlocked: ${m.lesson.title}.</strong> ${m.lesson.text}</p>
+      ${next ? `<button class="tw-btn tw-btn-ink" type="button" id="b-next">Next mission &rarr;</button>` : `<button class="tw-btn tw-btn-ink" type="button" id="b-next">Get my certificate &rarr;</button>`}`;
+    $('b-next').onclick = () => {
+      if (next) { openMission(i + 1); $('play').scrollIntoView({ behavior: 'smooth' }); }
+      else $('cert').scrollIntoView({ behavior: 'smooth' });
+    };
+    if (S.done.every(Boolean) && first) { track('trainai_complete', { tests: S.run.tests, seconds: S.run.secs }); toast('🏆 All 3 missions done! Your certificate is ready.'); }
+    renderTabs(); renderLessons(); renderBoardMe();
+  } else {
+    v.className = 'verdict lose';
+    v.innerHTML = `<h3>🤖 Robo got ${total - right} wrong.</h3><p>${m.fail(ST)}</p><p>The red ✗ marks on the brain map show where Robo went wrong.</p>`;
+  }
+}
+
+/* ── Lessons and certificate ── */
+function renderLessons() {
+  $('lessons').innerHTML = MISSIONS.map((m, i) => S.done[i]
+    ? `<div class="lcard"><span class="field">${m.lesson.field}</span><h3>${m.lesson.title}</h3><p>${m.lesson.text}</p></div>`
+    : `<div class="lcard locked">🔒 Finish mission ${i + 1}</div>`).join('');
+  const n = S.done.filter(Boolean).length, all = n === MISSIONS.length;
+  $('cert').classList.toggle('locked', !all);
+  $('cert-print').disabled = !all;
+  $('cert-status').textContent = all ? 'You did it! Type your name and print your certificate.' : `Finish all 3 missions to unlock your certificate (${n}/3).`;
+}
+$('kid-name').value = S.kid || '';
+$('cert-name').textContent = S.kid || 'Your name';
+$('kid-name').addEventListener('input', e => { S.kid = e.target.value.trim(); $('cert-name').textContent = S.kid || 'Your name'; save(); });
+$('cert-date').textContent = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+$('cert-print').onclick = () => { track('trainai_certificate_print'); window.print(); };
+$('b-reset').onclick = () => {
+  if (!confirm('Start all three missions again? Your certificate will lock until you finish them, and your tests and time start from zero.')) return;
+  S = { done: [false, false, false], kid: S.kid, cur: 0, started: false, run: newRun(), nick: S.nick }; save();
+  renderLessons(); renderBoardMe(); openMission(0);
+};
+
+/* ── Leaderboard ── */
+const LB_ON = !!(LEADERBOARD.url && LEADERBOARD.key);
+const NICK_OK = /^[A-Za-z0-9 ]{2,16}$/;
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const mmss = secs => `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+async function sb(path, body) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 10000);
+  try {
+    const res = await fetch(LEADERBOARD.url.replace(/\/$/, '') + '/rest/v1/' + path, {
+      method: body ? 'POST' : 'GET', signal: ctl.signal,
+      headers: { apikey: LEADERBOARD.key, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) throw new Error((data && data.message) || 'The leaderboard is having a rest. Try again later.');
+    return data;
+  } finally { clearTimeout(t); }
+}
+async function loadBoard() {
+  try {
+    const rows = await sb('train_ai_scores?select=id,nickname,score,tests,seconds&order=score.desc,id.asc&limit=20');
+    const mine = S.run.submitted && S.run.submitted.id;
+    $('lb-list').innerHTML = rows.map((r, i) => `<li${r.id === mine ? ' class="me"' : ''}><span class="rk">#${i + 1}</span><span class="nm">${esc(r.nickname)}</span>
+      <span class="pts">${r.score.toLocaleString()}<small>${r.tests} tests · ${mmss(r.seconds)}</small></span></li>`).join('');
+    $('lb-empty').textContent = rows.length ? '' : 'No scores yet — be the first Robo trainer on the board!';
+  } catch (e) {
+    $('lb-empty').textContent = 'Couldn’t load the leaderboard right now.';
+  }
+}
+function renderBoardMe() {
+  const done = S.done.every(Boolean), r = S.run, box = $('lb-me');
+  const pts = trainScore(r.tests, r.secs);
+  if (!done) {
+    box.innerHTML = `<h3>Your run so far</h3><p>${r.tests} test${r.tests === 1 ? '' : 's'} · ${mmss(r.secs)} playing</p>
+      <p style="margin-top:6px">Finish all 3 missions to put your score on the board.</p>`;
+  } else if (r.tests < 3) {
+    box.innerHTML = `<h3>Want a leaderboard score?</h3><p>You finished before the leaderboard started counting. Press <strong>Start all missions again</strong> below to play a scored run.</p>`;
+  } else if (r.submitted) {
+    box.innerHTML = `<h3>You’re on the board! 🎉</h3><div class="big">#${r.submitted.rank}</div>
+      <p>${esc(r.submitted.nickname)} · ${r.submitted.score.toLocaleString()} points (${r.tests} tests, ${mmss(r.secs)})</p>
+      <p style="margin-top:6px">Think you can beat it? Start all missions again for a new run.</p>`;
+  } else {
+    box.innerHTML = `<h3>Your score</h3><div class="big">${pts.toLocaleString()}</div>
+      <p>${r.tests} tests · ${mmss(r.secs)}</p>
+      <label class="field-in">Pick a nickname <input id="lb-nick" maxlength="16" placeholder="e.g. RoboMaster7" value="${esc(S.nick || '')}"></label>
+      <p>Use a made-up nickname, <strong>not your real name</strong>. Everyone can see the board.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="lb-send" style="margin-top:10px">Put me on the board</button>
+      <p class="err" id="lb-err" role="alert"></p>`;
+    $('lb-nick').addEventListener('input', e => { S.nick = e.target.value; save(); });
+    $('lb-send').onclick = submitScore;
+  }
+}
+async function submitScore() {
+  const nick = $('lb-nick').value.trim().replace(/\s+/g, ' ');
+  if (!NICK_OK.test(nick)) { $('lb-err').textContent = 'Nicknames are 2 to 16 letters or numbers.'; return; }
+  $('lb-send').disabled = true; $('lb-err').textContent = '';
+  try {
+    const out = await sb('rpc/submit_train_ai_score', { p_nickname: nick, p_tests: S.run.tests, p_seconds: S.run.secs });
+    S.run.submitted = { id: out.id, rank: out.rank, score: out.score, nickname: nick }; save();
+    track('trainai_leaderboard_submit', { score: out.score, rank: out.rank, tests: S.run.tests, seconds: S.run.secs });
+    renderBoardMe(); loadBoard();
+    toast(`🏆 You’re #${out.rank} on the leaderboard!`);
+  } catch (e) {
+    $('lb-err').textContent = e.name === 'AbortError' ? 'The leaderboard didn’t answer. Try again in a moment.' : e.message;
+    $('lb-send').disabled = false;
+  }
+}
+// Play time counts only while the page is open and visible, from the first label to the last mission.
+setInterval(() => {
+  if (!runActive() || document.hidden) return;
+  S.run.secs++; save();
+  if (LB_ON && !S.done.every(Boolean) && S.run.secs % 5 === 0) renderBoardMe();
+}, 1000);
+
+/* ── Start ── */
+if (S.cur > 0 && !S.done[S.cur - 1]) S.cur = 0;
+renderLessons();
+openMission(S.cur);
+if (LB_ON) { $('lb').hidden = false; renderBoardMe(); loadBoard(); }
+</script>
+</body>
+</html>
