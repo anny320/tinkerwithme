@@ -1,4 +1,5 @@
 /* Shared styles for the course pages (learn.html, course.html, teach.html). Load after brand.css. */
+[hidden]{display:none!important}
 .page-head{background:var(--blue);padding:3rem 0 2.6rem;position:relative;overflow:hidden}
 .page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
   background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:26px 26px}
