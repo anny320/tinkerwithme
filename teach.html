@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course manager — TinkerWith_</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.page-head{background:var(--ink)}
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tabs a{font-weight:600;font-size:15px;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:99px;padding:7px 16px;background:var(--white)}
+.tabs a.cur{background:var(--ink);color:#fff}
+.box{padding:1.4rem 1.5rem}
+@media(max-width:600px){.box{padding:1rem}}
+.box + .box{margin-top:1.5rem}
+.box h2{font-size:21px;font-weight:600;margin-bottom:12px}
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:10px 12px;background:var(--white);flex-wrap:wrap}
+.row .grow{flex:1;min-width:180px}
+.row strong{font-weight:600}
+.row small{display:block;color:var(--text-2);font-size:13px}
+.row a.grow{color:var(--ink);text-decoration:none}
+.row a.grow:hover strong{text-decoration:underline}
+.ib{font:inherit;font-size:13px;font-weight:600;border:2px solid var(--ink);border-radius:99px;background:var(--white);color:var(--ink);padding:4px 11px;cursor:pointer}
+.ib:disabled{opacity:.35;cursor:default}
+.ib.danger{border-color:#C23B3B;color:#C23B3B}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.grid2 .wide{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.check input{width:20px;height:20px;accent-color:var(--green-deep)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.md-tabs{display:flex;gap:6px;margin-bottom:6px}
+.md-tabs button{font:inherit;font-size:13px;font-weight:600;border:2px solid var(--ink);border-radius:8px;background:var(--white);padding:3px 10px;cursor:pointer}
+.md-tabs button.cur{background:var(--ink);color:#fff}
+.md-preview{border:2px dashed var(--border-strong);border-radius:var(--radius-sm);padding:12px 14px;min-height:120px}
+.hint{font-size:13px;color:var(--text-2);font-weight:400}
+.qb{border:2px solid var(--ink);border-radius:var(--radius-sm);padding:12px;background:var(--cream);margin-top:10px}
+.qb .opt{display:flex;gap:8px;align-items:center;margin-top:6px}
+.qb .opt input[type=text]{flex:1;font:inherit;font-size:15px;padding:7px 10px;border:2px solid var(--ink);border-radius:8px}
+.qb .opt input[type=radio]{width:18px;height:18px;accent-color:var(--green-deep)}
+.qb > input{width:100%;font:inherit;font-size:15.5px;font-weight:600;padding:8px 10px;border:2px solid var(--ink);border-radius:8px}
+.code{font-family:var(--font-mono);font-size:13px;background:var(--cream);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;word-break:break-all;margin:8px 0}
+.st-courses{display:flex;flex-direction:column;gap:4px;margin-top:6px;width:100%}
+.st-courses div{display:flex;align-items:center;gap:10px;font-size:14px}
+.st-courses .bar{width:110px;height:10px}
+.pill{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:2px solid var(--ink)}
+.pill.on{background:var(--green)}
+.pill.off{background:var(--cream-dim)}
+</style>
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">For Tinkerwith staff</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.6vw,46px)">Course manager</h1>
+    <p>Create courses and lessons, write quizzes, and enrol students.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div id="gate"><p class="loading">Loading&hellip;</p></div>
+    <div id="app" hidden>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="learn.html">View the site &rarr;</a></nav>
+      <div id="view"></div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const { esc, md } = LMS;
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2800); };
+const db = () => LMS.db;
+const must = ({ data, error }) => { if (error) throw new Error(error.message); return data; };
+const slugify = s => s.toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+let dirty = false;   // unsaved edits in an open form
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+LMS.mountAccount($('acct'));
+LMS.ready.then(r => {
+  if (!r.ok) return $('gate').innerHTML = `<div class="notice err">${esc(r.error)}</div>`;
+  if (!r.signIn) return $('gate').innerHTML = `<div class="notice err"><h3>Sign-in isn’t working</h3>${esc(r.error || '')}</div>`;
+  if (!LMS.user) {
+    $('gate').innerHTML = `<div class="notice"><h3>Sign in to manage courses</h3><button class="tw-btn tw-btn-orange" type="button" id="b-si">Sign in</button></div>`;
+    return $('b-si').onclick = LMS.signIn;
+  }
+  if (!LMS.isAdmin) {
+    const sql = `insert into public.lms_admins (user_id, note) values ('${LMS.user.id}', '${(LMS.user.fullName || 'admin').replace(/'/g, '')}');`;
+    $('gate').innerHTML = `<div class="notice"><h3>You’re signed in, but not a course admin yet</h3>
+      <p>To make this account an admin, run this once in Supabase → SQL Editor, then refresh this page:</p>
+      <div class="code" id="sql">${esc(sql)}</div><button class="tw-btn tw-btn-ink" type="button" id="b-copy">Copy</button></div>`;
+    $('b-copy').onclick = () => navigator.clipboard.writeText(sql).then(() => toast('Copied ✓'), () => toast('Select the text and copy it'));
+    return;
+  }
+  $('gate').hidden = true; $('app').hidden = false;
+  window.addEventListener('hashchange', route);
+  route();
+});
+
+function route() {
+  if (dirty && !confirm('Leave without saving your changes?')) return;
+  dirty = false;
+  $('view').onclick = null;
+  const h = location.hash;
+  $('t-courses').classList.toggle('cur', !h.startsWith('#students'));
+  $('t-students').classList.toggle('cur', h.startsWith('#students'));
+  const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
+  const go = h.startsWith('#students') ? students() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
+  scrollTo(0, 0);
+}
+const watch = form => form.addEventListener('input', () => { dirty = true; });
+
+/* ── Courses list ── */
+async function courseList() {
+  $('view').innerHTML = '<p class="loading">Loading courses…</p>';
+  const courses = must(await db().from('lms_courses').select('id,slug,title,price_kes,is_published,position,lms_lessons(count)').order('position').order('title'));
+  $('view').innerHTML = `<div class="panel box"><div class="sec-h"><h2>Courses</h2><a class="tw-btn tw-btn-orange tw-btn-sm" href="#course=new">+ New course</a></div>
+    <div class="rows">${courses.map(c => `<div class="row">
+      <a class="grow" href="#course=${c.id}"><strong>${esc(c.title)}</strong><small>${c.lms_lessons[0].count} lessons · ${c.price_kes ? 'KES ' + c.price_kes.toLocaleString() : 'Free'} · /${esc(c.slug)}</small></a>
+      <span class="pill ${c.is_published ? 'on' : 'off'}">${c.is_published ? 'Published' : 'Draft'}</span>
+      <a class="ib" href="course.html?c=${encodeURIComponent(c.slug)}" target="_blank" rel="noopener">View</a></div>`).join('') || '<p class="muted">No courses yet. Create your first one!</p>'}</div></div>`;
+}
+
+/* ── Course editor (+ its lessons) ── */
+async function courseEditor(id) {
+  const isNew = id === 'new';
+  const c = isNew ? { title: '', slug: '', summary: '', description: '', age_range: '', cover_url: '', price_kes: 0, is_published: false, position: 0 }
+    : must(await db().from('lms_courses').select('*').eq('id', id).single());
+  const lessons = isNew ? [] : must(await db().from('lms_lessons').select('id,title,section,position,video_url,quiz').eq('course_id', id).order('position').order('created_at'));
+  $('view').innerHTML = `
+    <p style="margin-bottom:12px"><a href="#courses">&larr; All courses</a></p>
+    <form class="panel box" id="cf">
+      <h2>${isNew ? 'New course' : 'Course details'}</h2>
+      <div class="grid2">
+        <label class="field-in wide">Title <input name="title" required maxlength="120" value="${esc(c.title)}"></label>
+        <label class="field-in">Web address <input name="slug" required maxlength="60" pattern="[a-z0-9]+(-[a-z0-9]+)*" value="${esc(c.slug)}">
+          <small>Lowercase words joined by dashes, e.g. <code>ai-for-kids</code>. Changing it breaks old links.</small></label>
+        <label class="field-in">Ages <input name="age_range" maxlength="20" placeholder="e.g. 7–9" value="${esc(c.age_range)}"></label>
+        <label class="field-in">Price in KES <input name="price_kes" type="number" min="0" step="1" value="${c.price_kes}"><small>0 = free. Paid courses are unlocked by enrolling students on the Students tab.</small></label>
+        <label class="field-in">Order on the courses page <input name="position" type="number" step="1" value="${c.position}"><small>Lower numbers come first.</small></label>
+        <label class="field-in wide">Short summary <input name="summary" maxlength="200" value="${esc(c.summary)}"><small>One or two sentences for the course card.</small></label>
+        <div class="field-in wide">Cover picture
+          <div class="btns" style="margin-top:0"><input name="cover_url" placeholder="Picture link, or upload one →" value="${esc(c.cover_url)}" style="flex:1">
+          <button class="ib" type="button" data-upload="cover">Upload</button></div></div>
+        <div class="field-in wide">Description <span class="hint">— what the course covers and who it’s for</span>${mdEditor('description', c.description)}</div>
+        <label class="check wide"><input type="checkbox" name="is_published" ${c.is_published ? 'checked' : ''}> Published (visible on the courses page)</label>
+      </div>
+      <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">${isNew ? 'Create course' : 'Save course'}</button>
+        ${isNew ? '' : `<a class="ib" href="course.html?c=${encodeURIComponent(c.slug)}" target="_blank" rel="noopener">View as student</a><button class="ib danger" type="button" id="b-del">Delete course</button>`}</div>
+    </form>
+    ${isNew ? '' : `<div class="panel box"><div class="sec-h"><h2>Lessons</h2><a class="tw-btn tw-btn-orange tw-btn-sm" href="#lesson=new:${id}">+ Add lesson</a></div>
+      <div class="rows">${lessons.map((l, i) => `<div class="row">
+        <a class="grow" href="#lesson=${l.id}"><strong>${i + 1}. ${esc(l.title)}</strong><small>${esc(l.section || 'No section')}${l.video_url ? ' · 🎬 video' : ''}${l.quiz.length ? ` · 🧠 ${l.quiz.length} quiz question${l.quiz.length > 1 ? 's' : ''}` : ''}</small></a>
+        <button class="ib" type="button" data-move="${i}" data-dir="-1" ${i ? '' : 'disabled'} aria-label="Move up">↑</button>
+        <button class="ib" type="button" data-move="${i}" data-dir="1" ${i < lessons.length - 1 ? '' : 'disabled'} aria-label="Move down">↓</button>
+      </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>`}`;
+  const f = $('cf'); watch(f); wireMd(f); wireUploads(f);
+  if (isNew) f.title.addEventListener('input', () => { if (!f.slug.dataset.touched) f.slug.value = slugify(f.title.value); });
+  f.slug.addEventListener('input', () => { f.slug.dataset.touched = 1; });
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const row = { title: f.title.value.trim(), slug: f.slug.value.trim(), summary: f.summary.value.trim(), description: f.description.value,
+      age_range: f.age_range.value.trim(), cover_url: f.cover_url.value.trim(), price_kes: Math.max(0, parseInt(f.price_kes.value, 10) || 0),
+      position: parseInt(f.position.value, 10) || 0, is_published: f.is_published.checked };
+    try {
+      const saved = isNew ? must(await db().from('lms_courses').insert(row).select('id').single())
+        : must(await db().from('lms_courses').update(row).eq('id', id).select('id').single());
+      dirty = false; toast('Saved ✓');
+      if (isNew) location.hash = '#course=' + saved.id;
+    } catch (err) { toast(/duplicate|unique/i.test(err.message) ? 'That web address is already used by another course.' : err.message); }
+  };
+  const del = $('b-del');
+  if (del) del.onclick = async () => {
+    if (prompt(`This deletes "${c.title}", all its lessons and everyone’s progress. Type DELETE to confirm.`) !== 'DELETE') return;
+    try { must(await db().from('lms_courses').delete().eq('id', id)); dirty = false; toast('Course deleted'); location.hash = '#courses'; }
+    catch (err) { toast(err.message); }
+  };
+  document.querySelectorAll('[data-move]').forEach(b => b.onclick = async () => {
+    const i = +b.dataset.move, j = i + +b.dataset.dir;
+    const order = lessons.map(l => l.id); [order[i], order[j]] = [order[j], order[i]];
+    try {
+      // Renumber every lesson 1..n so positions stay clean.
+      await Promise.all(order.map((lid, k) => db().from('lms_lessons').update({ position: k + 1 }).eq('id', lid).then(must)));
+      dirty = false; courseEditor(id);
+    } catch (err) { toast(err.message); }
+  });
+}
+
+/* ── Lesson editor ── */
+async function lessonEditor(key) {
+  const isNew = key.startsWith('new:');
+  const courseId = isNew ? key.slice(4) : null;
+  const l = isNew ? { course_id: courseId, title: '', section: '', body: '', video_url: '', quiz: [] }
+    : must(await db().from('lms_lessons').select('*').eq('id', key).single());
+  const siblings = must(await db().from('lms_lessons').select('section,position').eq('course_id', l.course_id));
+  const sections = [...new Set(siblings.map(s => s.section).filter(Boolean))];
+  const course = must(await db().from('lms_courses').select('title,slug').eq('id', l.course_id).single());
+  $('view').innerHTML = `
+    <p style="margin-bottom:12px"><a href="#course=${l.course_id}">&larr; ${esc(course.title)}</a></p>
+    <form class="panel box" id="lf">
+      <h2>${isNew ? 'New lesson' : 'Edit lesson'}</h2>
+      <div class="grid2">
+        <label class="field-in wide">Lesson title <input name="title" required maxlength="160" value="${esc(l.title)}"></label>
+        <label class="field-in">Section <input name="section" list="sections" maxlength="120" value="${esc(l.section)}" placeholder="e.g. Lesson 1: Teach the Robot">
+          <small>Lessons with the same section are grouped together.</small></label>
+        <datalist id="sections">${sections.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+        <label class="field-in">YouTube video (optional) <input name="video_url" value="${esc(l.video_url)}" placeholder="https://youtu.be/…"></label>
+        <div class="field-in wide">Lesson content
+          <span class="hint">Write normally. <b>**bold**</b>, <i>*italic*</i>, “- ” for bullet points, “## ” for a heading. Use <b>Add picture</b> to upload images.</span>
+          ${mdEditor('body', l.body, true)}</div>
+      </div>
+      <h2 style="margin-top:1.4rem">Quiz <span class="hint">— optional. With a quiz, students must get 60% right to finish the lesson.</span></h2>
+      <div id="quiz"></div>
+      <button class="ib" type="button" id="b-addq" style="margin-top:10px">+ Add a question</button>
+      <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">${isNew ? 'Add lesson' : 'Save lesson'}</button>
+        ${isNew ? '' : `<a class="ib" href="course.html?c=${encodeURIComponent(course.slug)}#l=${l.id}" target="_blank" rel="noopener">View as student</a><button class="ib danger" type="button" id="b-del">Delete lesson</button>`}</div>
+    </form>`;
+  const f = $('lf'); watch(f); wireMd(f); wireUploads(f);
+  let quiz = JSON.parse(JSON.stringify(l.quiz || []));
+  const drawQuiz = () => {
+    $('quiz').innerHTML = quiz.map((q, i) => `<div class="qb" data-q="${i}">
+      <div class="btns" style="margin:0 0 6px;justify-content:space-between"><b>Question ${i + 1}</b><button class="ib danger" type="button" data-rmq="${i}">Remove question</button></div>
+      <input data-qt="${i}" value="${esc(q.q)}" placeholder="Type the question" required>
+      ${q.options.map((o, j) => `<div class="opt"><input type="radio" name="ans${i}" data-ans="${i}" value="${j}" ${q.answer === j ? 'checked' : ''} title="Mark as the right answer" required>
+        <input type="text" data-opt="${i}:${j}" value="${esc(o)}" placeholder="Answer ${j + 1}" required>
+        <button class="ib" type="button" data-rmo="${i}:${j}" ${q.options.length > 2 ? '' : 'disabled'} aria-label="Remove answer">×</button></div>`).join('')}
+      <div class="btns" style="margin-top:8px"><button class="ib" type="button" data-addo="${i}" ${q.options.length < 6 ? '' : 'disabled'}>+ Answer</button>
+        <span class="hint">Tick the circle next to the right answer.</span></div></div>`).join('') || '<p class="muted">No quiz for this lesson.</p>';
+  };
+  drawQuiz();
+  $('quiz').addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.qt) quiz[+t.dataset.qt].q = t.value;
+    if (t.dataset.opt) { const [i, j] = t.dataset.opt.split(':').map(Number); quiz[i].options[j] = t.value; }
+    if (t.dataset.ans) quiz[+t.dataset.ans].answer = +t.value;
+  });
+  $('quiz').addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.rmq) quiz.splice(+t.dataset.rmq, 1);
+    else if (t.dataset.addo) quiz[+t.dataset.addo].options.push('');
+    else if (t.dataset.rmo) { const [i, j] = t.dataset.rmo.split(':').map(Number); const q = quiz[i]; q.options.splice(j, 1); if (q.answer === j) q.answer = null; else if (q.answer > j) q.answer--; }
+    else return;
+    dirty = true; drawQuiz();
+  });
+  $('b-addq').onclick = () => { quiz.push({ q: '', options: ['', '', ''], answer: null }); dirty = true; drawQuiz(); };
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const clean = quiz.map(q => ({ q: q.q.trim(), options: q.options.map(o => o.trim()), answer: q.answer }));
+    if (clean.some(q => q.answer == null)) return toast('Tick the right answer for every question.');
+    const row = { title: f.title.value.trim(), section: f.section.value.trim(), video_url: f.video_url.value.trim(), body: f.body.value, quiz: clean };
+    if (row.video_url && !LMS.youtubeEmbed(row.video_url)) return toast('That doesn’t look like a YouTube link.');
+    try {
+      if (isNew) {
+        row.course_id = courseId;
+        row.position = Math.max(0, ...siblings.map(s => s.position)) + 1;
+        must(await db().from('lms_lessons').insert(row));
+      } else must(await db().from('lms_lessons').update(row).eq('id', l.id));
+      dirty = false; toast('Saved ✓');
+      location.hash = '#course=' + l.course_id;
+    } catch (err) { toast(err.message); }
+  };
+  const del = $('b-del');
+  if (del) del.onclick = async () => {
+    if (!confirm(`Delete the lesson "${l.title}"? Students’ progress on it is removed too.`)) return;
+    try { must(await db().from('lms_lessons').delete().eq('id', l.id)); dirty = false; toast('Lesson deleted'); location.hash = '#course=' + l.course_id; }
+    catch (err) { toast(err.message); }
+  };
+}
+
+/* ── Markdown box with preview and picture upload ── */
+function mdEditor(name, value, pictures) {
+  return `<div class="md" data-md="${name}"><div class="md-tabs"><button type="button" class="cur" data-mode="write">Write</button><button type="button" data-mode="preview">Preview</button>
+    ${pictures ? `<button type="button" data-upload="${name}">🖼 Add picture</button>` : ''}</div>
+    <textarea name="${name}" rows="${pictures ? 16 : 6}">${esc(value)}</textarea><div class="md-preview prose" hidden></div></div>`;
+}
+function wireMd(form) {
+  form.querySelectorAll('.md').forEach(box => box.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
+    const prev = b.dataset.mode === 'preview';
+    box.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('cur', x === b));
+    box.querySelector('textarea').hidden = prev;
+    const pv = box.querySelector('.md-preview'); pv.hidden = !prev;
+    if (prev) pv.innerHTML = md(box.querySelector('textarea').value) || '<p class="muted">Nothing yet.</p>';
+  }));
+}
+function wireUploads(form) {
+  form.querySelectorAll('[data-upload]').forEach(b => b.onclick = () => {
+    const pick = document.createElement('input'); pick.type = 'file'; pick.accept = 'image/*';
+    pick.onchange = async () => {
+      const file = pick.files[0]; if (!file) return;
+      if (file.size > 5 * 1024 * 1024) return toast('Pictures must be under 5 MB.');
+      b.disabled = true; toast('Uploading…');
+      try {
+        const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${file.name.replace(/[^\w.-]+/g, '-').slice(-60)}`;
+        const up = await db().storage.from('lms-media').upload(path, file, { contentType: file.type });
+        if (up.error) throw new Error(up.error.message);
+        const url = db().storage.from('lms-media').getPublicUrl(path).data.publicUrl;
+        if (b.dataset.upload === 'cover') form.cover_url.value = url;
+        else {
+          const ta = form[b.dataset.upload], at = ta.selectionStart ?? ta.value.length;
+          const snippet = `\n![${file.name.replace(/\.[^.]+$/, '')}](${url})\n`;
+          ta.value = ta.value.slice(0, at) + snippet + ta.value.slice(at);
+        }
+        dirty = true; toast('Picture added ✓');
+      } catch (err) { toast('Upload failed: ' + err.message); }
+      b.disabled = false;
+    };
+    pick.click();
+  });
+}
+
+/* ── Students ── */
+async function students() {
+  $('view').innerHTML = '<p class="loading">Loading students…</p>';
+  const [data, courses] = await Promise.all([LMS.rpc('lms_admin_students'),
+    db().from('lms_courses').select('id,title,price_kes').order('position').order('title').then(must)]);
+  const opts = courses.map(c => `<option value="${c.id}">${esc(c.title)}${c.price_kes ? ` (KES ${c.price_kes})` : ' (free)'}</option>`).join('');
+  $('view').innerHTML = `
+    <form class="panel box" id="ef"><h2>Enrol a student</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Use the email they sign in with. If they haven’t signed up yet, the course unlocks the first time they do.</p>
+      <div class="grid2"><label class="field-in">Email <input name="email" type="email" required placeholder="parent@example.com"></label>
+        <label class="field-in">Course <select name="course" required>${opts}</select></label></div>
+      <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">Enrol</button></div></form>
+    ${data.pending.length ? `<div class="panel box"><h2>Waiting for sign-up (${data.pending.length})</h2><div class="rows">${data.pending.map(p => `<div class="row">
+      <div class="grow"><strong>${esc(p.email)}</strong><small>${esc(p.title)} · added ${new Date(p.created_at).toLocaleDateString()}</small></div>
+      <button class="ib danger" type="button" data-unpend="${esc(p.email)}|${p.course_id}">Remove</button></div>`).join('')}</div></div>` : ''}
+    <div class="panel box"><h2>Students (${data.students.length})</h2><div class="rows">${data.students.map(s => `<div class="row">
+      <div class="grow"><strong>${esc(s.full_name || '(no name)')}</strong><small>${esc(s.email || 'no email')} · last seen ${new Date(s.last_seen_at).toLocaleDateString()}</small>
+        <div class="st-courses">${s.courses.map(c => `<div><div class="bar"><i style="width:${c.lessons ? c.done / c.lessons * 100 : 0}%"></i></div>
+          <span>${esc(c.title)} — ${c.done}/${c.lessons}</span>
+          <button class="ib danger" type="button" data-unenrol="${esc(s.user_id)}|${c.course_id}" title="Remove from this course">×</button></div>`).join('') || '<small>No courses yet</small>'}</div></div></div>`).join('') || '<p class="muted">Nobody has signed in yet.</p>'}</div></div>`;
+  const f = $('ef');
+  f.onsubmit = async e => {
+    e.preventDefault();
+    try {
+      const r = await LMS.rpc('lms_admin_enroll', { p_email: f.email.value, p_course: f.course.value });
+      toast(r === 'enrolled' ? 'Enrolled ✓' : 'Saved ✓ — it unlocks when they sign up with that email.');
+      students();
+    } catch (err) { toast(err.message); }
+  };
+  $('view').onclick = async e => {
+    const b = e.target.closest('[data-unpend],[data-unenrol]'); if (!b) return;
+    if (!confirm('Remove this enrolment? Their progress is kept and comes back if you enrol them again.')) return;
+    try {
+      if (b.dataset.unpend) { const [em, cid] = b.dataset.unpend.split('|'); must(await db().from('lms_pending_enrollments').delete().eq('email', em).eq('course_id', cid)); }
+      else { const [uid, cid] = b.dataset.unenrol.split('|'); must(await db().from('lms_enrollments').delete().eq('user_id', uid).eq('course_id', cid)); }
+      toast('Removed'); students();
+    } catch (err) { toast(err.message); }
+  };
+}
+</script>
+</body>
+</html>
