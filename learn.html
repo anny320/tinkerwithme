@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online courses — TinkerWith_</title>
+<meta name="description" content="Short, hands-on AI and robotics courses for kids. Learn at your own pace, take the quizzes and earn a certificate.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Online AI & robotics courses for kids — TinkerWith_">
+<meta property="og:description" content="Learn at your own pace, take the quizzes and earn a certificate.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.mine-card .cover{aspect-ratio:auto;height:96px;font-size:36px}
+.signin-box{display:flex;gap:1.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--ink);color:#fff;
+  border-radius:var(--radius-lg);padding:1.5rem 1.8rem;margin-bottom:2.5rem}
+.signin-box h2{font-size:21px;font-weight:600;margin-bottom:4px}
+.signin-box p{color:var(--on-ink);font-size:15px;max-width:52ch}
+</style>
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+</head>
+<body>
+<!--NAV-->
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Online courses</span>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Learn with Tinkerwith</h1>
+    <p>Short, hands-on AI and robotics courses for kids. Learn at your own pace, take the quizzes and earn a certificate.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div id="status"></div>
+
+    <div class="signin-box" id="signin-box" hidden>
+      <div>
+        <h2>Sign in to start learning</h2>
+        <p>Free accounts keep your progress, quiz scores and certificates. Parents can sign up on behalf of their child.</p>
+      </div>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin">Sign in or sign up</button>
+    </div>
+
+    <div id="mine-box" hidden style="margin-bottom:2.75rem">
+      <div class="sec-h"><h2>My learning</h2><a class="link-btn" id="admin-link" href="teach.html" hidden>Manage courses &rarr;</a></div>
+      <div class="ccards" id="mine"></div>
+    </div>
+
+    <div class="sec-h"><h2>All courses</h2></div>
+    <div class="ccards" id="all"><p class="loading">Loading courses&hellip;</p></div>
+  </div>
+</section>
+
+<!--FOOTER-->
+
+<script>
+const $ = id => document.getElementById(id);
+const { esc } = LMS;
+const price = c => c.price_kes ? `<span class="tag paid">KES ${c.price_kes.toLocaleString()}</span>` : '<span class="tag free">Free</span>';
+const cover = c => c.cover_url ? `style="background-image:url('${esc(c.cover_url)}')"` : '';
+const pct = (d, n) => n ? Math.round(d / n * 100) : 0;
+
+LMS.mountAccount($('acct'));
+LMS.ready.then(async r => {
+  if (!r.ok) { $('all').innerHTML = `<div class="notice err">${esc(r.error)}</div>`; return; }
+  if (!r.signIn) $('status').innerHTML = `<div class="notice" style="margin-bottom:2rem"><h3>Sign-in is taking a break</h3>You can still look around the courses. Please try again later.</div>`;
+  else if (!LMS.user) { $('signin-box').hidden = false; $('b-signin').onclick = LMS.signIn; }
+  else {
+    $('admin-link').hidden = !LMS.isAdmin;
+    try {
+      const mine = await LMS.rpc('lms_my_courses');
+      $('mine-box').hidden = false;
+      $('mine').innerHTML = mine.length ? mine.map(c => `
+        <a class="ccard mine-card" href="course.html?c=${encodeURIComponent(c.slug)}">
+          <div class="cover" ${cover(c)}>${c.cover_url ? '' : '📘'}</div>
+          <div class="cbody"><h3>${esc(c.title)}</h3>
+            <div class="progress-line"><div class="bar"><i style="width:${pct(c.done, c.lessons)}%"></i></div>${c.done}/${c.lessons}</div>
+            <span class="foot">${c.done && c.done === c.lessons ? '🎓 Finished — see certificate' : c.done ? 'Continue' : 'Start'} &rarr;</span>
+          </div></a>`).join('')
+        : '<p class="muted">You haven’t started a course yet. Pick one below!</p>';
+    } catch (e) { $('status').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; }
+  }
+  const { data, error } = await LMS.db.from('lms_courses')
+    .select('slug,title,summary,age_range,cover_url,price_kes').eq('is_published', true)
+    .order('position').order('title');
+  if (error) { $('all').innerHTML = `<div class="notice err">The courses couldn’t load. Please refresh the page.</div>`; return; }
+  $('all').innerHTML = data.length ? data.map(c => `
+    <a class="ccard" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="learn-course-${esc(c.slug)}">
+      <div class="cover" ${cover(c)}>${c.cover_url ? '' : '🤖'}</div>
+      <div class="cbody">
+        <div class="tags">${price(c)}${c.age_range ? `<span class="tag">Ages ${esc(c.age_range)}</span>` : ''}</div>
+        <h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p>
+        <span class="foot">See the course &rarr;</span>
+      </div></a>`).join('')
+    : '<p class="muted">New courses are on the way. Check back soon!</p>';
+});
+</script>
+</body>
+</html>
