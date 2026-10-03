@@ -26,7 +26,29 @@
 <script src="lms.js"></script>
 </head>
 <body>
-<!--NAV-->
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link is-active" href="learn.html" aria-current="page">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
 
 <header class="page-head">
   <div class="tw-container">
@@ -58,7 +80,56 @@
   </div>
 </section>
 
-<!--FOOTER-->
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 
 <script>
 const $ = id => document.getElementById(id);
