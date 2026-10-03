@@ -346,7 +346,7 @@
       <div class="who" id="cert-name">Your name</div>
       <p>colored all 12 robots and finished the Big Robot Quiz.</p>
       <div class="stars" aria-hidden="true">★★★★★</div>
-      <div class="meta"><span>Date: <b id="cert-date"></b></span><span>makers.tinkerwith.me</span></div>
+      <div class="meta"><span>Date: <b id="cert-date"></b></span><span>tinkerwith.me</span></div>
       <div class="no-print" style="margin-top:1.6rem">
         <ul class="checks" id="cert-checks"></ul>
         <label class="field" style="max-width:360px;margin:0 auto 14px;text-align:left">Name on the certificate <input id="kid-name" maxlength="40" placeholder="Type your name"></label>
@@ -634,7 +634,7 @@ $('save').onclick = () => {
     g.fillStyle = '#220111'; g.font = '600 40px Jost, sans-serif';
     g.fillText(ROBOTS[S.cur].name, 40, 910);
     g.fillStyle = '#E0641B'; g.font = '700 20px "Space Mono", monospace';
-    g.textAlign = 'right'; g.fillText('makers.tinkerwith.me', 1002, 910);
+    g.textAlign = 'right'; g.fillText('tinkerwith.me', 1002, 910);
     download(cv.toDataURL('image/png'), `my-${ROBOTS[S.cur].name.toLowerCase().replace(/[^a-z]+/g, '-')}.png`);
   };
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(src));

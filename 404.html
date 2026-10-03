@@ -28,6 +28,28 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .nf-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
 .nf-code{font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-top:22px;word-break:break-all}
 </style>
+<script>
+/* Old links: tinkerwith.me used to be WordPress, and links pasted into
+   messages often pick up a trailing comma or full stop. Send both to the
+   right page before anything else renders. */
+(function () {
+  var path = location.pathname, clean = path.replace(/[,.;:!)\]'"]+$/, '');
+  if (clean !== path && clean) return location.replace(clean + location.search + location.hash);
+  var p = path.toLowerCase().replace(/\/+$/, '');
+  var MAP = [
+    [/^\/courses\/new-what-is-artificial-intelligence/, '/course.html?c=what-is-ai'],
+    [/^\/courses\/ai-skills-for-kids/, '/course.html?c=ai-skills-for-kids'],
+    [/^\/(courses|course-list|course-category|lesson|lessons|topics|quizzes|tutor_quiz)(\/|$)/, '/learn.html'],
+    [/^\/(dashboard|customer-dashboard|my-account|login|registration|student-registration|instructor-registration|admission|lost-password)(\/|$)/, '/learn.html'],
+    [/^\/product\/ai-skills-for-kids-workbook/, 'https://tinkerwithme.hustlesasa.shop/products/69e1ffbdca2bdb1097c3f83d'],
+    [/^\/(shop|store|cart|checkout|checkout-2|product)(\/|$)/, '/courses.html#pay'],
+    [/^\/(about|contact-us|lets-keep-in-touch)(\/|$)/, '/about.html'],
+    [/^\/(news|blog|category|tag)(\/|$)|^\/the-ultimate-guide|^\/how-to-boost/, '/blog.html'],
+    [/^\/(robotics|ai|technology|home)(\/|$)/, '/courses.html'],
+  ];
+  for (var i = 0; i < MAP.length; i++) if (MAP[i][0].test(p)) return location.replace(MAP[i][1]);
+})();
+</script>
 <script src="/analytics.js"></script>
 </head>
 <body>
