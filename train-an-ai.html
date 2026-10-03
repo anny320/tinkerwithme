@@ -119,6 +119,7 @@
 
 .cert{padding:2.2rem 1.6rem;text-align:center;border-width:3px;position:relative;margin-top:1.75rem}
 .cert::before{content:'';position:absolute;inset:12px;border:2px dashed var(--green-deep);border-radius:20px;pointer-events:none}
+.cert .cert-logo{display:block;width:150px;height:auto;margin:0 auto 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .cert h2{font-size:clamp(28px,4.2vw,42px);font-weight:600;line-height:1.05}
 .cert .who{font-size:clamp(22px,3.4vw,32px);font-weight:600;color:var(--green-deep);border-bottom:2px solid var(--ink);display:inline-block;min-width:60%;padding:4px 10px;margin:10px 0 12px}
 .cert .meta{display:flex;justify-content:center;gap:3rem;font-family:var(--font-mono);font-size:12px;margin-top:10px;flex-wrap:wrap}
@@ -265,6 +266,7 @@
     </div>
 
     <div class="panel cert locked" id="cert">
+      <img class="cert-logo" src="assets/logo-certificate.jpg" alt="Tinkerwith_ — DIY Electronics Projects" width="477" height="369">
       <span class="tw-eyebrow">Tinkerwith_ · Certificate</span>
       <h2>Junior AI Trainer</h2>
       <p style="margin-top:10px">This certifies that</p>
