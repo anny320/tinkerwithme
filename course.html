@@ -366,7 +366,7 @@ function certificate() {
     <p style="margin-top:10px">This certifies that</p>
     <div class="who" id="cert-name">${esc(name || 'Your name')}</div>
     <p>completed all ${C.lessons.length} lessons of this course.</p>
-    <div class="meta"><span>Date: <b>${new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}</b></span><span>makers.tinkerwith.me</span></div>
+    <div class="meta"><span>Date: <b>${new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}</b></span><span>tinkerwith.me</span></div>
     <div class="cert-tools no-print">
       <label class="field-in">Name on the certificate <input id="cert-in" maxlength="60" value="${esc(name)}" placeholder="Type your name"></label>
       <button class="tw-btn tw-btn-orange" type="button" id="cert-print">🖨 Print</button>

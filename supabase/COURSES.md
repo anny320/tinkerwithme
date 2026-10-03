@@ -71,7 +71,7 @@ imported at KES 1,999. Change them per course in teach.html.
 the sign-in box shows a "Development mode" badge and there are user limits.
 To launch:
 1. In Clerk, create the **Production** instance and add the DNS records it
-   lists for `makers.tinkerwith.me` at your domain registrar.
+   lists for `tinkerwith.me` at your domain registrar.
 2. In production, set up Google with your own Google OAuth client
    (Clerk's guide shows how), and add the session-token email claim again.
 3. Activate the Supabase integration for production, and add the production
