@@ -1,0 +1,40 @@
+# One-off: copy the course cover pictures off WordPress before tinkerwith.me
+# moves to GitHub Pages. They're saved at the same paths (wp-content/uploads/…),
+# so the old addresses keep working on the new site. Delete after it has run.
+name: Rescue WordPress images
+
+on:
+  push:
+    branches: [claude/move-to-tinkerwith]
+    paths: [.github/workflows/rescue-wp-images.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rescue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          set -e
+          for p in \
+            2025/09/make-an-image-for-a-course-asking-is-this-ai_.jpg \
+            2026/01/Generated-Image-January-08-2026-6_56PM.png \
+            2026/03/ai-images.jpg \
+            2026/04/Tinkerwith-Traffic-Lights-scaled.png
+          do
+            mkdir -p "wp-content/uploads/$(dirname "$p")"
+            curl -fsSL --retry 3 -A "Mozilla/5.0" -o "wp-content/uploads/$p" "https://tinkerwith.me/wp-content/uploads/$p"
+            file "wp-content/uploads/$p"
+          done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add wp-content/
+          git diff --cached --quiet && exit 0
+          git commit -m "Copy the course cover pictures off WordPress"
+          git push origin HEAD:${GITHUB_REF_NAME}
