@@ -154,6 +154,7 @@
 /* ── Certificate ── */
 .cert{padding:2.2rem 1.6rem;text-align:center;border-width:3px;position:relative;overflow:hidden}
 .cert::before{content:'';position:absolute;inset:12px;border:2px dashed var(--orange);border-radius:20px;pointer-events:none}
+.cert .cert-logo{display:block;width:150px;height:auto;margin:0 auto 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .cert .tw-eyebrow{margin-bottom:6px}
 .cert h3{font-size:clamp(30px,4.5vw,46px);font-weight:600;line-height:1.05}
 .cert .who{font-size:clamp(24px,3.6vw,34px);font-weight:600;color:var(--orange-deep);border-bottom:2px solid var(--ink);display:inline-block;min-width:60%;padding:4px 10px;margin:10px 0 12px}
@@ -337,6 +338,7 @@
 <section class="tw-section tw-section-tight" style="padding-top:0">
   <div class="tw-container">
     <div class="panel cert locked" id="certificate">
+      <img class="cert-logo" src="assets/logo-certificate.jpg" alt="Tinkerwith_ — DIY Electronics Projects" width="477" height="369">
       <span class="tw-eyebrow">Tinkerwith_ · Certificate of awesome</span>
       <h3>Robot Expert</h3>
       <p style="margin-top:10px">This certifies that</p>
