@@ -1,5 +1,7 @@
 # Supabase (Train an AI leaderboard)
 
+The online courses use the same project. See [COURSES.md](COURSES.md).
+
 The Train an AI game (`train-an-ai.html`) can show a shared leaderboard. The
 site is static, so the scores live in a free Supabase project. The page talks
 to it directly with the public key. No server or secret is needed in the repo.
