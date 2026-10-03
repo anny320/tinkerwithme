@@ -12,7 +12,7 @@
    ───────────────────────────────────────────────────────────── */
 (function () {
   var CONFIG = {
-    clerkKey: 'pk_test_cHJlbWl1bS1zcGlkZXItMTU1LmNsZXJrLmFjY291bnRzLmRldiQ=',
+    clerkKey: 'pk_live_Y2xlcmsudGlua2Vyd2l0aC5tZSQ=',
     supabaseUrl: 'https://xithafmrpqzwhkqzwfmk.supabase.co',
     supabaseKey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT',
   };
