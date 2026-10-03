@@ -1,0 +1,76 @@
+/* Shared styles for the course pages (learn.html, course.html, teach.html). Load after brand.css. */
+.page-head{background:var(--blue);padding:3rem 0 2.6rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--white);margin:14px 0 10px}
+.page-head p{color:rgba(255,255,255,.86);font-size:18px;max-width:56ch}
+.page-head .tw-eyebrow-pill{background:var(--white);color:var(--blue)}
+.page-head a{color:var(--white)}
+
+.panel{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink)}
+@media(max-width:600px){.panel{box-shadow:4px 4px 0 var(--ink);border-radius:var(--radius)}}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:0 0 1rem}
+.sec-h h2{font-size:clamp(22px,2.8vw,28px);font-weight:600}
+
+.notice{border:2px solid var(--ink);border-radius:var(--radius);padding:1.1rem 1.3rem;background:var(--orange-soft);font-size:15.5px}
+.notice h3{font-size:18px;font-weight:600;margin-bottom:4px}
+.notice .tw-btn{margin-top:10px}
+.notice.ok{background:var(--green-soft)}
+.notice.err{background:#FFE3E3}
+
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:3px 10px;background:var(--white);color:var(--ink)}
+.tag.free{background:var(--green);color:var(--ink)}
+.tag.paid{background:#FFD23F}
+.tag.draft{background:var(--cream-dim)}
+
+.ccards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.4rem}
+.ccard{display:flex;flex-direction:column;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);
+  box-shadow:5px 5px 0 var(--ink);overflow:hidden;color:var(--ink);text-decoration:none;transition:transform .12s,box-shadow .12s}
+.ccard:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.ccard .cover{aspect-ratio:16/9;background:var(--blue-soft) center/cover no-repeat;border-bottom:2px solid var(--ink);display:grid;place-items:center;font-size:44px}
+.ccard .cbody{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:8px;flex:1}
+.ccard h3{font-size:19px;font-weight:600;line-height:1.2}
+.ccard p{font-size:14.5px;color:var(--text-2)}
+.ccard .foot{margin-top:auto;padding-top:6px;font-size:14px;font-weight:600}
+
+.bar{height:12px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--white)}
+.bar i{display:block;height:100%;width:0;background:var(--green);transition:width .4s}
+.progress-line{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text-2)}
+.progress-line .bar{flex:1}
+
+.muted{color:var(--text-2)}
+.loading{color:var(--text-2);padding:1rem 0}
+.field-in{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.field-in input,.field-in textarea,.field-in select{font:inherit;font-size:15.5px;font-weight:500;padding:9px 12px;border:2px solid var(--ink);
+  border-radius:var(--radius-sm);background:var(--white);color:var(--ink);width:100%}
+.field-in textarea{min-height:120px;resize:vertical;line-height:1.5}
+.field-in small{font-weight:400;color:var(--text-2)}
+.tw-btn:disabled{opacity:.45;cursor:not-allowed}
+.link-btn{font:inherit;background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;cursor:pointer}
+
+/* Lesson content written in markdown */
+.prose{font-size:16.5px;line-height:1.65;color:var(--ink)}
+.prose > * + *{margin-top:.85em}
+.prose h1,.prose h2{font-size:24px;font-weight:600;line-height:1.2;margin-top:1.3em}
+.prose h3{font-size:19px;font-weight:600;margin-top:1.2em}
+.prose ul,.prose ol{padding-left:1.4em}
+.prose li + li{margin-top:.3em}
+.prose img{max-width:100%;height:auto;border-radius:var(--radius-sm);border:2px solid var(--ink)}
+.prose a{color:var(--blue)}
+.prose blockquote{border-left:4px solid var(--orange);padding:.2em 0 .2em 1em;color:var(--text-2)}
+.prose code{font-family:var(--font-mono);font-size:.9em;background:var(--cream);padding:1px 5px;border-radius:5px}
+.prose pre{background:var(--ink);color:#fff;padding:12px 14px;border-radius:var(--radius-sm);overflow:auto}
+.prose pre code{background:none;color:inherit;padding:0}
+.prose table{border-collapse:collapse;width:100%;font-size:15px}
+.prose th,.prose td{border:1.5px solid var(--border-strong);padding:6px 9px;text-align:left}
+.video{position:relative;aspect-ratio:16/9;border:2px solid var(--ink);border-radius:var(--radius);overflow:hidden;background:#000}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(140px);background:var(--ink);color:#fff;opacity:0;
+  padding:12px 20px;border-radius:99px;font-weight:600;z-index:90;transition:transform .25s,opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+.acct{display:flex;align-items:center;min-height:36px}
