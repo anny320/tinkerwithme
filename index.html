@@ -161,6 +161,7 @@
 
 /* ── ENROL ──────────────────────────────────────────────── */
 .enrol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.enrol[hidden]{display:none}
 .enrol{
   background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
   box-shadow:6px 6px 0 var(--ink);padding:1.7rem;
@@ -737,7 +738,7 @@ async function loadHomeBundle() {
       headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
       body: JSON.stringify({ p_slug: 'ai-young-engineers' }) });
     const b = r.ok && await r.json();
-    if (!b) return;
+    if (!b) { document.getElementById('bundle-card').hidden = true; return; }   // bundle not published yet
     const draw = () => {
       document.getElementById('bundle-price').innerHTML = TWPrice.fmtWas(b.price_kes, b.price_usd, b.worth_kes, b.worth_usd);
       document.getElementById('bundle-save').textContent = 'Save ' + TWPrice.fmt(b.worth_kes - b.price_kes, b.worth_usd - b.price_usd);
