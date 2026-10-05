@@ -1,5 +1,5 @@
 {
-  "_comment": "Testimonials shown on index.html. Set \"published\": false to hold one back without deleting it — only published entries ever render. Keep \"consent\" honest: it records that the person agreed in writing to be quoted. Never publish a quote you did not receive.",
+  "_comment": "Testimonials shown on index.html. Set \"published\": false to hold one back without deleting it — only published entries ever render. Keep \"consent\" honest: it records that the person agreed in writing to be quoted. Never publish a quote you did not receive. The migrated WordPress quotes are hidden until their permission is confirmed.",
   "_fields": {
     "quote": "their words, unedited except for obvious typos",
     "name": "first name + last initial is enough, and is the right call for children",
@@ -7,7 +7,7 @@
     "source": "where it came from — whatsapp, email, in-person, google-review",
     "date": "ISO date you received it",
     "consent": true,
-    "published": true
+    "published": false
   },
   "testimonials": [
     {
@@ -17,7 +17,7 @@
       "source": "migrated-from-wordpress",
       "date": null,
       "consent": null,
-      "published": true
+      "published": false
     },
     {
       "quote": "I built a robot that follows me around — and my friends think it's the coolest thing ever!",
@@ -26,7 +26,7 @@
       "source": "migrated-from-wordpress",
       "date": null,
       "consent": null,
-      "published": true
+      "published": false
     },
     {
       "quote": "The AI course blew my mind. I went from zero coding knowledge to making my own chatbot in just a few weeks.",
@@ -35,7 +35,7 @@
       "source": "migrated-from-wordpress",
       "date": null,
       "consent": null,
-      "published": true
+      "published": false
     },
     {
       "quote": "I always loved tech, but these courses showed me how to actually make things work. Now I'm working on a project that could enter our school's science fair!",
@@ -44,7 +44,7 @@
       "source": "migrated-from-wordpress",
       "date": null,
       "consent": null,
-      "published": true
+      "published": false
     },
     {
       "quote": "I thought robotics was only for engineers, but Tinker With Me made it easy and fun. Now I'm building projects I never imagined I could do.",

@@ -9,7 +9,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="TinkerWith_ — Build robots. Break things. Learn everything.">
-<meta property="og:description" content="DIY electronics, robotics and AI eLearning for young minds, ages 6 and up.">
+<meta property="og:description" content="DIY electronics, robotics and AI eLearning for young minds, ages 5–16.">
 <meta property="og:image" content="assets/logo.jpg">
 
 <link rel="icon" href="assets/mark.png">
@@ -84,6 +84,10 @@
 .choose-card b{font-size:21px}
 .choose-card span{font-size:15px;color:var(--text-2)}
 .choose-card i{font-style:normal;font-weight:700;font-size:14.5px;color:var(--blue);margin-top:auto;padding-top:6px}
+.free-courses{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.free-courses a{display:block;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:9px 12px;color:var(--ink);text-decoration:none}
+.free-courses a:hover{background:var(--cream)}
+.free-courses strong{display:block;font-size:16px}.free-courses span{display:block;font-size:13.5px;color:var(--text-2)}
 .free-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:1.2rem}
 @media(max-width:1000px){.free-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.free-grid{grid-template-columns:1fr}}
@@ -297,6 +301,7 @@
   .promo-card{grid-template-columns:1fr;gap:1.75rem;padding:2.2rem 1.4rem 1.6rem}
   .promo-art{order:-1}
 }
+.stories-cta{max-width:60ch;font-size:17px;margin-bottom:1rem}
 </style>
 <script src="analytics.js"></script>
 <script src="price.js"></script>
@@ -330,6 +335,7 @@
       <a class="tw-nav-link" href="learn.html">Learn online</a>
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
       <a class="tw-nav-link" href="about.html">About</a>
     </div>
     <div class="tw-nav-tail">
@@ -343,14 +349,14 @@
 <header class="hero" id="top">
   <div class="tw-container hero-grid">
     <div>
-      <span class="tw-eyebrow-pill">Ages 6&ndash;16 &middot; Online worldwide &amp; in Nairobi</span>
+      <span class="tw-eyebrow-pill">Ages 5&ndash;16 &middot; Online worldwide &amp; in Nairobi</span>
       <h1 class="tw-h1">Build robots.<br>Break things.<br>Learn everything.</h1>
       <p class="hero-lede">Hands-on robotics, electronics and AI courses where kids build real projects &mdash; live with a trainer online from anywhere in the world, or at their own pace.</p>
       <div class="hero-btns">
-        <a class="tw-btn tw-btn-ink" href="course.html?c=ai-skills-for-kids" data-ga="hero-free-course">Start the free AI course <span aria-hidden="true">&rarr;</span></a>
+        <a class="tw-btn tw-btn-ink" href="#free" data-ga="hero-free-course">Start a free course <span aria-hidden="true">&rarr;</span></a>
         <a class="tw-btn tw-btn-white" href="#live" data-ga="hero-live-courses">See live courses</a>
       </div>
-      <p class="hero-note">Free &middot; no card needed &middot; ages 7&ndash;9 &middot; start in 2 minutes</p>
+      <p class="hero-note">3 free courses for ages 7&ndash;14 &middot; no card needed &middot; start in 2 minutes</p>
       <ul class="hero-trust">
         <li>★ 170+ young makers taught</li>
         <li>🏫 6 partner schools in Nairobi</li>
@@ -372,7 +378,7 @@
     </div>
     <div class="choose">
       <a class="choose-card" href="#free" style="--accent:var(--green)"><span class="ch-icon">🎁</span><b>Free</b>
-        <span>A free AI course, games, a coloring book and printables. No card needed.</span><i>Start free &darr;</i></a>
+        <span>3 free courses, games, a coloring book and printables. No card needed.</span><i>Start free &darr;</i></a>
       <a class="choose-card" href="#courses" style="--accent:var(--orange)"><span class="ch-icon">💻</span><b>Online courses</b>
         <span>Lessons, quizzes and certificates at your own pace, from anywhere. 12 months access.</span><i>See online courses &darr;</i></a>
       <a class="choose-card" href="#live" style="--accent:var(--blue)"><span class="ch-icon">🧑&zwj;🏫</span><b>Live with a trainer</b>
@@ -390,13 +396,16 @@
       <p class="tw-lede">No card, no catch. A real course and hands-on activities to try at home.</p>
     </div>
     <div class="free-grid">
-      <a class="free-card is-lead" href="course.html?c=ai-skills-for-kids" data-ga="free-ai-course">
-        <span class="tw-sticker">Free course</span>
-        <h3 class="tw-h3">AI Skills for Kids</h3>
-        <p class="free-meta">Ages 7&ndash;9 &middot; lessons, quizzes &amp; a certificate</p>
-        <p>How AI works, how it learns, and how to use it kindly and safely. No coding or expensive devices needed.</p>
-        <span class="tw-btn tw-btn-orange">Start the free course &rarr;</span>
-      </a>
+      <div class="free-card is-lead">
+        <span class="tw-sticker">3 free courses</span>
+        <h3 class="tw-h3">Free online courses</h3>
+        <p class="free-meta">Lessons &amp; a certificate &middot; sign up free, no card</p>
+        <ul class="free-courses">
+          <li><a href="course.html?c=ai-skills-for-kids" data-ga="free-ai-course"><strong>AI Skills for Kids</strong><span>Ages 7&ndash;9 &middot; how AI works and how to use it kindly and safely</span></a></li>
+          <li><a href="course.html?c=what-is-ai" data-ga="free-what-is-ai"><strong>What is Artificial Intelligence?</strong><span>Ages 10+ &middot; spot AI around you and see how chatbots work</span></a></li>
+          <li><a href="course.html?c=robotics-101" data-ga="free-robotics-101"><strong>Robotics 101</strong><span>Ages 8&ndash;14 &middot; build Arduino traffic lights</span></a></li>
+        </ul>
+      </div>
       <a class="free-card" href="coloring-book.html" data-ga="free-coloring-book">
         <img src="assets/coloring-preview.svg" alt="" loading="lazy">
         <h3 class="tw-h3">Robot coloring book</h3>
@@ -491,22 +500,22 @@
 <section class="tw-section tw-section-ink">
   <div class="tw-container">
     <span class="tw-eyebrow">How it works</span>
-    <h2 class="tw-h2"><span class="tw-squiggle">Learn by doing, one build at a time.</span></h2>
+    <h2 class="tw-h2"><span class="tw-squiggle">From curious to confident, one build at a time.</span></h2>
     <div class="steps">
       <div class="step">
         <div class="step-num" style="color:var(--green)">01</div>
-        <h3 class="tw-h3">Pick a project</h3>
-        <p>Filter by age, skill and the parts you already own.</p>
+        <h3 class="tw-h3">Try it free</h3>
+        <p>Start a free course or activity today. No card needed, and every one ends with a certificate.</p>
       </div>
       <div class="step">
         <div class="step-num" style="color:var(--orange)">02</div>
-        <h3 class="tw-h3">Follow the build</h3>
-        <p>Step-by-step wiring, code you can copy, and checkpoints.</p>
+        <h3 class="tw-h3">Choose how to learn</h3>
+        <p>Online courses at your own pace, or live with a trainer: online 1:1, small groups, or in person in Nairobi.</p>
       </div>
       <div class="step">
         <div class="step-num" style="color:var(--blue)">03</div>
-        <h3 class="tw-h3">Make it yours</h3>
-        <p>Remix, share, and unlock the next level of difficulty.</p>
+        <h3 class="tw-h3">Build something real</h3>
+        <p>Robots, circuits and AI projects your child can show off, with quizzes and a certificate for every course.</p>
       </div>
     </div>
   </div>
@@ -594,7 +603,7 @@
       <details><summary>Is it safe for children?</summary>
         <p>We never ask for a child&rsquo;s photo or surname, parents can sign up on their child&rsquo;s behalf, and AI lessons teach kids to stay safe online. See our <a href="privacy.html">privacy policy</a>.</p></details>
       <details><summary>Where do we start?</summary>
-        <p>With the free <a href="course.html?c=ai-skills-for-kids">AI Skills for Kids</a> course (ages 7&ndash;9), the <a href="free-for-kids.html">free games and activities</a>, or a chat with Anne on WhatsApp to pick the right course.</p></details>
+        <p>With a free course: <a href="course.html?c=ai-skills-for-kids">AI Skills for Kids</a> (ages 7&ndash;9), <a href="course.html?c=what-is-ai">What is AI?</a> (10+) or <a href="course.html?c=robotics-101">Robotics 101</a> (8&ndash;14). Or try the <a href="free-for-kids.html">free games and activities</a>, or chat with Anne on WhatsApp to pick the right course.</p></details>
     </div>
   </div>
 </section>
@@ -625,9 +634,9 @@
 <section class="cta">
   <div class="tw-container">
     <h2 class="tw-h2">Ready to start building?</h2>
-    <p>Start the free course today, or tell us your child's age and what they're curious about and we'll suggest the right course.</p>
+    <p>Start a free course today, or tell us your child's age and what they're curious about and we'll suggest the right course.</p>
     <div class="cta-btns">
-      <a class="tw-btn tw-btn-white" href="course.html?c=ai-skills-for-kids" data-ga="cta-free-course">Start the free AI course</a>
+      <a class="tw-btn tw-btn-white" href="#free" data-ga="cta-free-course">Start a free course</a>
       <a class="tw-btn tw-btn-ink" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20find%20out%20more%20about%20TinkerWith_%20sessions%20for%20my%20child." target="_blank" rel="noopener">Chat with Anne on WhatsApp</a>
       <a class="tw-btn tw-btn-white" href="mailto:tinkerwithanne@gmail.com">Email us</a>
     </div>
@@ -644,7 +653,7 @@
         <img src="assets/mark.png" alt="">
         <span>Tinkerwith_</span>
       </div>
-      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
     </div>
     <div>
       <h4>Learn</h4>
@@ -654,6 +663,8 @@
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
         <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
       </ul>
     </div>
     <div>
@@ -665,7 +676,6 @@
         <li><a href="coloring-book.html">Robot coloring book</a></li>
         <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
         <li><a href="train-an-ai.html">Train an AI game</a></li>
-        <li><a href="admin.html">Course editor</a></li>
       </ul>
     </div>
     <div>
@@ -675,6 +685,7 @@
         <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
         <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
         <li><a href="privacy.html">Privacy policy</a></li>
       </ul>
     </div>
@@ -718,16 +729,22 @@ SiteData.get('testimonials')
     // Only entries explicitly marked published ever reach the page.
     const live = (d.testimonials || []).filter(t => t.published);
     const box = document.getElementById('quotes');
-    if (!live.length) { box.closest('section').style.display = 'none'; return; }
+    if (!live.length) {
+      const h = box.closest('section').querySelector('h2'); if (h) h.textContent = 'Tell us what your child built.';
+      box.outerHTML = `<p class="stories-cta">Did your child build something with Tinkerwith? Share a few sentences and, with your permission, we&rsquo;ll feature it here.</p>
+        <a class="tw-btn tw-btn-ink" href="stories.html" data-ga="stories-cta">Share your story &rarr;</a>`;
+      return;
+    }
     box.innerHTML = live.map(t => `
       <figure class="quote">
         <blockquote>${esc(t.quote)}</blockquote>
         <figcaption><strong>${esc(t.name)}</strong><span>${esc(t.role)}</span></figcaption>
       </figure>`).join('');
+    box.insertAdjacentHTML('afterend', '<p style="margin-top:1.2rem"><a class="tw-link-arrow" href="stories.html">Share your story &rarr;</a></p>');
   })
   .catch(() => {
     const box = document.getElementById('quotes');
-    if (box) box.closest('section').style.display = 'none';
+    if (box) box.closest('section').style.display = 'none';   // offline: nothing to show
   });
 
 /* Online courses: whatever is published on the course platform (as on learn.html). */

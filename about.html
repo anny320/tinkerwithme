@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About TinkerWith_ — turning curiosity into creation</title>
-<meta name="description" content="We are not just about teaching; we are about inspiring. Practical tools, step-by-step guides and interactive lessons in electronics, robotics and AI for ages 6 and up.">
+<meta name="description" content="We are not just about teaching; we are about inspiring. Practical tools, step-by-step guides and interactive lessons in electronics, robotics and AI for ages 5–16.">
 <meta name="theme-color" content="#FF7F32">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,6 +67,7 @@
 .cta h2{color:var(--ink);max-width:20ch;margin:0 auto}
 .cta p{color:var(--text-hero);font-size:17px;margin:16px auto 0;max-width:48ch}
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.stories-cta{max-width:60ch;font-size:17px;margin-bottom:1rem}
 </style>
 <script src="analytics.js"></script>
 <script src="site-data.js"></script>
@@ -87,6 +88,7 @@
       <a class="tw-nav-link" href="learn.html">Learn online</a>
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
       <a class="tw-nav-link is-active" href="about.html" aria-current="page">About</a>
     </div>
     <div class="tw-nav-tail">
@@ -109,7 +111,7 @@
       <span class="tw-eyebrow">Our mission</span>
       <h2 class="tw-h2"><span class="tw-squiggle">Turn curiosity into creation.</span></h2>
       <p class="tw-lede" style="margin-top:24px">Founded by educators and tech enthusiasts, TinkerWith_ curates practical tools, step-by-step guides and interactive lessons that make learning electronics, robotics and AI accessible to everyone &mdash; from beginners who have never touched a circuit board to teens ready to code their first robot.</p>
-      <p class="tw-lede" style="margin-top:16px">Our courses are built for children aged 6 and up, whatever their starting point. Learning should be a fun and interactive experience, not a lecture.</p>
+      <p class="tw-lede" style="margin-top:16px">Our courses are built for children aged 5 to 16, whatever their starting point. Learning should be a fun and interactive experience, not a lecture.</p>
     </div>
     <div class="mission-quote">
       We are not just teaching skills. We are nurturing the next generation of <span>thinkers, makers and doers.</span>
@@ -202,7 +204,7 @@
         <img src="assets/mark.png" alt="">
         <span>Tinkerwith_</span>
       </div>
-      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
     </div>
     <div>
       <h4>Learn</h4>
@@ -212,6 +214,8 @@
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
         <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
       </ul>
     </div>
     <div>
@@ -223,7 +227,6 @@
         <li><a href="coloring-book.html">Robot coloring book</a></li>
         <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
         <li><a href="train-an-ai.html">Train an AI game</a></li>
-        <li><a href="admin.html">Course editor</a></li>
       </ul>
     </div>
     <div>
@@ -233,6 +236,7 @@
         <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
         <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
         <li><a href="privacy.html">Privacy policy</a></li>
       </ul>
     </div>
@@ -254,16 +258,22 @@ SiteData.get('testimonials')
   .then(d => {
     const live = (d.testimonials || []).filter(t => t.published);
     const box = document.getElementById('quotes');
-    if (!live.length) { box.closest('section').style.display = 'none'; return; }
+    if (!live.length) {
+      const h = box.closest('section').querySelector('h2'); if (h) h.textContent = 'Tell us what your child built.';
+      box.outerHTML = `<p class="stories-cta">Did your child build something with Tinkerwith? Share a few sentences and, with your permission, we&rsquo;ll feature it here.</p>
+        <a class="tw-btn tw-btn-ink" href="stories.html" data-ga="stories-cta">Share your story &rarr;</a>`;
+      return;
+    }
     box.innerHTML = live.map(t => `
       <figure class="quote">
         <blockquote>${esc(t.quote)}</blockquote>
         <figcaption><strong>${esc(t.name)}</strong><span>${esc(t.role)}</span></figcaption>
       </figure>`).join('');
+    box.insertAdjacentHTML('afterend', '<p style="margin-top:1.2rem"><a class="tw-link-arrow" href="stories.html">Share your story &rarr;</a></p>');
   })
   .catch(() => {
     const box = document.getElementById('quotes');
-    if (box) box.closest('section').style.display = 'none';
+    if (box) box.closest('section').style.display = 'none';   // offline: nothing to show
   });
 </script>
 </body>

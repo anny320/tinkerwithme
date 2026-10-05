@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free for kids — TinkerWith_</title>
-<meta name="description" content="Free robotics and AI activities for kids: a robot coloring book with quizzes (ages 5–8), an AI careers crossword (ages 9–13) and a Train an AI game (ages 9–12). Play online or print — no sign-up.">
+<meta name="description" content="Free robotics and AI activities for kids: a robot coloring book with quizzes (ages 5–8), an AI careers crossword (ages 9–13) and a Train an AI game (ages 9–12). Play online or print — no sign-up. Plus 3 free online courses.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:title" content="Free robotics & AI activities for kids — TinkerWith_">
 <meta property="og:description" content="A robot coloring book, an AI careers crossword and a Train an AI game. Free, no sign-up.">
@@ -52,6 +52,15 @@
   background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:1.8rem 2rem;margin-top:2.5rem}
 .note h3{font-size:20px;font-weight:600;margin-bottom:4px}
 .note p{color:var(--on-ink);font-size:15.5px;max-width:52ch}
+.fc-head{font-size:clamp(24px,3.4vw,32px);font-weight:600;margin-top:2.6rem}
+.fc-lede{color:var(--text-2);margin:6px 0 1rem}
+.fc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:800px){.fc-grid{grid-template-columns:1fr}}
+.fc-grid a{display:flex;flex-direction:column;gap:6px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);box-shadow:4px 4px 0 var(--ink);padding:1rem 1.1rem;color:var(--ink);text-decoration:none}
+.fc-grid a:hover{background:var(--cream)}
+.fc-grid strong{font-size:18px}
+.fc-grid a>span:last-child{font-size:14.5px;color:var(--text-2)}
+.fc-grid .tag{align-self:flex-start}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -71,6 +80,7 @@
       <a class="tw-nav-link" href="learn.html">Learn online</a>
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link is-active" href="free-for-kids.html" aria-current="page">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
       <a class="tw-nav-link" href="about.html">About</a>
     </div>
     <div class="tw-nav-tail">
@@ -82,7 +92,7 @@
 
 <header class="page-head">
   <div class="tw-container">
-    <span class="tw-eyebrow-pill">Free · No sign-up</span>
+    <span class="tw-eyebrow-pill">Free activities &amp; courses</span>
     <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Free for kids</h1>
     <p>Robotics and AI activities to play on screen or print at home. Every one ends with a certificate to keep.</p>
   </div>
@@ -136,6 +146,14 @@
       </a>
     </div>
 
+    <h2 class="fc-head">Free online courses</h2>
+    <p class="fc-lede">Real lessons with quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace.</p>
+    <div class="fc-grid">
+      <a href="course.html?c=ai-skills-for-kids" data-ga="free-for-kids-ai-skills"><span class="tag age">Ages 7&ndash;9</span><strong>AI Skills for Kids</strong><span>How AI works, how it learns, and how to use it kindly and safely.</span></a>
+      <a href="course.html?c=what-is-ai" data-ga="free-for-kids-what-is-ai"><span class="tag age">Ages 10+</span><strong>What is Artificial Intelligence?</strong><span>Spot AI in everyday life, see how chatbots work, and think about fairness.</span></a>
+      <a href="course.html?c=robotics-101" data-ga="free-for-kids-robotics-101"><span class="tag age">Ages 8&ndash;14</span><strong>Robotics 101</strong><span>Wire up Arduino traffic lights. Needs an Arduino starter kit or the Tinkerwith Maker Kit.</span></a>
+    </div>
+
     <div class="note">
       <div>
         <h3>Ready for the real thing?</h3>
@@ -153,7 +171,7 @@
         <img src="assets/mark.png" alt="">
         <span>Tinkerwith_</span>
       </div>
-      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
     </div>
     <div>
       <h4>Learn</h4>
@@ -163,6 +181,8 @@
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
         <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
       </ul>
     </div>
     <div>
@@ -174,7 +194,6 @@
         <li><a href="coloring-book.html">Robot coloring book</a></li>
         <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
         <li><a href="train-an-ai.html">Train an AI game</a></li>
-        <li><a href="admin.html">Course editor</a></li>
       </ul>
     </div>
     <div>
@@ -184,6 +203,7 @@
         <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
         <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
         <li><a href="privacy.html">Privacy policy</a></li>
       </ul>
     </div>
