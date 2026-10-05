@@ -29,6 +29,19 @@
     return 'KES ' + Number(kes).toLocaleString();
   }
 
+  // A course's price today: its launch offer (offer_price_kes until offer_ends_at)
+  // or the normal price. Rows from lms_courses.
+  function course(c) {
+    var on = c.price_kes > 0 && c.offer_price_kes && c.offer_ends_at && new Date(c.offer_ends_at) > new Date();
+    return on ? { kes: c.offer_price_kes, usd: c.offer_price_usd, wasKes: c.price_kes, wasUsd: c.price_usd, ends: c.offer_ends_at }
+              : { kes: c.price_kes, usd: c.price_usd };
+  }
+  // The price as HTML, with the normal price struck through during an offer.
+  function fmtWas(kes, usd, wasKes, wasUsd) {
+    return (wasKes ? '<s class="was">' + fmt(wasKes, wasUsd) + '</s> ' : '') + fmt(kes, usd);
+  }
+  function fmtCourse(c) { var p = course(c); return fmtWas(p.kes, p.usd, p.wasKes, p.wasUsd); }
+
   function set(c) {
     if (c !== 'KES' && c !== 'USD' || c === current) return;
     current = c;
@@ -52,8 +65,10 @@
   var css = document.createElement('style');
   css.textContent = '.cur-switch{display:inline-flex;border:1.5px solid currentColor;border-radius:99px;overflow:hidden;vertical-align:middle;font-size:12px}' +
     '.cur-switch button{font:inherit;font-weight:700;padding:3px 10px;border:0;background:transparent;color:inherit;cursor:pointer;opacity:.6}' +
-    '.cur-switch button.on{background:#220111;color:#fff;opacity:1}';
+    '.cur-switch button.on{background:#220111;color:#fff;opacity:1}' +
+    's.was{opacity:.6;font-weight:500;margin-right:2px}';
   document.head.appendChild(css);
 
-  window.TWPrice = { get currency() { return current; }, fmt: fmt, usdFor: usdFor, set: set, switcher: switcher };
+  window.TWPrice = { get currency() { return current; }, fmt: fmt, usdFor: usdFor, set: set, switcher: switcher,
+    course: course, fmtWas: fmtWas, fmtCourse: fmtCourse };
 })();

@@ -609,14 +609,14 @@ document.getElementById('sections').addEventListener('click', e => {
 async function loadOnline(){
   const box = document.getElementById('online-list');
   try {
-    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd&is_published=eq.true&order=position,title',
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at&is_published=eq.true&order=position,title',
       { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
     if (!r.ok) throw new Error(r.status);
     const list = await r.json();
     if (!list.length) throw new Error('none');
     box.innerHTML = list.map(c => `
       <a class="sp-card${c.price_kes ? '' : ' sp-free'}" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="courses-online-${esc(c.slug)}">
-        <div class="sp-tag${c.price_kes ? ' sp-paid' : ''}">${c.price_kes ? P(c) : 'Free'}</div>
+        <div class="sp-tag${c.price_kes ? ' sp-paid' : ''}">${c.price_kes ? (TWPrice.course(c).wasKes ? 'Launch offer: ' : '') + TWPrice.fmtCourse(c) : 'Free'}</div>
         <h3>${esc(c.title)}</h3>
         <p class="sp-meta">${c.age_range ? `Ages ${esc(c.age_range)} · ` : ''}Self-paced${c.price_kes ? ' · 12 months access' : ''}</p>
         <p>${esc(c.summary)}</p>

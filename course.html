@@ -31,6 +31,12 @@
 .outline a.done .st{background:var(--green);border-color:var(--green-deep);color:#fff}
 .outline a.locked{color:var(--text-3)}
 .outline a.locked .st{border-color:var(--border-strong)}
+.free-pill{display:inline-block;font-size:11px;font-weight:700;background:var(--green-soft);color:var(--green-deep);border-radius:99px;padding:1px 8px;margin-left:4px;vertical-align:1px;white-space:nowrap}
+.offer-note{font-size:14px;margin:4px 0 8px}
+.price-line{font-size:20px;font-weight:800;margin:2px 0}
+.preview-box{background:#fff;margin-bottom:1rem}
+.preview-box ul{margin:8px 0 0 18px}
+.preview-cta{margin-top:1.4rem}
 .outline .ov{font-weight:600}
 .main{padding:1.6rem 1.8rem}
 @media(max-width:600px){.main{padding:1.1rem}}
@@ -192,7 +198,8 @@ const TRAINER_KES = 3000;   // optional 1:1 trainer support, per hour (lms_train
 const TRAINER_USD = 39;     // the same for families outside Kenya (lms_trainer_rate_usd())
 const TRAINER_CARD_URL = ''; // HustleSasa card link for trainer hours; leave '' to offer M-Pesa only
 const PAID_BY_CARD = new URLSearchParams(location.search).get('paid') === 'card';   // back from HustleSasa
-const coursePrice = () => TWPrice.fmt(C.price_kes, C.price_usd);
+const coursePrice = () => TWPrice.fmtWas(C.price_kes, C.price_usd, C.regular_kes, C.regular_usd);   // HTML
+const canOpen = l => C.can_access || (l && l.preview);   // free preview lessons are open to everyone
 const trainerPrice = h => TWPrice.fmt(h * TRAINER_KES, h * TRAINER_USD);
 const TILL = '3022049';
 let PAYS = [];              // my M-Pesa payments for this course, from lms_my_payments()
@@ -249,8 +256,8 @@ function renderOutline() {
   C.lessons.forEach(l => {
     i++;
     if (l.section !== sec) { if (sec !== null) html += '</ol>'; sec = l.section; html += (sec ? `<h3>${esc(sec)}</h3>` : '') + '<ol>'; }
-    const cls = [l.id === cur ? 'cur' : '', l.done ? 'done' : '', C.can_access ? '' : 'locked'].join(' ');
-    html += `<li><a class="${cls}" href="#l=${l.id}"><span class="st">${l.done ? '✓' : C.can_access ? i : '🔒'}</span><span>${esc(l.title)}</span></a></li>`;
+    const cls = [l.id === cur ? 'cur' : '', l.done ? 'done' : '', canOpen(l) ? '' : 'locked'].join(' ');
+    html += `<li><a class="${cls}" href="#l=${l.id}"><span class="st">${l.done ? '✓' : canOpen(l) ? i : '🔒'}</span><span>${esc(l.title)}${l.preview && !C.can_access ? ' <span class="free-pill">Free preview</span>' : ''}</span></a></li>`;
   });
   $('outline').innerHTML = html + (C.lessons.length ? '</ol>' : '<p class="muted" style="padding:8px">No lessons yet.</p>');
   $('ov-link').classList.toggle('cur', !cur);
@@ -262,7 +269,7 @@ function adminBar() {
 
 function show(lessonId) {
   if (lessonId && !C.lessons.some(l => l.id === lessonId)) lessonId = null;
-  if (lessonId && !C.can_access) { history.replaceState(null, '', location.pathname + location.search); lessonId = null; toast(LMS.user ? 'Enrol in the course to open its lessons.' : 'Sign in to open the lessons.'); }
+  if (lessonId && !canOpen(C.lessons.find(l => l.id === lessonId))) { history.replaceState(null, '', location.pathname + location.search); lessonId = null; toast(LMS.user ? 'Enrol in the course to open its lessons.' : 'Sign in to open the lessons.'); }
   cur = lessonId;
   renderOutline();
   if (cur) openLesson(cur); else renderOverview();
@@ -270,11 +277,18 @@ function show(lessonId) {
 }
 
 /* ── Overview: description, enrolment, certificate ── */
+const offerNote = () => C.regular_kes ? `<p class="offer-note">🎉 Launch price until <strong>${day(new Date(new Date(C.offer_ends_at) - 1))}</strong>, then ${TWPrice.fmt(C.regular_kes, C.regular_usd)}.</p>` : '';
+function previewBox() {
+  const pv = C.lessons.filter(l => l.preview);
+  if (C.can_access || !pv.length) return '';
+  return `<div class="action preview-box"><h3>👀 Try it free</h3><p>${pv.length === 1 ? 'This lesson is' : `These ${pv.length} lessons are`} open to everyone. No payment or sign-in needed:</p>
+    <ul>${pv.map(l => `<li><a href="#l=${l.id}">${esc(l.title)}</a></li>`).join('')}</ul></div>`;
+}
 function renderOverview() {
   const next = C.lessons.find(l => !l.done) || C.lessons[0];
   let act = '';
   if (!LMS.user) {
-    act = `<div class="action"><h3>Ready to start?</h3><p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
+    act = previewBox() + `<div class="action"><h3>Ready to start?</h3>${C.price_kes ? `<p class="price-line">${coursePrice()}</p>${offerNote()}` : ''}<p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
       <button class="tw-btn tw-btn-orange" type="button" id="b-signin">Sign in to start</button></div>`;
   } else if (C.can_access) {
     act = next ? `<div class="action"><h3>${doneCount() ? (finished() ? 'You finished this course! 🎉' : 'Welcome back!') : 'You’re enrolled!'}</h3>
@@ -291,7 +305,7 @@ function renderOverview() {
     const renew = C.enrolled && C.expired;
     const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
         <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
-    act = `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>
+    act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
       <p class="promise">✓ Not happy within 7 days? Full refund.</p>
       ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
@@ -418,7 +432,8 @@ async function openLesson(id) {
       <p>Get ${Math.ceil(L.quiz.length * .6)} of ${L.quiz.length} right to finish this lesson.${L.quiz_total ? ` Your best so far: ${L.quiz_score}/${L.quiz_total}.` : ''}</p>
       ${L.quiz.map((q, i) => `<div class="qq" id="qq${i}"><fieldset><legend>${i + 1}. ${esc(q.q)}</legend>
         ${q.options.map((o, j) => `<label><input type="radio" name="q${i}" value="${j}" required> ${esc(o)}</label>`).join('')}</fieldset></div>`).join('')}
-      <button class="tw-btn tw-btn-orange" type="submit" style="margin-top:12px">Check my answers</button>
+      ${LMS.user ? '<button class="tw-btn tw-btn-orange" type="submit" style="margin-top:12px">Check my answers</button>'
+        : '<button class="tw-btn tw-btn-orange" type="button" id="b-quiz-signin" style="margin-top:12px">Sign in to check your answers</button>'}
       <p id="quiz-msg" aria-live="polite" style="margin-top:10px;font-weight:600"></p>
     </form>` : '';
   const finish = L.done
@@ -432,10 +447,16 @@ async function openLesson(id) {
     <div id="finish">${finish}</div>
     <div class="navrow">
       ${prev ? `<a class="tw-btn tw-btn-white" href="#l=${prev.id}">&larr; Previous</a>` : '<a class="tw-btn tw-btn-white" href="#">&larr; Overview</a>'}
-      ${next ? `<a class="tw-btn tw-btn-ink" href="#l=${next.id}">Next lesson &rarr;</a>` : '<a class="tw-btn tw-btn-ink" href="#">Finish &rarr;</a>'}
-    </div>`;
+      ${next ? (canOpen(next) ? `<a class="tw-btn tw-btn-ink" href="#l=${next.id}">Next lesson &rarr;</a>` : '<a class="tw-btn tw-btn-orange" href="#">🔓 Unlock the full course &rarr;</a>')
+        : '<a class="tw-btn tw-btn-ink" href="#">Finish &rarr;</a>'}
+    </div>
+    ${C.can_access ? '' : `<div class="action preview-cta"><h3>Enjoying the free preview?</h3>
+      <p>Get all ${C.lessons.length} lessons, quizzes and your certificate for ${coursePrice()}. 12 months of access.</p>${offerNote()}
+      <a class="tw-btn tw-btn-orange" href="#">Get the full course &rarr;</a></div>`}`;
+  const qs = $('b-quiz-signin'); if (qs) qs.onclick = LMS.signIn;
   const bd = $('b-done');
-  if (bd) bd.onclick = async () => {
+  if (bd && !LMS.user) bd.outerHTML = '';
+  if (bd && LMS.user) bd.onclick = async () => {
     bd.disabled = true;
     try { await LMS.rpc('lms_complete_lesson', { p_lesson: id }); markDone(id); $('finish').innerHTML = '<span class="done-pill">✓ Lesson complete</span>'; }
     catch (e) { toast(e.message); bd.disabled = false; }
