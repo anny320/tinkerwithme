@@ -734,16 +734,16 @@ async function loadHomeOnline() {
   const box = document.getElementById('online-courses');
   const e = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   try {
-    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd&is_published=eq.true&order=position,title',
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at&is_published=eq.true&order=position,title',
       { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
     if (!r.ok) throw 0;
     const list = (await r.json()).filter(c => c.price_kes);   // free ones are in the Free section
     if (!list.length) throw 0;
     box.innerHTML = list.slice(0, 5).map(c => `
       <article class="enrol">
-        ${c.price_kes ? '' : '<div class="enrol-badges"><span class="tw-sticker">Free</span></div>'}
+        ${c.price_kes ? (TWPrice.course(c).wasKes ? '<div class="enrol-badges"><span class="tw-sticker">Launch offer</span></div>' : '') : '<div class="enrol-badges"><span class="tw-sticker">Free</span></div>'}
         <h3 class="tw-h3">${e(c.title)}</h3>
-        <p class="enrol-age">${c.age_range ? `Ages ${e(c.age_range)} · ` : ''}Self-paced · ${c.price_kes ? `${TWPrice.fmt(c.price_kes, c.price_usd)} · 12 months` : 'Free'}</p>
+        <p class="enrol-age">${c.age_range ? `Ages ${e(c.age_range)} · ` : ''}Self-paced · ${c.price_kes ? `${TWPrice.fmtCourse(c)} · 12 months` : 'Free'}</p>
         <p>${e(c.summary)}</p>
         <a class="tw-link-arrow" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="home-online-${e(c.slug)}">${c.price_kes ? 'See the course' : 'Start free'} <span aria-hidden="true">&rarr;</span></a>
       </article>`).join('') + (list.length > 5 ? `<article class="enrol"><h3 class="tw-h3">+${list.length - 5} more</h3><p>See every online course on Learn online.</p><a class="tw-link-arrow" href="learn.html">All online courses <span aria-hidden="true">&rarr;</span></a></article>` : '');

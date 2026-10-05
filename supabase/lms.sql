@@ -66,10 +66,16 @@ create table if not exists public.lms_lessons (
   updated_at timestamptz not null default now()
 );
 create index if not exists lms_lessons_course on public.lms_lessons (course_id, position);
+-- Free preview: anyone can open this lesson before buying the course.
+alter table public.lms_lessons add column if not exists is_preview boolean not null default false;
 -- Families outside Kenya: a USD price to show, and a HustleSasa card-payment
 -- link (set its redirect to course.html?c=<slug>&paid=card).
 alter table public.lms_courses add column if not exists price_usd int check (price_usd is null or price_usd >= 0);
 alter table public.lms_courses add column if not exists card_url text not null default '' check (card_url = '' or card_url ~ '^https://');
+-- Launch offer: a lower price until offer_ends_at, then price_kes/price_usd again.
+alter table public.lms_courses add column if not exists offer_price_kes int check (offer_price_kes is null or offer_price_kes > 0);
+alter table public.lms_courses add column if not exists offer_price_usd int check (offer_price_usd is null or offer_price_usd > 0);
+alter table public.lms_courses add column if not exists offer_ends_at timestamptz;
 
 create table if not exists public.lms_enrollments (
   user_id    text not null,
@@ -130,6 +136,13 @@ language sql stable security definer set search_path = public as $$
     select 1 from lms_enrollments e join lms_courses c on c.id = e.course_id
     where e.user_id = lms_uid() and e.course_id = p_course and c.is_published
       and (e.expires_at is null or e.expires_at > now()))
+$$;
+
+-- A lesson can be opened by students with access, and by anyone if it's a free preview.
+create or replace function public.lms_can_open_lesson(p_lesson uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from lms_lessons l join lms_courses c on c.id = l.course_id
+    where l.id = p_lesson and (lms_can_access(l.course_id) or (l.is_preview and c.is_published)))
 $$;
 
 -- When a new enrolment in this course ends: 12 months for paid courses, never for free ones.
@@ -223,21 +236,26 @@ $$;
 -- A course page: details, lesson outline, and (if signed in) enrolment and progress.
 create or replace function public.lms_course(p_slug text)
 returns json language plpgsql stable security definer set search_path = public as $$
-declare c lms_courses; uid text := lms_uid(); enrolled boolean; ends timestamptz;
+declare c lms_courses; uid text := lms_uid(); enrolled boolean; ends timestamptz; offer boolean;
 begin
   select * into c from lms_courses where slug = p_slug and (is_published or lms_is_admin());
   if not found then return null; end if;
+  offer := c.price_kes > 0 and c.offer_price_kes is not null and c.offer_ends_at > now();
   select true, expires_at into enrolled, ends from lms_enrollments where user_id = uid and course_id = c.id;
   enrolled := coalesce(enrolled, false);
   return json_build_object(
     'id', c.id, 'slug', c.slug, 'title', c.title, 'summary', c.summary, 'description', c.description,
-    'age_range', c.age_range, 'cover_url', c.cover_url, 'price_kes', c.price_kes, 'is_published', c.is_published,
-    'price_usd', c.price_usd, 'card_url', c.card_url,
+    'age_range', c.age_range, 'cover_url', c.cover_url, 'is_published', c.is_published, 'card_url', c.card_url,
+    -- price_kes/price_usd are what to pay today; regular_* is the normal price while a launch offer runs.
+    'price_kes', case when offer then c.offer_price_kes else c.price_kes end,
+    'price_usd', case when offer then c.offer_price_usd else c.price_usd end,
+    'regular_kes', case when offer then c.price_kes end, 'regular_usd', case when offer then c.price_usd end,
+    'offer_ends_at', case when offer then c.offer_ends_at end,
     'enrolled', enrolled, 'can_access', lms_can_access(c.id) or (lms_is_admin()),
     'expires_at', ends, 'expired', coalesce(ends <= now(), false),
     'lessons', coalesce((
       select json_agg(json_build_object(
-        'id', l.id, 'section', l.section, 'title', l.title,
+        'id', l.id, 'section', l.section, 'title', l.title, 'preview', l.is_preview,
         'has_video', l.video_url <> '', 'quiz_count', jsonb_array_length(l.quiz),
         'done', p.completed_at is not null, 'quiz_score', p.quiz_score, 'quiz_total', p.quiz_total)
         order by l.position, l.created_at)
@@ -261,7 +279,7 @@ returns json language plpgsql stable security definer set search_path = public a
 declare l lms_lessons; p lms_progress;
 begin
   select * into l from lms_lessons where id = p_lesson;
-  if not found or not lms_can_access(l.course_id) then raise exception 'You don''t have access to this lesson.'; end if;
+  if not found or not lms_can_open_lesson(l.id) then raise exception 'You don''t have access to this lesson.'; end if;
   select * into p from lms_progress where user_id = lms_uid() and lesson_id = l.id;
   return json_build_object(
     'id', l.id, 'course_id', l.course_id, 'section', l.section, 'title', l.title, 'body', l.body, 'video_url', l.video_url,
@@ -276,7 +294,8 @@ returns void language plpgsql security definer set search_path = public as $$
 declare l lms_lessons;
 begin
   select * into l from lms_lessons where id = p_lesson;
-  if not found or not lms_can_access(l.course_id) then raise exception 'You don''t have access to this lesson.'; end if;
+  if lms_uid() is null then raise exception 'Sign in to save your progress.'; end if;
+  if not found or not lms_can_open_lesson(l.id) then raise exception 'You don''t have access to this lesson.'; end if;
   if jsonb_array_length(l.quiz) > 0 then raise exception 'Pass the quiz to finish this lesson.'; end if;
   insert into lms_progress (user_id, lesson_id, course_id, completed_at)
     values (lms_uid(), l.id, l.course_id, now())
@@ -290,7 +309,8 @@ returns json language plpgsql security definer set search_path = public as $$
 declare l lms_lessons; total int; score int := 0; correct boolean[] := '{}'; q jsonb; i int := 0; ok boolean; passed boolean;
 begin
   select * into l from lms_lessons where id = p_lesson;
-  if not found or not lms_can_access(l.course_id) then raise exception 'You don''t have access to this lesson.'; end if;
+  if lms_uid() is null then raise exception 'Sign in to check your answers and save your progress.'; end if;
+  if not found or not lms_can_open_lesson(l.id) then raise exception 'You don''t have access to this lesson.'; end if;
   total := jsonb_array_length(l.quiz);
   if total = 0 then raise exception 'This lesson has no quiz.'; end if;
   for q in select value from jsonb_array_elements(l.quiz) loop
@@ -374,7 +394,7 @@ revoke all on function
   public.lms_lesson(uuid), public.lms_complete_lesson(uuid), public.lms_submit_quiz(uuid, int[]),
   public.lms_admin_students(), public.lms_admin_enroll(text, uuid)
   from public;
-grant execute on function public.lms_course(text) to anon, authenticated;
+grant execute on function public.lms_course(text), public.lms_lesson(uuid) to anon, authenticated;
 grant execute on function
   public.lms_hello(text), public.lms_my_courses(), public.lms_enroll_free(uuid),
   public.lms_lesson(uuid), public.lms_complete_lesson(uuid), public.lms_submit_quiz(uuid, int[]),
@@ -525,8 +545,8 @@ begin
     select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at, p.method,
            p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, p.product,
            case when p.kind = 'curriculum' then 'Curriculum: ' || p.product else c.title end as title,
-           case p.kind when 'trainer' then p.hours * lms_trainer_rate() when 'curriculum' then lms_curriculum_price() else c.price_kes end as expected_kes,
-           case p.kind when 'trainer' then p.hours * lms_trainer_rate_usd() when 'curriculum' then lms_curriculum_price_usd() else c.price_usd end as expected_usd
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate() when 'curriculum' then lms_curriculum_price() else case when c.offer_price_kes is not null and p.created_at < c.offer_ends_at then c.offer_price_kes else c.price_kes end end as expected_kes,
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate_usd() when 'curriculum' then lms_curriculum_price_usd() else case when c.offer_price_usd is not null and p.created_at < c.offer_ends_at then c.offer_price_usd else c.price_usd end end as expected_usd
     from lms_payments p left join lms_courses c on c.id = p.course_id left join lms_profiles pr on pr.user_id = p.user_id
     where p.status = 'pending' or p.id in (select id from lms_payments where status <> 'pending' order by decided_at desc limit 30)
   ) x), '[]'::json);
