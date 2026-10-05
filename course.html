@@ -79,6 +79,7 @@
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -188,6 +189,11 @@ const slug = new URLSearchParams(location.search).get('c') || '';
 const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); };
 const WA = 'https://wa.me/254117784724?text=';
 const TRAINER_KES = 3000;   // optional 1:1 trainer support, per hour (lms_trainer_rate() in lms.sql)
+const TRAINER_USD = 39;     // the same for families outside Kenya (lms_trainer_rate_usd())
+const TRAINER_CARD_URL = ''; // HustleSasa card link for trainer hours; leave '' to offer M-Pesa only
+const PAID_BY_CARD = new URLSearchParams(location.search).get('paid') === 'card';   // back from HustleSasa
+const coursePrice = () => TWPrice.fmt(C.price_kes, C.price_usd);
+const trainerPrice = h => TWPrice.fmt(h * TRAINER_KES, h * TRAINER_USD);
 const TILL = '3022049';
 let PAYS = [];              // my M-Pesa payments for this course, from lms_my_payments()
 const day = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -205,6 +211,13 @@ LMS.ready.then(async r => {
   window.addEventListener('hashchange', () => show(lessonIdFromHash()));
 });
 
+function renderTags() {
+  $('c-tags').innerHTML = (C.price_kes ? `<span class="tag paid">${coursePrice()}</span> ${TWPrice.switcher()}` : '<span class="tag free">Free</span>')
+    + (C.age_range ? `<span class="tag">Ages ${esc(C.age_range)}</span>` : '')
+    + `<span class="tag">${C.lessons.length} lesson${C.lessons.length === 1 ? '' : 's'}</span>`
+    + (C.is_published ? '' : '<span class="tag draft">Draft</span>');
+}
+
 async function loadCourse() {
   try { C = await LMS.rpc('lms_course', { p_slug: slug }); }
   catch (e) { return status(`<div class="notice err">${esc(e.message)}</div>`); }
@@ -216,10 +229,9 @@ async function loadCourse() {
   $('c-title').textContent = C.title;
   await loadPays();
   $('c-summary').textContent = C.summary;
-  $('c-tags').innerHTML = (C.price_kes ? `<span class="tag paid">KES ${C.price_kes.toLocaleString()}</span>` : '<span class="tag free">Free</span>')
-    + (C.age_range ? `<span class="tag">Ages ${esc(C.age_range)}</span>` : '')
-    + `<span class="tag">${C.lessons.length} lesson${C.lessons.length === 1 ? '' : 's'}</span>`
-    + (C.is_published ? '' : '<span class="tag draft">Draft</span>');
+  renderTags();
+  document.addEventListener('tw:currency', () => { renderTags(); if (!location.hash.startsWith('#l=')) renderOverview(); });
+
   $('layout').hidden = false;
   renderOutline();
   show(lessonIdFromHash());
@@ -277,11 +289,16 @@ function renderOverview() {
   } else {
     const email = (LMS.state.me && LMS.state.me.email) || (LMS.user.primaryEmailAddress && LMS.user.primaryEmailAddress.emailAddress) || '';
     const renew = C.enrolled && C.expired;
-    act = `<div class="action"><h3>${renew ? 'Renew' : 'Get'} this course — KES ${C.price_kes.toLocaleString()}</h3>
+    const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
+        <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
+    act = `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
+      <p class="promise">✓ Not happy within 7 days? Full refund.</p>
+      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
       <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.</li>
-      <li>Paste the M-Pesa message you get below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
+      ${card}
+      <li>Paste the M-Pesa message${C.card_url ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
       ${payForm('course')}</div>`;
   }
   if (!C.can_access && C.price_kes && LMS.user) act += trainerBox();
@@ -289,6 +306,7 @@ function renderOverview() {
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
+  if (PAID_BY_CARD && $('pay-panel')) $('pay-panel').scrollIntoView({ block: 'center' });
   if ($('downloads')) showDownloads();
   wireCertificate();
 }
@@ -297,10 +315,10 @@ function renderOverview() {
 function trainerBox() {
   const msg = `Hi Anne, I'd like to book a trainer for the "${C.title}" course. Preferred day and time: `;
   return `<div class="action" style="margin-top:1rem;background:#fff"><h3>Want help from a trainer?</h3>
-    <p>Book a live 1:1 session with a Tinkerwith trainer for questions, debugging or a guided build: <strong>KES ${TRAINER_KES.toLocaleString()} per hour</strong>.</p>
+    <p>Book a live 1:1 session with a Tinkerwith trainer for questions, debugging or a guided build: <strong>${trainerPrice(1)} per hour</strong>.</p>
     ${payStatus(p => p.kind === 'trainer')}
     <ol><li><a href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-book-trainer">Message us on WhatsApp</a> to agree a day and time.</li>
-    <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>, then paste the M-Pesa message below.</li></ol>
+    <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>${TRAINER_CARD_URL ? `, or <a href="${TRAINER_CARD_URL}">by card</a> from outside Kenya` : ''}, then paste the ${TRAINER_CARD_URL ? 'M-Pesa message or card order number' : 'M-Pesa message'} below.</li></ol>
     ${payForm('trainer')}</div>`;
 }
 
@@ -345,9 +363,14 @@ function payStatus(which) {
 
 function payForm(kind) {
   const hours = kind === 'trainer'
-    ? `<label class="field-in">Hours <select name="hours">${[1, 2, 3, 4, 5].map(h => `<option value="${h}">${h} hour${h > 1 ? 's' : ''} (KES ${(h * TRAINER_KES).toLocaleString()})</option>`).join('')}</select></label>` : '';
-  return `<form class="payform" data-kind="${kind}" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">${hours}
-    <label class="field-in">M-Pesa message or code
+    ? `<label class="field-in">Hours <select name="hours">${[1, 2, 3, 4, 5].map(h => `<option value="${h}">${h} hour${h > 1 ? 's' : ''} (${trainerPrice(h)})</option>`).join('')}</select></label>` : '';
+  const canCard = kind === 'trainer' ? !!TRAINER_CARD_URL : !!C.card_url;
+  const byCard = canCard && PAID_BY_CARD && kind !== 'trainer';
+  const how = canCard ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500">I paid by
+      <label><input type="radio" name="method" value="mpesa" ${byCard ? '' : 'checked'}> M-Pesa</label>
+      <label><input type="radio" name="method" value="card" ${byCard ? 'checked' : ''}> Card (order number)</label></div>` : '';
+  return `<form class="payform" data-kind="${kind}" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">${hours}${how}
+    <label class="field-in">M-Pesa message, code${canCard ? ' or card order number' : ''}
       <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${(kind === 'trainer' ? TRAINER_KES : C.price_kes).toLocaleString()}.00 paid to …"></textarea></label>
     <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="lms-pay-${kind}">Send payment</button></div></form>`;
 }
@@ -358,7 +381,8 @@ async function submitPay(e) {
   b.disabled = true;
   try {
     const r = await LMS.rpc('lms_submit_payment', { p_course: C.id, p_message: f.msg.value,
-      p_hours: f.dataset.kind === 'trainer' ? +f.hours.value : null });
+      p_hours: f.dataset.kind === 'trainer' ? +f.hours.value : null,
+      p_method: (f.method && f.method.value) || 'mpesa' });
     LMS.track('lms_payment_sent', { course: C.slug, kind: r.kind });
     toast(`Got it: ${r.code}. We’ll check it and let you know.`);
     await loadPays();

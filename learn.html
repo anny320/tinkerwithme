@@ -24,6 +24,7 @@
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -134,7 +135,7 @@
 <script>
 const $ = id => document.getElementById(id);
 const { esc } = LMS;
-const price = c => c.price_kes ? `<span class="tag paid">KES ${c.price_kes.toLocaleString()}</span>` : '<span class="tag free">Free</span>';
+const price = c => c.price_kes ? `<span class="tag paid">${TWPrice.fmt(c.price_kes, c.price_usd)}</span>` : '<span class="tag free">Free</span>';
 const cover = c => c.cover_url ? `style="background-image:url('${esc(c.cover_url)}')"` : '';
 const pct = (d, n) => n ? Math.round(d / n * 100) : 0;
 
@@ -159,7 +160,7 @@ LMS.ready.then(async r => {
     } catch (e) { $('status').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; }
   }
   const { data, error } = await LMS.db.from('lms_courses')
-    .select('slug,title,summary,age_range,cover_url,price_kes').eq('is_published', true)
+    .select('slug,title,summary,age_range,cover_url,price_kes,price_usd').eq('is_published', true)
     .order('position').order('title');
   if (error) { $('all').innerHTML = `<div class="notice err">The courses couldn’t load. Please refresh the page.</div>`; return; }
   $('all').innerHTML = data.length ? data.map(c => `

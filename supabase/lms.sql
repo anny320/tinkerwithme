@@ -66,6 +66,10 @@ create table if not exists public.lms_lessons (
   updated_at timestamptz not null default now()
 );
 create index if not exists lms_lessons_course on public.lms_lessons (course_id, position);
+-- Families outside Kenya: a USD price to show, and a HustleSasa card-payment
+-- link (set its redirect to course.html?c=<slug>&paid=card).
+alter table public.lms_courses add column if not exists price_usd int check (price_usd is null or price_usd >= 0);
+alter table public.lms_courses add column if not exists card_url text not null default '' check (card_url = '' or card_url ~ '^https://');
 
 create table if not exists public.lms_enrollments (
   user_id    text not null,
@@ -228,6 +232,7 @@ begin
   return json_build_object(
     'id', c.id, 'slug', c.slug, 'title', c.title, 'summary', c.summary, 'description', c.description,
     'age_range', c.age_range, 'cover_url', c.cover_url, 'price_kes', c.price_kes, 'is_published', c.is_published,
+    'price_usd', c.price_usd, 'card_url', c.card_url,
     'enrolled', enrolled, 'can_access', lms_can_access(c.id) or (lms_is_admin()),
     'expires_at', ends, 'expired', coalesce(ends <= now(), false),
     'lessons', coalesce((
@@ -424,7 +429,7 @@ create table if not exists public.lms_payments (
   course_id   uuid references public.lms_courses(id) on delete set null,
   kind        text not null check (kind in ('course', 'renewal', 'trainer')),
   hours       int  check (hours between 1 and 10),
-  code        text not null unique check (code ~ '^[A-Z0-9]{10}$'),
+  code        text not null unique,
   amount_kes  int,
   message     text not null default '' check (char_length(message) <= 600),
   status      text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
@@ -433,6 +438,12 @@ create table if not exists public.lms_payments (
   decided_at  timestamptz
 );
 create index if not exists lms_payments_status on public.lms_payments (status, created_at desc);
+-- M-Pesa codes are 10 characters; card payments (HustleSasa) store the order number.
+alter table public.lms_payments add column if not exists method text not null default 'mpesa' check (method in ('mpesa', 'card'));
+alter table public.lms_payments drop constraint if exists lms_payments_code_check;
+alter table public.lms_payments drop constraint if exists lms_payments_code_ok;
+alter table public.lms_payments add constraint lms_payments_code_ok check (
+  (method = 'mpesa' and code ~ '^[A-Z0-9]{10}$') or (method = 'card' and code ~ '^[A-Z0-9-]{3,40}$'));
 
 alter table public.lms_payments enable row level security;
 revoke all on public.lms_payments from anon, authenticated;
@@ -442,32 +453,44 @@ drop policy if exists "admin all" on public.lms_payments;
 create policy "own rows"  on public.lms_payments for select to authenticated using (user_id = lms_uid());
 create policy "admin all" on public.lms_payments for all    to authenticated using (lms_is_admin()) with check (lms_is_admin());
 
--- Trainer support, KES per hour. Keep in step with TRAINER_KES in course.html.
+-- Trainer support per hour. Keep in step with TRAINER_KES / TRAINER_USD in course.html.
 create or replace function public.lms_trainer_rate() returns int language sql immutable as $$ select 3000 $$;
+create or replace function public.lms_trainer_rate_usd() returns int language sql immutable as $$ select 39 $$;
 
--- Submit a payment for this course (or p_hours of trainer time). Finds the
--- 10-character M-Pesa code and the amount in whatever was pasted.
-create or replace function public.lms_submit_payment(p_course uuid, p_message text, p_hours int default null)
+-- Submit a payment for this course (or p_hours of trainer time).
+-- M-Pesa: finds the 10-character code and the amount in whatever was pasted.
+-- Card (HustleSasa): the order number.
+drop function if exists public.lms_submit_payment(uuid, text, int);
+create or replace function public.lms_submit_payment(p_course uuid, p_message text, p_hours int default null, p_method text default 'mpesa')
 returns json language plpgsql security definer set search_path = public as $$
 declare
   uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 600);
   v_code text; v_amount int; v_kind text; c lms_courses; r lms_payments;
 begin
   if uid is null then raise exception 'Please sign in.'; end if;
+  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
   select * into c from lms_courses where id = p_course and is_published;
   if not found then raise exception 'Course not found.'; end if;
-  select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
-    where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
-  if v_code is null then
-    raise exception 'We couldn''t find the M-Pesa code. Paste the whole M-Pesa message, or just the 10-character code (like SJK4AB12CD).';
+  if p_method = 'card' then
+    -- The first word with a digit in it, e.g. "Order #HS-48213" → HS-48213.
+    v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
+    if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  else
+    select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
+      where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
+    if v_code is null then
+      raise exception 'We couldn''t find the M-Pesa code. Paste the whole M-Pesa message, or just the 10-character code (like SJK4AB12CD).';
+    end if;
   end if;
   if exists (select 1 from lms_payments where code = v_code) then
-    raise exception 'That M-Pesa code has already been sent to us.';
+    raise exception 'That payment has already been sent to us.';
   end if;
   if (select count(*) from lms_payments where user_id = uid and status = 'pending') >= 5 then
     raise exception 'You already have 5 payments waiting. We''ll check them soon.';
   end if;
-  v_amount := nullif(replace((regexp_match(upper(msg), 'KSHS?\.?\s*([0-9,]+)'))[1], ',', ''), '')::int;
+  if p_method = 'mpesa' then
+    v_amount := nullif(replace((regexp_match(upper(msg), 'KSHS?\.?\s*([0-9,]+)'))[1], ',', ''), '')::int;
+  end if;
   if p_hours is not null then
     if p_hours not between 1 and 10 then raise exception 'Choose between 1 and 10 hours.'; end if;
     v_kind := 'trainer';
@@ -475,8 +498,8 @@ begin
   elsif exists (select 1 from lms_enrollments where user_id = uid and course_id = c.id) then v_kind := 'renewal';
   else v_kind := 'course';
   end if;
-  insert into lms_payments (user_id, email, course_id, kind, hours, code, amount_kes, message)
-    values (uid, coalesce(lms_email(), ''), c.id, v_kind, case when v_kind = 'trainer' then p_hours end, v_code, v_amount, msg)
+  insert into lms_payments (user_id, email, course_id, kind, hours, code, amount_kes, message, method)
+    values (uid, coalesce(lms_email(), ''), c.id, v_kind, case when v_kind = 'trainer' then p_hours end, v_code, v_amount, msg, p_method)
     returning * into r;
   return json_build_object('id', r.id, 'kind', r.kind, 'code', r.code, 'amount_kes', r.amount_kes, 'status', r.status);
 end $$;
@@ -484,7 +507,7 @@ end $$;
 -- My payments for one course, newest first.
 create or replace function public.lms_my_payments(p_course uuid)
 returns json language sql stable security definer set search_path = public as $$
-  select coalesce(json_agg(json_build_object('kind', kind, 'hours', hours, 'code', code, 'amount_kes', amount_kes,
+  select coalesce(json_agg(json_build_object('kind', kind, 'hours', hours, 'code', code, 'amount_kes', amount_kes, 'method', method,
            'status', status, 'note', note, 'created_at', created_at) order by created_at desc), '[]'::json)
   from (select * from lms_payments where user_id = lms_uid() and course_id = p_course order by created_at desc limit 10) p
 $$;
@@ -495,9 +518,10 @@ returns json language plpgsql stable security definer set search_path = public a
 begin
   if not lms_is_admin() then raise exception 'Admins only.'; end if;
   return coalesce((select json_agg(x order by x.pending desc, x.created_at desc) from (
-    select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at,
+    select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at, p.method,
            p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, c.title,
-           case when p.kind = 'trainer' then p.hours * lms_trainer_rate() else c.price_kes end as expected_kes
+           case when p.kind = 'trainer' then p.hours * lms_trainer_rate() else c.price_kes end as expected_kes,
+           case when p.kind = 'trainer' then p.hours * lms_trainer_rate_usd() else c.price_usd end as expected_usd
     from lms_payments p left join lms_courses c on c.id = p.course_id left join lms_profiles pr on pr.user_id = p.user_id
     where p.status = 'pending' or p.id in (select id from lms_payments where status <> 'pending' order by decided_at desc limit 30)
   ) x), '[]'::json);
@@ -524,9 +548,9 @@ begin
   return res;
 end $$;
 
-revoke all on function public.lms_submit_payment(uuid, text, int), public.lms_my_payments(uuid),
+revoke all on function public.lms_submit_payment(uuid, text, int, text), public.lms_my_payments(uuid),
   public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) from public;
-grant execute on function public.lms_submit_payment(uuid, text, int), public.lms_my_payments(uuid),
+grant execute on function public.lms_submit_payment(uuid, text, int, text), public.lms_my_payments(uuid),
   public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) to authenticated;
 
 -- ── Leads: enquiries from the courses page ──────────────────────────────

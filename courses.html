@@ -95,6 +95,7 @@ a.sp-card{color:inherit;text-decoration:none}
 .explore-card.active::after{content:'Hide courses ▴'}
 .explore-hint{text-align:center;color:var(--text-2);font-size:15px;margin:.5rem 0 2rem}
 #sections{scroll-margin-top:90px}
+.promise{font-size:12.5px;font-weight:600;color:var(--green-dark,#1A5C08);margin-top:-4px}
 .enq-toggle{font-family:inherit;font-size:13px;font-weight:700;color:var(--blue);background:none;border:1.5px dashed var(--border-strong);border-radius:var(--radius-sm);padding:8px;cursor:pointer}
 .enq-toggle.on{color:var(--green-dark,#1A5C08);border-style:solid;border-color:var(--green-dark,#1A5C08);background:var(--green-light,#EBF7E3)}
 .enq-bar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:14px;
@@ -197,6 +198,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
 .pay-steps li{margin:2px 0}
 </style>
 <script src="analytics.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 
@@ -242,7 +244,8 @@ footer a{color:var(--orange-dark);text-decoration:none}
       <div>
         <span class="sp-eyebrow">At your own pace &middot; online</span>
         <h2>Start today, learn at your own pace</h2>
-        <p>Sign in and start a free course straight away, or pay by M-Pesa for a paid one. Paid courses include 12 months of access, and you can book a trainer for help (KES 3,000/hr).</p>
+        <p>Sign in and start a free course straight away, or pay by M-Pesa for a paid one. Paid courses include 12 months of access, and you can book a trainer for help.</p>
+        <p class="promise" style="margin-top:8px;font-size:14px">✓ Not happy within 7 days? Full refund.</p>
       </div>
       <a class="sp-all" href="learn.html">All online courses &rarr;</a>
     </div>
@@ -280,7 +283,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
       <div class="pay-opt">
         <span class="pay-tag">Card</span>
         <h3>Visa or Mastercard</h3>
-        <p>Paying from abroad or prefer card? Message us after booking and we&rsquo;ll send you a secure card payment link.</p>
+        <p>Paying from outside Kenya? Prices show in US$. <strong>Online courses:</strong> tap <em>Pay by card</em> on the course page. <strong>Live courses:</strong> we&rsquo;ll send a secure card link once your dates are confirmed.</p>
         <a class="pay-link" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20pay%20by%20card%20for%20my%20booking." target="_blank" rel="noopener">Ask for a card link &rarr;</a>
       </div>
       <div class="pay-opt">
@@ -397,7 +400,8 @@ let activeFilter = null;   // open track: 'arduino' | 'ai' | 'combo', or null (a
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const kes = n => `KES ${n.toLocaleString()}`;
+// Price in the visitor's currency (KES in Kenya, US$ elsewhere; see price.js).
+const P = o => TWPrice.fmt(o.price ?? o.price_kes, o.price_usd);
 
 /* ── Enquiry list (lead form) ── */
 const ENQ_KEY = 'tw_enquiry';
@@ -415,11 +419,11 @@ function refreshEnq(){
     b.classList.toggle('on', on); b.textContent = on ? '✓ In your enquiry' : '＋ Add to enquiry';
   });
   document.getElementById('enq-list').innerHTML = list.map(c =>
-    `<li><span><strong>${esc(c.title)}</strong> · ${esc(c.format)} · from ${kes(c.price)}</span><button type="button" data-unenq="${esc(c.id)}" aria-label="Remove">×</button></li>`).join('');
+    `<li><span><strong>${esc(c.title)}</strong> · ${esc(c.format)} · from ${P(c)}</span><button type="button" data-unenq="${esc(c.id)}" aria-label="Remove">×</button></li>`).join('');
   const kit = list.some(c => c.uses_kit), packs = list.some(c => c.parts_pack);
   document.getElementById('enq-kit').hidden = !kit;
   document.getElementById('enq-pack-row').hidden = !packs;
-  if (DATA && DATA.maker_kit) document.getElementById('enq-kit-label').textContent = `Add the ${DATA.maker_kit.name} (${kes(DATA.maker_kit.price)}, one-time)`;
+  if (DATA && DATA.maker_kit) document.getElementById('enq-kit-label').textContent = `Add the ${DATA.maker_kit.name} (${P(DATA.maker_kit)}, one-time)`;
   saveEnq();
 }
 
@@ -484,22 +488,21 @@ function wireEnquiry(){
 
 // Course + optional Maker Kit + optional parts pack; delivery is quoted by location.
 function totalLine(course, opt){
-  const parts = [`${kes(course.price)} course`];
-  let sum = course.price;
-  if (opt.kit)  { parts.push(`${kes(DATA.maker_kit.price)} kit`);  sum += DATA.maker_kit.price; }
-  if (opt.pack) { parts.push(`${kes(course.parts_pack.price)} parts pack`); sum += course.parts_pack.price; }
-  return `Total: ${kes(sum)}` + (parts.length > 1 ? ` (${parts.join(' + ')})` : '') +
+  const items = [[course, 'course'], opt.kit && [DATA.maker_kit, 'kit'], opt.pack && [course.parts_pack, 'parts pack']].filter(Boolean);
+  const parts = items.map(([o, label]) => `${P(o)} ${label}`);
+  const sum = { price: items.reduce((t, [o]) => t + o.price, 0), price_usd: items.reduce((t, [o]) => t + (o.price_usd || 0), 0) };
+  return `Total: ${P(sum)}` + (parts.length > 1 ? ` (${parts.join(' + ')})` : '') +
     (opt.delivery ? ' + delivery, quoted by location' : '');
 }
 
 function bookingText(course, opt = {}){
   const yn = v => v ? 'yes' : 'no';
   const extras = course.uses_kit
-    ? `${DATA.maker_kit.name} (${kes(DATA.maker_kit.price)}, one-time): ${yn(opt.kit)}\n` +
-      (course.parts_pack ? `Course parts pack (${kes(course.parts_pack.price)}): ${yn(opt.pack)}\n` : '') +
+    ? `${DATA.maker_kit.name} (${P(DATA.maker_kit)}, one-time): ${yn(opt.kit)}\n` +
+      (course.parts_pack ? `Course parts pack (${P(course.parts_pack)}): ${yn(opt.pack)}\n` : '') +
       `Deliver to our home: ${opt.delivery ? 'yes\nDelivery location (area / estate): ' : 'no'}\n`
     : '';
-  return `Hi Anne, I'd like to book the "${course.title}" live course.\n\n`+
+  return `Hi Anne, I'd like to book the "${course.title}" live course (${P(course)}).\n\n`+
     `Format: ${course.format}\nLive online (1:1 / small group) or in person: \nChild's age: \nPreferred dates: \n`+ extras;
 }
 const bookingHref = (course, opt) =>
@@ -513,10 +516,10 @@ const preview = (label, items) =>
 function extrasHtml(course){
   const k = DATA.maker_kit, pack = course.parts_pack;
   return `<div class="extras" data-id="${esc(course.id)}">
-      <label><input type="checkbox" data-x="kit"> 🧰 Add the ${esc(k.name)}: ${kes(k.price)}, one-time</label>
+      <label><input type="checkbox" data-x="kit"> 🧰 Add the ${esc(k.name)}: ${P(k)}, one-time${TWPrice.currency === 'USD' ? ' + shipping' : ''}</label>
       ${preview('What’s in the kit', k.contents)}
       <p class="kit">${esc(k.note)}</p>
-      ${pack ? `<label><input type="checkbox" data-x="pack"> Add this course’s parts pack: ${kes(pack.price)}</label>
+      ${pack ? `<label><input type="checkbox" data-x="pack"> Add this course’s parts pack: ${P(pack)}</label>
       ${preview('What’s in the parts pack', pack.items)}` : ''}
       <label><input type="checkbox" data-x="delivery"> Deliver to our home (cost quoted by location)</label>
       <span class="total">${totalLine(course, {})}</span>
@@ -541,7 +544,8 @@ function cardHtml(course){
       ${prereq}
     </div>
     <h3>${esc(course.title)}</h3>
-    <div class="price"><span class="from">from</span> KES ${course.price.toLocaleString()}</div>
+    <div class="price"><span class="from">from</span> ${P(course)}</div>
+    <p class="promise">✓ Not happy after the first session? Full refund.</p>
     <p class="summary">${esc(course.summary)}</p>
     ${prereqLine}
     <details>
@@ -598,17 +602,18 @@ document.getElementById('sections').addEventListener('click', e => {
 });
 
 // Online courses: whatever is published on the course platform (same data as learn.html).
+
 async function loadOnline(){
   const box = document.getElementById('online-list');
   try {
-    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes&is_published=eq.true&order=position,title',
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd&is_published=eq.true&order=position,title',
       { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
     if (!r.ok) throw new Error(r.status);
     const list = await r.json();
     if (!list.length) throw new Error('none');
     box.innerHTML = list.map(c => `
       <a class="sp-card${c.price_kes ? '' : ' sp-free'}" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="courses-online-${esc(c.slug)}">
-        <div class="sp-tag${c.price_kes ? ' sp-paid' : ''}">${c.price_kes ? kes(c.price_kes) : 'Free'}</div>
+        <div class="sp-tag${c.price_kes ? ' sp-paid' : ''}">${c.price_kes ? P(c) : 'Free'}</div>
         <h3>${esc(c.title)}</h3>
         <p class="sp-meta">${c.age_range ? `Ages ${esc(c.age_range)} · ` : ''}Self-paced${c.price_kes ? ' · 12 months access' : ''}</p>
         <p>${esc(c.summary)}</p>
@@ -620,13 +625,19 @@ async function loadOnline(){
 }
 loadOnline();
 
+function priceNote(){
+  const r = DATA.price_range, u = DATA.price_range_usd || {};
+  document.getElementById('price-note').innerHTML =
+    `${P({ price: r.min, price_usd: u.min })}–${P({ price: r.max, price_usd: u.max }).replace(/^(KES |US\$)/, '')} per child, kits optional · ${DATA.courses.length} courses ${TWPrice.switcher()}`;
+}
+
 // "Explore" cards, one per track; tapping one opens its courses below.
 const EXPLORE = { arduino: 'Explore Arduino', ai: 'Explore AI', combo: 'Arduino + AI' };
 
 function trackFacts(key){
   const cs = DATA.courses.filter(c => c.track === key);
   const ages = cs.flatMap(c => (c.age.match(/\d+/g) || []).map(Number));
-  const from = Math.min(...cs.map(c => c.price));
+  const from = cs.reduce((m, c) => c.price < m.price ? c : m, cs[0]);
   return { n: cs.length, ages: ages.length ? `ages ${Math.min(...ages)}–${Math.max(...ages)}` : '', from };
 }
 
@@ -638,7 +649,7 @@ function buildFilters(){
     return `<button class="explore-card t-${k}" type="button" data-f="${k}" aria-expanded="false" aria-controls="sections">
       <span class="ex-icon">${t.icon}</span><b>${esc(EXPLORE[k] || t.label)}</b>
       <span>${x.n} ${k === 'combo' && x.n === 1 ? 'two-day camp' : `course${x.n > 1 ? 's' : ''}`}${x.ages ? ' · ' + x.ages : ''}</span>
-      <span class="ex-price">from ${kes(x.from)}</span></button>`;
+      <span class="ex-price">from ${P(x.from)}</span></button>`;
   }).join('');
   f.querySelectorAll('[data-f]').forEach(btn => btn.onclick = () => openTrack(activeFilter === btn.dataset.f ? null : btn.dataset.f, true));
 }
@@ -664,9 +675,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       '<p style="text-align:center;color:var(--text-2)">Couldn\'t load courses. Please refresh.</p>';
     return;
   }
-  const r = DATA.price_range;
-  document.getElementById('price-note').textContent =
-    `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child, kits optional · ${DATA.courses.length} courses`;
+  priceNote();
+  document.addEventListener('tw:currency', () => { priceNote(); buildFilters(); openTrack(activeFilter, false); refreshEnq(); loadOnline(); });
   buildFilters();
   wireEnquiry();
   refreshEnq();
