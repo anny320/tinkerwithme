@@ -9,3 +9,6 @@ output/
 # never in this public repo. See .github/workflows/pregenerate-premium.yml.
 curriculums/
 premium_content/
+
+# Online-course drafts written by generate_elearning.py (paid content).
+elearning_drafts/
