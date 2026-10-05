@@ -453,7 +453,8 @@ footer a:hover{text-decoration:underline}
   <div class="card">
     <div class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> Session length</div>
     <div class="dur-row">
-      <button class="dur-btn" id="dur-120" onclick="setDuration(120)">2 hours</button>
+      <button class="dur-btn" id="dur-90" onclick="setDuration(90)">90 min <small>(best for ages 6–8)</small></button>
+      <button class="dur-btn" id="dur-120" onclick="setDuration(120)">2 hours <small>(with breaks)</small></button>
       <button class="dur-btn" id="dur-180" onclick="setDuration(180)">3 hours</button>
       <button class="dur-btn" id="dur-full" onclick="setDuration('full')">Full day</button>
     </div>
@@ -791,7 +792,7 @@ function renderBasket(){
 }
 
 function renderDur(){
-  ['120','180','full'].forEach(d=>{
+  ['90','120','180','full'].forEach(d=>{
     const b=document.getElementById('dur-'+d);
     if(b)b.className='dur-btn'+(String(duration)===String(d)?' active-'+track:'');
   });
@@ -896,8 +897,8 @@ function generatePlan(){
   const waLink='https://wa.me/254117784724?text='+encodeURIComponent(waMsg);
   document.getElementById('book-wa-btn').href=waLink;
   document.getElementById('pricing-block').classList.add('visible');
-  // Show calendar for 2-hour sessions only; longer sessions go via WhatsApp
-  const calAvail=(duration===120);
+  // Show calendar for 90/120 min only; longer sessions go via WhatsApp
+  const calAvail=(duration===90||duration===120);
   document.getElementById('cal-booking-wrap').style.display=calAvail?'block':'none';
   document.getElementById('cal-wa-wrap').style.display=calAvail?'none':'block';
   if(calAvail) document.getElementById('cal-dur-label').textContent=durLabel;
