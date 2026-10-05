@@ -1,11 +1,13 @@
 {
-  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Every course runs live online (1:1 or small group) or in person; the family chooses when booking. Prices are packages: 1-day camp KES 5,000, 2 live sessions 7,000, 3 live sessions 9,000, 2-day camp 9,000. \"self_paced_price\" is the self-paced online version (generate_elearning.py); trainer support is extra at KES 3,000/hr. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit.",
+  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Every course runs live online (1:1 or small group) or in person; the family chooses when booking. Prices are packages: 1-day camp KES 5,000, 2 live sessions 7,000, 3 live sessions 9,000, 2-day camp 9,000. \"self_paced_price\" is the self-paced online version (generate_elearning.py); trainer support is extra at KES 3,000/hr. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit. USD prices (price_usd, self_paced_price_usd, price_range_usd) are shown to visitors outside Kenya.",
   "price_range": {"min": 5000, "max": 9000},
+  "price_range_usd": {"min": 69, "max": 115},
   "maker_kit": {
     "name": "Tinkerwith Maker Kit",
     "price": 8500,
     "note": "Bought once and reused in every Arduino course. Needed at home for live online sessions; for in-person sessions we provide kits, so buy one only to keep building at home.",
-    "contents": ["Arduino Uno R3 board + USB cable", "Breadboard + 40 jumper wires", "LEDs (red, yellow, green, white, RGB) + resistors", "Push buttons, potentiometer and piezo buzzer", "Light sensor (LDR) and sound sensor", "HC-SR04 ultrasonic sensor + bracket", "IR sensor", "DHT11 temperature & humidity sensor", "PIR motion sensor", "SG90 servo motor", "Relay module", "16×2 LCD screen (I2C)", "Battery holder", "Storage box"]
+    "contents": ["Arduino Uno R3 board + USB cable", "Breadboard + 40 jumper wires", "LEDs (red, yellow, green, white, RGB) + resistors", "Push buttons, potentiometer and piezo buzzer", "Light sensor (LDR) and sound sensor", "HC-SR04 ultrasonic sensor + bracket", "IR sensor", "DHT11 temperature & humidity sensor", "PIR motion sensor", "SG90 servo motor", "Relay module", "16×2 LCD screen (I2C)", "Battery holder", "Storage box"],
+    "price_usd": 99
   },
   "tracks": {
     "arduino": {"label": "Arduino Robotics & Electronics", "icon": "🔧"},
@@ -21,7 +23,9 @@
       "age": "10–14 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
+      "price_usd": 115,
       "self_paced_price": 3500,
+      "self_paced_price_usd": 45,
       "standalone": false,
       "prereqs": ["Traffic light simulation OR Button controlled LED (free)"],
       "summary": "Kids build a working smart home model with three integrated systems, wired into one house.",
@@ -33,7 +37,7 @@
       "takeaway": "Cardboard smart house model with all circuits installed",
       "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works.",
       "uses_kit": true,
-      "parts_pack": {"price": 1000, "items": ["Small 5 V fan", "Servo door-lock bracket", "Cardboard house template"]}
+      "parts_pack": {"price": 1000, "items": ["Small 5 V fan", "Servo door-lock bracket", "Cardboard house template"], "price_usd": 15}
     },
     {
       "id": "self-driving-car",
@@ -43,7 +47,9 @@
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
+      "price_usd": 115,
       "self_paced_price": 3500,
+      "self_paced_price_usd": 45,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Build a chassis-based car that navigates on its own, finishing with a race day.",
@@ -55,7 +61,7 @@
       "takeaway": "Working self-driving car kit",
       "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old.",
       "uses_kit": true,
-      "parts_pack": {"price": 2500, "items": ["2WD car chassis with 2 DC motors and wheels", "L298N motor driver", "Second IR sensor", "AA battery pack"]}
+      "parts_pack": {"price": 2500, "items": ["2WD car chassis with 2 DC motors and wheels", "L298N motor driver", "Second IR sensor", "AA battery pack"], "price_usd": 29}
     },
     {
       "id": "smart-city",
@@ -65,7 +71,9 @@
       "age": "10–14 yrs",
       "level": "Intermediate",
       "price": 5000,
+      "price_usd": 69,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": true,
       "prereqs": [],
       "summary": "Teams of 3–4 each build one city subsystem, then connect them on a shared city board.",
@@ -87,7 +95,9 @@
       "age": "12–15 yrs",
       "level": "Advanced",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Assemble and program a 3-DOF robot arm with a gripper claw and a joystick controller.",
@@ -98,7 +108,7 @@
       "takeaway": "Assembled robot arm",
       "pitch": "The same principles behind factory robots and surgical arms — in your child's hands.",
       "uses_kit": true,
-      "parts_pack": {"price": 2500, "items": ["3-DOF robot arm frame + claw", "4 extra SG90 servos", "2 joystick modules"]}
+      "parts_pack": {"price": 2500, "items": ["3-DOF robot arm frame + claw", "4 extra SG90 servos", "2 joystick modules"], "price_usd": 29}
     },
     {
       "id": "wearable-tech-lab",
@@ -108,7 +118,9 @@
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": true,
       "prereqs": [],
       "summary": "Kids design and build a wearable gadget they wire, code and wear home.",
@@ -119,7 +131,7 @@
       "takeaway": "Their custom LED wearable",
       "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home.",
       "uses_kit": true,
-      "parts_pack": {"price": 1000, "items": ["NeoPixel LED strip", "Wristband / cap and craft materials", "Portable battery pack"]}
+      "parts_pack": {"price": 1000, "items": ["NeoPixel LED strip", "Wristband / cap and craft materials", "Portable battery pack"], "price_usd": 15}
     },
     {
       "id": "iot-garden-monitor",
@@ -129,7 +141,9 @@
       "age": "10–14 yrs",
       "level": "Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Temperature logger (free, recommended)"],
       "summary": "Build a sensor kit that keeps a real seedling alive, then automate its care.",
@@ -140,7 +154,7 @@
       "takeaway": "Sensor kit + a seedling in a monitored pot",
       "pitch": "STEM meets nature. They build tech that actually keeps a plant alive.",
       "uses_kit": true,
-      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing", "Pot and seedling"]}
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing", "Pot and seedling"], "price_usd": 15}
     },
     {
       "id": "musical-instrument-builder",
@@ -150,7 +164,9 @@
       "age": "8–12 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Buzzer melody (free, recommended)"],
       "summary": "Build a playable electronic instrument on a breadboard.",
@@ -170,7 +186,9 @@
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": true,
       "prereqs": [],
       "summary": "Build a self-watering planter that senses dry soil and pumps water to a real seedling all by itself.",
@@ -181,7 +199,7 @@
       "takeaway": "Self-watering planter kit + a seedling",
       "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works.",
       "uses_kit": true,
-      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing + reservoir", "Pot and seedling"]}
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing + reservoir", "Pot and seedling"], "price_usd": 15}
     },
     {
       "id": "bluetooth-control-lab",
@@ -191,7 +209,9 @@
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Button controlled LED (free, recommended)"],
       "summary": "Control an Arduino gadget wirelessly from a phone over Bluetooth, then build a custom app to command it.",
@@ -202,7 +222,7 @@
       "takeaway": "Bluetooth-controlled gadget + their own phone app",
       "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other.",
       "uses_kit": true,
-      "parts_pack": {"price": 1000, "items": ["HC-05 Bluetooth module", "Small DC motor"]}
+      "parts_pack": {"price": 1000, "items": ["HC-05 Bluetooth module", "Small DC motor"], "price_usd": 15}
     },
     {
       "id": "ai-game-designer",
@@ -212,7 +232,9 @@
       "age": "10–14 yrs",
       "level": "Intermediate",
       "price": 5000,
+      "price_usd": 69,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Prompting power (free, recommended)"],
       "summary": "Design and build a playable game using AI tools.",
@@ -231,7 +253,9 @@
       "age": "10–14 yrs",
       "level": "Beginner → Intermediate",
       "price": 5000,
+      "price_usd": 69,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": true,
       "prereqs": [],
       "summary": "Produce a short film powered entirely by AI, then premiere it for parents.",
@@ -252,7 +276,9 @@
       "age": "12–16 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
+      "price_usd": 115,
       "self_paced_price": 3500,
+      "self_paced_price_usd": 45,
       "standalone": true,
       "prereqs": [],
       "summary": "Launch a mini-business using AI tools, ending with a pitch to a panel.",
@@ -272,7 +298,9 @@
       "age": "12–16 yrs",
       "level": "Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": true,
       "prereqs": [],
       "summary": "Critical thinking meets cutting-edge AI: spot fakes, understand misinformation, and write a personal AI safety code.",
@@ -291,7 +319,9 @@
       "age": "10–14 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["AI music & sound (free, recommended)"],
       "summary": "Go deeper than the free session and produce a real EP with cover art.",
@@ -310,7 +340,9 @@
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 7000,
+      "price_usd": 89,
       "self_paced_price": 3000,
+      "self_paced_price_usd": 39,
       "standalone": false,
       "prereqs": ["Teachable Machine (free)"],
       "summary": "Build on the free Teachable Machine session to make a working computer-vision app.",
@@ -329,7 +361,9 @@
       "age": "12–16 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
+      "price_usd": 115,
       "self_paced_price": 3500,
+      "self_paced_price_usd": 45,
       "standalone": true,
       "prereqs": [],
       "summary": "Solve a real community problem with AI, ending with a pitch and a Changemaker badge.",
@@ -349,7 +383,9 @@
       "age": "12–15 yrs",
       "level": "Advanced",
       "price": 9000,
+      "price_usd": 115,
       "self_paced_price": 3500,
+      "self_paced_price_usd": 45,
       "standalone": false,
       "prereqs": ["Any 2 free Arduino activities", "Prompting power (free)"],
       "summary": "The ultimate crossover: build an Arduino smart city, then give it an AI brain.",
