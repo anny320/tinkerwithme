@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teach it yourself: course curriculums — TinkerWith_</title>
+<meta name="description" content="The full session-by-session curriculum of a Tinkerwith live course, for teachers and homeschooling families. Lesson plans, materials, complete code and timings.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Teach it yourself — Tinkerwith course curriculums">
+<meta property="og:description" content="Full lesson plans for classrooms and homeschool. One course, one teacher or family.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.cur-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:2rem;align-items:start}
+@media(max-width:860px){.cur-grid{grid-template-columns:1fr}}
+.cur-box{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem}
+.cur-box h2{font-size:21px;font-weight:600;margin-bottom:10px}
+.cur-box ul,.cur-box ol{margin:6px 0 0 1.2em;display:flex;flex-direction:column;gap:6px;font-size:15.5px;color:var(--text-2)}
+.cur-box ol li strong{color:var(--ink)}
+.licence{margin-top:1.2rem;font-size:14px;color:var(--text-2);background:var(--cream);border-radius:var(--radius-sm);padding:10px 12px}
+.buy-price{font-size:30px;font-weight:700;margin:4px 0 2px}
+.buy .pay-status{list-style:none;margin:10px 0;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.buy form{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.buy .dl{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.cur-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.cur-list a{display:block;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:1rem 1.1rem;color:var(--ink);text-decoration:none}
+.cur-list a:hover{background:var(--cream)}
+.cur-list small{display:block;color:var(--text-2);margin-top:4px}
+</style>
+
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+<script src="price.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Teach it yourself &middot; classrooms &amp; homeschool</span>
+    <h1 class="tw-h1" id="c-title" style="font-size:clamp(30px,4.8vw,48px)">Course curriculums</h1>
+    <p id="c-lede">The full, session-by-session curriculum of each Tinkerwith live course, so you can teach it to your own class or children.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container" id="main"><p class="loading">Loading&hellip;</p></div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+/* One live course's full facilitator curriculum, sold to one teacher or family.
+   Buyers sign in, pay (M-Pesa, or card on HustleSasa from abroad), paste the
+   code or order number, and download the PDF once an admin approves it
+   (teach.html → Payments). Files: lms-files/curriculum/<course id>/. */
+const $ = id => document.getElementById(id);
+const { esc } = LMS;
+const TILL = '3022049';
+const WA = 'https://wa.me/254117784724?text=';
+// One HustleSasa product for every curriculum (it's a flat price). Set its
+// redirect to https://tinkerwith.me/curriculum.html?paid=card. Leave '' for M-Pesa only.
+const CURRICULUM_CARD_URL = '';
+const params = new URLSearchParams(location.search);
+let id = params.get('c');
+const PAID_BY_CARD = params.get('paid') === 'card';
+// Back from HustleSasa without a course in the address: use the one they were buying.
+if (PAID_BY_CARD && !id) { try { id = localStorage.getItem('tw_curriculum_pending'); } catch (_) {} }
+let DATA = null, COURSE = null, MINE = null;
+
+const price = () => TWPrice.fmt(DATA.curriculum_price.price, DATA.curriculum_price.price_usd);
+const toast = msg => { const t = document.createElement('div'); t.className = 'toast show'; t.textContent = msg;
+  t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;z-index:99;max-width:90%';
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3500); };
+
+function listView() {
+  $('main').innerHTML = `<p style="margin-bottom:1.2rem">Each curriculum is <strong>${price()}</strong> ${TWPrice.switcher()} for one teacher or one family. Download it as soon as your payment is confirmed, usually the same day.</p>
+    <div class="cur-list">${DATA.courses.map(c => `<a href="curriculum.html?c=${encodeURIComponent(c.id)}"><strong>${esc(c.title)}</strong>
+      <small>${esc(c.format)} · ${esc(c.age)}</small></a>`).join('')}</div>`;
+}
+
+function includes(c) {
+  const build = c.track === 'ai'
+    ? 'The exact free AI tools, step-by-step workflows and example prompts for every activity'
+    : 'Wiring tables (component → pin) and the complete, commented Arduino code for every build';
+  return ['Course overview and learning outcomes', 'A materials master list with quantities',
+    `A lesson plan for each of the ${c.sessions.length} sessions, with objectives and a minute-by-minute timing`, build,
+    'Checks for understanding and a common mistakes &amp; fixes table', 'Assessment, showcase ideas and Easy / Medium / Hard extension challenges'];
+}
+
+function detailView() {
+  const c = COURSE;
+  document.title = `${c.title}: teach it yourself — TinkerWith_`;
+  $('c-title').textContent = `${c.title}: teach it yourself`;
+  $('c-lede').textContent = c.summary;
+  $('main').innerHTML = `<div class="cur-grid">
+    <div class="cur-box"><h2>What you&rsquo;ll teach</h2>
+      <ol>${c.sessions.map(s => `<li><strong>${esc(s.title)}.</strong> ${esc(s.desc)}</li>`).join('')}</ol>
+      <h2 style="margin-top:1.3rem">What&rsquo;s in the curriculum</h2>
+      <ul>${includes(c).map(x => `<li>${x}</li>`).join('')}</ul>
+      <p style="margin-top:1rem;font-size:15px;color:var(--text-2)">Designed for ${esc(c.age)} · ${esc(c.level)} · ${esc(c.format)}.${c.uses_kit ? ' Uses the Tinkerwith Maker Kit or your own Arduino parts.' : ''}</p>
+      <p class="licence"><strong>Licence:</strong> for one teacher or one family, to use with your own class or children. Please don&rsquo;t share or resell it. Schools with several teachers: <a href="${WA + encodeURIComponent(`Hi Anne, I'd like a school licence for the ${c.title} curriculum.`)}" target="_blank" rel="noopener">ask us about a school licence</a>.</p>
+      <p style="margin-top:1rem"><a class="tw-link-arrow" href="proposals/${encodeURIComponent(c.id)}.pdf" target="_blank" rel="noopener">See the free course outline (PDF) &rarr;</a>
+      &nbsp; <a class="tw-link-arrow" href="courses.html#${encodeURIComponent(c.track)}">Prefer a live course with a trainer? &rarr;</a></p>
+    </div>
+    <div class="cur-box buy" id="buy"></div></div>`;
+  renderBuy();
+}
+
+function payStatus() {
+  const list = (MINE && MINE.payments || []).slice(0, 3);
+  if (!list.length) return '';
+  const line = p => p.status === 'pending' ? `<li>⏳ <strong>${esc(p.code)}</strong>: received, waiting for us to check it (usually the same day).</li>`
+    : p.status === 'approved' ? `<li>✅ <strong>${esc(p.code)}</strong>: approved.</li>`
+    : `<li>❌ <strong>${esc(p.code)}</strong>: not approved${p.note ? ` (${esc(p.note)})` : ''}. Please check and send it again, or message us on WhatsApp.</li>`;
+  return `<ul class="pay-status">${list.map(line).join('')}</ul>`;
+}
+
+async function renderBuy() {
+  const box = $('buy'), c = COURSE;
+  const head = `<h2>Get the full curriculum</h2><div class="buy-price">${price()}</div>${TWPrice.switcher()}
+    <p style="font-size:14.5px;color:var(--text-2);margin-top:8px">One course · one teacher or family · PDF download</p>`;
+  const r = await LMS.ready;
+  if (!r.signIn) { box.innerHTML = head + '<p class="notice" style="margin-top:12px">Sign-in is taking a break. Please try again later.</p>'; return; }
+  if (!LMS.user) {
+    box.innerHTML = head + `<p style="margin-top:12px">Sign in or create a free account, then pay and download. Your curriculum stays in your account.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:12px">Sign in to buy</button>`;
+    $('b-signin').onclick = LMS.signIn; return;
+  }
+  try { MINE = await LMS.rpc('lms_my_curriculum', { p_premium: c.id }); } catch (e) { box.innerHTML = head + `<div class="notice err">${esc(e.message)}</div>`; return; }
+  if (MINE.has_access) {
+    box.innerHTML = `<h2>Your curriculum 🎉</h2><p style="font-size:15px;color:var(--text-2)">Download it any time from this page.</p><div class="dl" id="dl"><p class="loading">Loading files&hellip;</p></div>
+      <p class="licence">For your own class or children only. Please don&rsquo;t share or resell it.</p>`;
+    const bucket = LMS.db.storage.from('lms-files');
+    const { data } = await bucket.list(`curriculum/${c.id}`, { sortBy: { column: 'name', order: 'asc' } });
+    const files = (data || []).filter(x => x.id);
+    $('dl').innerHTML = files.length ? files.map(x => `<button class="tw-btn tw-btn-white" type="button" data-file="${esc(x.name)}" style="justify-content:flex-start">📄 ${esc(x.name)}</button>`).join('')
+      : `<p>Your curriculum is being prepared. We&rsquo;ll let you know on WhatsApp or email as soon as it&rsquo;s ready.</p>`;
+    $('dl').onclick = async e => {
+      const b = e.target.closest('[data-file]'); if (!b) return;
+      const { data: s, error } = await bucket.createSignedUrl(`curriculum/${c.id}/${b.dataset.file}`, 60, { download: b.dataset.file });
+      if (error) return toast('That file couldn’t be opened. Please try again.');
+      LMS.track('curriculum_download', { course: c.id });
+      location.href = s.signedUrl;
+    };
+    return;
+  }
+  const email = (LMS.state.me && LMS.state.me.email) || '';
+  const P = DATA.curriculum_price;
+  box.innerHTML = head + `
+    ${PAID_BY_CARD ? '<p style="margin-top:10px"><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
+    ${payStatus()}
+    <ol style="margin-top:12px">
+      <li>Pay <strong>KES ${P.price.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.</li>
+      ${CURRICULUM_CARD_URL ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" id="b-card" href="${CURRICULUM_CARD_URL}">Pay US$${P.price_usd} by card &rarr;</a></li>` : ''}
+      <li>Paste the M-Pesa message${CURRICULUM_CARD_URL ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock your download for <strong>${esc(email)}</strong>, usually the same day.</li>
+    </ol>
+    <form id="pf">
+      ${CURRICULUM_CARD_URL ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500">I paid by
+        <label><input type="radio" name="method" value="mpesa" ${PAID_BY_CARD ? '' : 'checked'}> M-Pesa</label>
+        <label><input type="radio" name="method" value="card" ${PAID_BY_CARD ? 'checked' : ''}> Card</label></div>` : ''}
+      <label class="field-in">M-Pesa message or code${CURRICULUM_CARD_URL ? ', or card order number' : ''}
+        <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${P.price.toLocaleString()}.00 paid to …"></textarea></label>
+      <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="curriculum-pay">Send payment</button></div>
+    </form>`;
+  const card = $('b-card');
+  if (card) card.onclick = () => { try { localStorage.setItem('tw_curriculum_pending', c.id); } catch (_) {} };
+  $('pf').onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, b = f.querySelector('button'); b.disabled = true;
+    try {
+      const r = await LMS.rpc('lms_submit_curriculum_payment', { p_premium: c.id, p_message: f.msg.value, p_method: (f.method && f.method.value) || 'mpesa' });
+      LMS.track('curriculum_payment_sent', { course: c.id });
+      toast(`Got it: ${r.code}. We’ll check it and unlock your download.`);
+      renderBuy();
+    } catch (err) { toast(err.message); b.disabled = false; }
+  };
+}
+
+LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
+fetch('premium_courses.json').then(r => r.json()).then(d => {
+  DATA = d;
+  COURSE = d.courses.find(c => c.id === id) || null;
+  const draw = () => COURSE ? detailView() : listView();
+  draw();
+  document.addEventListener('tw:currency', draw);
+}).catch(() => { $('main').innerHTML = '<div class="notice err">The curriculums couldn’t load. Please refresh the page.</div>'; });
+</script>
+</body>
+</html>

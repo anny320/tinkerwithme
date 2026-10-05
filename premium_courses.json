@@ -1,7 +1,8 @@
 {
-  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Every course runs live online (1:1 or small group) or in person; the family chooses when booking. Prices are packages: 1-day camp KES 5,000, 2 live sessions 7,000, 3 live sessions 9,000, 2-day camp 9,000. \"self_paced_price\" is the self-paced online version (generate_elearning.py); trainer support is extra at KES 3,000/hr. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit. USD prices (price_usd, self_paced_price_usd, price_range_usd) are shown to visitors outside Kenya.",
+  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Every course runs live online (1:1 or small group) or in person; the family chooses when booking. Prices are packages: 1-day camp KES 5,000, 2 live sessions 7,000, 3 live sessions 9,000, 2-day camp 9,000. \"self_paced_price\" is the self-paced online version (generate_elearning.py); trainer support is extra at KES 3,000/hr. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit. USD prices (price_usd, self_paced_price_usd, price_range_usd) are shown to visitors outside Kenya. \"curriculum_price\" is the teach-it-yourself curriculum of one course (curriculum.html), for one teacher or family.",
   "price_range": {"min": 5000, "max": 9000},
   "price_range_usd": {"min": 69, "max": 115},
+  "curriculum_price": {"price": 1500, "price_usd": 10},
   "maker_kit": {
     "name": "Tinkerwith Maker Kit",
     "price": 8500,
