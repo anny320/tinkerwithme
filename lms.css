@@ -69,6 +69,8 @@
 .prose th,.prose td{border:1.5px solid var(--border-strong);padding:6px 9px;text-align:left}
 .video{position:relative;aspect-ratio:16/9;border:2px solid var(--ink);border-radius:var(--radius);overflow:hidden;background:#000}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.prose .video{margin:1.1rem 0}
+.promise{font-size:14px;font-weight:600;color:var(--green-deep,#1A5C08);margin:4px 0}
 
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(140px);background:var(--ink);color:#fff;opacity:0;
   padding:12px 20px;border-radius:99px;font-weight:600;z-index:90;transition:transform .25s,opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
