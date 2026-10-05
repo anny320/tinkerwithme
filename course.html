@@ -103,6 +103,7 @@
       <a class="tw-nav-link is-active" href="learn.html" aria-current="page">Learn online</a>
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
       <a class="tw-nav-link" href="about.html">About</a>
     </div>
     <div class="tw-nav-tail">
@@ -144,7 +145,7 @@
         <img src="assets/mark.png" alt="">
         <span>Tinkerwith_</span>
       </div>
-      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
     </div>
     <div>
       <h4>Learn</h4>
@@ -154,6 +155,8 @@
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
         <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
       </ul>
     </div>
     <div>
@@ -165,7 +168,6 @@
         <li><a href="coloring-book.html">Robot coloring book</a></li>
         <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
         <li><a href="train-an-ai.html">Train an AI game</a></li>
-        <li><a href="admin.html">Course editor</a></li>
       </ul>
     </div>
     <div>
@@ -175,6 +177,7 @@
         <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
         <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
         <li><a href="privacy.html">Privacy policy</a></li>
       </ul>
     </div>
@@ -278,6 +281,7 @@ function show(lessonId) {
 
 /* ── Overview: description, enrolment, certificate ── */
 const offerNote = () => C.regular_kes ? `<p class="offer-note">🎉 Launch price until <strong>${day(new Date(new Date(C.offer_ends_at) - 1))}</strong>, then ${TWPrice.fmt(C.regular_kes, C.regular_usd)}.</p>` : '';
+const bundleNote = () => (C.bundles || []).map(b => `<p class="offer-note">💡 Save with the <a href="bundle.html?b=${encodeURIComponent(b.slug)}">${esc(b.title)}</a>: this course and more for ${TWPrice.fmt(b.price_kes, b.price_usd)}.</p>`).join('');
 function previewBox() {
   const pv = C.lessons.filter(l => l.preview);
   if (C.can_access || !pv.length) return '';
@@ -288,7 +292,7 @@ function renderOverview() {
   const next = C.lessons.find(l => !l.done) || C.lessons[0];
   let act = '';
   if (!LMS.user) {
-    act = previewBox() + `<div class="action"><h3>Ready to start?</h3>${C.price_kes ? `<p class="price-line">${coursePrice()}</p>${offerNote()}` : ''}<p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
+    act = previewBox() + `<div class="action"><h3>Ready to start?</h3>${C.price_kes ? `<p class="price-line">${coursePrice()}</p>${offerNote()}${bundleNote()}` : ''}<p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
       <button class="tw-btn tw-btn-orange" type="button" id="b-signin">Sign in to start</button></div>`;
   } else if (C.can_access) {
     act = next ? `<div class="action"><h3>${doneCount() ? (finished() ? 'You finished this course! 🎉' : 'Welcome back!') : 'You’re enrolled!'}</h3>
@@ -305,7 +309,7 @@ function renderOverview() {
     const renew = C.enrolled && C.expired;
     const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
         <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
-    act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}
+    act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
       <p class="promise">✓ Not happy within 7 days? Full refund.</p>
       ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
@@ -501,6 +505,7 @@ function certificate() {
     <div class="cert-tools no-print">
       <label class="field-in">Name on the certificate <input id="cert-in" maxlength="60" value="${esc(name)}" placeholder="Type your name"></label>
       <button class="tw-btn tw-btn-orange" type="button" id="cert-print">🖨 Print</button>
+      <a class="tw-btn tw-btn-white" href="stories.html" data-ga="lms-share-story">💬 Share your story</a>
     </div></div>`;
 }
 function wireCertificate() {

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course bundle — TinkerWith_</title>
+<meta name="description" content="Several Tinkerwith online courses for one price. Self-paced AI and engineering for kids, with 12 months of access.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Tinkerwith course bundle">
+<meta property="og:description" content="Our biggest online courses for one price.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.b-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:2rem;align-items:start}
+@media(max-width:860px){.b-grid{grid-template-columns:1fr}}
+.b-box{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem}
+.b-box h2{font-size:21px;font-weight:600;margin-bottom:10px}
+.b-courses{display:flex;flex-direction:column;gap:1rem}
+.b-course{display:grid;grid-template-columns:96px 1fr;gap:14px;border:2px solid var(--ink);border-radius:var(--radius);padding:12px;background:var(--cream)}
+.b-course .cv{width:96px;height:96px;border-radius:var(--radius-sm);background:var(--orange-light,#FFE3C2) center/cover;border:2px solid var(--ink)}
+.b-course h3{font-size:18px;font-weight:600}
+.b-course p{font-size:14.5px;color:var(--text-2);margin-top:4px}
+.b-course .meta{font-size:13px;font-weight:600;color:var(--ink)}
+.buy-price{font-size:30px;font-weight:700;margin:4px 0 2px}
+.save{display:inline-block;background:var(--green-soft);color:var(--green-deep,#1A5C08);font-weight:700;font-size:14px;border-radius:99px;padding:3px 12px;margin:6px 0}
+.buy .pay-status{list-style:none;margin:10px 0;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.buy ol{margin:12px 0 0 1.2em;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.buy form{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+</style>
+
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+<script src="price.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill" id="b-eyebrow">Course bundle</span>
+    <h1 class="tw-h1" id="b-title" style="font-size:clamp(30px,4.8vw,48px)">Course bundle</h1>
+    <p id="b-lede"></p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container" id="main"><p class="loading">Loading&hellip;</p></div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+/* A bundle of online courses for one payment. Buyers sign in, pay (M-Pesa, or
+   card on HustleSasa), paste the code or order number, and every course in the
+   bundle unlocks for 12 months once an admin approves it (teach.html → Payments).
+   Bundles live in lms_bundles / lms_bundle_courses (supabase/lms.sql). */
+const $ = id => document.getElementById(id);
+const { esc } = LMS;
+const TILL = '3022049';
+const params = new URLSearchParams(location.search);
+let slug = params.get('b');
+const PAID_BY_CARD = params.get('paid') === 'card';
+if (PAID_BY_CARD && !slug) { try { slug = localStorage.getItem('tw_bundle_pending'); } catch (_) {} }
+let B = null;
+
+const toast = msg => { const t = document.createElement('div'); t.className = 'toast show'; t.textContent = msg;
+  t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;z-index:99;max-width:90%';
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3500); };
+const price = () => TWPrice.fmt(B.price_kes, B.price_usd);
+const save = () => TWPrice.fmt(B.worth_kes - B.price_kes, (B.worth_usd || 0) - (B.price_usd || 0));
+
+function view() {
+  document.title = `${B.title} — TinkerWith_`;
+  $('b-title').textContent = B.title;
+  $('b-lede').textContent = B.summary;
+  $('b-eyebrow').textContent = `${B.courses.length} online courses · save ${save()}`;
+  const drafts = B.courses.filter(c => !c.is_published);
+  $('main').innerHTML = (drafts.length && LMS.isAdmin ? `<div class="notice err" style="margin-bottom:1rem">Admin: ${drafts.map(c => esc(c.title)).join(', ')} ${drafts.length > 1 ? 'are' : 'is'} still a draft. Buyers can't open ${drafts.length > 1 ? 'them' : 'it'} until you publish ${drafts.length > 1 ? 'them' : 'it'} in the Course editor.</div>` : '') +
+    `<div class="b-grid">
+    <div class="b-box"><h2>What&rsquo;s included</h2>
+      <div class="b-courses">${B.courses.map(c => `<div class="b-course">
+        <div class="cv" ${c.cover_url ? `style="background-image:url('${esc(c.cover_url)}')"` : ''}></div>
+        <div><h3>${esc(c.title)}</h3>
+          <div class="meta">${c.age_range ? `Ages ${esc(c.age_range)} · ` : ''}${c.lessons} lessons · on its own ${TWPrice.fmt(c.price_kes, c.price_usd)}</div>
+          <p>${esc(c.summary)}</p>
+          <p><a class="tw-link-arrow" href="course.html?c=${encodeURIComponent(c.slug)}">${c.access ? 'Open the course' : 'See the lessons'} &rarr;</a></p></div>
+      </div>`).join('')}</div>
+      <p style="margin-top:1rem;font-size:15px;color:var(--text-2)">Self-paced: learn at your own speed, on a phone, tablet or computer. Quizzes in every lesson and a certificate for each course.</p>
+    </div>
+    <div class="b-box buy" id="buy"></div></div>`;
+  renderBuy();
+}
+
+function payStatus() {
+  const list = (B.payments || []).slice(0, 3);
+  if (!list.length) return '';
+  const line = p => p.status === 'pending' ? `<li>⏳ <strong>${esc(p.code)}</strong>: received, waiting for us to check it (usually the same day).</li>`
+    : p.status === 'approved' ? `<li>✅ <strong>${esc(p.code)}</strong>: approved.</li>`
+    : `<li>❌ <strong>${esc(p.code)}</strong>: not approved${p.note ? ` (${esc(p.note)})` : ''}. Please check and send it again, or message us on WhatsApp.</li>`;
+  return `<ul class="pay-status">${list.map(line).join('')}</ul>`;
+}
+
+async function renderBuy() {
+  const box = $('buy');
+  const head = `<h2>Get the bundle</h2><div class="buy-price">${TWPrice.fmtWas(B.price_kes, B.price_usd, B.worth_kes, B.worth_usd)}</div>
+    <span class="save">You save ${save()}</span> ${TWPrice.switcher()}
+    <p style="font-size:14.5px;color:var(--text-2);margin-top:8px">${B.courses.length} courses · 12 months of access to each</p>
+    <p class="promise">✓ Not happy within 7 days? Full refund.</p>`;
+  const r = await LMS.ready;
+  if (!r.signIn) { box.innerHTML = head + '<p class="notice" style="margin-top:12px">Sign-in is taking a break. Please try again later.</p>'; return; }
+  if (!LMS.user) {
+    box.innerHTML = head + `<p style="margin-top:12px">Sign in or create a free account, then pay. The courses unlock in your account.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:12px">Sign in to buy</button>`;
+    $('b-signin').onclick = LMS.signIn; return;
+  }
+  if (B.has_access) {
+    box.innerHTML = `<h2>You have the whole bundle 🎉</h2><p style="font-size:15px;color:var(--text-2)">Open any course to start or carry on.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">${B.courses.map(c =>
+        `<a class="tw-btn tw-btn-white" href="course.html?c=${encodeURIComponent(c.slug)}" style="justify-content:flex-start">${esc(c.title)} &rarr;</a>`).join('')}</div>`;
+    return;
+  }
+  const email = (LMS.state.me && LMS.state.me.email) || '';
+  box.innerHTML = head + `
+    ${PAID_BY_CARD ? '<p style="margin-top:10px"><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
+    ${payStatus()}
+    <ol>
+      <li>Pay <strong>KES ${B.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
+      ${B.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" id="b-card" href="${esc(B.card_url)}">Pay ${TWPrice.fmt(B.price_kes, B.price_usd)} by card &rarr;</a></li>` : ''}
+      <li>Paste the M-Pesa message${B.card_url ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock both courses for <strong>${esc(email)}</strong>, usually the same day.</li>
+    </ol>
+    <form id="pf">
+      ${B.card_url ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500">I paid by
+        <label><input type="radio" name="method" value="mpesa" ${PAID_BY_CARD ? '' : 'checked'}> M-Pesa</label>
+        <label><input type="radio" name="method" value="card" ${PAID_BY_CARD ? 'checked' : ''}> Card</label></div>` : ''}
+      <label class="field-in">M-Pesa message or code${B.card_url ? ', or card order number' : ''}
+        <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${B.price_kes.toLocaleString()}.00 paid to …"></textarea></label>
+      <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="bundle-pay">Send payment</button></div>
+    </form>`;
+  const card = $('b-card');
+  if (card) card.onclick = () => { try { localStorage.setItem('tw_bundle_pending', B.slug); } catch (_) {} };
+  $('pf').onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, b = f.querySelector('button'); b.disabled = true;
+    try {
+      const res = await LMS.rpc('lms_submit_bundle_payment', { p_bundle: B.slug, p_message: f.msg.value, p_method: (f.method && f.method.value) || 'mpesa' });
+      LMS.track('bundle_payment_sent', { bundle: B.slug });
+      toast(`Got it: ${res.code}. We’ll check it and unlock your courses.`);
+      await load();
+    } catch (err) { toast(err.message); b.disabled = false; }
+  };
+}
+
+async function load() {
+  try { B = await LMS.rpc('lms_bundle', { p_slug: slug || '' }); }
+  catch (e) { $('main').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; return; }
+  if (!B) { $('main').innerHTML = '<div class="notice">This bundle isn’t available. <a href="learn.html">See all online courses</a>.</div>'; return; }
+  view();
+}
+
+LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
+LMS.ready.then(load);
+document.addEventListener('tw:currency', () => { if (B) view(); });
+</script>
+</body>
+</html>

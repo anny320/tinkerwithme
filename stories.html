@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share your story — TinkerWith_</title>
+<meta name="description" content="Tell us what your child built with Tinkerwith. With your permission, we may share your words on our website.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Share your Tinkerwith story">
+<meta property="og:description" content="Tell us what your child built.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.st-form{max-width:640px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;display:flex;flex-direction:column;gap:14px}
+.st-form input:invalid.touched,.st-form textarea:invalid.touched{border-color:#C0392B}
+.st-form .check{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.st-form .check input{margin-top:4px;width:18px;height:18px;flex:none}
+.hint{font-size:13.5px;font-weight:500;color:var(--text-2)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+</style>
+
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Parents, learners &amp; teachers</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,48px)">Share your story</h1>
+    <p>What did your child build? What surprised them, or you? A few sentences help other families decide, and they make our day.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <form class="st-form" id="st-form" novalidate>
+      <label class="field-in">Your story
+        <textarea name="quote" required minlength="10" maxlength="600" placeholder="e.g. My daughter built a robot that follows a line, and now she wants to fix everything in the house!"></textarea>
+        <span class="hint">Up to 600 characters. We only fix obvious typos.</span></label>
+      <label class="field-in">Name to show <input name="name" required maxlength="60" placeholder="e.g. Wanjiru K.">
+        <span class="hint">First name and last initial is perfect. For children, please don&rsquo;t use a full name.</span></label>
+      <label class="field-in">Who you are <input name="role" maxlength="80" placeholder="e.g. Parent of a 9-year-old, Westlands"></label>
+      <label class="field-in">Email or WhatsApp number <input name="contact" required minlength="5" maxlength="120" placeholder="So we can say thank you. Never shown on the site.">
+        </label>
+      <label class="check"><input type="checkbox" name="consent" required>
+        <span>I agree that Tinkerwith may share these words with the name above on its website and social media. I&rsquo;m the parent or guardian if this is about a child under 18.</span></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="story-submit">Send my story</button>
+        <p id="st-err" role="alert" style="color:#C0392B;font-weight:600;margin-top:8px"></p></div>
+    </form>
+    <div class="notice ok" id="st-done" hidden style="max-width:640px"><h3>Thank you! 🧡</h3>
+      <p>We&rsquo;ve got your story. Anne reads every one before anything goes on the site.</p>
+      <p style="margin-top:8px"><a class="tw-link-arrow" href="index.html">Back to Tinkerwith &rarr;</a></p></div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>
+/* Stories are saved hidden (site_submit_testimonial in supabase/site-content.sql)
+   and only appear once an admin publishes them in admin.html → Testimonials. */
+(function () {
+  const f = document.getElementById('st-form'), err = document.getElementById('st-err');
+  f.onsubmit = async e => {
+    e.preventDefault();
+    f.querySelectorAll('[required]').forEach(i => i.classList.add('touched'));
+    if (!f.checkValidity()) { err.textContent = f.consent.checked ? 'Please fill in the highlighted fields.' : 'Please fill in the highlighted fields and tick the permission box.'; return; }
+    const p = { quote: f.quote.value.trim(), name: f.name.value.trim(), role: f.role.value.trim(), contact: f.contact.value.trim(),
+      consent: f.consent.checked ? 'true' : 'false', website: f.website.value };
+    const b = f.querySelector('button'); b.disabled = true; err.textContent = '';
+    try {
+      const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/site_submit_testimonial', {
+        method: 'POST', headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p }) });
+      if (!r.ok) throw new Error(((await r.json().catch(() => ({}))).message) || 'Something went wrong. Please try again.');
+      if (typeof gtag === 'function') gtag('event', 'testimonial_sent');
+      f.hidden = true; document.getElementById('st-done').hidden = false;
+    } catch (x) { err.textContent = x.message; }
+    finally { b.disabled = false; }
+  };
+})();
+</script>
+</body>
+</html>

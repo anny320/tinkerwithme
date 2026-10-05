@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For schools &amp; organisations — TinkerWith_</title>
+<meta name="description" content="Robotics, electronics and AI programmes for schools, homeschool groups, kids clubs and companies: term programmes, holiday camps, curriculums with a school licence, and online courses for whole classes.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Tinkerwith for schools &amp; organisations">
+<meta property="og:description" content="Term programmes, holiday camps, school curriculums and online courses for classes. Ages 5–16.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+@media(max-width:900px){.offer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.offer-grid{grid-template-columns:1fr}}
+.offer{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:8px}
+.offer .ic{font-size:30px}
+.offer h3{font-size:20px;font-weight:600}
+.offer p{font-size:15px;color:var(--text-2)}
+.offer .meta{font-size:13.5px;font-weight:600;color:var(--ink)}
+.offer a{margin-top:auto}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;counter-reset:s}
+@media(max-width:760px){.how{grid-template-columns:1fr}}
+.how div{border-top:3px solid var(--ink);padding-top:10px}
+.how strong{display:block;font-size:18px;margin-bottom:4px}
+.how p{font-size:15px;color:var(--text-2)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem}
+@media(max-width:760px){.facts{grid-template-columns:1fr}}
+.facts h3{font-size:17px;font-weight:600;margin-bottom:4px}
+.facts p{font-size:15px;color:var(--text-2)}
+.sch-form{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+@media(max-width:700px){.sch-form{grid-template-columns:1fr}}
+.sch-form .wide{grid-column:1/-1}
+.sch-form fieldset{border:0;display:flex;flex-wrap:wrap;gap:8px 16px;font-size:15px}
+.sch-form legend{font-size:14px;font-weight:600;margin-bottom:6px}
+.sch-form input:invalid.touched,.sch-form select:invalid.touched{border-color:#C0392B}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sec-h{font-size:clamp(24px,3.4vw,34px);font-weight:600;margin-bottom:1rem}
+</style>
+
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">For schools &amp; organisations &middot; ages 5&ndash;16</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,48px)">Hands-on robotics &amp; AI for your learners</h1>
+    <p>Term programmes, holiday camps and ready-to-teach curriculums for schools, homeschool groups, kids clubs and companies. In person in Nairobi, or online anywhere. We already work with 6 partner schools in Nairobi.</p>
+    <p style="margin-top:1rem;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="tw-btn tw-btn-orange" href="#enquire" data-ga="schools-hero-enquire">Plan a programme &rarr;</a>
+      <a class="tw-btn tw-btn-white" style="color:var(--ink)" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20talk%20about%20a%20Tinkerwith%20programme%20for%20our%20school." target="_blank" rel="noopener" data-ga="schools-hero-wa">WhatsApp Anne</a>
+    </p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">What we offer</h2>
+    <div class="offer-grid">
+      <div class="offer"><div class="ic">🏫</div><h3>Term programmes &amp; clubs</h3>
+        <p>A weekly robotics, electronics or AI club for a term, run by our trainers at your school or online. Learners build a real project every few weeks.</p>
+        <span class="meta">In person in Nairobi, or online</span>
+        <a class="tw-link-arrow" href="#enquire">Ask about a programme &rarr;</a></div>
+      <div class="offer"><div class="ic">🏕️</div><h3>Holiday camps &amp; workshops</h3>
+        <p>One- or two-day camps and one-off workshops: build a smart city, design an AI game, make a robot arm. Kits supplied.</p>
+        <span class="meta">From 1 day &middot; at your venue or ours</span>
+        <a class="tw-link-arrow" href="courses.html#live">See the camp courses &rarr;</a></div>
+      <div class="offer"><div class="ic">📘</div><h3>Curriculums to teach yourself</h3>
+        <p>The full session-by-session plan of any of our 17 live courses: lesson plans, timings, materials lists and complete code. KES 1,500 per teacher, school licences on request.</p>
+        <span class="meta">For your own teachers</span>
+        <a class="tw-link-arrow" href="curriculum.html">Browse the curriculums &rarr;</a></div>
+      <div class="offer"><div class="ic">💻</div><h3>Online courses for a class</h3>
+        <p>Enrol a whole class in our self-paced online courses. Learners get lessons, quizzes and certificates, and you see their progress.</p>
+        <span class="meta">Ask about group pricing</span>
+        <a class="tw-link-arrow" href="learn.html">See the online courses &rarr;</a></div>
+      <div class="offer"><div class="ic">🏨</div><h3>Venues &amp; kids clubs</h3>
+        <p>Hotel and resort kids clubs, residential estates and holiday programmes: hands-on build sessions that families remember.</p>
+        <span class="meta">Single sessions or a regular slot</span>
+        <a class="tw-link-arrow" href="#enquire">Ask about your venue &rarr;</a></div>
+      <div class="offer"><div class="ic">🏢</div><h3>Company family days</h3>
+        <p>A robotics or AI build corner for staff family days and bring-your-child-to-work events, for small or large groups.</p>
+        <span class="meta">Half or full day</span>
+        <a class="tw-link-arrow" href="#enquire">Ask about an event &rarr;</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">How it works</h2>
+    <div class="how">
+      <div><strong>1. Tell us about your learners</strong><p>Ages, group size, the term or dates you have in mind, and what you&rsquo;d like them to learn. Use the form below or WhatsApp.</p></div>
+      <div><strong>2. Get a plan and a quote</strong><p>Anne sends a proposal with the projects, session timings, kits and a price per learner.</p></div>
+      <div><strong>3. We build together</strong><p>We run the sessions (or hand your teachers the curriculum), learners build real projects, and every learner gets a certificate.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">Good to know</h2>
+    <div class="facts">
+      <div><h3>Ages and levels</h3><p>Ages 5 to 16, from first circuits and &ldquo;what is AI?&rdquo; to Arduino robots, computer vision and AI projects. We match the projects to your learners.</p></div>
+      <div><h3>Kits and equipment</h3><p>We bring the kits for camps and workshops. For term programmes, schools can buy the Tinkerwith Maker Kit, which is reused across every Arduino course. AI projects use free tools in a browser.</p></div>
+      <div><h3>Invoices and payment</h3><p>We invoice from Wakara Technologies Limited, the company behind Tinkerwith. Pay by bank transfer, M-Pesa (Till 3022049) or card.</p></div>
+      <div><h3>Safeguarding and privacy</h3><p>We follow your school&rsquo;s safeguarding and photo policies. Learners&rsquo; details are only used to run the programme, as set out in our <a href="privacy.html">privacy policy</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight" id="enquire">
+  <div class="tw-container">
+    <h2 class="sec-h">Plan a programme</h2>
+    <p style="margin:-0.4rem 0 1.2rem;color:var(--text-2)">Tell us a little about your learners and we&rsquo;ll come back with a plan and a quote.</p>
+    <form class="sch-form" id="sch-form" novalidate>
+      <label class="field-in">School or organisation <input name="organisation" required maxlength="80" autocomplete="organization"></label>
+      <label class="field-in">Type
+        <select name="type" required><option value="">Choose…</option><option>School</option><option>Homeschool group</option><option>Hotel, resort or estate</option><option>Company</option><option>Other</option></select></label>
+      <label class="field-in">Your name <input name="name" required maxlength="80" autocomplete="name"></label>
+      <label class="field-in">Your role <input name="role" maxlength="60" placeholder="e.g. Head of STEM"></label>
+      <label class="field-in">WhatsApp number <input name="whatsapp" required type="tel" maxlength="20" pattern="\+?[0-9 ]{7,20}" placeholder="+254 7…" autocomplete="tel"></label>
+      <label class="field-in">Email <input name="email" required type="email" maxlength="120" autocomplete="email"></label>
+      <label class="field-in">Learners&rsquo; ages <input name="ages" required maxlength="20" placeholder="e.g. 9–12"></label>
+      <label class="field-in">Number of learners <input name="learners" type="number" min="1" max="2000" placeholder="e.g. 25"></label>
+      <fieldset class="wide"><legend>What are you interested in?</legend>
+        <label><input type="checkbox" name="want" value="Term programme or club"> Term programme or club</label>
+        <label><input type="checkbox" name="want" value="Holiday camp or workshop"> Holiday camp or workshop</label>
+        <label><input type="checkbox" name="want" value="Curriculum with a school licence"> Curriculum with a school licence</label>
+        <label><input type="checkbox" name="want" value="Online courses for a class"> Online courses for a class</label>
+        <label><input type="checkbox" name="want" value="Venue or family-day sessions"> Venue or family-day sessions</label>
+        <label><input type="checkbox" name="want" value="Not sure yet"> Not sure yet</label></fieldset>
+      <label class="field-in">Where
+        <select name="mode" required><option value="in-person">In person (Nairobi)</option><option value="online-group">Online</option><option value="not-sure">Not sure yet</option></select></label>
+      <label class="field-in">Term or dates <input name="dates" required maxlength="120" placeholder="e.g. Term 1 2027, or the December holidays"></label>
+      <label class="field-in wide">Anything else? <textarea name="message" maxlength="1000" placeholder="Topics, budget, equipment you already have…"></textarea></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="wide"><button class="tw-btn tw-btn-orange" type="submit" data-ga="schools-enquiry">Send enquiry</button>
+        <p id="sch-err" role="alert" style="color:#C0392B;font-weight:600;margin-top:8px"></p></div>
+    </form>
+    <div class="notice ok" id="sch-done" hidden><h3>Thank you, we&rsquo;ve got it! 🎉</h3>
+      <p>Anne will get back to you with a plan and a quote soon. To speed things up, <a id="sch-wa" href="https://wa.me/254117784724" target="_blank" rel="noopener">send it on WhatsApp too</a>.</p></div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>
+/* School and organisation enquiries go to the same leads list as course
+   enquiries (lms_submit_lead, source 'schools'), shown in teach.html → Leads. */
+(function () {
+  const f = document.getElementById('sch-form'), err = document.getElementById('sch-err');
+  const text = p => `Hi Anne, I've just sent a ${p.extras.type || 'school'} enquiry on the website.\n\n` +
+    `Organisation: ${p.extras.organisation}\nContact: ${p.parent_name}${p.extras.role ? ' (' + p.extras.role + ')' : ''}\n` +
+    `Learners: ${p.extras.learners || '?'}, ages ${p.child_age}\nInterested in: ${p.courses.map(c => c.title).join(', ')}\n` +
+    `When: ${p.preferred_dates}\n${p.message ? '\n' + p.message : ''}`;
+  f.onsubmit = async e => {
+    e.preventDefault();
+    f.querySelectorAll('[required]').forEach(i => i.classList.add('touched'));
+    if (!f.checkValidity()) { err.textContent = 'Please fill in the highlighted fields.'; return; }
+    const wants = [...f.querySelectorAll('[name=want]:checked')].map(i => i.value);
+    const p = {
+      source: 'schools', parent_name: f.name.value.trim(), whatsapp: f.whatsapp.value.trim(), email: f.email.value.trim(),
+      child_age: f.ages.value.trim(), mode: f.mode.value, preferred_dates: f.dates.value.trim(), message: f.message.value.trim(),
+      website: f.website.value,
+      courses: (wants.length ? wants : ['Not sure yet']).map(t => ({ id: 'schools', title: t })),
+      extras: { organisation: f.organisation.value.trim(), type: f.type.value, role: f.role.value.trim(), learners: f.learners.value ? +f.learners.value : null },
+    };
+    const b = f.querySelector('button'); b.disabled = true; err.textContent = '';
+    try {
+      const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/lms_submit_lead', {
+        method: 'POST', headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p }) });
+      if (!r.ok) throw new Error(((await r.json().catch(() => ({}))).message) || 'Something went wrong.');
+      if (typeof gtag === 'function') gtag('event', 'generate_lead', { source: 'schools' });
+      document.getElementById('sch-wa').href = 'https://wa.me/254117784724?text=' + encodeURIComponent(text(p));
+      f.hidden = true; document.getElementById('sch-done').hidden = false;
+    } catch (x) {
+      // Never lose the enquiry: offer WhatsApp with everything filled in.
+      err.innerHTML = '';
+      err.append(x.message + ' You can also ');
+      const a = document.createElement('a'); a.href = 'https://wa.me/254117784724?text=' + encodeURIComponent(text(p));
+      a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'send it on WhatsApp'; err.append(a, '.');
+    } finally { b.disabled = false; }
+  };
+})();
+</script>
+</body>
+</html>
