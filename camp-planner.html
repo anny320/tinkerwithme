@@ -81,6 +81,7 @@ footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--tex
 footer a{color:var(--orange);text-decoration:none}
 </style>
 <script src="analytics.js"></script>
+<script src="site-data.js"></script>
 </head>
 <body>
 
@@ -580,8 +581,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   DEFAULT_BANDS.forEach(b => addBand(b.age, b.count));
   updateTally();
   try {
-    const res = await fetch('courses.json', { cache: 'no-store' });
-    if (res.ok) CATALOGUE = await res.json();
+    CATALOGUE = await SiteData.get('courses');
   } catch (_) { /* picker stays hidden if the catalogue can't load */ }
   refreshProjectPicker();   // default theme is Arduino → show its projects
 });

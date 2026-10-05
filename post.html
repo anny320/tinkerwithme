@@ -33,6 +33,7 @@
 .article-meta span+span::before{content:'\00B7';margin-right:9px;opacity:.6}
 </style>
 <script src="analytics.js"></script>
+<script src="site-data.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -133,8 +134,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 const slug = new URLSearchParams(location.search).get('slug');
 
-fetch('posts.json')
-  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+SiteData.get('posts')
   .then(d => {
     const p = d.posts.find(x => x.slug === slug);
     if (!p) {

@@ -308,6 +308,7 @@
 }
 </style>
 <script src="analytics.js"></script>
+<script src="site-data.js"></script>
 </head>
 <body>
 
@@ -866,8 +867,7 @@ $grid.addEventListener('click', e => {
   renderSummary();
 });
 
-fetch('testimonials.json')
-  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+SiteData.get('testimonials')
   .then(d => {
     // Only entries explicitly marked published ever reach the page.
     const live = (d.testimonials || []).filter(t => t.published);
@@ -884,8 +884,7 @@ fetch('testimonials.json')
     if (box) box.closest('section').style.display = 'none';
   });
 
-fetch('courses.json')
-  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+SiteData.get('courses')
   .then(d => {
     DATA = d;
     renderAll();

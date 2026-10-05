@@ -28,6 +28,8 @@ import re
 import sys
 from pathlib import Path
 
+import site_data
+
 # Map a lesson's section label -> the <h2> heading used in the rendered content.
 SECTION_HEADINGS = {
     "what you'll learn": "What we're doing",
@@ -41,9 +43,7 @@ SECTION_HEADINGS = {
 
 
 def load_catalogue():
-    path = Path(__file__).with_name("courses.json")
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
+    data = site_data.load_courses()
     index = {}
     for track, info in data.items():
         for p in info.get("projects", []):

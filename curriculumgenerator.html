@@ -85,6 +85,7 @@ footer a{color:var(--orange);text-decoration:none}
 #print-note { display: none; }
 </style>
 <script src="analytics.js"></script>
+<script src="site-data.js"></script>
 </head>
 <body>
 <div id="print-note">
@@ -1024,8 +1025,7 @@ function showReady(downloadUrl) {
 // Init
 async function loadCourses() {
   try {
-    const res = await fetch('courses.json', { cache: 'no-store' });
-    if (res.ok) DATA = await res.json();
+    try { DATA = await SiteData.get('courses'); } catch (_) { /* keep empty catalogue */ }
     try {
       const pr = await fetch('premium_courses.json', { cache: 'no-store' });
       if (pr.ok) PREMIUM = await pr.json();
