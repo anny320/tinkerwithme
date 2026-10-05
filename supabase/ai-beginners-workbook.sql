@@ -1,10 +1,12 @@
 -- AI Beginners Workbook: the full course, rebuilt from the original workbook
 -- (AI Workbook for Kids in Africa + the "Build Your First AI Chatbot" project).
 -- 14 lessons, each with an activity and a quiz. Illustrations in assets/courses/ai-workbook/.
--- Run in Supabase -> SQL Editor. Safe to run more than once: it keeps the course's
--- link, cover, enrolments and publish setting, sets the price to KES 3,000 / US$39,
--- and replaces all its lessons (lesson ticks on the old lessons reset).
+-- Run in Supabase -> SQL Editor, in 3 parts (run each separately, in order).
+-- Each part is safe to run more than once. It keeps the course's link, cover,
+-- enrolments and publish setting, sets the price to KES 3,000 / US$39, and
+-- replaces all its lessons (lesson ticks on the old lessons reset).
 
+-- PART 1 of 3: course details + lessons 1-5
 do $$
 declare cid uuid;
 begin
@@ -211,6 +213,15 @@ A good prompt answers four questions:
 4. Copy your best prompt into your AI Journal.
 
 **Remember:** AI art is made from patterns in other people's art. Always say when a picture was made with AI.$tw$, $tw$[{"q": "What is a prompt?", "options": ["The words you give AI to tell it what to make", "A type of paintbrush", "A computer virus"], "answer": 0}, {"q": "Which prompt will probably give the best picture?", "options": ["lion", "a lion wearing sunglasses in Nairobi National Park, cartoon style", "picture"], "answer": 1}, {"q": "What should you do when you share a picture made with AI?", "options": ["Say it was made with AI", "Pretend you drew it by hand", "Sell it as your own painting"], "answer": 0}]$tw$::jsonb);
+end $$;
+
+-- PART 2 of 3: lessons 6-10
+do $$
+declare cid uuid;
+begin
+  select id into cid from public.lms_courses where slug = 'ai-beginners-workbook';
+  if cid is null then raise exception 'Run part 1 first.'; end if;
+  delete from public.lms_lessons where course_id = cid and position between 6 and 10;
   insert into public.lms_lessons (course_id, position, section, title, body, quiz) values (cid, 6, $tw$Chapter 3: AI for creativity$tw$, $tw$Music and stories with AI$tw$, $tw$## 🎵 Making music with AI
 
 AI music tools can **compose new songs or beats**. You choose a style (like Afrobeats, gospel or calm piano) and describe a mood, and the AI creates a melody.
@@ -367,6 +378,15 @@ Choose one innovator (or someone you know who uses tech to help others!) and mak
 - Draw their picture
 - **Superpower:** what did they create or change?
 - **Why it matters** to people like you$tw$, $tw$[{"q": "Who came up with the name 'Artificial Intelligence'?", "options": ["John McCarthy", "Alan Turing", "Fei-Fei Li"], "answer": 0}, {"q": "Timnit Gebru is known for work on…", "options": ["AI ethics and fairness", "Building football stadiums", "Mobile money"], "answer": 0}, {"q": "What does the Masakhane community work on?", "options": ["AI for African languages", "Self-driving cars", "Space rockets"], "answer": 0}]$tw$::jsonb);
+end $$;
+
+-- PART 3 of 3: lessons 11-14
+do $$
+declare cid uuid;
+begin
+  select id into cid from public.lms_courses where slug = 'ai-beginners-workbook';
+  if cid is null then raise exception 'Run part 1 first.'; end if;
+  delete from public.lms_lessons where course_id = cid and position between 11 and 14;
   insert into public.lms_lessons (course_id, position, section, title, body, quiz) values (cid, 11, $tw$Final project: build your first AI chatbot$tw$, $tw$Project session 1: What is a chatbot?$tw$, $tw$## 💬 What is a chatbot?
 
 A **chatbot** is a computer program that can **talk with people and answer questions**.
@@ -426,7 +446,7 @@ You'll use these blocks:
 
 ![Scratch chatbot code blocks](https://tinkerwith.me/assets/courses/ai-workbook/scratch-chatbot.svg)
 
-```
+~~~
 when green flag clicked
 ask "Hello! What is your name?" and wait
 say (join "Nice to meet you " answer)
@@ -435,7 +455,7 @@ if answer = "good" then
     say "That is great!"
 else
     say "I hope your day gets better!"
-```
+~~~
 
 Click the **green flag** to test it. Type your answers in the box at the bottom of the stage.
 
