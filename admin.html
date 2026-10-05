@@ -142,6 +142,7 @@ textarea{resize:vertical;min-height:70px}
 .logout-btn:hover{background:rgba(255,255,255,0.20);color:#fff}
 </style>
 <script src="analytics.js"></script>
+<script src="lms.js"></script>
 </head>
 <body>
 
@@ -150,16 +151,8 @@ textarea{resize:vertical;min-height:70px}
   <div class="login-box">
     <div class="login-logo">TinkerWithMe</div>
     <h2>Course Editor</h2>
-    <p>Enter your password to continue</p>
-    <div class="login-field">
-      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
-      <button class="login-toggle" id="pw-toggle" type="button" title="Show/hide password">
-        <i class="ti ti-eye" id="pw-eye"></i>
-      </button>
-    </div>
-    <button class="login-submit" id="pw-submit">Unlock Editor</button>
-    <div class="login-error" id="pw-error">Incorrect password — try again</div>
-    <p class="login-forgot">Forgot your password? <a href="#" id="reset-link">Send reset email</a></p>
+    <p id="gate-msg">Checking your sign-in&hellip;</p>
+    <button class="login-submit" id="gate-btn" type="button" hidden>Sign in</button>
   </div>
 </div>
 
@@ -173,15 +166,16 @@ textarea{resize:vertical;min-height:70px}
     <a class="nav-link" href="community.html">Community</a>
     <a class="nav-link active" href="admin.html">Editor</a>
   </div>
-  <button class="logout-btn" onclick="logout()"><i class="ti ti-lock"></i> Lock</button>
+  <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button>
 </nav>
 
 <div class="page-header">
   <h1>Course Editor</h1>
-  <p>Add, edit, or remove activities. Changes are saved in your browser and applied to the Course Picker automatically.</p>
+  <p>Add, edit, or remove activities, testimonials and blog posts. Every change is saved straight to the website.</p>
 </div>
 
 <div class="container">
+  <div id="banner"></div>
 
   <!-- Which content are we editing? -->
   <div class="section-tabs">
@@ -203,8 +197,7 @@ textarea{resize:vertical;min-height:70px}
   <!-- Toolbar -->
   <div class="toolbar">
     <h2 id="track-label">Arduino activities</h2>
-    <button class="btn btn-secondary btn-sm" onclick="openExport()"><i class="ti ti-download"></i> Export JSON</button>
-    <button class="btn btn-secondary btn-sm" onclick="resetToDefaults()"><i class="ti ti-refresh"></i> Reset to defaults</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportJSON('courses')"><i class="ti ti-download"></i> Backup copy</button>
     <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus"></i> Add activity</button>
   </div>
 
@@ -231,12 +224,12 @@ textarea{resize:vertical;min-height:70px}
 <div id="sec-testimonials" style="display:none">
   <div class="notice">
     <strong>Only publish what you were actually given.</strong>
-    Unpublished entries stay in the file but never appear on the site, so you can park a
+    Unpublished entries stay saved but never appear on the site, so you can park a
     quote until you have written permission. Record who gave it and when.
   </div>
   <div class="toolbar">
     <h2>Testimonials</h2>
-    <button class="btn btn-secondary btn-sm" onclick="exportJSON('testimonials')"><i class="ti ti-download"></i> Export testimonials.json</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportJSON('testimonials')"><i class="ti ti-download"></i> Backup copy</button>
     <button class="btn btn-primary" onclick="openT()"><i class="ti ti-plus"></i> Add testimonial</button>
   </div>
   <div class="table-wrap">
@@ -251,7 +244,7 @@ textarea{resize:vertical;min-height:70px}
 <div id="sec-posts" style="display:none">
   <div class="toolbar">
     <h2>Blog posts</h2>
-    <button class="btn btn-secondary btn-sm" onclick="exportJSON('posts')"><i class="ti ti-download"></i> Export posts.json</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportJSON('posts')"><i class="ti ti-download"></i> Backup copy</button>
     <button class="btn btn-primary" onclick="openP()"><i class="ti ti-plus"></i> Add post</button>
   </div>
   <div class="table-wrap">
@@ -315,11 +308,11 @@ textarea{resize:vertical;min-height:70px}
 <div class="modal-overlay" id="export-modal" onclick="handleExportOverlayClick(event)">
   <div class="modal">
     <div class="modal-header">
-      <h3>Export course data</h3>
+      <h3>Backup copy</h3>
       <button class="modal-close" onclick="closeExport()"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--text-2);margin-bottom:10px">Copy this JSON and save it as <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:12px">courses.json</code> in the repo to make your changes permanent (it's the single catalogue the site and generators read).</p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:10px">Your changes are already live &mdash; this is only a copy. To refresh the backup file the site falls back on, save it over <code id="export-file" style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:12px"></code> in GitHub.</p>
       <button class="btn btn-secondary btn-sm" onclick="copyExport()" style="margin-bottom:8px"><i class="ti ti-copy"></i> Copy to clipboard</button>
       <div class="export-box" id="export-box"></div>
     </div>
@@ -333,42 +326,60 @@ textarea{resize:vertical;min-height:70px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DEFAULT DATA (mirrors picker.html) ─────────────────────────────────────
-// ── CATALOGUE ─────────────────────────────────────────────────────────────
-// Loaded from the shared courses.json at startup (single source of truth). The
-// editor works on a localStorage copy; Export produces courses.json to commit.
-let DEFAULT_DATA = { arduino:{ages:[],projects:[]}, ai:{ages:[],projects:[]} };
+// ── DATA ──────────────────────────────────────────────────────────────────
+// Lives in Supabase (table site_content, one row each for courses,
+// testimonials and posts — see supabase/site-content.sql). Every change is
+// saved straight away; the public pages read it through site-data.js. The
+// JSON files in the repo are only a backup the pages fall back to.
+let COURSES = { arduino:{ages:[],projects:[]}, ai:{ages:[],projects:[]} };
+let TDATA = [], PDATA = [];
+let TEXTRA = {}, PEXTRA = {};   // the files' _comment/_fields notes, kept as-is
+const FILES = { courses:'courses.json', testimonials:'testimonials.json', posts:'posts.json' };
+const OLD_KEYS = { courses:'twm_courses', testimonials:'twm_testimonials', posts:'twm_posts' };
 
-async function loadDefaultCourses() {
-  try {
-    const res = await fetch('courses.json', { cache: 'no-store' });
-    if (res.ok) DEFAULT_DATA = await res.json();
-  } catch (e) { /* keep empty; editor still opens */ }
-}
-
-// ── STATE ─────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'twm_courses';
 let currentTrack = 'arduino';
 let editingId = null;
 
-function loadData() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_DATA));
-  } catch(e) {
-    return JSON.parse(JSON.stringify(DEFAULT_DATA));
-  }
+async function fetchFile(file) {
+  try { const r = await fetch(file, { cache:'no-store' }); if (r.ok) return await r.json(); } catch (e) {}
+  return null;
 }
 
-function saveData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function setDoc(key, d) {
+  if (key === 'courses') { if (d && d.arduino && d.ai) COURSES = d; }
+  else if (key === 'testimonials') { const { testimonials = [], ...rest } = d || {}; TDATA = testimonials; TEXTRA = rest; }
+  else { const { posts = [], ...rest } = d || {}; PDATA = posts; PEXTRA = rest; }
+}
+function getDoc(key) {
+  return key === 'courses' ? COURSES
+    : key === 'testimonials' ? { ...TEXTRA, testimonials: TDATA }
+    : { ...PEXTRA, posts: PDATA };
+}
+
+// Loads all three from Supabase. Anything not saved there yet starts from the
+// JSON file, and is written to Supabase on its first save.
+async function loadAll() {
+  const { data, error } = await LMS.db.from('site_content').select('key,data');
+  if (error) throw new Error(error.message);
+  const rows = Object.fromEntries(data.map(r => [r.key, r.data]));
+  for (const key of Object.keys(FILES)) setDoc(key, rows[key] || await fetchFile(FILES[key]));
+}
+
+async function save(key) {
+  const { error } = await LMS.db.from('site_content').upsert({ key, data: getDoc(key) });
+  if (error) {
+    showToast('Not saved — ' + error.message);
+    try { await loadAll(); } catch (e) {}   // show what is really saved
+    renderEverything();
+    return false;
+  }
+  return true;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────
 function renderStats() {
-  const data = loadData();
-  const ard = data.arduino.projects.length;
-  const ai = data.ai.projects.length;
+  const ard = COURSES.arduino.projects.length;
+  const ai = COURSES.ai.projects.length;
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-card"><div class="stat-num">${ard}</div><div class="stat-label">Arduino activities</div></div>
     <div class="stat-card"><div class="stat-num green">${ai}</div><div class="stat-label">AI activities</div></div>
@@ -377,8 +388,7 @@ function renderStats() {
 }
 
 function renderTable() {
-  const data = loadData();
-  const projects = data[currentTrack].projects;
+  const projects = COURSES[currentTrack].projects;
   const tbody = document.getElementById('course-table');
   const empty = document.getElementById('empty-state');
 
@@ -392,15 +402,15 @@ function renderTable() {
   const dc = d => d==='Beginner'?'diff-beg':d==='Intermediate'?'diff-int':'diff-adv';
   tbody.innerHTML = projects.map(p => `
     <tr>
-      <td><strong>${p.title}</strong></td>
-      <td><span class="diff-badge ${dc(p.diff)}">${p.diff}</span></td>
-      <td>${p.age}</td>
-      <td>${p.time} min</td>
-      <td style="max-width:220px;color:var(--text-2)">${p.desc}</td>
+      <td><strong>${esc(p.title)}</strong></td>
+      <td><span class="diff-badge ${dc(p.diff)}">${esc(p.diff)}</span></td>
+      <td>${esc(p.age)}</td>
+      <td>${esc(p.time)} min</td>
+      <td style="max-width:220px;color:var(--text-2)">${esc(p.desc)}</td>
       <td>
         <div class="row-actions">
-          <button class="btn btn-secondary btn-sm" onclick="openEdit('${p.id}')"><i class="ti ti-pencil"></i></button>
-          <button class="btn btn-danger btn-sm" onclick="deleteActivity('${p.id}')"><i class="ti ti-trash"></i></button>
+          <button class="btn btn-secondary btn-sm" onclick="openEdit('${esc(p.id)}')"><i class="ti ti-pencil"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteActivity('${esc(p.id)}')"><i class="ti ti-trash"></i></button>
         </div>
       </td>
     </tr>
@@ -408,6 +418,7 @@ function renderTable() {
 }
 
 function render() { renderStats(); renderTable(); }
+function renderEverything() { render(); renderT(); renderP(); }
 
 // ── TRACK ─────────────────────────────────────────────────────────────────
 function setTrack(t) {
@@ -425,10 +436,9 @@ function setTrack(t) {
 
 // ── MODAL ─────────────────────────────────────────────────────────────────
 function populateAgeSelect() {
-  const data = loadData();
-  const ages = data[currentTrack].ages.filter(a => a !== 'All ages');
+  const ages = COURSES[currentTrack].ages.filter(a => a !== 'All ages');
   const sel = document.getElementById('f-age');
-  sel.innerHTML = ages.map(a => `<option>${a}</option>`).join('');
+  sel.innerHTML = ages.map(a => `<option>${esc(a)}</option>`).join('');
 }
 
 function openAdd() {
@@ -445,8 +455,7 @@ function openAdd() {
 }
 
 function openEdit(id) {
-  const data = loadData();
-  const p = data[currentTrack].projects.find(x => x.id === id);
+  const p = COURSES[currentTrack].projects.find(x => x.id === id);
   if (!p) return;
   editingId = id;
   document.getElementById('modal-title').textContent = 'Edit activity';
@@ -463,7 +472,7 @@ function openEdit(id) {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function handleOverlayClick(e) { if (e.target === document.getElementById('modal')) closeModal(); }
 
-function saveActivity() {
+async function saveActivity() {
   const title = document.getElementById('f-title').value.trim();
   const diff = document.getElementById('f-diff').value;
   const age = document.getElementById('f-age').value;
@@ -473,47 +482,31 @@ function saveActivity() {
 
   if (!title || !desc) { showToast('Please fill in the title and description'); return; }
 
-  const data = loadData();
-  const projects = data[currentTrack].projects;
-
+  const projects = COURSES[currentTrack].projects;
   if (editingId) {
     const idx = projects.findIndex(p => p.id === editingId);
     if (idx > -1) projects[idx] = { ...projects[idx], title, diff, age, time, icon, desc };
-    showToast('Activity updated');
   } else {
     const prefix = currentTrack === 'arduino' ? 'ar' : 'a';
-    const newId = prefix + Date.now();
-    projects.push({ id: newId, icon, title, diff, age, time, desc });
-    showToast('Activity added');
+    projects.push({ id: prefix + Date.now(), icon, title, diff, age, time, desc });
   }
-
-  saveData(data);
   closeModal();
   render();
+  if (await save('courses')) showToast(editingId ? 'Activity updated' : 'Activity added');
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
-function deleteActivity(id) {
+async function deleteActivity(id) {
   if (!confirm('Delete this activity?')) return;
-  const data = loadData();
-  data[currentTrack].projects = data[currentTrack].projects.filter(p => p.id !== id);
-  saveData(data);
+  COURSES[currentTrack].projects = COURSES[currentTrack].projects.filter(p => p.id !== id);
   render();
-  showToast('Activity deleted');
+  if (await save('courses')) showToast('Activity deleted');
 }
 
-// ── RESET ─────────────────────────────────────────────────────────────────
-function resetToDefaults() {
-  if (!confirm('Reset all courses to defaults? This cannot be undone.')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  render();
-  showToast('Reset to default courses');
-}
-
-// ── EXPORT ────────────────────────────────────────────────────────────────
-function openExport() {
-  const data = loadData();
-  document.getElementById('export-box').textContent = JSON.stringify(data, null, 2);
+// ── BACKUP COPY ───────────────────────────────────────────────────────────
+function exportJSON(key) {
+  document.getElementById('export-file').textContent = FILES[key];
+  document.getElementById('export-box').textContent = JSON.stringify(getDoc(key), null, 2);
   document.getElementById('export-modal').classList.add('open');
 }
 function closeExport() { document.getElementById('export-modal').classList.remove('open'); }
@@ -531,47 +524,8 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-
-// ── AUTH ──────────────────────────────────────────────────────────────────
-const HASH = 'd16348550f1b363c5a1c0d310c1c1ff297362f249929a9ed4dd419c85959113e';
-const SESSION_KEY = 'twm_admin_auth';
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-async function tryLogin() {
-  const val = document.getElementById('pw-input').value;
-  if (!val) return;
-  const btn = document.getElementById('pw-submit');
-  btn.textContent = 'Checking…';
-  btn.disabled = true;
-  const h = await sha256(val);
-  if (h === HASH) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    document.getElementById('login-gate').classList.add('hidden');
-    render();
-  } else {
-    document.getElementById('pw-error').classList.add('show');
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
-    btn.textContent = 'Unlock Editor';
-    btn.disabled = false;
-    // Shake animation
-    const box = document.querySelector('.login-box');
-    box.style.animation = 'none';
-    box.offsetHeight;
-    box.style.animation = 'shake 0.4s ease';
-  }
-}
-
 // ── SECTIONS: testimonials + blog posts ─────────────────────────────
-// Same contract as the course editor: edit against a localStorage copy,
-// then Export to get the JSON file to commit.
-const T_KEY = 'twm_testimonials', P_KEY = 'twm_posts';
-let TDATA = [], PDATA = [];
-const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function setSection(name) {
   document.querySelectorAll('.section-tab').forEach(b =>
@@ -580,33 +534,13 @@ function setSection(name) {
     document.getElementById('sec-' + n).style.display = (n === name ? '' : 'none'));
 }
 
-async function loadJSON(file, key, fallback) {
-  try {
-    const stored = localStorage.getItem(key);
-    if (stored) return JSON.parse(stored);
-  } catch (e) {}
-  try {
-    const r = await fetch(file, {cache:'no-store'});
-    if (r.ok) return await r.json();
-  } catch (e) {}
-  return fallback;
-}
-
-async function loadExtras() {
-  const t = await loadJSON('testimonials.json', T_KEY, {testimonials:[]});
-  TDATA = t.testimonials || [];
-  const p = await loadJSON('posts.json', P_KEY, {posts:[]});
-  PDATA = p.posts || [];
-  renderT(); renderP();
-}
-
-function persistT() { localStorage.setItem(T_KEY, JSON.stringify({testimonials:TDATA})); renderT(); }
-function persistP() { localStorage.setItem(P_KEY, JSON.stringify({posts:PDATA})); renderP(); }
+async function persistT(msg) { renderT(); if (await save('testimonials') && msg) showToast(msg); }
+async function persistP(msg) { renderP(); if (await save('posts') && msg) showToast(msg); }
 
 function renderT() {
   document.getElementById('t-table').innerHTML = TDATA.map((t, i) => `
     <tr>
-      <td class="quote-cell">${esc(t.quote).slice(0,150)}${t.quote.length>150?'…':''}</td>
+      <td class="quote-cell">${esc(String(t.quote).slice(0,150))}${t.quote.length>150?'…':''}</td>
       <td>${esc(t.name)}</td>
       <td>${esc(t.role)}</td>
       <td>${esc(t.source || '—')}</td>
@@ -620,8 +554,12 @@ function renderT() {
     </tr>`).join('') || '<tr><td colspan="7" style="padding:1.5rem;text-align:center;color:#B08060">No testimonials yet.</td></tr>';
 }
 
-function toggleT(i) { TDATA[i].published = !TDATA[i].published; persistT(); }
-function delT(i) { if (confirm('Delete this testimonial?')) { TDATA.splice(i,1); persistT(); } }
+function toggleT(i) {
+  if (!TDATA[i].published && !TDATA[i].consent) { showToast('Record their permission first (Edit)'); return; }
+  TDATA[i].published = !TDATA[i].published;
+  persistT(TDATA[i].published ? 'Testimonial is live' : 'Testimonial hidden');
+}
+function delT(i) { if (confirm('Delete this testimonial?')) { TDATA.splice(i,1); persistT('Testimonial deleted'); } }
 
 function openT(i) {
   const t = (i === undefined) ? {quote:'',name:'',role:'',source:'whatsapp',date:new Date().toISOString().slice(0,10),consent:false,published:false} : TDATA[i];
@@ -633,9 +571,7 @@ function openT(i) {
   const consent = confirm('Did they give permission, in writing, to publish this?\n\nOK = yes    Cancel = not yet');
   const rec = {quote, name, role, source, date, consent, published: consent && (i !== undefined ? t.published : true)};
   if (i === undefined) TDATA.push(rec); else TDATA[i] = rec;
-  persistT();
-  if (!consent) showToast('Saved, but held back — no consent recorded');
-  else showToast('Testimonial saved');
+  persistT(consent ? 'Testimonial saved' : 'Saved, but held back — no consent recorded');
 }
 
 function renderP() {
@@ -656,7 +592,7 @@ function renderP() {
     }).join('') || '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:#B08060">No posts yet.</td></tr>';
 }
 
-function delP(i) { if (confirm('Delete this post?')) { PDATA.splice(i,1); persistP(); } }
+function delP(i) { if (confirm('Delete this post?')) { PDATA.splice(i,1); persistP('Post deleted'); } }
 
 function slugify(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
@@ -679,66 +615,65 @@ function openP(i) {
     excerpt, body
   };
   if (i === undefined) PDATA.push(rec); else PDATA[i] = rec;
-  persistP();
-  showToast('Post saved — export posts.json to publish');
+  persistP('Post saved — it’s live on the blog');
 }
 
-function exportJSON(which) {
-  const payload = which === 'testimonials'
-    ? {_comment:'Testimonials shown on index.html. Set "published": false to hold one back.', testimonials: TDATA}
-    : {_comment:'Blog posts for blog.html and post.html.', posts: PDATA};
-  const text = JSON.stringify(payload, null, 2);
-  document.getElementById('export-box').textContent = text;
-  document.getElementById('export-modal').classList.add('open');
+// ── OLD BROWSER DRAFTS ────────────────────────────────────────────────────
+// The old editor kept unexported changes in this browser only. Offer to save
+// them to the website once, instead of silently losing them.
+function oldDrafts() {
+  const found = {};
+  for (const [key, k] of Object.entries(OLD_KEYS)) {
+    try { const v = localStorage.getItem(k); if (v) found[key] = JSON.parse(v); } catch (e) {}
+  }
+  return found;
+}
+function showOldDrafts() {
+  const found = oldDrafts(), keys = Object.keys(found);
+  const box = document.getElementById('banner');
+  if (!keys.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="notice"><strong>This browser has changes from the old editor</strong>
+    (${keys.join(', ')}) that may never have been exported. Saving them replaces what is on the website now.
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="old-save">Save them to the website</button>
+      <button class="btn btn-secondary btn-sm" id="old-drop">Discard them</button>
+    </div></div>`;
+  const forget = () => { keys.forEach(k => { try { localStorage.removeItem(OLD_KEYS[k]); } catch (e) {} }); showOldDrafts(); };
+  document.getElementById('old-drop').onclick = () => { if (confirm('Discard the old browser changes?')) forget(); };
+  document.getElementById('old-save').onclick = async () => {
+    for (const k of keys) { setDoc(k, found[k]); if (!await save(k)) return; }
+    renderEverything(); forget(); showToast('Old changes saved to the website');
+  };
 }
 
-function logout() {
-  sessionStorage.removeItem(SESSION_KEY);
+// ── SIGN-IN ───────────────────────────────────────────────────────────────
+// Staff sign in with their Clerk account; only accounts in lms_admins can
+// open the editor (the database refuses saves from anyone else too).
+function gate(msg, btnText, onClick) {
+  document.getElementById('gate-msg').innerHTML = msg;
+  const b = document.getElementById('gate-btn');
+  b.hidden = !btnText;
+  if (btnText) { b.textContent = btnText; b.onclick = onClick; }
+}
+
+async function logout() {
+  if (LMS.state.clerk) await LMS.state.clerk.signOut();
   location.reload();
 }
 
-// Show/hide password
-document.getElementById('pw-toggle').addEventListener('click', () => {
-  const inp = document.getElementById('pw-input');
-  const eye = document.getElementById('pw-eye');
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    eye.className = 'ti ti-eye-off';
-  } else {
-    inp.type = 'password';
-    eye.className = 'ti ti-eye';
+LMS.ready.then(async r => {
+  if (!r.ok || !r.signIn) return gate('Sign-in isn’t working right now. Please try again later.', 'Try again', () => location.reload());
+  if (!LMS.user) return gate('Sign in with your Tinkerwith staff account.', 'Sign in', LMS.signIn);
+  if (!LMS.isAdmin) return gate(`You’re signed in as <strong>${esc(LMS.user.primaryEmailAddress?.emailAddress || '')}</strong>, which isn’t a staff account.`, 'Sign out', logout);
+  try {
+    await loadAll();
+  } catch (e) {
+    return gate(`The editor’s data couldn’t load (${esc(e.message)}). If this is the first time, run <code>supabase/site-content.sql</code> in Supabase.`, 'Try again', () => location.reload());
   }
-});
-
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') tryLogin();
-  document.getElementById('pw-error').classList.remove('show');
-});
-document.getElementById('pw-submit').addEventListener('click', tryLogin);
-
-document.getElementById('reset-link').addEventListener('click', e => {
-  e.preventDefault();
-  const subject = encodeURIComponent('TinkerWithMe Admin — Password Reset Request');
-  const body = encodeURIComponent('Hi Anne,\n\nI need to reset the Course Editor password for TinkerWithMe.\n\nPlease send me the current password or instructions to update it.\n\nThanks!');
-  window.location.href = 'mailto:tinkerwithanne@gmail.com?subject=' + subject + '&body=' + body;
-});
-
-// Gate check on load
-if (sessionStorage.getItem(SESSION_KEY) !== '1') {
-  // Show gate, don't render yet — render() called after successful login
-  document.getElementById('pw-input').focus();
-} else {
   document.getElementById('login-gate').classList.add('hidden');
-}
-
-// Shake keyframe
-const style = document.createElement('style');
-style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}';
-document.head.appendChild(style);
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-loadDefaultCourses().then(()=>{ if(sessionStorage.getItem(SESSION_KEY)==="1") render(); });
-loadExtras();
+  renderEverything();
+  showOldDrafts();
+});
 </script>
 </body>
 </html>

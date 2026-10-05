@@ -330,6 +330,7 @@ footer a:hover{text-decoration:underline}
 @media(min-width:700px){.sticky-wa{display:none}}
 </style>
 <script src="analytics.js"></script>
+<script src="site-data.js"></script>
 </head>
 <body>
 
@@ -1041,11 +1042,8 @@ function renderCatalog(){
 
 async function loadCourses(){
   try{
-    const res=await fetch('courses.json',{cache:'no-store'});
-    if(res.ok){const d=await res.json();if(d.arduino)DATA.arduino=d.arduino;if(d.ai)DATA.ai=d.ai;}
+    const d=await SiteData.get('courses');if(d.arduino)DATA.arduino=d.arduino;if(d.ai)DATA.ai=d.ai;
   }catch(e){}
-  // Apply any course edits saved via admin.html
-  try{const _s=localStorage.getItem('twm_courses');if(_s){const _d=JSON.parse(_s);if(_d.arduino)Object.assign(DATA.arduino,_d.arduino);if(_d.ai)Object.assign(DATA.ai,_d.ai);}}catch(e){}
   hydrateFromURL();
   const _pc=document.getElementById('proof-projects');
   if(_pc)_pc.textContent=DATA.arduino.projects.length+DATA.ai.projects.length;

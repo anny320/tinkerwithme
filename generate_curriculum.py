@@ -16,6 +16,7 @@ from datetime import datetime
 from anthropic import Anthropic
 
 import pdf_template
+import site_data
 
 
 def stream_html(system_prompt, user_message, max_tokens, model="claude-sonnet-5"):
@@ -42,14 +43,12 @@ def stream_html(system_prompt, user_message, max_tokens, model="claude-sonnet-5"
     return html
 
 
-# Course catalogue — single source of truth in courses.json (shared with the
-# HTML pages and pregenerate.py). Add a project there once, not in five files.
+# Course catalogue — edited in the Course editor (admin.html), read via
+# site_data.py (Supabase, falling back to courses.json).
 def load_courses():
-    """Load the course catalogue from courses.json next to this script."""
-    path = Path(__file__).with_name("courses.json")
+    """Load the course catalogue."""
     try:
-        with open(path, encoding="utf-8") as f:
-            return json.load(f)
+        return site_data.load_courses()
     except (OSError, ValueError) as e:
         print(f"\u26a0\ufe0f  Could not load courses.json ({e}); catalogue is empty.")
         return {}
