@@ -78,9 +78,23 @@ a.sp-card{color:inherit;text-decoration:none}
 @media(max-width:900px){.sp-grid{grid-template-columns:1fr}}
 
 /* Track filter chips */
-.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
-.filter{padding:9px 18px;border-radius:var(--radius-pill);border:2px solid var(--ink,#220111);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;color:var(--text-2);transition:all .15s}
-.filter.active{border-color:var(--orange);background:var(--orange);color:#fff}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.6rem}
+@media(max-width:700px){.filters{grid-template-columns:1fr}}
+.explore-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;font-family:inherit;color:var(--text);cursor:pointer;
+  background:var(--surface);border:2px solid var(--ink,#220111);border-radius:var(--radius);box-shadow:5px 5px 0 var(--ink,#220111);padding:14px 16px;transition:transform .12s,box-shadow .12s}
+.explore-card:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink,#220111)}
+.explore-card.t-arduino{border-top:5px solid var(--orange)}
+.explore-card.t-ai{border-top:5px solid var(--green)}
+.explore-card.t-combo{border-top:5px solid var(--purple)}
+.explore-card.active{background:var(--orange-light);transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#220111)}
+.explore-card .ex-icon{font-size:24px}
+.explore-card b{font-size:18px}
+.explore-card span{font-size:13.5px;color:var(--text-2)}
+.explore-card .ex-price{font-weight:700;color:var(--orange-dark)}
+.explore-card::after{content:'Show courses ▾';font-size:12.5px;font-weight:700;color:var(--blue);margin-top:4px}
+.explore-card.active::after{content:'Hide courses ▴'}
+.explore-hint{text-align:center;color:var(--text-2);font-size:15px;margin:.5rem 0 2rem}
+#sections{scroll-margin-top:90px}
 
 .track-section{margin-bottom:2.5rem}
 .track-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
@@ -309,7 +323,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
 <script>
 const BOOKING_EMAIL = 'tinkerwithanne@gmail.com';
 let DATA = null;
-let activeFilter = 'all';
+let activeFilter = null;   // open track: 'arduino' | 'ai' | 'combo', or null (all folded)
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -400,18 +414,9 @@ function cardHtml(course){
 
 function render(){
   const sections = document.getElementById('sections');
-  sections.innerHTML = '';
-  for (const key of Object.keys(DATA.tracks)){
-    if (activeFilter !== 'all' && activeFilter !== key) continue;
-    const courses = DATA.courses.filter(c => c.track === key);
-    if (!courses.length) continue;
-    const t = DATA.tracks[key];
-    sections.insertAdjacentHTML('beforeend', `
-      <section class="track-section">
-        <div class="track-title">${t.icon} ${esc(t.label)} <span class="count">${courses.length} course${courses.length>1?'s':''}</span></div>
-        <div class="grid">${courses.map(cardHtml).join('')}</div>
-      </section>`);
-  }
+  const key = activeFilter, courses = key ? DATA.courses.filter(c => c.track === key) : [];
+  sections.innerHTML = courses.length ? `<div class="grid">${courses.map(cardHtml).join('')}</div>`
+    : '<p class="explore-hint">Pick a track above to see its courses.</p>';
 }
 
 // Ticking a kit option updates that card's total and its booking email.
@@ -461,16 +466,39 @@ async function loadOnline(){
 }
 loadOnline();
 
+// "Explore" cards, one per track; tapping one opens its courses below.
+const EXPLORE = { arduino: 'Explore Arduino', ai: 'Explore AI', combo: 'Arduino + AI' };
+
+function trackFacts(key){
+  const cs = DATA.courses.filter(c => c.track === key);
+  const ages = cs.flatMap(c => (c.age.match(/\d+/g) || []).map(Number));
+  const from = Math.min(...cs.map(c => c.price));
+  return { n: cs.length, ages: ages.length ? `ages ${Math.min(...ages)}–${Math.max(...ages)}` : '', from };
+}
+
 function buildFilters(){
   const f = document.getElementById('filters');
-  const chips = [['all','All courses'], ...Object.entries(DATA.tracks).map(([k,v])=>[k, `${v.icon} ${v.label}`])];
-  f.innerHTML = chips.map(([k,label]) =>
-    `<button class="filter${k==='all'?' active':''}" data-f="${k}">${esc(label)}</button>`).join('');
-  f.querySelectorAll('.filter').forEach(btn => btn.onclick = () => {
-    activeFilter = btn.dataset.f;
-    f.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b===btn));
-    render();
+  f.innerHTML = Object.entries(DATA.tracks).map(([k, t]) => {
+    const x = trackFacts(k);
+    if (!x.n) return '';
+    return `<button class="explore-card t-${k}" type="button" data-f="${k}" aria-expanded="false" aria-controls="sections">
+      <span class="ex-icon">${t.icon}</span><b>${esc(EXPLORE[k] || t.label)}</b>
+      <span>${x.n} ${k === 'combo' && x.n === 1 ? 'two-day camp' : `course${x.n > 1 ? 's' : ''}`}${x.ages ? ' · ' + x.ages : ''}</span>
+      <span class="ex-price">from ${kes(x.from)}</span></button>`;
+  }).join('');
+  f.querySelectorAll('[data-f]').forEach(btn => btn.onclick = () => openTrack(activeFilter === btn.dataset.f ? null : btn.dataset.f, true));
+}
+
+// Open a track (or fold all with null); keeps #arduino / #ai / #combo in the address for sharing.
+function openTrack(key, scroll){
+  activeFilter = DATA.tracks[key] ? key : null;
+  document.querySelectorAll('#filters [data-f]').forEach(b => {
+    const on = b.dataset.f === activeFilter;
+    b.classList.toggle('active', on); b.setAttribute('aria-expanded', String(on));
   });
+  render();
+  history.replaceState(null, '', activeFilter ? '#' + activeFilter : location.pathname + location.search);
+  if (scroll && activeFilter) document.getElementById('sections').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -486,7 +514,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('price-note').textContent =
     `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child, kits optional · ${DATA.courses.length} courses`;
   buildFilters();
-  render();
+  const h = location.hash.slice(1);
+  openTrack(DATA.tracks[h] ? h : null, !!DATA.tracks[h]);
 });
 
 document.getElementById('copy-till').addEventListener('click', e => {
