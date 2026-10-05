@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff tools — TinkerWith_</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:var(--ink);padding:3rem 0 2.6rem}
+.page-head h1{color:var(--white);margin:14px 0 10px}
+.page-head p{color:var(--on-ink);font-size:17px;max-width:58ch}
+.page-head .tw-eyebrow-pill{background:var(--white);color:var(--ink)}
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+@media(max-width:760px){.tools{grid-template-columns:1fr}}
+.tool{display:flex;flex-direction:column;gap:10px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);
+  box-shadow:6px 6px 0 var(--ink);padding:1.6rem 1.7rem;color:var(--ink);text-decoration:none;transition:transform .12s,box-shadow .12s}
+.tool:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.tool .tag{align-self:flex-start;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
+.tool.courses .tag{background:var(--blue);color:#fff}
+.tool.catalogue .tag{background:#FFD23F}
+.tool h2{font-size:24px;font-weight:600;line-height:1.15}
+.tool p{font-size:15.5px;color:var(--text-2)}
+.tool ul{list-style:none;display:flex;flex-direction:column;gap:5px;font-size:15px;color:var(--text-2)}
+.tool li::before{content:'✓';color:var(--green-deep);font-weight:700;margin-right:8px}
+.tool .go{margin-top:auto;padding-top:6px;font-weight:600}
+.services{margin-top:2.5rem}
+.services h2{font-size:20px;font-weight:600;margin-bottom:10px}
+.services ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.services a{display:block;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:10px 14px;background:var(--white);color:var(--ink);text-decoration:none;font-size:15px}
+.services a small{display:block;color:var(--text-2);font-size:13px}
+.services a:hover{background:var(--cream)}
+.note{margin-top:2rem;font-size:14.5px;color:var(--text-2)}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">For Tinkerwith staff</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.6vw,46px)">Staff tools</h1>
+    <p>Everything you used to do in WordPress&rsquo;s admin now lives in these two tools.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="tools">
+      <a class="tool courses" href="teach.html">
+        <span class="tag">Online courses</span>
+        <h2>Course manager</h2>
+        <p>The eLearning courses on <strong>Learn online</strong>.</p>
+        <ul>
+          <li>Courses, lessons, pictures and videos</li>
+          <li>Quizzes</li>
+          <li>Enrol students and see their progress</li>
+        </ul>
+        <span class="go">Open the course manager &rarr;</span>
+      </a>
+      <a class="tool catalogue" href="admin.html">
+        <span class="tag">Website content</span>
+        <h2>Course editor</h2>
+        <p>The projects in <strong>Plan a session</strong>, plus testimonials and blog posts.</p>
+        <ul>
+          <li>Course picker projects, ages and tracks</li>
+          <li>Testimonials on the homepage</li>
+          <li>Blog posts</li>
+        </ul>
+        <span class="go">Open the course editor &rarr;</span>
+      </a>
+    </div>
+
+    <div class="services">
+      <h2>Behind the scenes</h2>
+      <ul>
+        <li><a href="https://supabase.com/dashboard/project/xithafmrpqzwhkqzwfmk" target="_blank" rel="noopener">Supabase<small>Course data, leaderboard</small></a></li>
+        <li><a href="https://dashboard.clerk.com" target="_blank" rel="noopener">Clerk<small>Sign-in and student accounts</small></a></li>
+        <li><a href="https://analytics.google.com" target="_blank" rel="noopener">Google Analytics<small>Visitors and page views</small></a></li>
+        <li><a href="https://github.com/anny320/tinkerwithme" target="_blank" rel="noopener">GitHub<small>The website&rsquo;s files</small></a></li>
+        <li><a href="https://panel.hostafrica.com" target="_blank" rel="noopener">HostAfrica<small>Domain settings and email</small></a></li>
+        <li><a href="https://tinkerwithme.hustlesasa.shop" target="_blank" rel="noopener">HustleSasa<small>Shop orders</small></a></li>
+      </ul>
+    </div>
+
+    <p class="note">Old WordPress admin links (<code>/wp-admin</code>) bring you to this page.</p>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 6 and up.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html" data-hub>MakersHub</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="admin.html">Course editor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratechnologies.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>
+const HUB_URL = 'courses.html';
+document.querySelectorAll('[data-hub]').forEach(a => { a.href = HUB_URL; });
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('testimonials.json')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(d => {
+    const live = (d.testimonials || []).filter(t => t.published);
+    const box = document.getElementById('quotes');
+    if (!live.length) { box.closest('section').style.display = 'none'; return; }
+    box.innerHTML = live.map(t => `
+      <figure class="quote">
+        <blockquote>${esc(t.quote)}</blockquote>
+        <figcaption><strong>${esc(t.name)}</strong><span>${esc(t.role)}</span></figcaption>
+      </figure>`).join('');
+  })
+  .catch(() => {
+    const box = document.getElementById('quotes');
+    if (box) box.closest('section').style.display = 'none';
+  });
+</script>
+</body>
+</html>
