@@ -17,6 +17,8 @@ import time
 from pathlib import Path
 from anthropic import Anthropic
 
+import site_data
+
 
 def git_push_file(path):
     """Commit and push a single generated file so progress is durable.
@@ -41,10 +43,8 @@ def git_push_file(path):
     print(f"    ⚠️  could not push {path.name} after retries (will retry on next run)")
 
 def load_courses():
-    """Return {track: [project, ...]} from the shared courses.json catalogue."""
-    path = Path(__file__).with_name("courses.json")
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
+    """Return {track: [project, ...]} from the catalogue (see site_data.py)."""
+    data = site_data.load_courses()
     return {track: info.get("projects", []) for track, info in data.items()}
 
 
