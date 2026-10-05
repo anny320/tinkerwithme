@@ -35,6 +35,8 @@
 @media(max-width:700px){.grid2{grid-template-columns:1fr}}
 .grid2 .wide{grid-column:1/-1}
 .check{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}.grid3 label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
+@media(max-width:640px){.grid3{grid-template-columns:1fr}}
 .check input{width:20px;height:20px;accent-color:var(--green-deep)}
 .btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
 .md-tabs{display:flex;gap:6px;margin-bottom:6px}
@@ -219,7 +221,7 @@ async function courseEditor(id) {
   const isNew = id === 'new';
   const c = isNew ? { title: '', slug: '', summary: '', description: '', age_range: '', cover_url: '', price_kes: 0, price_usd: null, card_url: '', is_published: false, position: 0 }
     : must(await db().from('lms_courses').select('*').eq('id', id).single());
-  const lessons = isNew ? [] : must(await db().from('lms_lessons').select('id,title,section,position,video_url,quiz').eq('course_id', id).order('position').order('created_at'));
+  const lessons = isNew ? [] : must(await db().from('lms_lessons').select('id,title,section,position,video_url,quiz,is_preview').eq('course_id', id).order('position').order('created_at'));
   $('view').innerHTML = `
     <p style="margin-bottom:12px"><a href="#courses">&larr; All courses</a></p>
     <form class="panel box" id="cf">
@@ -232,6 +234,10 @@ async function courseEditor(id) {
         <label class="field-in">Price in KES <input name="price_kes" type="number" min="0" step="1" value="${c.price_kes}"><small>0 = free. Paid courses unlock when you approve a payment on the Payments tab, or enrol a student on the Students tab.</small></label>
         <label class="field-in">Price in US$ (outside Kenya) <input name="price_usd" type="number" min="0" step="1" value="${c.price_usd ?? ''}" placeholder="${c.price_kes ? TWPrice.usdFor(c.price_kes) : ''}">
           <small>Shown to visitors outside Kenya. Blank = the suggested price shown.</small></label>
+        <div class="field-in wide">Launch offer <span class="hint">Optional. A lower price until the end date, shown with the normal price crossed out. After that date the normal price comes back by itself.</span>
+          <div class="grid3"><label>Offer price KES <input name="offer_price_kes" type="number" min="1" step="1" value="${c.offer_price_kes ?? ''}"></label>
+          <label>Offer price US$ <input name="offer_price_usd" type="number" min="1" step="1" value="${c.offer_price_usd ?? ''}" placeholder="${c.offer_price_kes ? TWPrice.usdFor(c.offer_price_kes) : ''}"></label>
+          <label>Last day of the offer <input name="offer_ends" type="date" value="${c.offer_ends_at ? new Date(c.offer_ends_at).toLocaleDateString('en-CA', { timeZone: 'Africa/Nairobi' }) : ''}"></label></div></div>
         <label class="field-in">Card payment link (HustleSasa) <input name="card_url" type="url" maxlength="300" value="${esc(c.card_url || '')}" placeholder="https://tinkerwithme.hustlesasa.shop/…">
           <small>Optional. Set the product's redirect to <code>https://tinkerwith.me/course.html?c=${esc(c.slug || 'web-address')}&amp;paid=card</code></small></label>
         <label class="field-in">Order on the courses page <input name="position" type="number" step="1" value="${c.position}"><small>Lower numbers come first.</small></label>
@@ -247,7 +253,7 @@ async function courseEditor(id) {
     </form>
     ${isNew ? '' : `<div class="panel box"><div class="sec-h"><h2>Lessons</h2><a class="tw-btn tw-btn-orange tw-btn-sm" href="#lesson=new:${id}">+ Add lesson</a></div>
       <div class="rows">${lessons.map((l, i) => `<div class="row">
-        <a class="grow" href="#lesson=${l.id}"><strong>${i + 1}. ${esc(l.title)}</strong><small>${esc(l.section || 'No section')}${l.video_url ? ' · 🎬 video' : ''}${l.quiz.length ? ` · 🧠 ${l.quiz.length} quiz question${l.quiz.length > 1 ? 's' : ''}` : ''}</small></a>
+        <a class="grow" href="#lesson=${l.id}"><strong>${i + 1}. ${esc(l.title)}</strong><small>${l.is_preview ? '👀 free preview · ' : ''}${esc(l.section || 'No section')}${l.video_url ? ' · 🎬 video' : ''}${l.quiz.length ? ` · 🧠 ${l.quiz.length} quiz question${l.quiz.length > 1 ? 's' : ''}` : ''}</small></a>
         <button class="ib" type="button" data-move="${i}" data-dir="-1" ${i ? '' : 'disabled'} aria-label="Move up">↑</button>
         <button class="ib" type="button" data-move="${i}" data-dir="1" ${i < lessons.length - 1 ? '' : 'disabled'} aria-label="Move down">↓</button>
       </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>
@@ -263,7 +269,13 @@ async function courseEditor(id) {
     const row = { title: f.title.value.trim(), slug: f.slug.value.trim(), summary: f.summary.value.trim(), description: f.description.value,
       age_range: f.age_range.value.trim(), cover_url: f.cover_url.value.trim(), price_kes: Math.max(0, parseInt(f.price_kes.value, 10) || 0),
       price_usd: f.price_usd.value === '' ? null : Math.max(0, parseInt(f.price_usd.value, 10) || 0), card_url: f.card_url.value.trim(),
-      position: parseInt(f.position.value, 10) || 0, is_published: f.is_published.checked };
+      position: parseInt(f.position.value, 10) || 0, is_published: f.is_published.checked,
+      offer_price_kes: parseInt(f.offer_price_kes.value, 10) > 0 ? parseInt(f.offer_price_kes.value, 10) : null,
+      offer_price_usd: parseInt(f.offer_price_usd.value, 10) > 0 ? parseInt(f.offer_price_usd.value, 10) : null,
+      // the offer runs to the end of its last day, Kenya time
+      offer_ends_at: f.offer_ends.value ? f.offer_ends.value + 'T23:59:59+03:00' : null };
+    if (row.offer_price_kes && !row.offer_ends_at) return toast('Pick the last day of the launch offer.');
+    if (row.offer_price_kes && row.offer_price_usd == null) row.offer_price_usd = TWPrice.usdFor(row.offer_price_kes);
     try {
       const saved = isNew ? must(await db().from('lms_courses').insert(row).select('id').single())
         : must(await db().from('lms_courses').update(row).eq('id', id).select('id').single());
@@ -292,7 +304,7 @@ async function courseEditor(id) {
 async function lessonEditor(key) {
   const isNew = key.startsWith('new:');
   const courseId = isNew ? key.slice(4) : null;
-  const l = isNew ? { course_id: courseId, title: '', section: '', body: '', video_url: '', quiz: [] }
+  const l = isNew ? { course_id: courseId, title: '', section: '', body: '', video_url: '', quiz: [], is_preview: false }
     : must(await db().from('lms_lessons').select('*').eq('id', key).single());
   const siblings = must(await db().from('lms_lessons').select('section,position').eq('course_id', l.course_id));
   const sections = [...new Set(siblings.map(s => s.section).filter(Boolean))];
@@ -307,6 +319,7 @@ async function lessonEditor(key) {
           <small>Lessons with the same section are grouped together.</small></label>
         <datalist id="sections">${sections.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
         <label class="field-in">YouTube video (optional) <input name="video_url" value="${esc(l.video_url)}" placeholder="https://youtu.be/…"></label>
+        <label class="check wide"><input type="checkbox" name="is_preview" ${l.is_preview ? 'checked' : ''}> 👀 Free preview: anyone can open this lesson before buying the course</label>
         <div class="field-in wide">Lesson content
           <span class="hint">Write normally. <b>**bold**</b>, <i>*italic*</i>, “- ” for bullet points, “## ” for a heading. Use the buttons to add pictures, videos (they play in the lesson) and links, as many as you like.</span>
           ${mdEditor('body', l.body, true)}</div>
@@ -349,7 +362,7 @@ async function lessonEditor(key) {
     e.preventDefault();
     const clean = quiz.map(q => ({ q: q.q.trim(), options: q.options.map(o => o.trim()), answer: q.answer }));
     if (clean.some(q => q.answer == null)) return toast('Tick the right answer for every question.');
-    const row = { title: f.title.value.trim(), section: f.section.value.trim(), video_url: f.video_url.value.trim(), body: f.body.value, quiz: clean };
+    const row = { title: f.title.value.trim(), section: f.section.value.trim(), video_url: f.video_url.value.trim(), body: f.body.value, quiz: clean, is_preview: f.is_preview.checked };
     if (row.video_url && !LMS.youtubeEmbed(row.video_url)) return toast('That doesn’t look like a YouTube link.');
     try {
       if (isNew) {
