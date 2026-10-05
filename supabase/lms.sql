@@ -329,6 +329,22 @@ begin
       from lms_pending_enrollments pe join lms_courses c on c.id = pe.course_id), '[]'::json));
 end $$;
 
+-- Give a signed-up user access to a course: a new enrolment, or 12 more
+-- months on a time-limited one. Returns 'enrolled', 'renewed' or 'already'
+-- (lifetime access). Only called from other functions here.
+create or replace function public.lms_grant_access(p_uid text, p_course uuid)
+returns text language plpgsql security definer set search_path = public as $$
+begin
+  if exists (select 1 from lms_enrollments where user_id = p_uid and course_id = p_course) then
+    update lms_enrollments set expires_at = greatest(expires_at, now()) + interval '12 months'
+      where user_id = p_uid and course_id = p_course and expires_at is not null;
+    return case when found then 'renewed' else 'already' end;
+  end if;
+  insert into lms_enrollments (user_id, course_id, source, expires_at) values (p_uid, p_course, 'admin', lms_access_end(p_course));
+  return 'enrolled';
+end $$;
+revoke all on function public.lms_grant_access(text, uuid) from public, anon, authenticated;
+
 -- Enrol someone by email. Enrols them now if they've signed in before,
 -- otherwise the enrolment waits until they sign in with that email.
 -- Enrolling someone already enrolled renews a time-limited enrolment for
@@ -342,13 +358,7 @@ begin
   if not exists (select 1 from lms_courses where id = p_course) then raise exception 'Course not found.'; end if;
   select user_id into uid from lms_profiles where email = em order by last_seen_at desc limit 1;
   if uid is not null then
-    if exists (select 1 from lms_enrollments where user_id = uid and course_id = p_course) then
-      update lms_enrollments set expires_at = greatest(expires_at, now()) + interval '12 months'
-        where user_id = uid and course_id = p_course and expires_at is not null;
-      return case when found then 'renewed' else 'already' end;   -- 'already': lifetime access
-    end if;
-    insert into lms_enrollments (user_id, course_id, source, expires_at) values (uid, p_course, 'admin', lms_access_end(p_course));
-    return 'enrolled';
+    return lms_grant_access(uid, p_course);
   end if;
   insert into lms_pending_enrollments (email, course_id) values (em, p_course) on conflict do nothing;
   return 'pending';
@@ -378,3 +388,121 @@ begin
       with check (bucket_id = 'lms-media' and public.lms_is_admin());
   end if;
 end $$;
+
+-- ── M-Pesa payments ────────────────────────────────────────────────────
+-- Parents pay by Till, then paste the M-Pesa SMS (or just its code) on the
+-- course page. It waits here until an admin checks it against the M-Pesa
+-- statement in teach.html and approves it, which unlocks or renews the
+-- course. Trainer hours are approved the same way (no course access change).
+
+create table if not exists public.lms_payments (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     text not null,
+  email       text not null default '',
+  course_id   uuid references public.lms_courses(id) on delete set null,
+  kind        text not null check (kind in ('course', 'renewal', 'trainer')),
+  hours       int  check (hours between 1 and 10),
+  code        text not null unique check (code ~ '^[A-Z0-9]{10}$'),
+  amount_kes  int,
+  message     text not null default '' check (char_length(message) <= 600),
+  status      text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  note        text not null default '',
+  created_at  timestamptz not null default now(),
+  decided_at  timestamptz
+);
+create index if not exists lms_payments_status on public.lms_payments (status, created_at desc);
+
+alter table public.lms_payments enable row level security;
+revoke all on public.lms_payments from anon, authenticated;
+grant select on public.lms_payments to authenticated;
+drop policy if exists "own rows" on public.lms_payments;
+drop policy if exists "admin all" on public.lms_payments;
+create policy "own rows"  on public.lms_payments for select to authenticated using (user_id = lms_uid());
+create policy "admin all" on public.lms_payments for all    to authenticated using (lms_is_admin()) with check (lms_is_admin());
+
+-- Trainer support, KES per hour. Keep in step with TRAINER_KES in course.html.
+create or replace function public.lms_trainer_rate() returns int language sql immutable as $$ select 3000 $$;
+
+-- Submit a payment for this course (or p_hours of trainer time). Finds the
+-- 10-character M-Pesa code and the amount in whatever was pasted.
+create or replace function public.lms_submit_payment(p_course uuid, p_message text, p_hours int default null)
+returns json language plpgsql security definer set search_path = public as $$
+declare
+  uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 600);
+  v_code text; v_amount int; v_kind text; c lms_courses; r lms_payments;
+begin
+  if uid is null then raise exception 'Please sign in.'; end if;
+  select * into c from lms_courses where id = p_course and is_published;
+  if not found then raise exception 'Course not found.'; end if;
+  select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
+    where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
+  if v_code is null then
+    raise exception 'We couldn''t find the M-Pesa code. Paste the whole M-Pesa message, or just the 10-character code (like SJK4AB12CD).';
+  end if;
+  if exists (select 1 from lms_payments where code = v_code) then
+    raise exception 'That M-Pesa code has already been sent to us.';
+  end if;
+  if (select count(*) from lms_payments where user_id = uid and status = 'pending') >= 5 then
+    raise exception 'You already have 5 payments waiting. We''ll check them soon.';
+  end if;
+  v_amount := nullif(replace((regexp_match(upper(msg), 'KSHS?\.?\s*([0-9,]+)'))[1], ',', ''), '')::int;
+  if p_hours is not null then
+    if p_hours not between 1 and 10 then raise exception 'Choose between 1 and 10 hours.'; end if;
+    v_kind := 'trainer';
+  elsif c.price_kes = 0 then raise exception 'This course is free.';
+  elsif exists (select 1 from lms_enrollments where user_id = uid and course_id = c.id) then v_kind := 'renewal';
+  else v_kind := 'course';
+  end if;
+  insert into lms_payments (user_id, email, course_id, kind, hours, code, amount_kes, message)
+    values (uid, coalesce(lms_email(), ''), c.id, v_kind, case when v_kind = 'trainer' then p_hours end, v_code, v_amount, msg)
+    returning * into r;
+  return json_build_object('id', r.id, 'kind', r.kind, 'code', r.code, 'amount_kes', r.amount_kes, 'status', r.status);
+end $$;
+
+-- My payments for one course, newest first.
+create or replace function public.lms_my_payments(p_course uuid)
+returns json language sql stable security definer set search_path = public as $$
+  select coalesce(json_agg(json_build_object('kind', kind, 'hours', hours, 'code', code, 'amount_kes', amount_kes,
+           'status', status, 'note', note, 'created_at', created_at) order by created_at desc), '[]'::json)
+  from (select * from lms_payments where user_id = lms_uid() and course_id = p_course order by created_at desc limit 10) p
+$$;
+
+-- Everything waiting for approval, plus the 30 most recent decisions.
+create or replace function public.lms_admin_payments()
+returns json language plpgsql stable security definer set search_path = public as $$
+begin
+  if not lms_is_admin() then raise exception 'Admins only.'; end if;
+  return coalesce((select json_agg(x order by x.pending desc, x.created_at desc) from (
+    select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at,
+           p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, c.title,
+           case when p.kind = 'trainer' then p.hours * lms_trainer_rate() else c.price_kes end as expected_kes
+    from lms_payments p left join lms_courses c on c.id = p.course_id left join lms_profiles pr on pr.user_id = p.user_id
+    where p.status = 'pending' or p.id in (select id from lms_payments where status <> 'pending' order by decided_at desc limit 30)
+  ) x), '[]'::json);
+end $$;
+
+-- Approve (unlocks or renews the course; trainer hours just get marked paid) or reject with a note the parent sees.
+create or replace function public.lms_admin_decide_payment(p_id uuid, p_approve boolean, p_note text default '')
+returns text language plpgsql security definer set search_path = public as $$
+declare p lms_payments; res text := 'rejected';
+begin
+  if not lms_is_admin() then raise exception 'Admins only.'; end if;
+  select * into p from lms_payments where id = p_id for update;
+  if not found then raise exception 'Payment not found.'; end if;
+  if p.status <> 'pending' then raise exception 'This payment was already %.', p.status; end if;
+  if p_approve then
+    res := 'approved';
+    if p.kind <> 'trainer' then
+      if p.course_id is null then raise exception 'That course no longer exists.'; end if;
+      res := lms_grant_access(p.user_id, p.course_id);
+    end if;
+  end if;
+  update lms_payments set status = case when p_approve then 'approved' else 'rejected' end,
+    note = left(btrim(coalesce(p_note, '')), 300), decided_at = now() where id = p_id;
+  return res;
+end $$;
+
+revoke all on function public.lms_submit_payment(uuid, text, int), public.lms_my_payments(uuid),
+  public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) from public;
+grant execute on function public.lms_submit_payment(uuid, text, int), public.lms_my_payments(uuid),
+  public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) to authenticated;
