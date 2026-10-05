@@ -1,0 +1,64 @@
+name: Make Online Courses
+
+# Turns premium courses (premium_courses.json) into self-paced online courses
+# on the course platform. Claude writes kid-facing lessons with a quiz each, and
+# they are saved to Supabase as DRAFT paid courses: review and publish them in
+# teach.html. Courses already on the platform are skipped, never overwritten.
+#
+# Needs three repository secrets (Settings → Secrets and variables → Actions):
+#   ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY (Supabase → Project
+#   Settings → API Keys → secret key). The secret key never goes in a web page.
+#
+# The written course JSON is also uploaded as a 1-day artifact (paid content).
+#
+# Run from the Actions tab → "Make Online Courses" → Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      courses:
+        description: 'Course IDs from premium_courses.json (space-separated)'
+        required: true
+        default: 'smart-home-builder deepfake-detective'
+      price:
+        description: 'Price in KES (blank = the in-person price)'
+        required: false
+        default: '8000'
+
+permissions:
+  contents: read
+
+jobs:
+  make-courses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install 'anthropic>=1.11' requests
+
+      - name: Write the courses and save them as drafts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          COURSES: ${{ inputs.courses }}
+          PRICE: ${{ inputs.price }}
+        run: |
+          ARGS=""
+          if [ -n "$PRICE" ]; then ARGS="--price $PRICE"; fi
+          python generate_elearning.py $ARGS $COURSES
+
+      - name: Upload the written courses (1 day)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: online-courses
+          path: elearning_drafts/
+          retention-days: 1
+          if-no-files-found: ignore
