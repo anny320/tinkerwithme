@@ -188,6 +188,8 @@ const { esc, md } = LMS;
 const slug = new URLSearchParams(location.search).get('c') || '';
 const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); };
 const WA = 'https://wa.me/254117784724?text=';
+const TRAINER_KES = 3000;   // optional 1:1 trainer support, per hour
+const day = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 let C = null;          // the course, from lms_course()
 let cur = null;        // open lesson id, or null for the overview
 
@@ -263,22 +265,35 @@ function renderOverview() {
   } else if (C.can_access) {
     act = next ? `<div class="action"><h3>${doneCount() ? (finished() ? 'You finished this course! 🎉' : 'Welcome back!') : 'You’re enrolled!'}</h3>
       <p>${doneCount()} of ${C.lessons.length} lessons done.</p>
+      ${C.expires_at ? `<p>Your access runs until <strong>${day(C.expires_at)}</strong>.</p>` : ''}
       <a class="tw-btn tw-btn-orange" href="#l=${next.id}">${finished() ? 'Review the lessons' : doneCount() ? 'Continue' : 'Start lesson 1'} &rarr;</a></div>` : '';
+    if (C.price_kes) act += trainerBox();
   } else if (!C.price_kes) {
     act = `<div class="action"><h3>This course is free</h3><p>Enrol to open the lessons and start learning.</p>
       <button class="tw-btn tw-btn-orange" type="button" id="b-enrol">Start this course &rarr;</button></div>`;
   } else {
     const email = (LMS.state.me && LMS.state.me.email) || (LMS.user.primaryEmailAddress && LMS.user.primaryEmailAddress.emailAddress) || '';
-    const msg = `Hi Anne, I've paid KES ${C.price_kes} for the "${C.title}" course. My Tinkerwith account email is ${email}. M-Pesa code: `;
-    act = `<div class="action"><h3>Get this course — KES ${C.price_kes.toLocaleString()}</h3>
+    const renew = C.enrolled && C.expired;
+    const msg = `Hi Anne, I've paid KES ${C.price_kes} to ${renew ? 'renew' : 'get'} the "${C.title}" course. My Tinkerwith account email is ${email}. M-Pesa code: `;
+    act = `<div class="action"><h3>${renew ? 'Renew' : 'Get'} this course — KES ${C.price_kes.toLocaleString()}</h3>
+      <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
       <ol><li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>3022049</strong>.</li>
       <li>Send us the M-Pesa confirmation on WhatsApp. We’ll unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
       <a class="tw-btn tw-btn-orange" href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-paid-whatsapp">Send confirmation on WhatsApp &rarr;</a></div>`;
   }
+  if (!C.can_access && C.price_kes && LMS.user) act += trainerBox();
   $('main').innerHTML = adminBar() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '');
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   wireCertificate();
+}
+
+// Optional paid 1:1 help with a trainer, booked on WhatsApp.
+function trainerBox() {
+  const msg = `Hi Anne, I'd like to book a trainer for the "${C.title}" course. Preferred day and time: `;
+  return `<div class="action" style="margin-top:1rem;background:#fff"><h3>Want help from a trainer?</h3>
+    <p>Book a live 1:1 session with a Tinkerwith trainer for questions, debugging or a guided build: <strong>KES ${TRAINER_KES.toLocaleString()} per hour</strong>.</p>
+    <a class="tw-btn tw-btn-white" href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-book-trainer">Book a trainer on WhatsApp &rarr;</a></div>`;
 }
 
 async function enrol() {

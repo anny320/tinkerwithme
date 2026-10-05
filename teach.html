@@ -399,6 +399,9 @@ function wireUploads(form) {
 }
 
 /* ── Students ── */
+// "lifetime", "until 5 Oct 2027" or "expired 5 Oct 2027".
+const access = d => !d ? 'lifetime' : `${new Date(d) > new Date() ? 'until' : 'expired'} ${new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
 async function students() {
   $('view').innerHTML = '<p class="loading">Loading students…</p>';
   const [data, courses] = await Promise.all([LMS.rpc('lms_admin_students'),
@@ -416,18 +419,27 @@ async function students() {
     <div class="panel box"><h2>Students (${data.students.length})</h2><div class="rows">${data.students.map(s => `<div class="row">
       <div class="grow"><strong>${esc(s.full_name || '(no name)')}</strong><small>${esc(s.email || 'no email')} · last seen ${new Date(s.last_seen_at).toLocaleDateString()}</small>
         <div class="st-courses">${s.courses.map(c => `<div><div class="bar"><i style="width:${c.lessons ? c.done / c.lessons * 100 : 0}%"></i></div>
-          <span>${esc(c.title)} — ${c.done}/${c.lessons}</span>
+          <span>${esc(c.title)} — ${c.done}/${c.lessons} · ${access(c.expires_at)}</span>
+          ${c.expires_at ? `<button class="ib" type="button" data-renew="${esc(s.email)}|${c.course_id}" title="Add 12 months">Renew</button>` : ''}
           <button class="ib danger" type="button" data-unenrol="${esc(s.user_id)}|${c.course_id}" title="Remove from this course">×</button></div>`).join('') || '<small>No courses yet</small>'}</div></div></div>`).join('') || '<p class="muted">Nobody has signed in yet.</p>'}</div></div>`;
   const f = $('ef');
   f.onsubmit = async e => {
     e.preventDefault();
     try {
       const r = await LMS.rpc('lms_admin_enroll', { p_email: f.email.value, p_course: f.course.value });
-      toast(r === 'enrolled' ? 'Enrolled ✓' : 'Saved ✓ — it unlocks when they sign up with that email.');
+      toast(r === 'enrolled' ? 'Enrolled ✓' : r === 'renewed' ? 'Renewed for 12 months ✓' : r === 'already' ? 'Already enrolled, with lifetime access' : 'Saved ✓ — it unlocks when they sign up with that email.');
       students();
     } catch (err) { toast(err.message); }
   };
   $('view').onclick = async e => {
+    const rb = e.target.closest('[data-renew]');
+    if (rb) {
+      const [em, cid] = rb.dataset.renew.split('|');
+      if (!confirm(`Add 12 months of access for ${em}?`)) return;
+      try { await LMS.rpc('lms_admin_enroll', { p_email: em, p_course: cid }); toast('Renewed for 12 months ✓'); students(); }
+      catch (err) { toast(err.message); }
+      return;
+    }
     const b = e.target.closest('[data-unpend],[data-unenrol]'); if (!b) return;
     if (!confirm('Remove this enrolment? Their progress is kept and comes back if you enrol them again.')) return;
     try {
