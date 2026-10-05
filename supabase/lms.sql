@@ -444,6 +444,10 @@ alter table public.lms_payments drop constraint if exists lms_payments_code_chec
 alter table public.lms_payments drop constraint if exists lms_payments_code_ok;
 alter table public.lms_payments add constraint lms_payments_code_ok check (
   (method = 'mpesa' and code ~ '^[A-Z0-9]{10}$') or (method = 'card' and code ~ '^[A-Z0-9-]{3,40}$'));
+-- Curriculum purchases are for a live course in premium_courses.json (its id), not an online course.
+alter table public.lms_payments add column if not exists product text check (product is null or product ~ '^[a-z0-9]+(-[a-z0-9]+)*$');
+alter table public.lms_payments drop constraint if exists lms_payments_kind_check;
+alter table public.lms_payments add constraint lms_payments_kind_check check (kind in ('course', 'renewal', 'trainer', 'curriculum'));
 
 alter table public.lms_payments enable row level security;
 revoke all on public.lms_payments from anon, authenticated;
@@ -519,13 +523,94 @@ begin
   if not lms_is_admin() then raise exception 'Admins only.'; end if;
   return coalesce((select json_agg(x order by x.pending desc, x.created_at desc) from (
     select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at, p.method,
-           p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, c.title,
-           case when p.kind = 'trainer' then p.hours * lms_trainer_rate() else c.price_kes end as expected_kes,
-           case when p.kind = 'trainer' then p.hours * lms_trainer_rate_usd() else c.price_usd end as expected_usd
+           p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, p.product,
+           case when p.kind = 'curriculum' then 'Curriculum: ' || p.product else c.title end as title,
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate() when 'curriculum' then lms_curriculum_price() else c.price_kes end as expected_kes,
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate_usd() when 'curriculum' then lms_curriculum_price_usd() else c.price_usd end as expected_usd
     from lms_payments p left join lms_courses c on c.id = p.course_id left join lms_profiles pr on pr.user_id = p.user_id
     where p.status = 'pending' or p.id in (select id from lms_payments where status <> 'pending' order by decided_at desc limit 30)
   ) x), '[]'::json);
 end $$;
+
+-- ── Teach-it-yourself curriculums ──────────────────────────────────────
+-- The full facilitator curriculum of a live course, sold per course to one
+-- teacher or family (curriculum.html). The PDF lives in the private lms-files
+-- bucket at curriculum/<premium course id>/<file>; buyers can read it once an
+-- admin approves their payment.
+
+create table if not exists public.lms_curriculum_access (
+  user_id     text not null,
+  premium_id  text not null check (premium_id ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
+  created_at  timestamptz not null default now(),
+  primary key (user_id, premium_id)
+);
+alter table public.lms_curriculum_access enable row level security;
+revoke all on public.lms_curriculum_access from anon, authenticated;
+grant select, delete on public.lms_curriculum_access to authenticated;
+drop policy if exists "own rows" on public.lms_curriculum_access;
+drop policy if exists "admin all" on public.lms_curriculum_access;
+create policy "own rows"  on public.lms_curriculum_access for select to authenticated using (user_id = lms_uid());
+create policy "admin all" on public.lms_curriculum_access for all    to authenticated using (lms_is_admin()) with check (lms_is_admin());
+
+-- Price of one curriculum. Keep in step with curriculum_price in premium_courses.json.
+create or replace function public.lms_curriculum_price() returns int language sql immutable as $$ select 1500 $$;
+create or replace function public.lms_curriculum_price_usd() returns int language sql immutable as $$ select 10 $$;
+
+create or replace function public.lms_has_curriculum(p_premium text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select lms_is_admin() or exists (select 1 from lms_curriculum_access where user_id = lms_uid() and premium_id = p_premium)
+$$;
+
+-- Submit a payment for one curriculum (M-Pesa code or card order number).
+create or replace function public.lms_submit_curriculum_payment(p_premium text, p_message text, p_method text default 'mpesa')
+returns json language plpgsql security definer set search_path = public as $$
+declare uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 600); v_code text; v_amount int; r lms_payments;
+begin
+  if uid is null then raise exception 'Please sign in.'; end if;
+  if coalesce(p_premium, '') !~ '^[a-z0-9]+(-[a-z0-9]+)*$' then raise exception 'Curriculum not found.'; end if;
+  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
+  if p_method = 'card' then
+    v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
+    if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  else
+    select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
+      where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
+    if v_code is null then
+      raise exception 'We couldn''t find the M-Pesa code. Paste the whole M-Pesa message, or just the 10-character code (like SJK4AB12CD).';
+    end if;
+    v_amount := nullif(replace((regexp_match(upper(msg), 'KSHS?\.?\s*([0-9,]+)'))[1], ',', ''), '')::int;
+  end if;
+  if exists (select 1 from lms_payments where code = v_code) then raise exception 'That payment has already been sent to us.'; end if;
+  if (select count(*) from lms_payments where user_id = uid and status = 'pending') >= 5 then
+    raise exception 'You already have 5 payments waiting. We''ll check them soon.';
+  end if;
+  insert into lms_payments (user_id, email, kind, product, code, amount_kes, message, method)
+    values (uid, coalesce(lms_email(), ''), 'curriculum', p_premium, v_code, v_amount, msg, p_method)
+    returning * into r;
+  return json_build_object('id', r.id, 'kind', r.kind, 'code', r.code, 'amount_kes', r.amount_kes, 'status', r.status);
+end $$;
+
+-- Whether I have this curriculum, and my payments for it.
+create or replace function public.lms_my_curriculum(p_premium text)
+returns json language sql stable security definer set search_path = public as $$
+  select json_build_object('has_access', lms_has_curriculum(p_premium),
+    'payments', coalesce((select json_agg(json_build_object('kind', kind, 'code', code, 'amount_kes', amount_kes, 'method', method,
+        'status', status, 'note', note, 'created_at', created_at) order by created_at desc)
+      from (select * from lms_payments where user_id = lms_uid() and kind = 'curriculum' and product = p_premium order by created_at desc limit 10) p), '[]'::json))
+$$;
+
+-- Curriculum PDFs (lms-files/curriculum/<premium course id>/<file>) are readable by their buyers.
+do $$
+begin
+  if exists (select 1 from pg_namespace where nspname = 'storage') then
+    drop policy if exists "lms-files curriculum read" on storage.objects;
+    create policy "lms-files curriculum read" on storage.objects for select to authenticated
+      using (bucket_id = 'lms-files' and split_part(name, '/', 1) = 'curriculum' and public.lms_has_curriculum(split_part(name, '/', 2)));
+  end if;
+end $$;
+
+revoke all on function public.lms_submit_curriculum_payment(text, text, text), public.lms_my_curriculum(text) from public;
+grant execute on function public.lms_submit_curriculum_payment(text, text, text), public.lms_my_curriculum(text) to authenticated;
 
 -- Approve (unlocks or renews the course; trainer hours just get marked paid) or reject with a note the parent sees.
 create or replace function public.lms_admin_decide_payment(p_id uuid, p_approve boolean, p_note text default '')
@@ -538,7 +623,9 @@ begin
   if p.status <> 'pending' then raise exception 'This payment was already %.', p.status; end if;
   if p_approve then
     res := 'approved';
-    if p.kind <> 'trainer' then
+    if p.kind = 'curriculum' then
+      insert into lms_curriculum_access (user_id, premium_id) values (p.user_id, p.product) on conflict do nothing;
+    elsif p.kind <> 'trainer' then
       if p.course_id is null then raise exception 'That course no longer exists.'; end if;
       res := lms_grant_access(p.user_id, p.course_id);
     end if;
