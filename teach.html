@@ -98,7 +98,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -193,11 +193,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['students', 'payments', 'leads'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'students', 'payments', 'leads'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  const tab = ['students', 'payments', 'leads', 'curriculums'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'students', 'payments', 'leads', 'curriculums'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
   payCount(); leadCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'curriculums' ? curriculums() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -469,6 +469,60 @@ function wireUploads(form) {
   });
 }
 
+/* ── Curriculums: teach-it-yourself PDFs for each live course ──
+   Files live in lms-files/curriculum/<course id>/ and are downloadable by
+   buyers once their payment is approved on the Payments tab. */
+let PREMIUM = null;
+async function premium() {
+  if (!PREMIUM) PREMIUM = await fetch('premium_courses.json').then(r => r.json());
+  return PREMIUM;
+}
+
+async function curriculums() {
+  $('view').innerHTML = '<p class="loading">Loading curriculums…</p>';
+  const d = await premium(), bucket = db().storage.from('lms-files');
+  const [files, sales] = await Promise.all([
+    Promise.all(d.courses.map(c => bucket.list(`curriculum/${c.id}`).then(r => (r.data || []).filter(x => x.id)))),
+    db().from('lms_curriculum_access').select('premium_id').then(r => r.data || []),
+  ]);
+  const sold = id => sales.filter(x => x.premium_id === id).length;
+  const p = d.curriculum_price;
+  $('view').innerHTML = `<div class="panel box"><h2>Curriculums</h2>
+    <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Each live course&rsquo;s full curriculum, sold at KES ${p.price.toLocaleString()} / US$${p.price_usd} on <a href="curriculum.html" target="_blank" rel="noopener">curriculum.html</a>. Buyers can download the PDF once you approve their payment. Upload a PDF to start selling one.</p>
+    <div class="rows">${d.courses.map((c, i) => `<div class="row" data-cid="${esc(c.id)}">
+      <div class="grow"><strong>${esc(c.title)}</strong>
+        <small>${files[i].length ? files[i].map(f => `📄 ${esc(f.name)}`).join(' · ') : '⚠️ No PDF yet'} · ${sold(c.id)} sold</small></div>
+      <a class="ib" href="curriculum.html?c=${encodeURIComponent(c.id)}" target="_blank" rel="noopener">View</a>
+      <button class="ib" type="button" data-up="${esc(c.id)}">${files[i].length ? 'Replace' : 'Upload PDF'}</button>
+      ${files[i].map(f => `<button class="ib danger" type="button" data-del="${esc(c.id)}/${esc(f.name)}">Delete</button>`).join('')}
+    </div>`).join('')}</div></div>`;
+  $('view').onclick = async e => {
+    const up = e.target.closest('[data-up]'), del = e.target.closest('[data-del]');
+    if (del) {
+      if (!confirm('Delete this PDF? Buyers won\'t be able to download it until you upload another.')) return;
+      const r = await bucket.remove([`curriculum/${del.dataset.del}`]);
+      if (r.error) return toast(r.error.message);
+      toast('Deleted'); return curriculums();
+    }
+    if (!up) return;
+    const pick = document.createElement('input'); pick.type = 'file'; pick.accept = '.pdf';
+    pick.onchange = async () => {
+      const file = pick.files[0]; if (!file) return;
+      if (file.size > 50 * 1024 * 1024) return toast('Files must be under 50 MB.');
+      const course = d.courses.find(c => c.id === up.dataset.up);
+      const name = `${course.title} - full curriculum.pdf`.replace(/[^\w.() -]+/g, '-');
+      toast('Uploading…');
+      const old = (await bucket.list(`curriculum/${course.id}`)).data || [];
+      const r = await bucket.upload(`curriculum/${course.id}/${name}`, file, { contentType: 'application/pdf', upsert: true });
+      if (r.error) return toast(r.error.message);
+      const stale = old.filter(x => x.id && x.name !== name).map(x => `curriculum/${course.id}/${x.name}`);
+      if (stale.length) await bucket.remove(stale);
+      toast('Uploaded ✓'); curriculums();
+    };
+    pick.click();
+  };
+}
+
 /* ── Leads: enquiries sent from the courses page (lms_leads) ── */
 const LEAD_STATUS = { new: 'New', contacted: 'Contacted', booked: 'Booked', not_now: 'Not now' };
 const MODE = { 'online-1:1': 'Live online 1:1', 'online-group': 'Live online, small group', 'in-person': 'In person', 'not-sure': 'Not sure yet' };
@@ -527,10 +581,11 @@ async function payCount() {
 
 async function payments() {
   $('view').innerHTML = '<p class="loading">Loading payments…</p>';
-  const list = await LMS.rpc('lms_admin_payments');
+  const [list, d] = await Promise.all([LMS.rpc('lms_admin_payments'), premium().catch(() => ({ courses: [] }))]);
+  list.forEach(p => { if (p.kind === 'curriculum') { const c = d.courses.find(x => x.id === p.product); p.title = `Curriculum: ${c ? c.title : p.product}`; } });
   const pend = list.filter(p => p.pending), done = list.filter(p => !p.pending);
   const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : 'New enrolment';
+  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : 'New enrolment';
   const amount = p => p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
     : p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
     : p.amount_kes === p.expected_kes ? `KES ${p.amount_kes.toLocaleString()} ✓`

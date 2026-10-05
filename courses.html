@@ -95,6 +95,8 @@ a.sp-card{color:inherit;text-decoration:none}
 .explore-card.active::after{content:'Hide courses ▴'}
 .explore-hint{text-align:center;color:var(--text-2);font-size:15px;margin:.5rem 0 2rem}
 #sections{scroll-margin-top:90px}
+.teach-self{font-size:13px;font-weight:600;color:var(--blue);text-decoration:none}
+.teach-self:hover{text-decoration:underline}
 .promise{font-size:12.5px;font-weight:600;color:var(--green-dark,#1A5C08);margin-top:-4px}
 .enq-toggle{font-family:inherit;font-size:13px;font-weight:700;color:var(--blue);background:none;border:1.5px dashed var(--border-strong);border-radius:var(--radius-sm);padding:8px;cursor:pointer}
 .enq-toggle.on{color:var(--green-dark,#1A5C08);border-style:solid;border-color:var(--green-dark,#1A5C08);background:var(--green-light,#EBF7E3)}
@@ -558,6 +560,7 @@ function cardHtml(course){
       <button class="btn btn-book" type="button" data-book="${esc(course.id)}" aria-expanded="false">Book this course</button>
       <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
     </div>
+    <a class="teach-self" href="curriculum.html?c=${encodeURIComponent(course.id)}" data-ga="curriculum-${esc(course.id)}">📘 Teach it yourself: full curriculum, ${P(DATA.curriculum_price)} &rarr;</a>
     <button class="enq-toggle${ENQ.includes(course.id) ? ' on' : ''}" type="button" data-enq="${esc(course.id)}">${ENQ.includes(course.id) ? '✓ In your enquiry' : '＋ Add to enquiry'}</button>
     <div class="booking" hidden>
       ${course.uses_kit ? extrasHtml(course) : ''}
