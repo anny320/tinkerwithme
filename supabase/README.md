@@ -2,6 +2,14 @@
 
 The online courses use the same project. See [COURSES.md](COURSES.md).
 
+The **Course editor** (`admin.html`) saves the course picker catalogue,
+testimonials and blog posts to the same project, in the `site_content` table.
+Set it up once by running `site-content.sql` in the SQL Editor (after
+`lms.sql`). Staff sign in with their Clerk account, and only accounts in
+`lms_admins` can save. Public pages read it through `site-data.js`, and the
+curriculum agents through `site_data.py`. Both fall back to `courses.json`,
+`testimonials.json` and `posts.json` in the repo if Supabase can't be reached.
+
 The Train an AI game (`train-an-ai.html`) can show a shared leaderboard. The
 site is static, so the scores live in a free Supabase project. The page talks
 to it directly with the public key. No server or secret is needed in the repo.
