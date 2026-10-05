@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TinkerWith_ — DIY electronics, robotics &amp; AI for young makers</title>
-<meta name="description" content="TinkerWith_ is the playground where young minds explore robotics, electronics and AI. Guided projects, self-paced courses in MakersHub, live sessions online and across Nairobi.">
+<meta name="description" content="TinkerWith_ is the playground where young minds explore robotics, electronics and AI. Guided projects, self-paced online courses, and live courses online and across Nairobi.">
 <meta name="theme-color" content="#FF7F32">
 
 <meta property="og:type" content="website">
@@ -75,6 +75,18 @@
 .way li::before{content:'—';color:var(--accent);margin-right:9px;font-weight:600}
 .way .tw-link-arrow{margin-top:auto;padding-top:10px}
 @media(max-width:900px){.ways{grid-template-columns:1fr}}
+.explore{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+@media(max-width:700px){.explore{grid-template-columns:1fr}}
+.explore-card{display:flex;flex-direction:column;gap:4px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);
+  padding:1.3rem 1.5rem;color:var(--ink);text-decoration:none;transition:transform .12s,box-shadow .12s}
+.explore-card:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.explore-card.t-arduino{border-top:6px solid var(--orange)}
+.explore-card.t-ai{border-top:6px solid var(--green)}
+.explore-card .ex-icon{font-size:28px}
+.explore-card b{font-size:21px}
+.explore-card span{font-size:15px;color:var(--text-2)}
+.explore-card .ex-price{font-weight:700;color:var(--orange)}
+.explore-card::after{content:'See courses →';font-weight:700;font-size:14.5px;color:var(--blue);margin-top:6px}
 
 /* ── MAKERSHUB FEATURE ──────────────────────────────────── */
 .hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center}
@@ -409,31 +421,19 @@
     <div class="tw-section-head">
       <span class="tw-eyebrow">Enrol now</span>
       <h2 class="tw-h2"><span class="tw-squiggle">Start today, from anywhere.</span></h2>
-      <p class="tw-lede">Learn. Build. Innovate. Explore tech your way, at your pace &mdash; beginning with a course that costs nothing.</p>
+      <p class="tw-lede">Learn. Build. Innovate. Online courses at your own pace &mdash; sign in, start a free one today, and pay by M-Pesa for the rest.</p>
     </div>
 
     <div class="enrol-grid">
-      <article class="enrol is-lead">
-        <div class="enrol-badges"><span class="tw-sticker">Free</span></div>
-        <h3 class="tw-h3">AI Skills for Kids</h3>
-        <p class="enrol-age">Ages 7&ndash;9 &middot; Beginner &middot; 1h 30m</p>
-        <p>Children grow up surrounded by AI but are rarely taught how it works, how it learns, or how to use it responsibly. This course fills that gap &mdash; no coding, no expensive devices, no constant internet needed.</p>
-        <a class="tw-btn tw-btn-orange" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enrol%20my%20child%20in%20the%20free%20AI%20Skills%20for%20Kids%20course." target="_blank" rel="noopener">Enrol free <span aria-hidden="true">&rarr;</span></a>
-      </article>
-
-      <article class="enrol">
-        <h3 class="tw-h3">What is Artificial Intelligence?</h3>
-        <p class="enrol-age">Ages 10+ &middot; All levels &middot; 1h 30m</p>
-        <p>An introduction to AI and ethics for parents, kids and teachers &mdash; what AI actually is, and how to think clearly about it.</p>
-        <a class="tw-link-arrow" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enrol%20in%20the%20What%20is%20Artificial%20Intelligence%3F%20course." target="_blank" rel="noopener">Enrol on WhatsApp <span aria-hidden="true">&rarr;</span></a>
-      </article>
-
-      <article class="enrol">
-        <h3 class="tw-h3">Robotics 101</h3>
-        <p class="enrol-age">Beginner &middot; Coming soon</p>
-        <p>Foundational robotics and coding through hands-on builds &mdash; circuit assembly, basic code, and the critical thinking that goes with them.</p>
-        <a class="tw-link-arrow" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20please%20let%20me%20know%20when%20Robotics%20101%20opens." target="_blank" rel="noopener">Get notified <span aria-hidden="true">&rarr;</span></a>
-      </article>
+      <!-- Published online courses from the course platform, filled in by loadOnline() below. -->
+      <div class="enrol-live" id="online-courses" style="display:contents">
+        <article class="enrol is-lead">
+          <div class="enrol-badges"><span class="tw-sticker">Free</span></div>
+          <h3 class="tw-h3">Online courses</h3>
+          <p>Short, hands-on AI and robotics courses with quizzes and a certificate. Start with a free one today.</p>
+          <a class="tw-btn tw-btn-orange" href="learn.html">See online courses <span aria-hidden="true">&rarr;</span></a>
+        </article>
+      </div>
 
       <article class="enrol enrol-buy">
         <div class="enrol-badges"><span class="tw-sticker">Save KES 300</span></div>
@@ -462,6 +462,22 @@
   </div>
 </section>
 
+<!-- ── LIVE COURSES ─────────────────────────────────────── -->
+<section class="tw-section tw-section-tight" id="live">
+  <div class="tw-container">
+    <div class="tw-section-head">
+      <span class="tw-eyebrow">Live with a trainer</span>
+      <h2 class="tw-h2"><span class="tw-squiggle">Live courses &amp; camps.</span></h2>
+      <p class="tw-lede">Project-rich courses, live online (1:1 or small group) or in person. Kids build something real, with an optional kit to keep.</p>
+    </div>
+    <div class="explore" id="explore">
+      <a class="explore-card t-arduino" href="courses.html#arduino"><span class="ex-icon">🔧</span><b>Explore Arduino</b><span>Robotics &amp; electronics</span></a>
+      <a class="explore-card t-ai" href="courses.html#ai"><span class="ex-icon">🤖</span><b>Explore AI</b><span>Create, think and build with AI</span></a>
+    </div>
+    <p style="margin-top:1.2rem"><a class="tw-link-arrow" href="courses.html#live">See all live courses <span aria-hidden="true">&rarr;</span></a></p>
+  </div>
+</section>
+
 <!-- ── WAYS TO LEARN ────────────────────────────────────── -->
 <section class="tw-section">
   <div class="tw-container">
@@ -473,25 +489,26 @@
     <div class="ways">
       <article class="way" style="--accent:var(--orange)">
         <span class="way-tag">Self-paced</span>
-        <h3 class="tw-h3">MakersHub</h3>
-        <p>Our online school. Enrol in a course, follow the build step by step, and track your progress at your own pace.</p>
+        <h3 class="tw-h3">Online courses</h3>
+        <p>Sign in, follow the lessons step by step and track your progress at your own pace. Paid courses include 12 months of access.</p>
         <ul>
-          <li>Structured courses &amp; lessons</li>
-          <li>Progress tracking and quizzes</li>
-          <li>Learn from anywhere</li>
+          <li>Lessons, quizzes and certificates</li>
+          <li>Free and paid courses, pay by M-Pesa</li>
+          <li>Book a trainer when you need help</li>
         </ul>
-        <a class="tw-link-arrow" href="courses.html" data-hub>Enter MakersHub <span aria-hidden="true">→</span></a>
+        <a class="tw-link-arrow" href="learn.html">See online courses <span aria-hidden="true">→</span></a>
       </article>
       <article class="way" style="--accent:var(--green)">
-        <span class="way-tag">Live with Anne</span>
+        <span class="way-tag">Live with a trainer</span>
         <h3 class="tw-h3">One-to-one &amp; small group</h3>
-        <p>Pick the projects your child wants to build and we'll craft a session plan around them — online worldwide or in person across Nairobi.</p>
+        <p>Choose a live course, or pick the projects your child wants to build and we'll plan a session around them — online or in person across Nairobi.</p>
         <ul>
-          <li>Sessions from KES 2,500</li>
-          <li>Online, in-person, or we travel to you</li>
-          <li>Arduino robotics and AI tracks</li>
+          <li><span id="live-count">17</span> live courses &amp; camps</li>
+          <li>Custom sessions from KES 2,500</li>
+          <li>Online, in person, or we travel to you</li>
         </ul>
-        <a class="tw-link-arrow" href="picker.html">Build a session plan <span aria-hidden="true">→</span></a>
+        <a class="tw-link-arrow" href="courses.html#live">See live courses <span aria-hidden="true">→</span></a>
+        <a class="tw-link-arrow" href="picker.html" style="padding-top:0">Or build a session plan <span aria-hidden="true">→</span></a>
       </article>
       <article class="way" style="--accent:var(--blue)">
         <span class="way-tag">Schools &amp; camps</span>
@@ -619,8 +636,8 @@
       </a>
       <a class="tool" href="courses.html">
         <span class="tool-tag">Catalogue</span>
-        <strong>Deep-dive courses</strong>
-        <p>17 project-rich courses and camps, KES 5,000–8,000.</p>
+        <strong>Live courses &amp; camps</strong>
+        <p id="live-tile">17 project-rich courses and camps, KES 5,000–9,000.</p>
       </a>
       <a class="tool" href="coloring-book.html" data-ga="tools-coloring-book">
         <span class="tool-tag">For kids</span>
@@ -722,7 +739,6 @@
       <h4>Learn</h4>
       <ul>
         <li><a href="picker.html">Plan a session</a></li>
-        <li><a href="courses.html" data-hub>MakersHub</a></li>
         <li><a href="courses.html">Courses &amp; camps</a></li>
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
@@ -883,6 +899,43 @@ SiteData.get('testimonials')
     const box = document.getElementById('quotes');
     if (box) box.closest('section').style.display = 'none';
   });
+
+/* Online courses: whatever is published on the course platform (as on learn.html). */
+(async () => {
+  const box = document.getElementById('online-courses');
+  const e = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  try {
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes&is_published=eq.true&order=position,title',
+      { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
+    if (!r.ok) throw 0;
+    const list = await r.json();
+    if (!list.length) throw 0;
+    const lead = list.find(c => !c.price_kes) || list[0];
+    box.innerHTML = [lead, ...list.filter(c => c !== lead)].slice(0, 4).map(c => `
+      <article class="enrol${c === lead ? ' is-lead' : ''}">
+        ${c.price_kes ? '' : '<div class="enrol-badges"><span class="tw-sticker">Free</span></div>'}
+        <h3 class="tw-h3">${e(c.title)}</h3>
+        <p class="enrol-age">${c.age_range ? `Ages ${e(c.age_range)} · ` : ''}Self-paced · ${c.price_kes ? `KES ${c.price_kes.toLocaleString()} · 12 months` : 'Free'}</p>
+        <p>${e(c.summary)}</p>
+        <a class="${c === lead ? 'tw-btn tw-btn-orange' : 'tw-link-arrow'}" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="home-online-${e(c.slug)}">${c.price_kes ? 'See the course' : 'Start free'} <span aria-hidden="true">&rarr;</span></a>
+      </article>`).join('') + (list.length > 4 ? `<article class="enrol"><h3 class="tw-h3">+${list.length - 4} more</h3><p>See every online course on Learn online.</p><a class="tw-link-arrow" href="learn.html">All online courses <span aria-hidden="true">&rarr;</span></a></article>` : '');
+  } catch (_) { /* keep the static "Online courses" card */ }
+})();
+
+/* Live courses: counts and from-prices for the Explore cards, from premium_courses.json. */
+fetch('premium_courses.json').then(r => r.json()).then(d => {
+  const fmt = n => 'KES ' + n.toLocaleString();
+  document.querySelectorAll('#explore .explore-card').forEach(a => {
+    const k = a.classList.contains('t-ai') ? 'ai' : 'arduino';
+    const cs = d.courses.filter(c => c.track === k);
+    if (!cs.length) return;
+    const ages = cs.flatMap(c => (c.age.match(/\d+/g) || []).map(Number));
+    a.insertAdjacentHTML('beforeend', `<span>${cs.length} courses · ages ${Math.min(...ages)}–${Math.max(...ages)}</span><span class="ex-price">from ${fmt(Math.min(...cs.map(c => c.price)))}</span>`);
+  });
+  const n = d.courses.length, r = d.price_range;
+  document.getElementById('live-count').textContent = n;
+  document.getElementById('live-tile').textContent = `${n} project-rich courses and camps, ${fmt(r.min)}–${fmt(r.max).replace('KES ', '')}.`;
+}).catch(() => {});
 
 SiteData.get('courses')
   .then(d => {
