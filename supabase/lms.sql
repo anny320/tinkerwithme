@@ -528,3 +528,58 @@ revoke all on function public.lms_submit_payment(uuid, text, int), public.lms_my
   public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) from public;
 grant execute on function public.lms_submit_payment(uuid, text, int), public.lms_my_payments(uuid),
   public.lms_admin_payments(), public.lms_admin_decide_payment(uuid, boolean, text) to authenticated;
+
+-- ── Leads: enquiries from the courses page ──────────────────────────────
+-- Parents pick one or more live courses and send an enquiry. Anyone may
+-- submit (through lms_submit_lead only); only admins can read and update
+-- them, in teach.html → Leads.
+
+create table if not exists public.lms_leads (
+  id               uuid primary key default gen_random_uuid(),
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  source           text not null default 'courses' check (char_length(source) <= 40),
+  parent_name      text not null check (char_length(parent_name) between 1 and 80),
+  whatsapp         text not null check (whatsapp ~ '^\+?[0-9 ]{7,20}$'),
+  email            text not null check (email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' and char_length(email) <= 120),
+  child_age        text not null check (char_length(child_age) between 1 and 20),
+  mode             text not null check (mode in ('online-1:1', 'online-group', 'in-person', 'not-sure')),
+  preferred_dates  text not null check (char_length(preferred_dates) between 1 and 120),
+  courses          jsonb not null check (jsonb_typeof(courses) = 'array' and jsonb_array_length(courses) between 1 and 20 and length(courses::text) <= 6000),
+  extras           jsonb not null default '{}'::jsonb check (jsonb_typeof(extras) = 'object' and length(extras::text) <= 600),
+  message          text not null default '' check (char_length(message) <= 1000),
+  status           text not null default 'new' check (status in ('new', 'contacted', 'booked', 'not_now')),
+  notes            text not null default '' check (char_length(notes) <= 2000)
+);
+create index if not exists lms_leads_created on public.lms_leads (created_at desc);
+drop trigger if exists lms_leads_touch on public.lms_leads;
+create trigger lms_leads_touch before update on public.lms_leads for each row execute function public.lms_touch();
+
+alter table public.lms_leads enable row level security;
+revoke all on public.lms_leads from anon, authenticated;
+grant select, update, delete on public.lms_leads to authenticated;
+drop policy if exists "admin all" on public.lms_leads;
+create policy "admin all" on public.lms_leads for all to authenticated using (lms_is_admin()) with check (lms_is_admin());
+
+-- Save an enquiry. p is the form as JSON. "website" is a hidden trap field:
+-- people never fill it, bots do, so those are quietly dropped.
+create or replace function public.lms_submit_lead(p jsonb)
+returns text language plpgsql security definer set search_path = public as $$
+declare wa text := regexp_replace(btrim(coalesce(p->>'whatsapp', '')), '[^0-9+ ]', '', 'g'); id uuid;
+begin
+  if coalesce(p->>'website', '') <> '' then return 'ok'; end if;
+  if (select count(*) from lms_leads where created_at > now() - interval '1 minute') >= 20
+     or (select count(*) from lms_leads where whatsapp = wa and created_at > now() - interval '1 hour') >= 3 then
+    raise exception 'We''ve received your enquiry already. We''ll be in touch soon, or message us on WhatsApp.';
+  end if;
+  insert into lms_leads (source, parent_name, whatsapp, email, child_age, mode, preferred_dates, courses, extras, message)
+  values (left(coalesce(p->>'source', 'courses'), 40), btrim(p->>'parent_name'), wa, lower(btrim(p->>'email')),
+          btrim(p->>'child_age'), p->>'mode', btrim(p->>'preferred_dates'),
+          coalesce(p->'courses', '[]'::jsonb), coalesce(p->'extras', '{}'::jsonb), left(btrim(coalesce(p->>'message', '')), 1000))
+  returning lms_leads.id into id;
+  return 'ok';
+exception when check_violation or not_null_violation then
+  raise exception 'Please fill in every required field (name, WhatsApp number, email, child''s age, how you''d like to learn, preferred dates).';
+end $$;
+revoke all on function public.lms_submit_lead(jsonb) from public;
+grant execute on function public.lms_submit_lead(jsonb) to anon, authenticated;
