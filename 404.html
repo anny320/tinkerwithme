@@ -37,6 +37,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   if (clean !== path && clean) return location.replace(clean + location.search + location.hash);
   var p = path.toLowerCase().replace(/\/+$/, '');
   var MAP = [
+    [/^\/(wp-admin|wp-login\.php)(\/|$)/, '/staff.html'],
     [/^\/courses\/new-what-is-artificial-intelligence/, '/course.html?c=what-is-ai'],
     [/^\/courses\/ai-skills-for-kids/, '/course.html?c=ai-skills-for-kids'],
     [/^\/(courses|course-list|course-category|lesson|lessons|topics|quizzes|tutor_quiz)(\/|$)/, '/learn.html'],
