@@ -245,8 +245,12 @@ async function courseEditor(id) {
         <a class="grow" href="#lesson=${l.id}"><strong>${i + 1}. ${esc(l.title)}</strong><small>${esc(l.section || 'No section')}${l.video_url ? ' · 🎬 video' : ''}${l.quiz.length ? ` · 🧠 ${l.quiz.length} quiz question${l.quiz.length > 1 ? 's' : ''}` : ''}</small></a>
         <button class="ib" type="button" data-move="${i}" data-dir="-1" ${i ? '' : 'disabled'} aria-label="Move up">↑</button>
         <button class="ib" type="button" data-move="${i}" data-dir="1" ${i < lessons.length - 1 ? '' : 'disabled'} aria-label="Move down">↓</button>
-      </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>`}`;
+      </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>
+    <div class="panel box"><div class="sec-h"><h2>Downloads</h2><button class="tw-btn tw-btn-orange tw-btn-sm" type="button" id="b-addfile">+ Upload file</button></div>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">E.g. the full curriculum PDF. Private: only students with access to this course can download it, after they sign in.</p>
+      <div class="rows" id="files"><p class="loading">Loading…</p></div></div>`}`;
   const f = $('cf'); watch(f); wireMd(f); wireUploads(f);
+  if (!isNew) courseFiles(id);
   if (isNew) f.title.addEventListener('input', () => { if (!f.slug.dataset.touched) f.slug.value = slugify(f.title.value); });
   f.slug.addEventListener('input', () => { f.slug.dataset.touched = 1; });
   f.onsubmit = async e => {
@@ -374,6 +378,37 @@ function wireMd(form) {
     if (prev) pv.innerHTML = md(box.querySelector('textarea').value) || '<p class="muted">Nothing yet.</p>';
   }));
 }
+// Private course downloads in the lms-files bucket, under <course id>/.
+async function courseFiles(id) {
+  const box = $('files'), bucket = db().storage.from('lms-files');
+  const { data, error } = await bucket.list(id, { sortBy: { column: 'name', order: 'asc' } });
+  if (error) { box.innerHTML = `<div class="notice err">${esc(error.message)}</div>`; return; }
+  const files = (data || []).filter(x => x.id);
+  box.innerHTML = files.map(x => `<div class="row"><div class="grow"><strong>📄 ${esc(x.name)}</strong>
+      <small>${x.metadata ? (x.metadata.size / 1048576).toFixed(1) + ' MB · ' : ''}added ${new Date(x.created_at).toLocaleDateString()}</small></div>
+      <button class="ib danger" type="button" data-delfile="${esc(x.name)}">Delete</button></div>`).join('')
+    || '<p class="muted">No downloads yet.</p>';
+  box.onclick = async e => {
+    const b = e.target.closest('[data-delfile]'); if (!b || !confirm(`Delete ${b.dataset.delfile}? Students won't be able to download it any more.`)) return;
+    const r = await bucket.remove([`${id}/${b.dataset.delfile}`]);
+    if (r.error) return toast(r.error.message);
+    toast('Deleted'); courseFiles(id);
+  };
+  $('b-addfile').onclick = () => {
+    const pick = document.createElement('input'); pick.type = 'file'; pick.accept = '.pdf,.zip,.docx,.pptx,image/*';
+    pick.onchange = async () => {
+      const file = pick.files[0]; if (!file) return;
+      if (file.size > 50 * 1024 * 1024) return toast('Files must be under 50 MB.');
+      const name = file.name.replace(/[^\w.() -]+/g, '-').slice(-100);
+      toast('Uploading…');
+      const r = await bucket.upload(`${id}/${name}`, file, { contentType: file.type || 'application/octet-stream', upsert: true });
+      if (r.error) return toast(r.error.message);
+      toast('Uploaded ✓'); courseFiles(id);
+    };
+    pick.click();
+  };
+}
+
 function wireUploads(form) {
   form.querySelectorAll('[data-upload]').forEach(b => b.onclick = () => {
     const pick = document.createElement('input'); pick.type = 'file'; pick.accept = 'image/*';
