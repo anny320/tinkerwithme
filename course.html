@@ -188,6 +188,10 @@ const { esc, md } = LMS;
 const slug = new URLSearchParams(location.search).get('c') || '';
 const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); };
 const WA = 'https://wa.me/254117784724?text=';
+const TRAINER_KES = 3000;   // optional 1:1 trainer support, per hour (lms_trainer_rate() in lms.sql)
+const TILL = '3022049';
+let PAYS = [];              // my M-Pesa payments for this course, from lms_my_payments()
+const day = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 let C = null;          // the course, from lms_course()
 let cur = null;        // open lesson id, or null for the overview
 
@@ -211,6 +215,7 @@ async function loadCourse() {
   }
   document.title = C.title + ' — TinkerWith_';
   $('c-title').textContent = C.title;
+  await loadPays();
   $('c-summary').textContent = C.summary;
   $('c-tags').innerHTML = (C.price_kes ? `<span class="tag paid">KES ${C.price_kes.toLocaleString()}</span>` : '<span class="tag free">Free</span>')
     + (C.age_range ? `<span class="tag">Ages ${esc(C.age_range)}</span>` : '')
@@ -263,22 +268,103 @@ function renderOverview() {
   } else if (C.can_access) {
     act = next ? `<div class="action"><h3>${doneCount() ? (finished() ? 'You finished this course! 🎉' : 'Welcome back!') : 'You’re enrolled!'}</h3>
       <p>${doneCount()} of ${C.lessons.length} lessons done.</p>
+      ${C.expires_at ? `<p>Your access runs until <strong>${day(C.expires_at)}</strong>.</p>` : ''}
       <a class="tw-btn tw-btn-orange" href="#l=${next.id}">${finished() ? 'Review the lessons' : doneCount() ? 'Continue' : 'Start lesson 1'} &rarr;</a></div>` : '';
+    act += '<div id="downloads"></div>';
+    if (C.price_kes) act += trainerBox();
   } else if (!C.price_kes) {
     act = `<div class="action"><h3>This course is free</h3><p>Enrol to open the lessons and start learning.</p>
       <button class="tw-btn tw-btn-orange" type="button" id="b-enrol">Start this course &rarr;</button></div>`;
   } else {
     const email = (LMS.state.me && LMS.state.me.email) || (LMS.user.primaryEmailAddress && LMS.user.primaryEmailAddress.emailAddress) || '';
-    const msg = `Hi Anne, I've paid KES ${C.price_kes} for the "${C.title}" course. My Tinkerwith account email is ${email}. M-Pesa code: `;
-    act = `<div class="action"><h3>Get this course — KES ${C.price_kes.toLocaleString()}</h3>
-      <ol><li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>3022049</strong>.</li>
-      <li>Send us the M-Pesa confirmation on WhatsApp. We’ll unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
-      <a class="tw-btn tw-btn-orange" href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-paid-whatsapp">Send confirmation on WhatsApp &rarr;</a></div>`;
+    const renew = C.enrolled && C.expired;
+    act = `<div class="action"><h3>${renew ? 'Renew' : 'Get'} this course — KES ${C.price_kes.toLocaleString()}</h3>
+      <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
+      ${payStatus(p => p.kind !== 'trainer')}
+      <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.</li>
+      <li>Paste the M-Pesa message you get below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
+      ${payForm('course')}</div>`;
   }
+  if (!C.can_access && C.price_kes && LMS.user) act += trainerBox();
   $('main').innerHTML = adminBar() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '');
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
+  document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
+  if ($('downloads')) showDownloads();
   wireCertificate();
+}
+
+// Optional paid 1:1 help with a trainer: agree a time on WhatsApp, then pay and paste the M-Pesa message.
+function trainerBox() {
+  const msg = `Hi Anne, I'd like to book a trainer for the "${C.title}" course. Preferred day and time: `;
+  return `<div class="action" style="margin-top:1rem;background:#fff"><h3>Want help from a trainer?</h3>
+    <p>Book a live 1:1 session with a Tinkerwith trainer for questions, debugging or a guided build: <strong>KES ${TRAINER_KES.toLocaleString()} per hour</strong>.</p>
+    ${payStatus(p => p.kind === 'trainer')}
+    <ol><li><a href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-book-trainer">Message us on WhatsApp</a> to agree a day and time.</li>
+    <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>, then paste the M-Pesa message below.</li></ol>
+    ${payForm('trainer')}</div>`;
+}
+
+/* ── Downloads: private files for students with access (lms-files/<course id>/) ── */
+async function showDownloads() {
+  const bucket = LMS.db.storage.from('lms-files');
+  const { data } = await bucket.list(C.id, { sortBy: { column: 'name', order: 'asc' } });
+  const files = (data || []).filter(x => x.id);
+  const box = $('downloads');
+  if (!box || !files.length) return;
+  box.innerHTML = `<div class="action" style="margin-top:1rem;background:#fff"><h3>📥 Downloads</h3>
+    <p>Yours to keep with this course.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${files.map(x =>
+      `<button class="tw-btn tw-btn-white" type="button" data-file="${esc(x.name)}" style="justify-content:flex-start">📄 ${esc(x.name)}</button>`).join('')}</div></div>`;
+  box.onclick = async e => {
+    const b = e.target.closest('[data-file]'); if (!b) return;
+    // A fresh one-minute link each time, so links can't be shared around.
+    const { data: s, error } = await bucket.createSignedUrl(`${C.id}/${b.dataset.file}`, 60, { download: b.dataset.file });
+    if (error) return toast('That file couldn’t be opened. Please try again.');
+    LMS.track('lms_download', { course: C.slug, file: b.dataset.file });
+    location.href = s.signedUrl;
+  };
+}
+
+/* ── M-Pesa payments: paste the message, an admin approves it in teach.html ── */
+async function loadPays() {
+  PAYS = [];
+  if (LMS.user && C.price_kes) { try { PAYS = await LMS.rpc('lms_my_payments', { p_course: C.id }); } catch (_) {} }
+}
+
+function payStatus(which) {
+  const list = PAYS.filter(which).slice(0, 3);
+  if (!list.length) return '';
+  const line = p => {
+    const what = `${esc(p.code)}${p.amount_kes ? ` · KES ${p.amount_kes.toLocaleString()}` : ''}${p.hours ? ` · ${p.hours} hr${p.hours > 1 ? 's' : ''}` : ''}`;
+    return p.status === 'pending' ? `<li>⏳ <strong>${what}</strong>: received, waiting for us to check it (usually the same day).</li>`
+      : p.status === 'approved' ? `<li>✅ <strong>${what}</strong>: approved${p.kind === 'trainer' ? '. We’ll confirm your session time on WhatsApp.' : '.'}</li>`
+      : `<li>❌ <strong>${what}</strong>: not approved${p.note ? ` (${esc(p.note)})` : ''}. Please check and send it again, or message us on WhatsApp.</li>`;
+  };
+  return `<ul class="pay-status" style="list-style:none;margin:10px 0;display:flex;flex-direction:column;gap:6px;font-size:14.5px">${list.map(line).join('')}</ul>`;
+}
+
+function payForm(kind) {
+  const hours = kind === 'trainer'
+    ? `<label class="field-in">Hours <select name="hours">${[1, 2, 3, 4, 5].map(h => `<option value="${h}">${h} hour${h > 1 ? 's' : ''} (KES ${(h * TRAINER_KES).toLocaleString()})</option>`).join('')}</select></label>` : '';
+  return `<form class="payform" data-kind="${kind}" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">${hours}
+    <label class="field-in">M-Pesa message or code
+      <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${(kind === 'trainer' ? TRAINER_KES : C.price_kes).toLocaleString()}.00 paid to …"></textarea></label>
+    <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="lms-pay-${kind}">Send payment</button></div></form>`;
+}
+
+async function submitPay(e) {
+  e.preventDefault();
+  const f = e.target, b = f.querySelector('button');
+  b.disabled = true;
+  try {
+    const r = await LMS.rpc('lms_submit_payment', { p_course: C.id, p_message: f.msg.value,
+      p_hours: f.dataset.kind === 'trainer' ? +f.hours.value : null });
+    LMS.track('lms_payment_sent', { course: C.slug, kind: r.kind });
+    toast(`Got it: ${r.code}. We’ll check it and let you know.`);
+    await loadPays();
+    renderOverview();
+  } catch (err) { toast(err.message); b.disabled = false; }
 }
 
 async function enrol() {

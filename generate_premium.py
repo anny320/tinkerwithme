@@ -27,14 +27,31 @@ TRACK_LABEL = {
 }
 
 
+# The optional one-time kit (premium_courses.json "maker_kit"); set in main().
+MAKER_KIT = {}
+
+
+def kit_rows(course):
+    """Kit and parts-pack rows for hands-on courses."""
+    rows = []
+    if course.get("uses_kit") and MAKER_KIT:
+        rows.append(("Maker Kit", f"Optional, KES {MAKER_KIT['price']:,} one-time: {', '.join(MAKER_KIT['contents'])}. {MAKER_KIT['note']}"))
+    pack = course.get("parts_pack")
+    if pack:
+        rows.append(("Parts pack", f"Optional, KES {pack['price']:,}: {', '.join(pack['items'])}"))
+    return rows
+
+
 def _facts_table(course):
     prereq = ", ".join(course["prereqs"]) if course["prereqs"] else "None — standalone"
     rows = [
         ("Track", TRACK_LABEL.get(course["track"], course["track"])),
         ("Format", course["format"]),
+        ("Delivery", "Live online (1:1 or small group) or in person, you choose when booking"),
         ("Ages", course["age"]),
         ("Level", course["level"]),
         ("Price", f"from KES {course['price']:,}"),
+        *kit_rows(course),
         ("Standalone", "Yes" if course["standalone"] else "No"),
         ("Prerequisites", prereq),
     ]
@@ -128,7 +145,9 @@ def generate_curriculum_one(course, content_dir, out_dir):
 
 
 def main():
+    global MAKER_KIT
     data = json.loads(Path("premium_courses.json").read_text(encoding="utf-8"))
+    MAKER_KIT = data.get("maker_kit", {})
     args = sys.argv[1:]
     curriculum_mode = "--curriculums" in args
     only = {a for a in args if not a.startswith("--")}

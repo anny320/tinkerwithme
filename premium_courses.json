@@ -1,6 +1,12 @@
 {
-  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES.",
-  "price_range": {"min": 5000, "max": 8000},
+  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Every course runs live online (1:1 or small group) or in person; the family chooses when booking. Prices are packages: 1-day camp KES 5,000, 2 live sessions 7,000, 3 live sessions 9,000, 2-day camp 9,000. \"self_paced_price\" is the self-paced online version (generate_elearning.py); trainer support is extra at KES 3,000/hr. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit.",
+  "price_range": {"min": 5000, "max": 9000},
+  "maker_kit": {
+    "name": "Tinkerwith Maker Kit",
+    "price": 8500,
+    "note": "Bought once and reused in every Arduino course. Needed at home for live online sessions; for in-person sessions we provide kits, so buy one only to keep building at home.",
+    "contents": ["Arduino Uno R3 board + USB cable", "Breadboard + 40 jumper wires", "LEDs (red, yellow, green, white, RGB) + resistors", "Push buttons, potentiometer and piezo buzzer", "Light sensor (LDR) and sound sensor", "HC-SR04 ultrasonic sensor + bracket", "IR sensor", "DHT11 temperature & humidity sensor", "PIR motion sensor", "SG90 servo motor", "Relay module", "16×2 LCD screen (I2C)", "Battery holder", "Storage box"]
+  },
   "tracks": {
     "arduino": {"label": "Arduino Robotics & Electronics", "icon": "🔧"},
     "ai": {"label": "AI Skills for Kids", "icon": "🤖"},
@@ -11,10 +17,11 @@
       "id": "smart-home-builder",
       "track": "arduino",
       "title": "Smart Home Builder",
-      "format": "3-session series (90 min each)",
+      "format": "3 live sessions · 2 hrs each",
       "age": "10–14 yrs",
       "level": "Intermediate → Advanced",
-      "price": 8000,
+      "price": 9000,
+      "self_paced_price": 3500,
       "standalone": false,
       "prereqs": ["Traffic light simulation OR Button controlled LED (free)"],
       "summary": "Kids build a working smart home model with three integrated systems, wired into one house.",
@@ -24,35 +31,41 @@
         {"title": "Security System", "desc": "Ultrasonic door sensor + buzzer alarm + servo-powered door lock, all wired into one house model."}
       ],
       "takeaway": "Cardboard smart house model with all circuits installed",
-      "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works."
+      "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Small 5 V fan", "Servo door-lock bracket", "Cardboard house template"]}
     },
     {
       "id": "self-driving-car",
       "track": "arduino",
       "title": "Self-Driving Car",
-      "format": "3-session series (2 hrs each)",
+      "format": "3 live sessions · 2 hrs each",
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
-      "price": 8000,
+      "price": 9000,
+      "self_paced_price": 3500,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Build a chassis-based car that navigates on its own, finishing with a race day.",
       "sessions": [
-        {"title": "Motorised Chassis", "desc": "DC motors, an L298N motor driver, and basic forward/reverse/turn controls."},
-        {"title": "Line Follower", "desc": "IR sensors detect a black track so the car follows it autonomously."},
-        {"title": "Obstacle Avoidance", "desc": "An HC-SR04 ultrasonic sensor lets the car detect and steer around objects. Final race day!"}
+        {"title": "Motorised Chassis", "desc": "Assemble the chassis and wire DC motors to an L298N motor driver, then program forward, reverse and turn controls and drive a test course."},
+        {"title": "Line Follower", "desc": "Calibrate IR sensors on black vs. white, then program the car to follow a track on its own and tune its speed on the curves."},
+        {"title": "Obstacle Avoidance", "desc": "Mount an HC-SR04 ultrasonic sensor so the car detects and steers around objects, then race the finished cars on race day!"}
       ],
       "takeaway": "Working self-driving car kit",
-      "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old."
+      "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old.",
+      "uses_kit": true,
+      "parts_pack": {"price": 2500, "items": ["2WD car chassis with 2 DC motors and wheels", "L298N motor driver", "Second IR sensor", "AA battery pack"]}
     },
     {
       "id": "smart-city",
       "track": "arduino",
       "title": "Smart City",
-      "format": "Full-day camp (5 hrs)",
+      "format": "1-day camp · 5 hrs",
       "age": "10–14 yrs",
       "level": "Intermediate",
-      "price": 7000,
+      "price": 5000,
+      "self_paced_price": 3000,
       "standalone": true,
       "prereqs": [],
       "summary": "Teams of 3–4 each build one city subsystem, then connect them on a shared city board.",
@@ -63,16 +76,18 @@
         {"title": "Weather Station", "desc": "DHT11 + LDR display conditions on an LCD."}
       ],
       "takeaway": "Their subsystem module + a group photo of the full city",
-      "pitch": "Kids collaborate like real city engineers — each team owns a piece, then they integrate it all."
+      "pitch": "Kids collaborate like real city engineers — each team owns a piece, then they integrate it all.",
+      "uses_kit": true
     },
     {
       "id": "robot-arm-claw",
       "track": "arduino",
       "title": "Robot Arm & Claw",
-      "format": "2-session series (2 hrs each)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "12–15 yrs",
       "level": "Advanced",
       "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Assemble and program a 3-DOF robot arm with a gripper claw and a joystick controller.",
@@ -81,35 +96,40 @@
         {"title": "Program & Challenge", "desc": "Calibrate movement ranges and add a gripper claw servo. Challenge: pick up and sort coloured objects by zone."}
       ],
       "takeaway": "Assembled robot arm",
-      "pitch": "The same principles behind factory robots and surgical arms — in your child's hands."
+      "pitch": "The same principles behind factory robots and surgical arms — in your child's hands.",
+      "uses_kit": true,
+      "parts_pack": {"price": 2500, "items": ["3-DOF robot arm frame + claw", "4 extra SG90 servos", "2 joystick modules"]}
     },
     {
       "id": "wearable-tech-lab",
       "track": "arduino",
       "title": "Wearable Tech Lab",
-      "format": "Single session (2.5 hrs)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
-      "price": 5000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": true,
       "prereqs": [],
       "summary": "Kids design and build a wearable gadget they wire, code and wear home.",
       "sessions": [
-        {"title": "Build", "desc": "Sew or attach a NeoPixel LED strip to a wristband or cap."},
-        {"title": "Program", "desc": "Program light patterns: rainbow cycle, heartbeat pulse, and colour-react-to-sound using a sound sensor module."},
-        {"title": "Personalise", "desc": "Finish and personalise the wearable with craft materials."}
+        {"title": "Build & light up", "desc": "Sew or attach a NeoPixel LED strip to a wristband or cap, then program light patterns: rainbow cycle and heartbeat pulse."},
+        {"title": "React & personalise", "desc": "Add a sound sensor so the lights react to claps and music, then finish and personalise the wearable with craft materials."}
       ],
       "takeaway": "Their custom LED wearable",
-      "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home."
+      "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["NeoPixel LED strip", "Wristband / cap and craft materials", "Portable battery pack"]}
     },
     {
       "id": "iot-garden-monitor",
       "track": "arduino",
       "title": "IoT Garden Monitor",
-      "format": "2-session series (90 min each)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "10–14 yrs",
       "level": "Intermediate",
-      "price": 6000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Temperature logger (free, recommended)"],
       "summary": "Build a sensor kit that keeps a real seedling alive, then automate its care.",
@@ -118,54 +138,60 @@
         {"title": "Automate", "desc": "Set thresholds — if the soil is dry a relay triggers a small water pump; a buzzer alerts when conditions are off."}
       ],
       "takeaway": "Sensor kit + a seedling in a monitored pot",
-      "pitch": "STEM meets nature. They build tech that actually keeps a plant alive."
+      "pitch": "STEM meets nature. They build tech that actually keeps a plant alive.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing", "Pot and seedling"]}
     },
     {
       "id": "musical-instrument-builder",
       "track": "arduino",
       "title": "Musical Instrument Builder",
-      "format": "Single session (2.5 hrs)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "8–12 yrs",
       "level": "Beginner → Intermediate",
-      "price": 5000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Buzzer melody (free, recommended)"],
       "summary": "Build a playable electronic instrument on a breadboard.",
       "sessions": [
-        {"title": "Ultrasonic theremin", "desc": "Hand distance controls the pitch."},
-        {"title": "Button piano", "desc": "Eight tactile buttons mapped to a full octave."},
-        {"title": "Tempo & recording", "desc": "Tempo control with a potentiometer; record and play back a short melody."}
+        {"title": "Theremin & piano", "desc": "Build an ultrasonic theremin where hand distance controls the pitch, then wire an eight-button piano mapped to a full octave."},
+        {"title": "Tempo & performance", "desc": "Add tempo control with a potentiometer, record and play back a short melody, then perform it for the group."}
       ],
       "takeaway": "Their instrument circuit on a breadboard",
-      "pitch": "Music + code + electronics = the coolest instrument they've ever made."
+      "pitch": "Music + code + electronics = the coolest instrument they've ever made.",
+      "uses_kit": true
     },
     {
       "id": "smart-plant-carer",
       "track": "arduino",
       "title": "Smart Plant Carer",
-      "format": "Single session (2.5 hrs)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
-      "price": 5000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": true,
       "prereqs": [],
       "summary": "Build a self-watering planter that senses dry soil and pumps water to a real seedling all by itself.",
       "sessions": [
-        {"title": "Sense the soil", "desc": "Wire a soil-moisture sensor and calibrate the dry vs. wet readings on the Serial Monitor."},
-        {"title": "Pump on demand", "desc": "Drive a small water pump through a relay module and set a moisture threshold so it waters only when the soil is dry."},
-        {"title": "Build the planter", "desc": "Assemble the pump, tubing and water reservoir around a potted seedling and run a full automatic watering cycle."}
+        {"title": "Sense & pump", "desc": "Wire a soil-moisture sensor and calibrate the dry vs. wet readings on the Serial Monitor, then drive a small water pump through a relay module."},
+        {"title": "Automatic planter", "desc": "Set a moisture threshold so it waters only when the soil is dry, then assemble the pump, tubing and reservoir around a potted seedling and run a full automatic watering cycle."}
       ],
       "takeaway": "Self-watering planter kit + a seedling",
-      "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works."
+      "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing + reservoir", "Pot and seedling"]}
     },
     {
       "id": "bluetooth-control-lab",
       "track": "arduino",
       "title": "Bluetooth Control Lab",
-      "format": "2-session series (2 hrs each)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Button controlled LED (free, recommended)"],
       "summary": "Control an Arduino gadget wirelessly from a phone over Bluetooth, then build a custom app to command it.",
@@ -174,16 +200,19 @@
         {"title": "Build your app", "desc": "Use MIT App Inventor to make a custom phone app with your own buttons, and send live sensor readings (distance or temperature) back to the phone for true two-way communication."}
       ],
       "takeaway": "Bluetooth-controlled gadget + their own phone app",
-      "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other."
+      "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["HC-05 Bluetooth module", "Small DC motor"]}
     },
     {
       "id": "ai-game-designer",
       "track": "ai",
       "title": "AI Game Designer",
-      "format": "Full-day camp (5 hrs)",
+      "format": "1-day camp · 5 hrs",
       "age": "10–14 yrs",
       "level": "Intermediate",
-      "price": 7000,
+      "price": 5000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Prompting power (free, recommended)"],
       "summary": "Design and build a playable game using AI tools.",
@@ -198,10 +227,11 @@
       "id": "ai-movie-studio",
       "track": "ai",
       "title": "AI Movie Studio",
-      "format": "Full-day camp (5 hrs)",
+      "format": "1-day camp · 5 hrs",
       "age": "10–14 yrs",
       "level": "Beginner → Intermediate",
-      "price": 7000,
+      "price": 5000,
+      "self_paced_price": 3000,
       "standalone": true,
       "prereqs": [],
       "summary": "Produce a short film powered entirely by AI, then premiere it for parents.",
@@ -209,7 +239,7 @@
         {"title": "Script", "desc": "ChatGPT-assisted story writing and dialogue."},
         {"title": "Visuals", "desc": "AI image generation for storyboards and backgrounds."},
         {"title": "Audio", "desc": "AI-generated music, sound effects and optional voice narration."},
-        {"title": "Edit & Premiere", "desc": "Assemble in CapCut or a similar free editor, then screen the films for parents at pickup."}
+        {"title": "Edit & Premiere", "desc": "Assemble in CapCut or a similar free editor, then premiere the films for parents."}
       ],
       "takeaway": "Their finished short film (shared via link)",
       "pitch": "A full film production — written, illustrated, scored, and edited — in one day."
@@ -218,10 +248,11 @@
       "id": "ai-entrepreneur",
       "track": "ai",
       "title": "AI Entrepreneur",
-      "format": "3-session series (90 min each)",
+      "format": "3 live sessions · 2 hrs each",
       "age": "12–16 yrs",
       "level": "Intermediate → Advanced",
-      "price": 8000,
+      "price": 9000,
+      "self_paced_price": 3500,
       "standalone": true,
       "prereqs": [],
       "summary": "Launch a mini-business using AI tools, ending with a pitch to a panel.",
@@ -237,30 +268,30 @@
       "id": "deepfake-detective",
       "track": "ai",
       "title": "Deepfake Detective & AI Safety",
-      "format": "Single session (2.5 hrs)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "12–16 yrs",
       "level": "Intermediate",
-      "price": 5000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": true,
       "prereqs": [],
       "summary": "Critical thinking meets cutting-edge AI: spot fakes, understand misinformation, and write a personal AI safety code.",
       "sessions": [
-        {"title": "Spot the fakes", "desc": "Detect deepfake images, videos and audio using detective techniques."},
-        {"title": "Trace misinformation", "desc": "Understand how misinformation spreads by tracing a fake story's path."},
-        {"title": "Build a classifier", "desc": "Build a \"Fake or Real?\" quiz using Teachable Machine (image classifier)."},
-        {"title": "AI Safety Code & debate", "desc": "Draft a personal AI Safety Code, then debate: \"Should AI-generated art be allowed in school?\""}
+        {"title": "Spot & trace", "desc": "Detect deepfake images, videos and audio using detective techniques, then trace how a fake story spreads to understand misinformation."},
+        {"title": "Build & decide", "desc": "Build a \"Fake or Real?\" quiz using Teachable Machine (image classifier), then draft a personal AI Safety Code and debate: \"Should AI-generated art be allowed in school?\""}
       ],
       "takeaway": "AI Safety Code poster + Fake-or-Real classifier",
-      "pitch": "Every child will encounter deepfakes. This session teaches them to think before they believe."
+      "pitch": "Every child will encounter deepfakes. This course teaches them to think before they believe."
     },
     {
       "id": "ai-music-producer",
       "track": "ai",
       "title": "AI Music Producer",
-      "format": "2-session series (90 min each)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "10–14 yrs",
       "level": "Beginner → Intermediate",
-      "price": 6000,
+      "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["AI music & sound (free, recommended)"],
       "summary": "Go deeper than the free session and produce a real EP with cover art.",
@@ -275,10 +306,11 @@
       "id": "computer-vision-explorer",
       "track": "ai",
       "title": "Computer Vision Explorer",
-      "format": "2-session series (2 hrs each)",
+      "format": "2 live sessions · 2 hrs each",
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 7000,
+      "self_paced_price": 3000,
       "standalone": false,
       "prereqs": ["Teachable Machine (free)"],
       "summary": "Build on the free Teachable Machine session to make a working computer-vision app.",
@@ -293,17 +325,18 @@
       "id": "ai-for-social-good",
       "track": "ai",
       "title": "AI for Social Good",
-      "format": "3-session series (90 min each)",
+      "format": "3 live sessions · 2 hrs each",
       "age": "12–16 yrs",
       "level": "Intermediate → Advanced",
-      "price": 8000,
+      "price": 9000,
+      "self_paced_price": 3500,
       "standalone": true,
       "prereqs": [],
       "summary": "Solve a real community problem with AI, ending with a pitch and a Changemaker badge.",
       "sessions": [
         {"title": "Research", "desc": "Pick a local challenge (water access, matatu routes, waste management, school safety) and use AI to research, interview and map the problem."},
         {"title": "Prototype", "desc": "Build an AI-assisted solution — a chatbot, a classifier, a data dashboard, or an awareness campaign with AI-generated content."},
-        {"title": "Present", "desc": "Pitch the solution to peers and parents. Best project wins the \"TinkerWith_ Changemaker\" badge."}
+        {"title": "Present", "desc": "Rehearse the pitch with AI feedback, then present the solution to peers and parents. Best project wins the \"TinkerWith_ Changemaker\" badge."}
       ],
       "takeaway": "Project portfolio + Changemaker certificate",
       "pitch": "AI isn't just about tech — it's about impact. They tackle a real problem their community faces."
@@ -312,10 +345,11 @@
       "id": "smart-city-2-ai-powered",
       "track": "combo",
       "title": "Smart City 2.0 — AI-Powered",
-      "format": "2-day camp (5 hrs/day)",
+      "format": "2-day camp · 5 hrs a day",
       "age": "12–15 yrs",
       "level": "Advanced",
-      "price": 8000,
+      "price": 9000,
+      "self_paced_price": 3500,
       "standalone": false,
       "prereqs": ["Any 2 free Arduino activities", "Prompting power (free)"],
       "summary": "The ultimate crossover: build an Arduino smart city, then give it an AI brain.",
@@ -324,7 +358,8 @@
         {"title": "Day 2 — Add Intelligence", "desc": "Use Teachable Machine to add a \"vision\" layer — a camera classifies traffic density and the AI recommends light timing. ChatGPT generates a city-planning report from sensor data. Teams present their AI-enhanced city to parents."}
       ],
       "takeaway": "Their city module + an AI analysis report",
-      "pitch": "Hardware meets AI. Two days, one smart city, built and brain-powered by kids."
+      "pitch": "Hardware meets AI. Two days, one smart city, built and brain-powered by kids.",
+      "uses_kit": true
     }
   ]
 }

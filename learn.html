@@ -154,7 +154,7 @@ LMS.ready.then(async r => {
           <div class="cover" ${cover(c)}>${c.cover_url ? '' : '📘'}</div>
           <div class="cbody"><h3>${esc(c.title)}</h3>
             <div class="progress-line"><div class="bar"><i style="width:${pct(c.done, c.lessons)}%"></i></div>${c.done}/${c.lessons}</div>
-            <span class="foot">${c.done && c.done === c.lessons ? '🎓 Finished — see certificate' : c.done ? 'Continue' : 'Start'} &rarr;</span>
+            <span class="foot">${c.expired ? '⏳ Access ended — renew' : c.done && c.done === c.lessons ? '🎓 Finished — see certificate' : c.done ? 'Continue' : 'Start'} &rarr;</span>
           </div></a>`).join('')
         : '<p class="muted">You haven’t started a course yet. Pick one below!</p>';
     } catch (e) { $('status').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; }

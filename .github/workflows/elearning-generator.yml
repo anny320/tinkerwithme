@@ -9,7 +9,13 @@ name: Make Online Courses
 #   ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY (Supabase → Project
 #   Settings → API Keys → secret key). The secret key never goes in a web page.
 #
-# The written course JSON is also uploaded as a 1-day artifact (paid content).
+# With "curriculum" ticked, each course also gets the full premium curriculum,
+# written to the current timings and attached to the course's private
+# Downloads (students see it once they have access). Courses that already
+# have it are skipped, so re-running only fills gaps.
+#
+# The written course JSON and curriculum PDFs are also uploaded as a 1-day
+# artifact (paid content) so you can save copies to Drive.
 #
 # Run from the Actions tab → "Make Online Courses" → Run workflow.
 
@@ -21,9 +27,13 @@ on:
         required: true
         default: 'smart-home-builder deepfake-detective'
       price:
-        description: 'Price in KES (blank = the in-person price)'
+        description: 'Price in KES (blank = the self-paced price in premium_courses.json)'
         required: false
-        default: '8000'
+        default: ''
+      curriculum:
+        description: 'Also attach the full curriculum PDF to each course (one extra AI call per course)'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -39,8 +49,14 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install system dependencies for WeasyPrint (curriculum PDFs)
+        if: ${{ inputs.curriculum }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info fonts-liberation
+
       - name: Install Python dependencies
-        run: pip install 'anthropic>=1.11' requests
+        run: pip install 'anthropic>=1.11' requests weasyprint
 
       - name: Write the courses and save them as drafts
         env:
@@ -49,9 +65,11 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           COURSES: ${{ inputs.courses }}
           PRICE: ${{ inputs.price }}
+          CURRICULUM: ${{ inputs.curriculum }}
         run: |
           ARGS=""
           if [ -n "$PRICE" ]; then ARGS="--price $PRICE"; fi
+          if [ "$CURRICULUM" = "true" ]; then ARGS="$ARGS --curriculum"; fi
           python generate_elearning.py $ARGS $COURSES
 
       - name: Upload the written courses (1 day)
@@ -59,6 +77,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: online-courses
-          path: elearning_drafts/
+          path: |
+            elearning_drafts/
+            curriculums/
           retention-days: 1
           if-no-files-found: ignore

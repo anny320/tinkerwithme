@@ -54,6 +54,7 @@
 .pill{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:2px solid var(--ink)}
 .pill.on{background:var(--green)}
 .pill.off{background:var(--cream-dim)}
+.pay-warn{color:#B3261E;font-weight:600}
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
@@ -95,7 +96,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -191,10 +192,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  $('t-courses').classList.toggle('cur', !h.startsWith('#students'));
-  $('t-students').classList.toggle('cur', h.startsWith('#students'));
+  const tab = h.startsWith('#students') ? 'students' : h.startsWith('#payments') ? 'payments' : 'courses';
+  ['courses', 'students', 'payments'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  payCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = h.startsWith('#students') ? students() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -226,7 +228,7 @@ async function courseEditor(id) {
         <label class="field-in">Web address <input name="slug" required maxlength="60" pattern="[a-z0-9]+(-[a-z0-9]+)*" value="${esc(c.slug)}">
           <small>Lowercase words joined by dashes, e.g. <code>ai-for-kids</code>. Changing it breaks old links.</small></label>
         <label class="field-in">Ages <input name="age_range" maxlength="20" placeholder="e.g. 7–9" value="${esc(c.age_range)}"></label>
-        <label class="field-in">Price in KES <input name="price_kes" type="number" min="0" step="1" value="${c.price_kes}"><small>0 = free. Paid courses are unlocked by enrolling students on the Students tab.</small></label>
+        <label class="field-in">Price in KES <input name="price_kes" type="number" min="0" step="1" value="${c.price_kes}"><small>0 = free. Paid courses unlock when you approve a payment on the Payments tab, or enrol a student on the Students tab.</small></label>
         <label class="field-in">Order on the courses page <input name="position" type="number" step="1" value="${c.position}"><small>Lower numbers come first.</small></label>
         <label class="field-in wide">Short summary <input name="summary" maxlength="200" value="${esc(c.summary)}"><small>One or two sentences for the course card.</small></label>
         <div class="field-in wide">Cover picture
@@ -243,8 +245,12 @@ async function courseEditor(id) {
         <a class="grow" href="#lesson=${l.id}"><strong>${i + 1}. ${esc(l.title)}</strong><small>${esc(l.section || 'No section')}${l.video_url ? ' · 🎬 video' : ''}${l.quiz.length ? ` · 🧠 ${l.quiz.length} quiz question${l.quiz.length > 1 ? 's' : ''}` : ''}</small></a>
         <button class="ib" type="button" data-move="${i}" data-dir="-1" ${i ? '' : 'disabled'} aria-label="Move up">↑</button>
         <button class="ib" type="button" data-move="${i}" data-dir="1" ${i < lessons.length - 1 ? '' : 'disabled'} aria-label="Move down">↓</button>
-      </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>`}`;
+      </div>`).join('') || '<p class="muted">No lessons yet.</p>'}</div></div>
+    <div class="panel box"><div class="sec-h"><h2>Downloads</h2><button class="tw-btn tw-btn-orange tw-btn-sm" type="button" id="b-addfile">+ Upload file</button></div>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">E.g. the full curriculum PDF. Private: only students with access to this course can download it, after they sign in.</p>
+      <div class="rows" id="files"><p class="loading">Loading…</p></div></div>`}`;
   const f = $('cf'); watch(f); wireMd(f); wireUploads(f);
+  if (!isNew) courseFiles(id);
   if (isNew) f.title.addEventListener('input', () => { if (!f.slug.dataset.touched) f.slug.value = slugify(f.title.value); });
   f.slug.addEventListener('input', () => { f.slug.dataset.touched = 1; });
   f.onsubmit = async e => {
@@ -372,6 +378,37 @@ function wireMd(form) {
     if (prev) pv.innerHTML = md(box.querySelector('textarea').value) || '<p class="muted">Nothing yet.</p>';
   }));
 }
+// Private course downloads in the lms-files bucket, under <course id>/.
+async function courseFiles(id) {
+  const box = $('files'), bucket = db().storage.from('lms-files');
+  const { data, error } = await bucket.list(id, { sortBy: { column: 'name', order: 'asc' } });
+  if (error) { box.innerHTML = `<div class="notice err">${esc(error.message)}</div>`; return; }
+  const files = (data || []).filter(x => x.id);
+  box.innerHTML = files.map(x => `<div class="row"><div class="grow"><strong>📄 ${esc(x.name)}</strong>
+      <small>${x.metadata ? (x.metadata.size / 1048576).toFixed(1) + ' MB · ' : ''}added ${new Date(x.created_at).toLocaleDateString()}</small></div>
+      <button class="ib danger" type="button" data-delfile="${esc(x.name)}">Delete</button></div>`).join('')
+    || '<p class="muted">No downloads yet.</p>';
+  box.onclick = async e => {
+    const b = e.target.closest('[data-delfile]'); if (!b || !confirm(`Delete ${b.dataset.delfile}? Students won't be able to download it any more.`)) return;
+    const r = await bucket.remove([`${id}/${b.dataset.delfile}`]);
+    if (r.error) return toast(r.error.message);
+    toast('Deleted'); courseFiles(id);
+  };
+  $('b-addfile').onclick = () => {
+    const pick = document.createElement('input'); pick.type = 'file'; pick.accept = '.pdf,.zip,.docx,.pptx,image/*';
+    pick.onchange = async () => {
+      const file = pick.files[0]; if (!file) return;
+      if (file.size > 50 * 1024 * 1024) return toast('Files must be under 50 MB.');
+      const name = file.name.replace(/[^\w.() -]+/g, '-').slice(-100);
+      toast('Uploading…');
+      const r = await bucket.upload(`${id}/${name}`, file, { contentType: file.type || 'application/octet-stream', upsert: true });
+      if (r.error) return toast(r.error.message);
+      toast('Uploaded ✓'); courseFiles(id);
+    };
+    pick.click();
+  };
+}
+
 function wireUploads(form) {
   form.querySelectorAll('[data-upload]').forEach(b => b.onclick = () => {
     const pick = document.createElement('input'); pick.type = 'file'; pick.accept = 'image/*';
@@ -398,7 +435,55 @@ function wireUploads(form) {
   });
 }
 
+/* ── Payments: M-Pesa messages pasted by parents, waiting for approval ── */
+async function payCount() {
+  try {
+    const n = (await LMS.rpc('lms_admin_payments')).filter(p => p.pending).length;
+    $('t-payments').textContent = n ? `Payments (${n})` : 'Payments';
+  } catch (_) {}
+}
+
+async function payments() {
+  $('view').innerHTML = '<p class="loading">Loading payments…</p>';
+  const list = await LMS.rpc('lms_admin_payments');
+  const pend = list.filter(p => p.pending), done = list.filter(p => !p.pending);
+  const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : 'New enrolment';
+  const amount = p => p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
+    : p.amount_kes === p.expected_kes ? `KES ${p.amount_kes.toLocaleString()} ✓`
+    : `<span class="pay-warn">KES ${p.amount_kes.toLocaleString()}, expected ${p.expected_kes.toLocaleString()}</span>`;
+  const row = (p, open) => `<div class="row" style="align-items:flex-start">
+      <div class="grow"><strong>${esc(p.full_name || p.email)}</strong>
+        <small>${esc(p.email)} · ${esc(p.title || '(course deleted)')} · ${what(p)} · ${when(p.created_at)}</small>
+        <div style="margin-top:4px;font-size:14.5px"><code style="font-size:15px;font-weight:700">${esc(p.code)}</code> · ${amount(p)}</div>
+        ${p.message && p.message.toUpperCase() !== p.code ? `<details style="font-size:13.5px;color:var(--text-2);margin-top:4px"><summary>Message they pasted</summary>${esc(p.message)}</details>` : ''}
+        ${!open ? `<small>${p.status === 'approved' ? '✅ Approved' : '❌ Rejected'} ${when(p.decided_at)}${p.note ? ` · ${esc(p.note)}` : ''}</small>` : ''}</div>
+      ${open ? `<button class="ib" type="button" data-approve="${p.id}" data-code="${esc(p.code)}">Approve</button>
+        <button class="ib danger" type="button" data-reject="${p.id}">Reject</button>` : ''}</div>`;
+  $('view').innerHTML = `
+    <div class="panel box"><h2>Waiting for approval (${pend.length})</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Check each code and amount against your M-Pesa statement, then approve. Approving a course or renewal unlocks 12 months straight away.</p>
+      <div class="rows">${pend.map(p => row(p, true)).join('') || '<p class="muted">Nothing waiting. 🎉</p>'}</div></div>
+    ${done.length ? `<div class="panel box"><h2>Recent decisions</h2><div class="rows">${done.map(p => row(p, false)).join('')}</div></div>` : ''}`;
+  $('view').onclick = async e => {
+    const a = e.target.closest('[data-approve]'), r = e.target.closest('[data-reject]');
+    if (!a && !r) return;
+    let note = '';
+    if (a && !confirm(`Approve ${a.dataset.code}? Only if it's on your M-Pesa statement.`)) return;
+    if (r && (note = prompt('Reason the parent will see (e.g. "Code not found on our statement"):', '')) === null) return;
+    try {
+      const res = await LMS.rpc('lms_admin_decide_payment', { p_id: (a || r).dataset[a ? 'approve' : 'reject'], p_approve: !!a, p_note: note });
+      toast({ enrolled: 'Approved: course unlocked for 12 months ✓', renewed: 'Approved: renewed for 12 months ✓',
+              already: 'Approved (they already have lifetime access)', approved: 'Approved ✓', rejected: 'Rejected' }[res] || res);
+      payments(); payCount();
+    } catch (err) { toast(err.message); }
+  };
+}
+
 /* ── Students ── */
+// "lifetime", "until 5 Oct 2027" or "expired 5 Oct 2027".
+const access = d => !d ? 'lifetime' : `${new Date(d) > new Date() ? 'until' : 'expired'} ${new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
 async function students() {
   $('view').innerHTML = '<p class="loading">Loading students…</p>';
   const [data, courses] = await Promise.all([LMS.rpc('lms_admin_students'),
@@ -416,18 +501,27 @@ async function students() {
     <div class="panel box"><h2>Students (${data.students.length})</h2><div class="rows">${data.students.map(s => `<div class="row">
       <div class="grow"><strong>${esc(s.full_name || '(no name)')}</strong><small>${esc(s.email || 'no email')} · last seen ${new Date(s.last_seen_at).toLocaleDateString()}</small>
         <div class="st-courses">${s.courses.map(c => `<div><div class="bar"><i style="width:${c.lessons ? c.done / c.lessons * 100 : 0}%"></i></div>
-          <span>${esc(c.title)} — ${c.done}/${c.lessons}</span>
+          <span>${esc(c.title)} — ${c.done}/${c.lessons} · ${access(c.expires_at)}</span>
+          ${c.expires_at ? `<button class="ib" type="button" data-renew="${esc(s.email)}|${c.course_id}" title="Add 12 months">Renew</button>` : ''}
           <button class="ib danger" type="button" data-unenrol="${esc(s.user_id)}|${c.course_id}" title="Remove from this course">×</button></div>`).join('') || '<small>No courses yet</small>'}</div></div></div>`).join('') || '<p class="muted">Nobody has signed in yet.</p>'}</div></div>`;
   const f = $('ef');
   f.onsubmit = async e => {
     e.preventDefault();
     try {
       const r = await LMS.rpc('lms_admin_enroll', { p_email: f.email.value, p_course: f.course.value });
-      toast(r === 'enrolled' ? 'Enrolled ✓' : 'Saved ✓ — it unlocks when they sign up with that email.');
+      toast(r === 'enrolled' ? 'Enrolled ✓' : r === 'renewed' ? 'Renewed for 12 months ✓' : r === 'already' ? 'Already enrolled, with lifetime access' : 'Saved ✓ — it unlocks when they sign up with that email.');
       students();
     } catch (err) { toast(err.message); }
   };
   $('view').onclick = async e => {
+    const rb = e.target.closest('[data-renew]');
+    if (rb) {
+      const [em, cid] = rb.dataset.renew.split('|');
+      if (!confirm(`Add 12 months of access for ${em}?`)) return;
+      try { await LMS.rpc('lms_admin_enroll', { p_email: em, p_course: cid }); toast('Renewed for 12 months ✓'); students(); }
+      catch (err) { toast(err.message); }
+      return;
+    }
     const b = e.target.closest('[data-unpend],[data-unenrol]'); if (!b) return;
     if (!confirm('Remove this enrolment? Their progress is kept and comes back if you enrol them again.')) return;
     try {
