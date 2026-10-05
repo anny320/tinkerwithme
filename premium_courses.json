@@ -1,6 +1,12 @@
 {
-  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Prices are packages: 1 visit KES 5,000, 2 visits 7,000, 3 visits 9,000, 2-day camp 9,000. \"kit_fee\" (hands-on courses only) is the separate charge for the parts the child keeps; an Arduino board to keep is an optional add-on of \"board_addon\" KES.",
+  "_comment": "Single source of truth for TinkerWithMe PREMIUM courses. premium.html renders cards from this and generate_premium.py renders one branded outline PDF per course into proposals/<id>.pdf. Keep prices in whole KES. Prices are packages: 1 visit KES 5,000, 2 visits 7,000, 3 visits 9,000, 2-day camp 9,000. \"maker_kit\" is the optional one-time kit for every course with \"uses_kit\"; \"parts_pack\" is the optional top-up of extra parts a course needs beyond the kit.",
   "price_range": {"min": 5000, "max": 9000},
+  "maker_kit": {
+    "name": "Tinkerwith Maker Kit",
+    "price": 8500,
+    "note": "Bought once and reused in every Arduino course. Kits are lent during sessions; buy one to keep building at home.",
+    "contents": ["Arduino Uno R3 board + USB cable", "Breadboard + 40 jumper wires", "LEDs (red, yellow, green, white, RGB) + resistors", "Push buttons, potentiometer and piezo buzzer", "Light sensor (LDR) and sound sensor", "HC-SR04 ultrasonic sensor + bracket", "IR sensor", "DHT11 temperature & humidity sensor", "PIR motion sensor", "SG90 servo motor", "Relay module", "16×2 LCD screen (I2C)", "Battery holder", "Storage box"]
+  },
   "tracks": {
     "arduino": {"label": "Arduino Robotics & Electronics", "icon": "🔧"},
     "ai": {"label": "AI Skills for Kids", "icon": "🤖"},
@@ -15,7 +21,6 @@
       "age": "10–14 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
-      "kit_fee": 3000,
       "standalone": false,
       "prereqs": ["Traffic light simulation OR Button controlled LED (free)"],
       "summary": "Kids build a working smart home model with three integrated systems, wired into one house.",
@@ -25,7 +30,9 @@
         {"title": "Security System", "desc": "Ultrasonic door sensor + buzzer alarm + servo-powered door lock, all wired into one house model."}
       ],
       "takeaway": "Cardboard smart house model with all circuits installed",
-      "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works."
+      "pitch": "Your child builds a miniature version of the smart home tech you see advertised — and actually understands how it works.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Small 5 V fan", "Servo door-lock bracket", "Cardboard house template"]}
     },
     {
       "id": "self-driving-car",
@@ -35,7 +42,6 @@
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 9000,
-      "kit_fee": 3000,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Build a chassis-based car that navigates on its own, finishing with a race day.",
@@ -45,7 +51,9 @@
         {"title": "Obstacle Avoidance", "desc": "Mount an HC-SR04 ultrasonic sensor so the car detects and steers around objects, then race the finished cars on race day!"}
       ],
       "takeaway": "Working self-driving car kit",
-      "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old."
+      "pitch": "The technology behind Waymo and Tesla — built from scratch by your 12-year-old.",
+      "uses_kit": true,
+      "parts_pack": {"price": 2500, "items": ["2WD car chassis with 2 DC motors and wheels", "L298N motor driver", "Second IR sensor", "AA battery pack"]}
     },
     {
       "id": "smart-city",
@@ -55,7 +63,6 @@
       "age": "10–14 yrs",
       "level": "Intermediate",
       "price": 5000,
-      "kit_fee": 1500,
       "standalone": true,
       "prereqs": [],
       "summary": "Teams of 3–4 each build one city subsystem, then connect them on a shared city board.",
@@ -66,7 +73,8 @@
         {"title": "Weather Station", "desc": "DHT11 + LDR display conditions on an LCD."}
       ],
       "takeaway": "Their subsystem module + a group photo of the full city",
-      "pitch": "Kids collaborate like real city engineers — each team owns a piece, then they integrate it all."
+      "pitch": "Kids collaborate like real city engineers — each team owns a piece, then they integrate it all.",
+      "uses_kit": true
     },
     {
       "id": "robot-arm-claw",
@@ -76,7 +84,6 @@
       "age": "12–15 yrs",
       "level": "Advanced",
       "price": 7000,
-      "kit_fee": 2500,
       "standalone": false,
       "prereqs": ["Servo motor control (free)"],
       "summary": "Assemble and program a 3-DOF robot arm with a gripper claw and a joystick controller.",
@@ -85,7 +92,9 @@
         {"title": "Program & Challenge", "desc": "Calibrate movement ranges and add a gripper claw servo. Challenge: pick up and sort coloured objects by zone."}
       ],
       "takeaway": "Assembled robot arm",
-      "pitch": "The same principles behind factory robots and surgical arms — in your child's hands."
+      "pitch": "The same principles behind factory robots and surgical arms — in your child's hands.",
+      "uses_kit": true,
+      "parts_pack": {"price": 2500, "items": ["3-DOF robot arm frame + claw", "4 extra SG90 servos", "2 joystick modules"]}
     },
     {
       "id": "wearable-tech-lab",
@@ -95,7 +104,6 @@
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
-      "kit_fee": 1500,
       "standalone": true,
       "prereqs": [],
       "summary": "Kids design and build a wearable gadget they wire, code and wear home.",
@@ -104,7 +112,9 @@
         {"title": "React & personalise", "desc": "Add a sound sensor so the lights react to claps and music, then finish and personalise the wearable with craft materials."}
       ],
       "takeaway": "Their custom LED wearable",
-      "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home."
+      "pitch": "Part fashion, part engineering. They design it, wire it, code it, and wear it home.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["NeoPixel LED strip", "Wristband / cap and craft materials", "Portable battery pack"]}
     },
     {
       "id": "iot-garden-monitor",
@@ -114,7 +124,6 @@
       "age": "10–14 yrs",
       "level": "Intermediate",
       "price": 7000,
-      "kit_fee": 2500,
       "standalone": false,
       "prereqs": ["Temperature logger (free, recommended)"],
       "summary": "Build a sensor kit that keeps a real seedling alive, then automate its care.",
@@ -123,7 +132,9 @@
         {"title": "Automate", "desc": "Set thresholds — if the soil is dry a relay triggers a small water pump; a buzzer alerts when conditions are off."}
       ],
       "takeaway": "Sensor kit + a seedling in a monitored pot",
-      "pitch": "STEM meets nature. They build tech that actually keeps a plant alive."
+      "pitch": "STEM meets nature. They build tech that actually keeps a plant alive.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing", "Pot and seedling"]}
     },
     {
       "id": "musical-instrument-builder",
@@ -133,7 +144,6 @@
       "age": "8–12 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
-      "kit_fee": 1500,
       "standalone": false,
       "prereqs": ["Buzzer melody (free, recommended)"],
       "summary": "Build a playable electronic instrument on a breadboard.",
@@ -142,7 +152,8 @@
         {"title": "Tempo & performance", "desc": "Add tempo control with a potentiometer, record and play back a short melody, then perform it for the group."}
       ],
       "takeaway": "Their instrument circuit on a breadboard",
-      "pitch": "Music + code + electronics = the coolest instrument they've ever made."
+      "pitch": "Music + code + electronics = the coolest instrument they've ever made.",
+      "uses_kit": true
     },
     {
       "id": "smart-plant-carer",
@@ -152,7 +163,6 @@
       "age": "9–13 yrs",
       "level": "Beginner → Intermediate",
       "price": 7000,
-      "kit_fee": 2000,
       "standalone": true,
       "prereqs": [],
       "summary": "Build a self-watering planter that senses dry soil and pumps water to a real seedling all by itself.",
@@ -161,7 +171,9 @@
         {"title": "Automatic planter", "desc": "Set a moisture threshold so it waters only when the soil is dry, then assemble the pump, tubing and reservoir around a potted seedling and run a full automatic watering cycle."}
       ],
       "takeaway": "Self-watering planter kit + a seedling",
-      "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works."
+      "pitch": "They build tech that keeps a plant alive on its own — and understand every part of why it works.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["Soil-moisture sensor", "Mini water pump + tubing + reservoir", "Pot and seedling"]}
     },
     {
       "id": "bluetooth-control-lab",
@@ -171,7 +183,6 @@
       "age": "11–15 yrs",
       "level": "Intermediate → Advanced",
       "price": 7000,
-      "kit_fee": 2000,
       "standalone": false,
       "prereqs": ["Button controlled LED (free, recommended)"],
       "summary": "Control an Arduino gadget wirelessly from a phone over Bluetooth, then build a custom app to command it.",
@@ -180,7 +191,9 @@
         {"title": "Build your app", "desc": "Use MIT App Inventor to make a custom phone app with your own buttons, and send live sensor readings (distance or temperature) back to the phone for true two-way communication."}
       ],
       "takeaway": "Bluetooth-controlled gadget + their own phone app",
-      "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other."
+      "pitch": "Their phone becomes the remote control — they wire the hardware, build the app, and make the two talk to each other.",
+      "uses_kit": true,
+      "parts_pack": {"price": 1000, "items": ["HC-05 Bluetooth module", "Small DC motor"]}
     },
     {
       "id": "ai-game-designer",
@@ -320,7 +333,6 @@
       "age": "12–15 yrs",
       "level": "Advanced",
       "price": 9000,
-      "kit_fee": 1500,
       "standalone": false,
       "prereqs": ["Any 2 free Arduino activities", "Prompting power (free)"],
       "summary": "The ultimate crossover: build an Arduino smart city, then give it an AI brain.",
@@ -329,8 +341,8 @@
         {"title": "Day 2 — Add Intelligence", "desc": "Use Teachable Machine to add a \"vision\" layer — a camera classifies traffic density and the AI recommends light timing. ChatGPT generates a city-planning report from sensor data. Teams present their AI-enhanced city to parents."}
       ],
       "takeaway": "Their city module + an AI analysis report",
-      "pitch": "Hardware meets AI. Two days, one smart city, built and brain-powered by kids."
+      "pitch": "Hardware meets AI. Two days, one smart city, built and brain-powered by kids.",
+      "uses_kit": true
     }
-  ],
-  "board_addon": 2000
+  ]
 }

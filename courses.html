@@ -93,6 +93,10 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);min-
 .extras label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
 .extras input{margin-top:2px;accent-color:var(--orange-dark)}
 .extras .total{font-weight:700;color:var(--orange-dark)}
+.kitbox{margin:-2px 0 2px 24px;font-size:12.5px;color:var(--text-2)}
+.kitbox summary{cursor:pointer;color:var(--orange-dark);font-weight:600}
+.kitbox ul{margin:6px 0 0 16px;display:flex;flex-direction:column;gap:2px}
+.extras .kit{margin:0 0 2px 24px;font-size:12px}
 .price .from{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
 .summary{font-size:13.5px;color:var(--text-2)}
 details{border-top:1px solid var(--border);padding-top:.6rem}
@@ -315,27 +319,46 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 
 const kes = n => `KES ${n.toLocaleString()}`;
 
-// Course + kit + optional board; delivery is quoted by location, so it's only flagged.
+// Course + optional Maker Kit + optional parts pack; delivery is quoted by location.
 function totalLine(course, opt){
-  const parts = [`${kes(course.price)} course`, `${kes(course.kit_fee)} kit`];
-  let sum = course.price + course.kit_fee;
-  if (opt.board) { parts.push(`${kes(DATA.board_addon)} board`); sum += DATA.board_addon; }
+  const parts = [`${kes(course.price)} course`];
+  let sum = course.price;
+  if (opt.kit)  { parts.push(`${kes(DATA.maker_kit.price)} kit`);  sum += DATA.maker_kit.price; }
+  if (opt.pack) { parts.push(`${kes(course.parts_pack.price)} parts pack`); sum += course.parts_pack.price; }
   return `Total: ${kes(sum)}` + (parts.length > 1 ? ` (${parts.join(' + ')})` : '') +
     (opt.delivery ? ' + delivery, quoted by location' : '');
 }
 
 function bookingHref(course, opt = {}){
   const subject = `Booking enquiry: ${course.title}`;
-  const extras = course.kit_fee
-    ? `Kit: ${kes(course.kit_fee)} (parts my child keeps)\n` +
-      (DATA.board_addon ? `Arduino board to keep (+${kes(DATA.board_addon)}): ${opt.board ? 'yes' : 'no'}\n` : '') +
-      `Deliver the kit to our home: ${opt.delivery ? 'yes\nDelivery location (area / estate): ' : 'no'}\n`
+  const yn = v => v ? 'yes' : 'no';
+  const extras = course.uses_kit
+    ? `${DATA.maker_kit.name} (${kes(DATA.maker_kit.price)}, one-time): ${yn(opt.kit)}\n` +
+      (course.parts_pack ? `Course parts pack (${kes(course.parts_pack.price)}): ${yn(opt.pack)}\n` : '') +
+      `Deliver to our home: ${opt.delivery ? 'yes\nDelivery location (area / estate): ' : 'no'}\n`
     : '';
   const body =
     `Hi TinkerWithMe,\n\nI'd like to book / ask about the "${course.title}" premium course.\n\n`+
     `Format: ${course.format}\nChild's age: \nPreferred dates: \n`+ extras +
     `\nThanks!`;
   return `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+const preview = (label, items) =>
+  `<details class="kitbox"><summary>${label}</summary><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></details>`;
+
+// Optional kit, parts pack and delivery for hands-on courses.
+function extrasHtml(course){
+  const k = DATA.maker_kit, pack = course.parts_pack;
+  return `<div class="extras" data-id="${esc(course.id)}">
+      <label><input type="checkbox" data-x="kit"> 🧰 Add the ${esc(k.name)}: ${kes(k.price)}, one-time</label>
+      ${preview('What’s in the kit', k.contents)}
+      <p class="kit">${esc(k.note)}</p>
+      ${pack ? `<label><input type="checkbox" data-x="pack"> Add this course’s parts pack: ${kes(pack.price)}</label>
+      ${preview('What’s in the parts pack', pack.items)}` : ''}
+      <label><input type="checkbox" data-x="delivery"> Deliver to our home (cost quoted by location)</label>
+      <span class="total">${totalLine(course, {})}</span>
+    </div>`;
 }
 
 function cardHtml(course){
@@ -356,7 +379,6 @@ function cardHtml(course){
     </div>
     <h3>${esc(course.title)}</h3>
     <div class="price"><span class="from">from</span> KES ${course.price.toLocaleString()}</div>
-    ${course.kit_fee ? `<p class="kit">🧰 + ${kes(course.kit_fee)} kit: the parts your child keeps</p>` : ''}
     <p class="summary">${esc(course.summary)}</p>
     ${prereqLine}
     <details>
@@ -365,11 +387,7 @@ function cardHtml(course){
     </details>
     <div class="takeaway">🎁 <strong>Take home:</strong> ${esc(course.takeaway)}</div>
     <p class="pitch">${esc(course.pitch)}</p>
-    ${course.kit_fee ? `<div class="extras" data-id="${esc(course.id)}">
-      ${DATA.board_addon ? `<label><input type="checkbox" data-x="board"> Add an Arduino board to keep (+${kes(DATA.board_addon)})</label>` : ''}
-      <label><input type="checkbox" data-x="delivery"> Deliver the kit to our home (cost quoted by location)</label>
-      <span class="total">${totalLine(course, {})}</span>
-    </div>` : ''}
+    ${course.uses_kit ? extrasHtml(course) : ''}
     <div class="actions">
       <a class="btn btn-book" href="${bookingHref(course)}">✉ Enquire / Book</a>
       <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
@@ -427,7 +445,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   const r = DATA.price_range;
   document.getElementById('price-note').textContent =
-    `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child, plus a kit fee for hands-on builds · ${DATA.courses.length} courses`;
+    `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child, kits optional · ${DATA.courses.length} courses`;
   buildFilters();
   render();
 });

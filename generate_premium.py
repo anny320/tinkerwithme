@@ -27,16 +27,19 @@ TRACK_LABEL = {
 }
 
 
-# Optional Arduino board to keep (premium_courses.json "board_addon"); set in main().
-BOARD_ADDON = 0
+# The optional one-time kit (premium_courses.json "maker_kit"); set in main().
+MAKER_KIT = {}
 
 
-def kit_line(course):
-    """'KES 3,000 for the parts your child keeps (…board +KES 1,500, optional)'."""
-    line = f"KES {course['kit_fee']:,} for the parts your child keeps"
-    if BOARD_ADDON:
-        line += f" (Arduino board to keep: +KES {BOARD_ADDON:,}, optional)"
-    return line
+def kit_rows(course):
+    """Kit and parts-pack rows for hands-on courses."""
+    rows = []
+    if course.get("uses_kit") and MAKER_KIT:
+        rows.append(("Maker Kit", f"Optional, KES {MAKER_KIT['price']:,} one-time: {', '.join(MAKER_KIT['contents'])}. {MAKER_KIT['note']}"))
+    pack = course.get("parts_pack")
+    if pack:
+        rows.append(("Parts pack", f"Optional, KES {pack['price']:,}: {', '.join(pack['items'])}"))
+    return rows
 
 
 def _facts_table(course):
@@ -47,7 +50,7 @@ def _facts_table(course):
         ("Ages", course["age"]),
         ("Level", course["level"]),
         ("Price", f"from KES {course['price']:,}"),
-        *([("Kit fee", kit_line(course))] if course.get("kit_fee") else []),
+        *kit_rows(course),
         ("Standalone", "Yes" if course["standalone"] else "No"),
         ("Prerequisites", prereq),
     ]
@@ -141,9 +144,9 @@ def generate_curriculum_one(course, content_dir, out_dir):
 
 
 def main():
-    global BOARD_ADDON
+    global MAKER_KIT
     data = json.loads(Path("premium_courses.json").read_text(encoding="utf-8"))
-    BOARD_ADDON = data.get("board_addon", 0)
+    MAKER_KIT = data.get("maker_kit", {})
     args = sys.argv[1:]
     curriculum_mode = "--curriculums" in args
     only = {a for a in args if not a.startswith("--")}
