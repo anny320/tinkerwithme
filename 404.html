@@ -116,11 +116,11 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     document.title = 'Full curriculum — TinkerWith_';
     document.getElementById('nf').innerHTML =
       '<span class="tw-eyebrow-pill">Premium course</span>' +
-      '<h1>The full curriculum is sent after booking.</h1>' +
-      '<p>The complete session-by-session curriculum for ' + name + ' comes with your booking. ' +
-      'Have a look at the course outline, or message Anne to book.</p>' +
+      '<h1>Get the full curriculum.</h1>' +
+      '<p>The complete session-by-session curriculum for ' + name + ' is available to teachers and homeschooling families, or comes with a live booking.</p>' +
       '<div class="nf-btns">' +
-        (title ? '<a class="tw-btn tw-btn-orange" href="/proposals/' + esc(id) + '.pdf" target="_blank" rel="noopener">⬇ Course outline</a>' : '') +
+        '<a class="tw-btn tw-btn-orange" href="/curriculum.html?c=' + encodeURIComponent(id) + '">📘 Get the curriculum</a>' +
+        (title ? '<a class="tw-btn tw-btn-white" href="/proposals/' + esc(id) + '.pdf" target="_blank" rel="noopener">⬇ Course outline</a>' : '') +
         '<a class="tw-btn tw-btn-ink" href="' + wa + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
         '<a class="tw-btn tw-btn-white" href="/courses.html">See all courses</a>' +
       '</div>';

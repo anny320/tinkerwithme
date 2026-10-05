@@ -223,21 +223,27 @@ def curriculum_name(course):
 
 
 def attach_curriculum(db, course, course_uuid, maker_kit):
-    """Write the full curriculum (new AI call), render it and add it to the course's Downloads."""
+    """Write the full curriculum (new AI call), render it, and add it to the
+    course's Downloads and to the teach-it-yourself shop (curriculum/<id>/)."""
     name = curriculum_name(course)
-    if name in db.list_files("lms-files", course_uuid):
-        print("    curriculum PDF already in Downloads — left as is")
+    targets = [f"{course_uuid}/{name}", f"curriculum/{course['id']}/{name}"]
+    missing = [t for t in targets if t.rsplit("/", 1)[1] not in db.list_files("lms-files", t.rsplit("/", 1)[0])]
+    if not missing:
+        print("    curriculum PDF already in Downloads and the curriculum shop — left as is")
         return
     import generate_premium, pregenerate_premium  # need weasyprint; only loaded for --curriculum
     content_dir, out_dir = HERE / "premium_content", HERE / "curriculums"
     content_dir.mkdir(exist_ok=True); out_dir.mkdir(exist_ok=True)
-    pregenerate_premium.generate_course(course, content_dir, force=True)
-    generate_premium.MAKER_KIT = maker_kit
-    pdf = generate_premium.generate_curriculum_one(course, content_dir, out_dir)
+    pdf = out_dir / f"{course['id']}.pdf"
+    if not pdf.exists():
+        pregenerate_premium.generate_course(course, content_dir, force=True)
+        generate_premium.MAKER_KIT = maker_kit
+        pdf = generate_premium.generate_curriculum_one(course, content_dir, out_dir)
     if not pdf:
         raise RuntimeError("the full curriculum couldn't be written")
-    db.upload_file("lms-files", f"{course_uuid}/{name}", pdf, "application/pdf")
-    print(f"    full curriculum PDF added to Downloads ({name})")
+    for t in missing:
+        db.upload_file("lms-files", t, pdf, "application/pdf")
+    print(f"    full curriculum PDF added ({name}): course Downloads and curriculum shop")
 
 
 def upload(db, course, data, price):
