@@ -28,6 +28,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .nav-link{padding:7px 15px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.65);transition:all 0.15s}
 .nav-link:hover{color:#fff;background:rgba(255,255,255,0.10)}
 .nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
+/* Phones: brand and Sign out on the first row, the links scroll sideways below */
+@media(max-width:700px){
+  .site-nav{flex-wrap:wrap;row-gap:8px;padding:10px 1rem}
+  .nav-links{order:3;width:100%;overflow-x:auto;scrollbar-width:none;margin:0 -4px}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-link{white-space:nowrap;padding:7px 12px}
+}
 
 /* LAYOUT */
 .page-header{background:var(--brown);padding:2rem 1.5rem 2.5rem;color:#fff}
