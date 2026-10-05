@@ -288,6 +288,10 @@ footer a:hover{text-decoration:underline}
 .pricing-card .pc-price{font-size:24px;font-weight:700;color:var(--text);line-height:1}
 .pricing-card.featured .pc-price{color:var(--orange-dark)}
 .pricing-card .pc-unit{font-size:11px;color:var(--text-3);margin-top:3px}
+.pt-extras{font-size:12.5px;color:var(--text-2);display:grid;gap:6px;margin:-4px 0 14px}
+.pt-extras i{color:var(--orange);margin-right:4px;vertical-align:middle}
+.pt-extras a{color:var(--orange)}
+.pt-extras .pt-cur{font-size:11.5px;color:var(--text-3)}
 .pricing-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
 .avail-schedule{background:var(--green-light);border:1px solid rgba(76,175,42,0.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--green-dark);display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
 .avail-schedule i{flex-shrink:0;margin-top:1px}
@@ -331,6 +335,7 @@ footer a:hover{text-decoration:underline}
 </style>
 <script src="analytics.js"></script>
 <script src="site-data.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 
@@ -369,7 +374,7 @@ footer a:hover{text-decoration:underline}
   <div class="hero-tagline">DIY Electronics &amp; AI Projects · Online &amp; Nairobi · Travel available</div>
   <h1>TinkerWith_ <span>Course Picker</span></h1>
   <p>Choose your projects, fill in your details, and we'll craft a custom session plan just for your child. Sessions run online worldwide, in-person across Nairobi, or we travel to you.</p>
-  <div class="pricing-pill"><i class="ti ti-tag"></i> Sessions from KES 2,500</div>
+  <div class="pricing-pill"><i class="ti ti-tag"></i> <span>Courses from as low as <span data-kes="3000" data-usd="39">KES 3,000</span></span></div>
   <div class="hero-btns">
     <a class="hero-btn hero-btn-wa" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20find%20out%20more%20about%20TinkerWith_%20sessions%20for%20my%20child." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> Chat with Anne</a>
     <button class="hero-btn hero-btn-share" id="share-btn" onclick="shareSite()"><i class="ti ti-share"></i> Share this tool</button>
@@ -448,8 +453,8 @@ footer a:hover{text-decoration:underline}
   <div class="card">
     <div class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> Session length</div>
     <div class="dur-row">
-      <button class="dur-btn" id="dur-90" onclick="setDuration(90)">90 min</button>
-      <button class="dur-btn" id="dur-120" onclick="setDuration(120)">2 hours</button>
+      <button class="dur-btn" id="dur-90" onclick="setDuration(90)">90 min <small>(best for ages 6–8)</small></button>
+      <button class="dur-btn" id="dur-120" onclick="setDuration(120)">2 hours <small>(with breaks)</small></button>
       <button class="dur-btn" id="dur-180" onclick="setDuration(180)">3 hours</button>
       <button class="dur-btn" id="dur-full" onclick="setDuration('full')">Full day</button>
     </div>
@@ -537,44 +542,50 @@ footer a:hover{text-decoration:underline}
 
       <div class="pricing-block" id="pricing-block">
         <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0 1rem">
-        <div style="font-size:13px;color:var(--text-2);margin-bottom:12px">Ready to book? Here's what sessions cost:</div>
+        <div style="font-size:13px;color:var(--text-2);margin-bottom:12px">Ready to book? Here's what courses cost:</div>
 
         <div class="pricing-tiers">
+          <div class="pricing-tier">
+            <div class="pt-label">Learn at home</div>
+            <div class="pt-name">Self-paced online</div>
+            <div class="pt-detail">12 months access &middot; videos &amp; projects</div>
+            <div class="pt-price">From <span data-kes="3000" data-usd="39">KES 3,000</span></div>
+            <div class="pt-note">per course</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="pt-label">Holiday camp</div>
+            <div class="pt-name">1-day camp</div>
+            <div class="pt-detail">One day &middot; 5 hrs &middot; online or in person</div>
+            <div class="pt-price"><span data-kes="5000" data-usd="69">KES 5,000</span></div>
+            <div class="pt-note">per child</div>
+          </div>
           <div class="pricing-tier featured">
             <div class="pricing-badge">Most popular</div>
-            <div class="pt-label">Schools &amp; community groups</div>
-            <div class="pt-name">Group session</div>
-            <div class="pt-detail">10–20 kids &middot; 90 min or 2 hrs</div>
-            <div class="pt-price">From KES 2,500</div>
-            <div class="pt-note">per child &middot; per session</div>
+            <div class="pt-label">Live course</div>
+            <div class="pt-name">2 live sessions</div>
+            <div class="pt-detail">2 hrs each &middot; 1:1 or small group</div>
+            <div class="pt-price"><span data-kes="7000" data-usd="89">KES 7,000</span></div>
+            <div class="pt-note">per child &middot; whole course</div>
           </div>
           <div class="pricing-tier">
-            <div class="pt-label">International &amp; expat schools</div>
-            <div class="pt-name">School session</div>
-            <div class="pt-detail">Curriculum-aligned &middot; any duration</div>
-            <div class="pt-price">From KES 3,500</div>
-            <div class="pt-note">per child &middot; per session</div>
+            <div class="pt-label">Deeper projects</div>
+            <div class="pt-name">3 sessions or 2-day camp</div>
+            <div class="pt-detail">2 hrs each, or 5 hrs a day</div>
+            <div class="pt-price"><span data-kes="9000" data-usd="115">KES 9,000</span></div>
+            <div class="pt-note">per child &middot; whole course</div>
           </div>
-          <div class="pricing-tier">
-            <div class="pt-label">Holiday camp &amp; intensives</div>
-            <div class="pt-name">Full-day camp</div>
-            <div class="pt-detail">Multiple projects &middot; full day</div>
-            <div class="pt-price">From KES 5,500</div>
-            <div class="pt-note">per child &middot; per session</div>
-          </div>
-          <div class="pricing-tier">
-            <div class="pt-label">Hotel, estate &amp; corporate</div>
-            <div class="pt-name">Venue &amp; corporate</div>
-            <div class="pt-detail">Kids club, corporate family day</div>
-            <div class="pt-price">From KES 8,000</div>
-            <div class="pt-note">per child &middot; per session</div>
-          </div>
+        </div>
+        <div class="pt-extras">
+          <div><i class="ti ti-package" aria-hidden="true"></i> Tinkerwith Maker Kit: <strong data-kes="8500" data-usd="99">KES 8,500</strong> one-time, reused in every Arduino course</div>
+          <div><i class="ti ti-user-check" aria-hidden="true"></i> Book a trainer for self-paced help: <strong data-kes="3000" data-usd="39">KES 3,000</strong> per hour</div>
+          <div><i class="ti ti-book" aria-hidden="true"></i> Teach it yourself: full curriculum <strong data-kes="1500" data-usd="10">KES 1,500</strong> per course &middot; <a href="curriculum.html">see curriculums</a></div>
+          <div class="pt-cur">Prices in <span id="pt-cur-switch"></span> &middot; <a href="courses.html">see all courses</a></div>
         </div>
 
         <div class="group-book-box">
           <div class="group-book-text">
             <strong>Booking for a group or school?</strong>
-            <span>Get a tailored quote — message or email Anne directly.</span>
+            <span>Schools, groups &amp; venues get a tailored quote. Message or email Anne directly.</span>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <a class="group-book-btn" id="group-wa-btn" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20enquire%20about%20a%20group%20session%20for%20TinkerWith_." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> WhatsApp</a>
@@ -600,7 +611,7 @@ footer a:hover{text-decoration:underline}
         <div id="cal-wa-wrap" style="display:none;font-size:13px;color:var(--text-2);background:var(--orange-light);border-radius:var(--radius-sm);padding:10px 14px">
           <strong>3-hour and full-day sessions</strong> are arranged directly with Anne — message her on WhatsApp to check dates and confirm your booking.
         </div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:10px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: the <strong>Tinkerwith Maker Kit, KES 8,500</strong> one-time (reused in every Arduino course) + delivery — order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:10px"><i class="ti ti-package" style="vertical-align:middle;margin-right:4px"></i>Arduino kit: the <strong>Tinkerwith Maker Kit, <span data-kes="8500" data-usd="99">KES 8,500</span></strong> one-time (reused in every Arduino course) + delivery — order through Anne or shop at <a href="https://store.nerokas.co.ke/" target="_blank" rel="noopener" style="color:var(--orange)">Nerokas</a> / <a href="https://pixelelectric.com/" target="_blank" rel="noopener" style="color:var(--orange)">Pixel Electronics</a></div>
       </div>
 
       <div class="book-wa-box" id="book-wa-box">
@@ -701,6 +712,13 @@ document.getElementById('yr').textContent=new Date().getFullYear();
 // once. Any local edits saved via admin.html are merged on top.
 let DATA={arduino:{ages:[],projects:[]},ai:{ages:[],projects:[]}};
 
+// KES or US$ on the price cards (price.js).
+function renderPrices(){
+  document.querySelectorAll('[data-kes]').forEach(el=>{el.textContent=TWPrice.fmt(+el.dataset.kes,+el.dataset.usd);});
+  const sw=document.getElementById('pt-cur-switch'); if(sw&&!sw.firstChild) sw.innerHTML=TWPrice.switcher();
+}
+document.addEventListener('tw:currency',renderPrices);
+renderPrices();
 let track='arduino',selectedAge='All ages',selected=[],duration=null,planText='';
 
 function switchTrack(t){
