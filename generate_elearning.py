@@ -17,6 +17,13 @@ Run (normally via the elearning-generator.yml workflow):
     python generate_elearning.py --price 3000 smart-home-builder   # set the price
     python generate_elearning.py --no-upload smart-home-builder    # write JSON only
     python generate_elearning.py --from-json smart-home-builder    # upload saved JSON
+    python generate_elearning.py --curriculum smart-home-builder   # + full curriculum PDF
+
+With --curriculum, each course also gets the full premium curriculum (written
+to the current premium_courses.json timings by pregenerate_premium.py and
+rendered by generate_premium.py) attached to its private Downloads
+(storage bucket lms-files/<course id>/), so students can download it once
+they have access. Courses that already have it are left alone.
 
 Each course is also saved to elearning_drafts/<id>.json (git-ignored: paid content).
 """
@@ -24,8 +31,10 @@ Each course is also saved to elearning_drafts/<id>.json (git-ignored: paid conte
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 from anthropic import Anthropic
@@ -172,6 +181,7 @@ def check(data):
 class Supabase:
     def __init__(self, url, key):
         self.base = url.rstrip("/") + "/rest/v1/"
+        self.storage = url.rstrip("/") + "/storage/v1/"
         self.h = {"apikey": key, "Content-Type": "application/json"}
         # Legacy service_role keys are JWTs and go in Authorization too; the
         # newer sb_secret_ keys must only be sent as apikey.
@@ -192,6 +202,42 @@ class Supabase:
 
     def delete(self, table, **params):
         requests.delete(self.base + table, headers=self.h, params=params, timeout=30)
+
+    def list_files(self, bucket, folder):
+        r = requests.post(f"{self.storage}object/list/{bucket}", headers=self.h,
+                          json={"prefix": folder + "/", "limit": 100}, timeout=30)
+        if not r.ok:
+            raise RuntimeError(f"Storage list: {r.status_code} {r.text[:300]}")
+        return [f["name"] for f in r.json() if f.get("id")]
+
+    def upload_file(self, bucket, path, local, content_type):
+        h = {k: v for k, v in self.h.items() if k != "Content-Type"}
+        r = requests.post(f"{self.storage}object/{bucket}/{quote(path)}", data=Path(local).read_bytes(),
+                          headers={**h, "Content-Type": content_type, "x-upsert": "true"}, timeout=120)
+        if not r.ok:
+            raise RuntimeError(f"Storage upload: {r.status_code} {r.text[:300]}")
+
+
+def curriculum_name(course):
+    return re.sub(r"[^\w.() -]+", "-", f"{course['title']} - full curriculum.pdf")
+
+
+def attach_curriculum(db, course, course_uuid, maker_kit):
+    """Write the full curriculum (new AI call), render it and add it to the course's Downloads."""
+    name = curriculum_name(course)
+    if name in db.list_files("lms-files", course_uuid):
+        print("    curriculum PDF already in Downloads — left as is")
+        return
+    import generate_premium, pregenerate_premium  # need weasyprint; only loaded for --curriculum
+    content_dir, out_dir = HERE / "premium_content", HERE / "curriculums"
+    content_dir.mkdir(exist_ok=True); out_dir.mkdir(exist_ok=True)
+    pregenerate_premium.generate_course(course, content_dir, force=True)
+    generate_premium.MAKER_KIT = maker_kit
+    pdf = generate_premium.generate_curriculum_one(course, content_dir, out_dir)
+    if not pdf:
+        raise RuntimeError("the full curriculum couldn't be written")
+    db.upload_file("lms-files", f"{course_uuid}/{name}", pdf, "application/pdf")
+    print(f"    full curriculum PDF added to Downloads ({name})")
 
 
 def upload(db, course, data, price):
@@ -214,6 +260,7 @@ def upload(db, course, data, price):
     except Exception:
         db.delete("lms_courses", id=f"eq.{row['id']}")  # don't leave a half-made course
         raise
+    return row["id"]
 
 
 def main():
@@ -222,9 +269,11 @@ def main():
     ap.add_argument("--price", type=int, help="price in KES (default: the course's self_paced_price)")
     ap.add_argument("--no-upload", action="store_true", help="only write elearning_drafts/<id>.json")
     ap.add_argument("--from-json", action="store_true", help="upload the saved JSON instead of calling Claude")
+    ap.add_argument("--curriculum", action="store_true", help="also attach the full curriculum PDF to the course's Downloads")
     args = ap.parse_args()
 
-    catalogue = {c["id"]: c for c in json.loads((HERE / "premium_courses.json").read_text())["courses"]}
+    premium = json.loads((HERE / "premium_courses.json").read_text())
+    catalogue = {c["id"]: c for c in premium["courses"]}
     unknown = [i for i in args.ids if i not in catalogue]
     if unknown:
         sys.exit(f"Unknown course IDs: {', '.join(unknown)}")
@@ -244,8 +293,11 @@ def main():
         print(f"\n▶ {course['title']} ({cid})")
         path = DRAFTS / f"{cid}.json"
         try:
-            if db and db.get("lms_courses", slug=f"eq.{cid}", select="id"):
-                print("    already on the course platform — skipped (delete the draft in teach.html to redo it)")
+            existing = db.get("lms_courses", slug=f"eq.{cid}", select="id") if db else []
+            if existing:
+                print("    already on the course platform — lessons left as they are (delete the draft in teach.html to redo them)")
+                if args.curriculum:
+                    attach_curriculum(db, course, existing[0]["id"], premium.get("maker_kit", {}))
                 continue
             if args.from_json:
                 data = json.loads(path.read_text())
@@ -259,8 +311,13 @@ def main():
             print(f"    {len(data['lessons'])} lessons, {n_q} quiz questions → {path.relative_to(HERE)}")
             if db:
                 price = args.price if args.price is not None else int(course.get("self_paced_price") or course["price"])
-                upload(db, course, data, price)
+                if args.curriculum:
+                    data["description"] += ("\n\n📥 **Includes the full course curriculum as a PDF download**, "
+                                            "ready once you're signed in with access to the course.")
+                course_uuid = upload(db, course, data, price)
                 print(f"    saved as a DRAFT at KES {price:,} — review it in teach.html")
+                if args.curriculum:
+                    attach_curriculum(db, course, course_uuid, premium.get("maker_kit", {}))
         except Exception as e:
             print(f"    ✗ {e}")
             failed.append(cid)

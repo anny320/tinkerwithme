@@ -270,6 +270,7 @@ function renderOverview() {
       <p>${doneCount()} of ${C.lessons.length} lessons done.</p>
       ${C.expires_at ? `<p>Your access runs until <strong>${day(C.expires_at)}</strong>.</p>` : ''}
       <a class="tw-btn tw-btn-orange" href="#l=${next.id}">${finished() ? 'Review the lessons' : doneCount() ? 'Continue' : 'Start lesson 1'} &rarr;</a></div>` : '';
+    act += '<div id="downloads"></div>';
     if (C.price_kes) act += trainerBox();
   } else if (!C.price_kes) {
     act = `<div class="action"><h3>This course is free</h3><p>Enrol to open the lessons and start learning.</p>
@@ -289,6 +290,7 @@ function renderOverview() {
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
+  if ($('downloads')) showDownloads();
   wireCertificate();
 }
 
@@ -301,6 +303,27 @@ function trainerBox() {
     <ol><li><a href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-book-trainer">Message us on WhatsApp</a> to agree a day and time.</li>
     <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>, then paste the M-Pesa message below.</li></ol>
     ${payForm('trainer')}</div>`;
+}
+
+/* ── Downloads: private files for students with access (lms-files/<course id>/) ── */
+async function showDownloads() {
+  const bucket = LMS.db.storage.from('lms-files');
+  const { data } = await bucket.list(C.id, { sortBy: { column: 'name', order: 'asc' } });
+  const files = (data || []).filter(x => x.id);
+  const box = $('downloads');
+  if (!box || !files.length) return;
+  box.innerHTML = `<div class="action" style="margin-top:1rem;background:#fff"><h3>📥 Downloads</h3>
+    <p>Yours to keep with this course.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${files.map(x =>
+      `<button class="tw-btn tw-btn-white" type="button" data-file="${esc(x.name)}" style="justify-content:flex-start">📄 ${esc(x.name)}</button>`).join('')}</div></div>`;
+  box.onclick = async e => {
+    const b = e.target.closest('[data-file]'); if (!b) return;
+    // A fresh one-minute link each time, so links can't be shared around.
+    const { data: s, error } = await bucket.createSignedUrl(`${C.id}/${b.dataset.file}`, 60, { download: b.dataset.file });
+    if (error) return toast('That file couldn’t be opened. Please try again.');
+    LMS.track('lms_download', { course: C.slug, file: b.dataset.file });
+    location.href = s.signedUrl;
+  };
 }
 
 /* ── M-Pesa payments: paste the message, an admin approves it in teach.html ── */

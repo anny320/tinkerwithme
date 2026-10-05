@@ -376,6 +376,14 @@ grant execute on function
   public.lms_admin_students(), public.lms_admin_enroll(text, uuid)
   to authenticated;
 
+-- True when the first folder of a storage path is a course the user can open.
+create or replace function public.lms_can_access_folder(p_name text) returns boolean
+language plpgsql stable security definer set search_path = public as $$
+declare f text := split_part(p_name, '/', 1);
+begin
+  return f ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' and lms_can_access(f::uuid);
+end $$;
+
 -- ── Lesson images ──────────────────────────────────────────────────────
 -- A public bucket for pictures in lessons; only admins can upload or delete.
 do $$
@@ -386,6 +394,20 @@ begin
     create policy "lms-media admin write" on storage.objects for all to authenticated
       using (bucket_id = 'lms-media' and public.lms_is_admin())
       with check (bucket_id = 'lms-media' and public.lms_is_admin());
+
+    -- Private course downloads (e.g. the full curriculum PDF), stored as
+    -- lms-files/<course id>/<file>. Admins manage them; a student can read a
+    -- course's files only while they have access to that course. Pages fetch
+    -- them through short-lived signed links.
+    insert into storage.buckets (id, name, public, file_size_limit) values ('lms-files', 'lms-files', false, 52428800)
+      on conflict (id) do update set public = false;
+    drop policy if exists "lms-files admin write" on storage.objects;
+    create policy "lms-files admin write" on storage.objects for all to authenticated
+      using (bucket_id = 'lms-files' and public.lms_is_admin())
+      with check (bucket_id = 'lms-files' and public.lms_is_admin());
+    drop policy if exists "lms-files student read" on storage.objects;
+    create policy "lms-files student read" on storage.objects for select to authenticated
+      using (bucket_id = 'lms-files' and public.lms_can_access_folder(name));
   end if;
 end $$;
 
