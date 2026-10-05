@@ -30,13 +30,42 @@ create or replace function public.site_content_public(p_key text) returns jsonb
 language sql stable security definer set search_path = public as $$
   select case when key = 'testimonials' then
       jsonb_build_object('testimonials', coalesce((
-        select jsonb_agg(t - 'consent' - 'source')
+        select jsonb_agg(t - 'consent' - 'source' - 'contact')
         from jsonb_array_elements(data -> 'testimonials') t
         where t ->> 'published' = 'true'), '[]'::jsonb))
     else data end
   from site_content where key = p_key
 $$;
 grant execute on function public.site_content_public(text) to anon, authenticated;
+
+-- "Share your story" (stories.html): anyone can send a testimonial. It's saved
+-- hidden, with their permission and contact details, until an admin publishes
+-- it in admin.html → Testimonials.
+create or replace function public.site_submit_testimonial(p jsonb) returns text
+language plpgsql security definer set search_path = public as $$
+declare
+  q text := btrim(coalesce(p->>'quote', '')); n text := btrim(coalesce(p->>'name', ''));
+  r text := btrim(coalesce(p->>'role', '')); c text := btrim(coalesce(p->>'contact', ''));
+  recent int;
+begin
+  if coalesce(p->>'website', '') <> '' then return 'ok'; end if;   -- bots fill the hidden field
+  if char_length(q) not between 10 and 600 then raise exception 'Please write your story in 10 to 600 characters.'; end if;
+  if char_length(n) not between 1 and 60 or char_length(r) > 80 or char_length(c) not between 5 and 120 then
+    raise exception 'Please fill in your name and an email or WhatsApp number.';
+  end if;
+  if coalesce(p->>'consent', '') <> 'true' then raise exception 'Please tick the box to say we may share your words.'; end if;
+  insert into site_content (key, data) values ('testimonials', '{"testimonials": []}') on conflict (key) do nothing;
+  select count(*) into recent from site_content, jsonb_array_elements(data -> 'testimonials') t
+    where key = 'testimonials' and t ->> 'source' = 'website-form' and t ->> 'date' = current_date::text;
+  if recent >= 30 then raise exception 'We''ve had a lot of stories today. Please try again tomorrow, or send it on WhatsApp.'; end if;
+  update site_content set data = jsonb_set(data, '{testimonials}', coalesce(data -> 'testimonials', '[]'::jsonb) ||
+    jsonb_build_array(jsonb_build_object('quote', q, 'name', n, 'role', r, 'contact', c,
+      'source', 'website-form', 'date', current_date::text, 'consent', true, 'published', false)))
+  where key = 'testimonials';
+  return 'ok';
+end $$;
+revoke all on function public.site_submit_testimonial(jsonb) from public;
+grant execute on function public.site_submit_testimonial(jsonb) to anon, authenticated;
 
 -- Starting content: what was in the JSON files when this was written.
 insert into public.site_content (key, data) values

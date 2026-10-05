@@ -550,7 +550,7 @@ function renderT() {
       <td class="quote-cell">${esc(String(t.quote).slice(0,150))}${t.quote.length>150?'…':''}</td>
       <td>${esc(t.name)}</td>
       <td>${esc(t.role)}</td>
-      <td>${esc(t.source || '—')}</td>
+      <td>${esc(t.source || '—')}${t.contact ? `<br><small>${esc(t.contact)}</small>` : ''}${t.date ? `<br><small>${esc(t.date)}</small>` : ''}</td>
       <td><span class="${t.consent ? 'pill-yes' : 'pill-no'}">${t.consent ? 'yes' : 'not recorded'}</span></td>
       <td><span class="${t.published ? 'pill-yes' : 'pill-no'}">${t.published ? 'live' : 'hidden'}</span></td>
       <td>
@@ -576,7 +576,7 @@ function openT(i) {
   const source= prompt('Where it came from (whatsapp / email / in-person / google-review):', t.source || 'whatsapp'); if (source === null) return;
   const date  = prompt('Date received (YYYY-MM-DD):', t.date || new Date().toISOString().slice(0,10)); if (date === null) return;
   const consent = confirm('Did they give permission, in writing, to publish this?\n\nOK = yes    Cancel = not yet');
-  const rec = {quote, name, role, source, date, consent, published: consent && (i !== undefined ? t.published : true)};
+  const rec = {quote, name, role, source, date, consent, published: consent && (i !== undefined ? t.published : true), ...(t.contact ? {contact: t.contact} : {})};
   if (i === undefined) TDATA.push(rec); else TDATA[i] = rec;
   persistT(consent ? 'Testimonial saved' : 'Saved, but held back — no consent recorded');
 }
