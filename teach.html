@@ -598,7 +598,7 @@ async function payments() {
   list.forEach(p => { if (p.kind === 'curriculum') { const c = d.courses.find(x => x.id === p.product); p.title = `Curriculum: ${c ? c.title : p.product}`; } });
   const pend = list.filter(p => p.pending), done = list.filter(p => !p.pending);
   const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : 'New enrolment';
+  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : p.kind === 'bundle' ? 'Bundle (unlocks every course in it)' : 'New enrolment';
   const amount = p => p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
     : p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
     : p.amount_kes === p.expected_kes ? `KES ${p.amount_kes.toLocaleString()} ✓`
@@ -625,7 +625,8 @@ async function payments() {
     try {
       const res = await LMS.rpc('lms_admin_decide_payment', { p_id: (a || r).dataset[a ? 'approve' : 'reject'], p_approve: !!a, p_note: note });
       toast({ enrolled: 'Approved: course unlocked for 12 months ✓', renewed: 'Approved: renewed for 12 months ✓',
-              already: 'Approved (they already have lifetime access)', approved: 'Approved ✓', rejected: 'Rejected' }[res] || res);
+              already: 'Approved (they already have lifetime access)', approved: 'Approved ✓', rejected: 'Rejected' }[res]
+        || (/^unlocked/.test(res) ? `Approved: ${res} for 12 months ✓` : res));
       payments(); payCount();
     } catch (err) { toast(err.message); }
   };

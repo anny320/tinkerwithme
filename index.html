@@ -450,13 +450,13 @@
         <a class="tw-btn tw-btn-ink" href="https://tinkerwithme.hustlesasa.shop/products/69e1ffbdca2bdb1097c3f83d" target="_blank" rel="noopener">Buy the workbook</a>
       </article>
 
-      <article class="enrol enrol-buy">
-        <div class="enrol-badges"><span class="tw-sticker">Save KES 1,001</span></div>
-        <h3 class="tw-h3">Kids Online Courses: AI &amp; Robotics</h3>
-        <p class="enrol-age">Ages 7&ndash;18 &middot; Online bundle</p>
-        <p>The full online course bundle covering both tracks &mdash; AI skills and hands-on robotics &mdash; for a single price.</p>
-        <p class="enrol-price">KES 1,999 <s>3,000</s></p>
-        <a class="tw-btn tw-btn-ink" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20buy%20the%20Kids%20Online%20Courses%3A%20AI%20%26%20Robotics%20bundle%20%28KES%201%2C999%29." target="_blank" rel="noopener">Order the bundle on WhatsApp</a>
+      <article class="enrol enrol-buy" id="bundle-card">
+        <div class="enrol-badges"><span class="tw-sticker" id="bundle-save">Save KES 2,000</span></div>
+        <h3 class="tw-h3">AI &amp; Young Engineers Bundle</h3>
+        <p class="enrol-age">Ages 5&ndash;18 &middot; 2 online courses &middot; 12 months</p>
+        <p>Our two biggest online courses for one price: build your own chatbot in the AI Beginners Workbook, then think and build like an engineer in Young Engineers.</p>
+        <p class="enrol-price" id="bundle-price">KES 8,000 <s>10,000</s></p>
+        <a class="tw-btn tw-btn-ink" href="bundle.html?b=ai-young-engineers" data-ga="home-bundle">See the bundle</a>
       </article>
     </div>
 
@@ -730,6 +730,23 @@ SiteData.get('testimonials')
   });
 
 /* Online courses: whatever is published on the course platform (as on learn.html). */
+// The bundle card's price, live from lms_bundle() (the static text is the fallback).
+async function loadHomeBundle() {
+  try {
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/lms_bundle', { method: 'POST',
+      headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_slug: 'ai-young-engineers' }) });
+    const b = r.ok && await r.json();
+    if (!b) return;
+    const draw = () => {
+      document.getElementById('bundle-price').innerHTML = TWPrice.fmtWas(b.price_kes, b.price_usd, b.worth_kes, b.worth_usd);
+      document.getElementById('bundle-save').textContent = 'Save ' + TWPrice.fmt(b.worth_kes - b.price_kes, b.worth_usd - b.price_usd);
+    };
+    draw(); document.addEventListener('tw:currency', draw);
+  } catch (_) {}
+}
+loadHomeBundle();
+
 async function loadHomeOnline() {
   const box = document.getElementById('online-courses');
   const e = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
