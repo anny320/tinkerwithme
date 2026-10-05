@@ -1,5 +1,5 @@
 -- Young Engineers: rebuilt from the SCORM 1.2 package
--- "TinkerWith.Me Young Engineers" (content/index.html) as a normal course.
+-- "TinkerWith.Me Young Engineers" (content/index.html) as a normal course (KES 5,000, self-paced).
 -- Run once in Supabase → SQL Editor (after lms.sql). Saved as a DRAFT:
 -- review it in teach.html and publish it there. Skipped if the slug exists.
 
@@ -19,7 +19,7 @@ In this course you will:
 - follow the **Young Engineer Journey** from age 5 to 18, with a hands-on challenge at every stage
 - start your own **Engineer's Notebook**
 
-Families can take it together: younger children with a parent, older learners on their own. Each lesson ends with a short quiz.$tw$, '5–18', 12000, false, 5)
+Families can take it together: younger children with a parent, older learners on their own. Each lesson ends with a short quiz.$tw$, '5–18', 5000, false, 5)
   returning id into cid;
   insert into public.lms_lessons (course_id, position, section, title, body, quiz) values (cid, 1, $tw$Start here$tw$, $tw$Your mission: the Tinker Loop$tw$, $tw$## 🎯 Your mission
 

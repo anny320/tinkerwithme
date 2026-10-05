@@ -75,6 +75,9 @@ create table if not exists public.lms_enrollments (
   primary key (user_id, course_id)
 );
 create index if not exists lms_enrollments_course on public.lms_enrollments (course_id);
+-- Paid courses unlock for 12 months; null = no end (free courses, and everyone
+-- enrolled before access limits were added keeps lifetime access).
+alter table public.lms_enrollments add column if not exists expires_at timestamptz;
 
 -- Enrolments made by email for people who haven't signed up yet.
 create table if not exists public.lms_pending_enrollments (
@@ -121,7 +124,14 @@ create or replace function public.lms_can_access(p_course uuid) returns boolean
 language sql stable security definer set search_path = public as $$
   select lms_is_admin() or exists (
     select 1 from lms_enrollments e join lms_courses c on c.id = e.course_id
-    where e.user_id = lms_uid() and e.course_id = p_course and c.is_published)
+    where e.user_id = lms_uid() and e.course_id = p_course and c.is_published
+      and (e.expires_at is null or e.expires_at > now()))
+$$;
+
+-- When a new enrolment in this course ends: 12 months for paid courses, never for free ones.
+create or replace function public.lms_access_end(p_course uuid) returns timestamptz
+language sql stable security definer set search_path = public as $$
+  select case when price_kes > 0 then now() + interval '12 months' end from lms_courses where id = p_course
 $$;
 
 -- ── Row-level security ─────────────────────────────────────────────────
@@ -184,8 +194,8 @@ begin
     full_name = case when btrim(coalesce(p_name, '')) = '' then lms_profiles.full_name else left(btrim(p_name), 80) end,
     last_seen_at = now();
   if em is not null then
-    insert into lms_enrollments (user_id, course_id, source)
-      select uid, course_id, 'admin' from lms_pending_enrollments where email = em
+    insert into lms_enrollments (user_id, course_id, source, expires_at)
+      select uid, course_id, 'admin', lms_access_end(course_id) from lms_pending_enrollments where email = em
     on conflict do nothing;
     delete from lms_pending_enrollments where email = em;
   end if;
@@ -199,7 +209,8 @@ returns json language sql stable security definer set search_path = public as $$
     select c.slug, c.title, c.summary, c.age_range, c.cover_url,
            (select count(*) from lms_lessons l where l.course_id = c.id) as lessons,
            (select count(*) from lms_progress p where p.course_id = c.id and p.user_id = e.user_id and p.completed_at is not null) as done,
-           (select max(p.updated_at) from lms_progress p where p.course_id = c.id and p.user_id = e.user_id) as last_activity
+           (select max(p.updated_at) from lms_progress p where p.course_id = c.id and p.user_id = e.user_id) as last_activity,
+           e.expires_at, coalesce(e.expires_at <= now(), false) as expired
     from lms_enrollments e join lms_courses c on c.id = e.course_id
     where e.user_id = lms_uid() and c.is_published
   ) x
@@ -208,15 +219,17 @@ $$;
 -- A course page: details, lesson outline, and (if signed in) enrolment and progress.
 create or replace function public.lms_course(p_slug text)
 returns json language plpgsql stable security definer set search_path = public as $$
-declare c lms_courses; uid text := lms_uid(); enrolled boolean;
+declare c lms_courses; uid text := lms_uid(); enrolled boolean; ends timestamptz;
 begin
   select * into c from lms_courses where slug = p_slug and (is_published or lms_is_admin());
   if not found then return null; end if;
-  enrolled := uid is not null and exists (select 1 from lms_enrollments where user_id = uid and course_id = c.id);
+  select true, expires_at into enrolled, ends from lms_enrollments where user_id = uid and course_id = c.id;
+  enrolled := coalesce(enrolled, false);
   return json_build_object(
     'id', c.id, 'slug', c.slug, 'title', c.title, 'summary', c.summary, 'description', c.description,
     'age_range', c.age_range, 'cover_url', c.cover_url, 'price_kes', c.price_kes, 'is_published', c.is_published,
     'enrolled', enrolled, 'can_access', lms_can_access(c.id) or (lms_is_admin()),
+    'expires_at', ends, 'expired', coalesce(ends <= now(), false),
     'lessons', coalesce((
       select json_agg(json_build_object(
         'id', l.id, 'section', l.section, 'title', l.title,
@@ -304,7 +317,7 @@ begin
         'user_id', pr.user_id, 'email', pr.email, 'full_name', pr.full_name,
         'created_at', pr.created_at, 'last_seen_at', pr.last_seen_at,
         'courses', coalesce((select json_agg(json_build_object(
-            'course_id', c.id, 'title', c.title, 'source', e.source, 'enrolled_at', e.created_at,
+            'course_id', c.id, 'title', c.title, 'source', e.source, 'enrolled_at', e.created_at, 'expires_at', e.expires_at,
             'lessons', (select count(*) from lms_lessons l where l.course_id = c.id),
             'done', (select count(*) from lms_progress p where p.user_id = pr.user_id and p.course_id = c.id and p.completed_at is not null))
             order by c.position, c.title)
@@ -318,6 +331,8 @@ end $$;
 
 -- Enrol someone by email. Enrols them now if they've signed in before,
 -- otherwise the enrolment waits until they sign in with that email.
+-- Enrolling someone already enrolled renews a time-limited enrolment for
+-- another 12 months from today (or from its end, if that's later).
 create or replace function public.lms_admin_enroll(p_email text, p_course uuid)
 returns text language plpgsql security definer set search_path = public as $$
 declare em text := lower(btrim(coalesce(p_email, ''))); uid text;
@@ -327,7 +342,12 @@ begin
   if not exists (select 1 from lms_courses where id = p_course) then raise exception 'Course not found.'; end if;
   select user_id into uid from lms_profiles where email = em order by last_seen_at desc limit 1;
   if uid is not null then
-    insert into lms_enrollments (user_id, course_id, source) values (uid, p_course, 'admin') on conflict do nothing;
+    if exists (select 1 from lms_enrollments where user_id = uid and course_id = p_course) then
+      update lms_enrollments set expires_at = greatest(expires_at, now()) + interval '12 months'
+        where user_id = uid and course_id = p_course and expires_at is not null;
+      return case when found then 'renewed' else 'already' end;   -- 'already': lifetime access
+    end if;
+    insert into lms_enrollments (user_id, course_id, source, expires_at) values (uid, p_course, 'admin', lms_access_end(p_course));
     return 'enrolled';
   end if;
   insert into lms_pending_enrollments (email, course_id) values (em, p_course) on conflict do nothing;

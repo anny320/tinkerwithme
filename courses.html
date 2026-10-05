@@ -211,9 +211,9 @@ footer a{color:var(--orange-dark);text-decoration:none}
   </section>
 
   <div class="sp-divider">
-    <span class="sp-eyebrow">Live &amp; in person</span>
+    <span class="sp-eyebrow">Live online or in person</span>
     <h2>Deep-dive courses &amp; camps</h2>
-    <p>Small-group, project-rich sessions that go beyond the free activities. Single sessions, multi-session series, and full-day camps.</p>
+    <p>Live, project-rich sessions that go beyond the free activities: online 1:1 or in a small group, or in person. Session series and camps.</p>
     <p class="price-note" id="price-note"></p>
   </div>
 
@@ -339,7 +339,7 @@ function bookingHref(course, opt = {}){
     : '';
   const body =
     `Hi TinkerWithMe,\n\nI'd like to book / ask about the "${course.title}" premium course.\n\n`+
-    `Format: ${course.format}\nChild's age: \nPreferred dates: \n`+ extras +
+    `Format: ${course.format}\nLive online (1:1 / small group) or in person: \nChild's age: \nPreferred dates: \n`+ extras +
     `\nThanks!`;
   return `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
@@ -373,6 +373,7 @@ function cardHtml(course){
     <div class="badges">
       <span class="badge track-${course.track}">${esc(DATA.tracks[course.track].label)}</span>
       <span class="badge">${esc(course.format)}</span>
+      <span class="badge">💻 Online or in person</span>
       <span class="badge">${esc(course.age)}</span>
       <span class="badge">${esc(course.level)}</span>
       ${prereq}
@@ -382,7 +383,7 @@ function cardHtml(course){
     <p class="summary">${esc(course.summary)}</p>
     ${prereqLine}
     <details>
-      <summary>Programme (${course.sessions.length})</summary>
+      <summary>What we build, session by session (${course.sessions.length})</summary>
       <ol class="programme">${prog}</ol>
     </details>
     <div class="takeaway">🎁 <strong>Take home:</strong> ${esc(course.takeaway)}</div>

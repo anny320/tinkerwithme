@@ -21,9 +21,9 @@ on:
         required: true
         default: 'smart-home-builder deepfake-detective'
       price:
-        description: 'Price in KES (blank = the in-person price)'
+        description: 'Price in KES (blank = the self-paced price in premium_courses.json)'
         required: false
-        default: '8000'
+        default: ''
 
 permissions:
   contents: read

@@ -47,6 +47,7 @@ def _facts_table(course):
     rows = [
         ("Track", TRACK_LABEL.get(course["track"], course["track"])),
         ("Format", course["format"]),
+        ("Delivery", "Live online (1:1 or small group) or in person, you choose when booking"),
         ("Ages", course["age"]),
         ("Level", course["level"]),
         ("Price", f"from KES {course['price']:,}"),

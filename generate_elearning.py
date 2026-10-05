@@ -14,7 +14,7 @@ edited is ever overwritten. Delete the draft in teach.html to regenerate it.
 Run (normally via the elearning-generator.yml workflow):
     ANTHROPIC_API_KEY=... SUPABASE_URL=... SUPABASE_SECRET_KEY=... \
         python generate_elearning.py smart-home-builder deepfake-detective
-    python generate_elearning.py --price 8000 smart-home-builder   # set the price
+    python generate_elearning.py --price 3000 smart-home-builder   # set the price
     python generate_elearning.py --no-upload smart-home-builder    # write JSON only
     python generate_elearning.py --from-json smart-home-builder    # upload saved JSON
 
@@ -111,14 +111,14 @@ def build_user_message(course):
     parts = "\n".join(f"  Part {i+1}. {s['title']}: {s['desc']}" for i, s in enumerate(course["sessions"]))
     prereqs = "; ".join(course.get("prereqs") or []) or "none"
     return f"""\
-Turn this in-person premium course into a self-paced online course.
+Turn this live premium course into a self-paced online course.
 
 Title: {course['title']}
 Track: {course['track']}
 Ages: {course['age']}  ·  Level: {course['level']}
-In-person format: {course['format']}
+Live format: {course['format']}
 Summary: {course['summary']}
-Parts (one per in-person session or activity):
+Parts (one per live session or activity):
 {parts}
 What students finish with: {course['takeaway']}
 Recommended before this course: {prereqs}
@@ -219,7 +219,7 @@ def upload(db, course, data, price):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("ids", nargs="+", help="premium course IDs from premium_courses.json")
-    ap.add_argument("--price", type=int, help="price in KES (default: the in-person price)")
+    ap.add_argument("--price", type=int, help="price in KES (default: the course's self_paced_price)")
     ap.add_argument("--no-upload", action="store_true", help="only write elearning_drafts/<id>.json")
     ap.add_argument("--from-json", action="store_true", help="upload the saved JSON instead of calling Claude")
     args = ap.parse_args()
@@ -258,7 +258,7 @@ def main():
             n_q = sum(len(l["quiz"]) for l in data["lessons"])
             print(f"    {len(data['lessons'])} lessons, {n_q} quiz questions → {path.relative_to(HERE)}")
             if db:
-                price = args.price if args.price is not None else int(course["price"])
+                price = args.price if args.price is not None else int(course.get("self_paced_price") or course["price"])
                 upload(db, course, data, price)
                 print(f"    saved as a DRAFT at KES {price:,} — review it in teach.html")
         except Exception as e:
