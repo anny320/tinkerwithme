@@ -55,6 +55,7 @@
 .pill.on{background:var(--green)}
 .pill.off{background:var(--cream-dim)}
 .pay-warn{color:#B3261E;font-weight:600}
+.ib.cur-f{background:var(--ink);color:#fff}
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
@@ -96,7 +97,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -192,11 +193,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = h.startsWith('#students') ? 'students' : h.startsWith('#payments') ? 'payments' : 'courses';
-  ['courses', 'students', 'payments'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
-  payCount();
+  const tab = ['students', 'payments', 'leads'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'students', 'payments', 'leads'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  payCount(); leadCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -433,6 +434,54 @@ function wireUploads(form) {
     };
     pick.click();
   });
+}
+
+/* ── Leads: enquiries sent from the courses page (lms_leads) ── */
+const LEAD_STATUS = { new: 'New', contacted: 'Contacted', booked: 'Booked', not_now: 'Not now' };
+const MODE = { 'online-1:1': 'Live online 1:1', 'online-group': 'Live online, small group', 'in-person': 'In person', 'not-sure': 'Not sure yet' };
+let leadFilter = 'new';
+
+async function leadCount() {
+  try {
+    const { count } = await db().from('lms_leads').select('id', { count: 'exact', head: true }).eq('status', 'new');
+    $('t-leads').textContent = count ? `Leads (${count})` : 'Leads';
+  } catch (_) {}
+}
+
+async function leads() {
+  $('view').innerHTML = '<p class="loading">Loading leads…</p>';
+  const all = must(await db().from('lms_leads').select('*').order('created_at', { ascending: false }).limit(300));
+  const n = k => all.filter(l => l.status === k).length;
+  const list = leadFilter === 'all' ? all : all.filter(l => l.status === leadFilter);
+  const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const wa = l => `https://wa.me/${l.whatsapp.replace(/\D/g, '').replace(/^0/, '254')}?text=${encodeURIComponent(`Hi ${l.parent_name.split(' ')[0]}, this is Anne from Tinkerwith about your enquiry for ${l.courses.map(c => c.title).join(', ')}.`)}`;
+  const extras = x => [x.kit && 'Maker Kit', x.pack && 'parts packs', x.delivery && `delivery${x.delivery_location ? ' to ' + x.delivery_location : ''}`].filter(Boolean).join(', ');
+  const popular = Object.entries(all.flatMap(l => l.courses.map(c => c.title)).reduce((m, t) => (m[t] = (m[t] || 0) + 1, m), {}))
+    .sort((a, b) => b[1] - a[1]).slice(0, 5);
+  $('view').innerHTML = `
+    <div class="panel box"><h2>Leads</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Enquiries from the courses page. Reply on WhatsApp, then move each one along.</p>
+      <div class="btns" style="margin:0 0 14px">${[...Object.keys(LEAD_STATUS), 'all'].map(k =>
+        `<button class="ib${leadFilter === k ? ' cur-f' : ''}" type="button" data-lf="${k}">${k === 'all' ? `All (${all.length})` : `${LEAD_STATUS[k]} (${n(k)})`}</button>`).join('')}</div>
+      ${popular.length ? `<p class="muted" style="font-size:14px;margin-bottom:12px">Most asked about: ${popular.map(([t, c]) => `${esc(t)} (${c})`).join(' · ')}</p>` : ''}
+      <div class="rows">${list.map(l => `<div class="row" style="align-items:flex-start" data-lead="${l.id}">
+        <div class="grow"><strong>${esc(l.parent_name)}</strong>
+          <small>${when(l.created_at)} · child ${esc(l.child_age)} · ${esc(MODE[l.mode] || l.mode)} · ${esc(l.preferred_dates)}</small>
+          <div style="font-size:14.5px;margin-top:4px">${l.courses.map(c => `<span class="pill off" style="margin:2px 4px 2px 0;display:inline-block">${esc(c.title)}</span>`).join('')}</div>
+          ${extras(l.extras) ? `<small>Kit: ${esc(extras(l.extras))}</small>` : ''}
+          ${l.message ? `<p style="font-size:14px;margin-top:4px">“${esc(l.message)}”</p>` : ''}
+          <small><a href="${wa(l)}" target="_blank" rel="noopener">💬 ${esc(l.whatsapp)}</a> · <a href="mailto:${esc(l.email)}">${esc(l.email)}</a></small>
+          <div class="grid2" style="margin-top:8px"><label class="field-in">Status <select data-st>${Object.entries(LEAD_STATUS).map(([k, v]) => `<option value="${k}" ${l.status === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+            <label class="field-in">Notes <input data-notes maxlength="2000" value="${esc(l.notes)}" placeholder="e.g. Sent dates, waiting for reply"></label></div>
+        </div></div>`).join('') || '<p class="muted">Nothing here.</p>'}</div></div>`;
+  $('view').onclick = e => { const b = e.target.closest('[data-lf]'); if (b) { leadFilter = b.dataset.lf; leads(); } };
+  $('view').onchange = async e => {
+    const row = e.target.closest('[data-lead]'); if (!row) return;
+    const patch = e.target.matches('[data-st]') ? { status: e.target.value } : e.target.matches('[data-notes]') ? { notes: e.target.value } : null;
+    if (!patch) return;
+    try { must(await db().from('lms_leads').update(patch).eq('id', row.dataset.lead)); toast('Saved ✓'); if (patch.status) leadCount(); }
+    catch (err) { toast(err.message); }
+  };
 }
 
 /* ── Payments: M-Pesa messages pasted by parents, waiting for approval ── */

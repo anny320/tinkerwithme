@@ -95,6 +95,36 @@ a.sp-card{color:inherit;text-decoration:none}
 .explore-card.active::after{content:'Hide courses ▴'}
 .explore-hint{text-align:center;color:var(--text-2);font-size:15px;margin:.5rem 0 2rem}
 #sections{scroll-margin-top:90px}
+.enq-toggle{font-family:inherit;font-size:13px;font-weight:700;color:var(--blue);background:none;border:1.5px dashed var(--border-strong);border-radius:var(--radius-sm);padding:8px;cursor:pointer}
+.enq-toggle.on{color:var(--green-dark,#1A5C08);border-style:solid;border-color:var(--green-dark,#1A5C08);background:var(--green-light,#EBF7E3)}
+.enq-bar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:14px;
+  background:var(--ink,#220111);color:#fff;border-radius:99px;padding:8px 8px 8px 20px;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100% - 24px)}
+.enq-bar[hidden]{display:none}
+.enq-bar span{font-size:14px;font-weight:600;white-space:nowrap}
+.enq-bar .btn{flex:none;min-width:0;padding:10px 18px;border-radius:99px}
+.enq-dialog{border:2px solid var(--ink,#220111);border-radius:var(--radius);padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px)}
+.enq-dialog::backdrop{background:rgba(34,1,17,.55)}
+.enq-dialog form,.enq-done{display:flex;flex-direction:column;gap:12px;padding:1.3rem}
+.enq-done[hidden]{display:none}
+.enq-head{display:flex;justify-content:space-between;align-items:center}
+.enq-head h2,.enq-done h2{font-size:21px}
+.enq-x{font-size:26px;line-height:1;background:none;border:0;cursor:pointer;color:var(--text-2)}
+.enq-note,.enq-privacy{font-size:13.5px;color:var(--text-2)}
+.enq-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.enq-list li{display:flex;justify-content:space-between;gap:8px;align-items:center;background:var(--bg);border-radius:var(--radius-sm);padding:7px 10px;font-size:14px}
+.enq-list button{background:none;border:0;color:var(--text-3);font-size:18px;cursor:pointer}
+.enq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.enq-grid{grid-template-columns:1fr}}
+.enq-dialog label{display:flex;flex-direction:column;gap:4px;font-size:13.5px;font-weight:600}
+.enq-dialog input:not([type=checkbox]),.enq-dialog select,.enq-dialog textarea{font:inherit;font-size:15px;font-weight:400;padding:9px 11px;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:#fff}
+.enq-dialog input:invalid.touched,.enq-dialog select:invalid.touched{border-color:#C0392B}
+.enq-kit{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.enq-kit[hidden]{display:none}
+.enq-kit label{flex-direction:row;align-items:flex-start;gap:8px;font-weight:500}
+.enq-kit legend{font-size:13px;font-weight:700;padding:0 4px}
+.enq-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.enq-err{color:#C0392B;font-size:14px;font-weight:600}
+.enq-err:empty{display:none}
 
 .track-section{margin-bottom:2.5rem}
 .track-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
@@ -269,6 +299,47 @@ footer a{color:var(--orange-dark);text-decoration:none}
   </section>
 </div>
 
+<!-- Enquiry list: courses from any track, sent as one saved lead (lms_submit_lead) -->
+<div class="enq-bar" id="enq-bar" hidden>
+  <span id="enq-count"></span>
+  <button class="btn btn-book" type="button" id="enq-open">Send enquiry</button>
+</div>
+<dialog class="enq-dialog" id="enq-dialog" aria-labelledby="enq-title">
+  <form id="enq-form" novalidate>
+    <div class="enq-head"><h2 id="enq-title">Send an enquiry</h2><button class="enq-x" type="button" id="enq-close" aria-label="Close">×</button></div>
+    <p class="enq-note">We&rsquo;ll reply on WhatsApp with dates and a total. Nothing to pay yet.</p>
+    <ul class="enq-list" id="enq-list"></ul>
+    <div class="enq-grid">
+      <label>Your name <input name="parent_name" required maxlength="80" autocomplete="name"></label>
+      <label>WhatsApp number <input name="whatsapp" required inputmode="tel" maxlength="20" placeholder="0712 345 678" autocomplete="tel"></label>
+      <label>Email <input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+      <label>Child&rsquo;s age <input name="child_age" required maxlength="20" placeholder="e.g. 11, or 8 and 12"></label>
+      <label>How would you like to learn?
+        <select name="mode" required><option value="">Choose&hellip;</option><option value="online-1:1">Live online, 1:1</option>
+          <option value="online-group">Live online, small group</option><option value="in-person">In person</option><option value="not-sure">Not sure yet</option></select></label>
+      <label>Preferred dates <input name="preferred_dates" required maxlength="120" placeholder="e.g. Saturdays in November"></label>
+    </div>
+    <fieldset class="enq-kit" id="enq-kit" hidden>
+      <legend>Kit (optional)</legend>
+      <label><input type="checkbox" name="kit"> <span id="enq-kit-label"></span></label>
+      <label id="enq-pack-row"><input type="checkbox" name="pack"> Parts packs for the courses that need them</label>
+      <label><input type="checkbox" name="delivery"> Deliver to our home (cost quoted by location)</label>
+      <input name="delivery_location" maxlength="80" placeholder="Area / estate" hidden>
+    </fieldset>
+    <label class="enq-msg">Anything else? (optional)<textarea name="message" maxlength="1000" rows="3"></textarea></label>
+    <input class="enq-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="enq-err" id="enq-err" role="alert"></p>
+    <button class="btn btn-book" type="submit" id="enq-send">Send enquiry</button>
+    <p class="enq-privacy">We only use these details to reply to your enquiry. <a href="privacy.html">Privacy policy</a></p>
+  </form>
+  <div class="enq-done" id="enq-done" hidden>
+    <h2>Thank you! 🎉</h2>
+    <p>We&rsquo;ve got your enquiry and will reply on WhatsApp, usually the same day.</p>
+    <a class="btn btn-book" id="enq-wa" target="_blank" rel="noopener">Also message us on WhatsApp &rarr;</a>
+    <button class="btn btn-pdf" type="button" id="enq-done-close">Close</button>
+  </div>
+</dialog>
+
 <footer class="tw-footer">
   <div class="tw-container tw-footer-grid">
     <div>
@@ -328,6 +399,89 @@ let activeFilter = null;   // open track: 'arduino' | 'ai' | 'combo', or null (a
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 const kes = n => `KES ${n.toLocaleString()}`;
+
+/* ── Enquiry list (lead form) ── */
+const ENQ_KEY = 'tw_enquiry';
+let ENQ = (() => { try { return JSON.parse(localStorage.getItem(ENQ_KEY)) || []; } catch (_) { return []; } })();
+const saveEnq = () => { try { localStorage.setItem(ENQ_KEY, JSON.stringify(ENQ)); } catch (_) {} };
+const enqCourses = () => ENQ.map(id => DATA && DATA.courses.find(c => c.id === id)).filter(Boolean);
+
+function refreshEnq(){
+  const list = enqCourses();
+  ENQ = list.map(c => c.id);
+  document.getElementById('enq-bar').hidden = !list.length;
+  document.getElementById('enq-count').textContent = `🧾 ${list.length} course${list.length > 1 ? 's' : ''} in your enquiry`;
+  document.querySelectorAll('[data-enq]').forEach(b => {
+    const on = ENQ.includes(b.dataset.enq);
+    b.classList.toggle('on', on); b.textContent = on ? '✓ In your enquiry' : '＋ Add to enquiry';
+  });
+  document.getElementById('enq-list').innerHTML = list.map(c =>
+    `<li><span><strong>${esc(c.title)}</strong> · ${esc(c.format)} · from ${kes(c.price)}</span><button type="button" data-unenq="${esc(c.id)}" aria-label="Remove">×</button></li>`).join('');
+  const kit = list.some(c => c.uses_kit), packs = list.some(c => c.parts_pack);
+  document.getElementById('enq-kit').hidden = !kit;
+  document.getElementById('enq-pack-row').hidden = !packs;
+  if (DATA && DATA.maker_kit) document.getElementById('enq-kit-label').textContent = `Add the ${DATA.maker_kit.name} (${kes(DATA.maker_kit.price)}, one-time)`;
+  saveEnq();
+}
+
+function enqText(p){
+  return `Hi Anne, I've just sent an enquiry on the website.\n\nCourses: ${p.courses.map(c => c.title).join(', ')}\n` +
+    `Child's age: ${p.child_age}\nHow: ${document.querySelector(`#enq-form [name=mode] option[value="${p.mode}"]`).textContent}\nPreferred dates: ${p.preferred_dates}\nName: ${p.parent_name}`;
+}
+
+function wireEnquiry(){
+  const dlg = document.getElementById('enq-dialog'), f = document.getElementById('enq-form');
+  document.getElementById('sections').addEventListener('click', e => {
+    const b = e.target.closest('[data-enq]'); if (!b) return;
+    const id = b.dataset.enq;
+    ENQ = ENQ.includes(id) ? ENQ.filter(x => x !== id) : [...ENQ, id];
+    refreshEnq();
+    if (typeof gtag === 'function') gtag('event', 'enquiry_add', { course: id });
+  });
+  document.getElementById('enq-list').onclick = e => {
+    const b = e.target.closest('[data-unenq]'); if (!b) return;
+    ENQ = ENQ.filter(x => x !== b.dataset.unenq); refreshEnq();
+    if (!ENQ.length) dlg.close();
+  };
+  document.getElementById('enq-open').onclick = () => {
+    f.hidden = false; document.getElementById('enq-done').hidden = true; document.getElementById('enq-err').textContent = '';
+    dlg.showModal();
+  };
+  document.getElementById('enq-close').onclick = () => dlg.close();
+  document.getElementById('enq-done-close').onclick = () => dlg.close();
+  f.delivery.onchange = () => { f.delivery_location.hidden = !f.delivery.checked; };
+  f.oninput = () => { if (f.checkValidity()) document.getElementById('enq-err').textContent = ''; };
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const err = document.getElementById('enq-err'), send = document.getElementById('enq-send');
+    f.querySelectorAll('[required]').forEach(i => i.classList.add('touched'));
+    if (!f.checkValidity()) { err.textContent = 'Please fill in every field marked above (only "Anything else" is optional).'; return; }
+    const courses = enqCourses();
+    const p = {
+      source: 'courses', parent_name: f.parent_name.value.trim(), whatsapp: f.whatsapp.value.trim(), email: f.email.value.trim(),
+      child_age: f.child_age.value.trim(), mode: f.mode.value, preferred_dates: f.preferred_dates.value.trim(), message: f.message.value.trim(),
+      website: f.website.value,
+      courses: courses.map(c => ({ id: c.id, title: c.title, format: c.format, price: c.price })),
+      extras: courses.some(c => c.uses_kit) ? { kit: f.kit.checked, pack: f.pack.checked, delivery: f.delivery.checked,
+        delivery_location: f.delivery.checked ? f.delivery_location.value.trim() : '' } : {},
+    };
+    send.disabled = true; err.textContent = '';
+    try {
+      const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/lms_submit_lead', {
+        method: 'POST', headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p }) });
+      if (!r.ok) throw new Error(((await r.json().catch(() => ({}))).message) || 'Something went wrong.');
+      if (typeof gtag === 'function') gtag('event', 'generate_lead', { courses: courses.length });
+      document.getElementById('enq-wa').href = 'https://wa.me/254117784724?text=' + encodeURIComponent(enqText(p));
+      f.hidden = true; document.getElementById('enq-done').hidden = false;
+      f.reset(); f.querySelectorAll('.touched').forEach(i => i.classList.remove('touched')); f.delivery_location.hidden = true;
+      ENQ = []; refreshEnq();
+    } catch (x) {
+      // Never lose the lead: offer WhatsApp with everything filled in.
+      err.innerHTML = `${esc(x.message)} You can also <a href="https://wa.me/254117784724?text=${encodeURIComponent(enqText(p))}" target="_blank" rel="noopener">send it on WhatsApp</a>.`;
+    } finally { send.disabled = false; }
+  };
+}
 
 // Course + optional Maker Kit + optional parts pack; delivery is quoted by location.
 function totalLine(course, opt){
@@ -401,6 +555,7 @@ function cardHtml(course){
       <button class="btn btn-book" type="button" data-book="${esc(course.id)}" aria-expanded="false">Book this course</button>
       <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
     </div>
+    <button class="enq-toggle${ENQ.includes(course.id) ? ' on' : ''}" type="button" data-enq="${esc(course.id)}">${ENQ.includes(course.id) ? '✓ In your enquiry' : '＋ Add to enquiry'}</button>
     <div class="booking" hidden>
       ${course.uses_kit ? extrasHtml(course) : ''}
       <div class="actions">
@@ -514,6 +669,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('price-note').textContent =
     `KES ${r.min.toLocaleString()}–${r.max.toLocaleString()} per child, kits optional · ${DATA.courses.length} courses`;
   buildFilters();
+  wireEnquiry();
+  refreshEnq();
   const h = location.hash.slice(1);
   openTrack(DATA.tracks[h] ? h : null, !!DATA.tracks[h]);
 });
