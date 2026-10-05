@@ -296,7 +296,7 @@ function renderOverview() {
       <p class="promise">✓ Not happy within 7 days? Full refund.</p>
       ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
-      <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.</li>
+      <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${card}
       <li>Paste the M-Pesa message${C.card_url ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
       ${payForm('course')}</div>`;
@@ -318,7 +318,7 @@ function trainerBox() {
     <p>Book a live 1:1 session with a Tinkerwith trainer for questions, debugging or a guided build: <strong>${trainerPrice(1)} per hour</strong>.</p>
     ${payStatus(p => p.kind === 'trainer')}
     <ol><li><a href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="lms-book-trainer">Message us on WhatsApp</a> to agree a day and time.</li>
-    <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>${TRAINER_CARD_URL ? `, or <a href="${TRAINER_CARD_URL}">by card</a> from outside Kenya` : ''}, then paste the ${TRAINER_CARD_URL ? 'M-Pesa message or card order number' : 'M-Pesa message'} below.</li></ol>
+    <li>Pay with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>${TRAINER_CARD_URL ? `, or <a href="${TRAINER_CARD_URL}">by card</a> from outside Kenya` : ''}, then paste the ${TRAINER_CARD_URL ? 'M-Pesa message or card order number' : 'M-Pesa message'} below.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li></ol>
     ${payForm('trainer')}</div>`;
 }
 
