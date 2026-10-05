@@ -52,6 +52,18 @@
     var html = window.DOMPurify.sanitize(window.marked.parse(String(text || ''), { breaks: true }), { ADD_ATTR: ['target'] });
     var box = document.createElement('div'); box.innerHTML = html;
     box.querySelectorAll('a[href^="http"]').forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+    // A video link on its own line plays in place (YouTube, Vimeo, Google Drive).
+    box.querySelectorAll('p').forEach(function (p) {
+      var a = p.querySelector('a');
+      if (!a || p.children.length !== 1 || p.textContent.trim() !== a.textContent.trim()) return;
+      var src = videoEmbed(a.getAttribute('href'));
+      if (!src) return;
+      var wrap = document.createElement('div'); wrap.className = 'video';
+      var f = document.createElement('iframe');
+      f.src = src; f.title = 'Video'; f.loading = 'lazy'; f.allowFullscreen = true;
+      f.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+      wrap.appendChild(f); p.replaceWith(wrap);
+    });
     return box.innerHTML;
   }
 
@@ -59,6 +71,15 @@
   function youtubeEmbed(url) {
     var m = String(url || '').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
     return m ? 'https://www.youtube-nocookie.com/embed/' + m[1] : '';
+  }
+
+  // YouTube / Vimeo / Google Drive link → embed URL, else ''. Built from the
+  // video id only, so a lesson can never embed an arbitrary page.
+  function videoEmbed(url) {
+    var u = String(url || ''), m;
+    if ((m = u.match(/^https?:\/\/(?:www\.)?vimeo\.com\/(?:video\/)?(\d+)/))) return 'https://player.vimeo.com/video/' + m[1];
+    if ((m = u.match(/^https?:\/\/drive\.google\.com\/file\/d\/([\w-]{10,})/))) return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+    return /^https?:\/\//.test(u) ? youtubeEmbed(u) : '';
   }
 
   var track = function (name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (_) {} };

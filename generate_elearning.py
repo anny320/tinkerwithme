@@ -248,6 +248,7 @@ def upload(db, course, data, price):
         "description": data["description"],
         "age_range": course["age"].replace(" yrs", "").strip(),
         "price_kes": price,
+        "price_usd": course.get("self_paced_price_usd"),
         "is_published": False,
         "position": 100,
     })[0]

@@ -59,6 +59,7 @@
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -118,7 +119,6 @@
       <h4>Learn</h4>
       <ul>
         <li><a href="picker.html">Plan a session</a></li>
-        <li><a href="courses.html" data-hub>MakersHub</a></li>
         <li><a href="courses.html">Courses &amp; camps</a></li>
         <li><a href="learn.html">Online courses</a></li>
         <li><a href="community.html">Community</a></li>
@@ -217,7 +217,7 @@ async function courseList() {
 /* ── Course editor (+ its lessons) ── */
 async function courseEditor(id) {
   const isNew = id === 'new';
-  const c = isNew ? { title: '', slug: '', summary: '', description: '', age_range: '', cover_url: '', price_kes: 0, is_published: false, position: 0 }
+  const c = isNew ? { title: '', slug: '', summary: '', description: '', age_range: '', cover_url: '', price_kes: 0, price_usd: null, card_url: '', is_published: false, position: 0 }
     : must(await db().from('lms_courses').select('*').eq('id', id).single());
   const lessons = isNew ? [] : must(await db().from('lms_lessons').select('id,title,section,position,video_url,quiz').eq('course_id', id).order('position').order('created_at'));
   $('view').innerHTML = `
@@ -230,12 +230,16 @@ async function courseEditor(id) {
           <small>Lowercase words joined by dashes, e.g. <code>ai-for-kids</code>. Changing it breaks old links.</small></label>
         <label class="field-in">Ages <input name="age_range" maxlength="20" placeholder="e.g. 7–9" value="${esc(c.age_range)}"></label>
         <label class="field-in">Price in KES <input name="price_kes" type="number" min="0" step="1" value="${c.price_kes}"><small>0 = free. Paid courses unlock when you approve a payment on the Payments tab, or enrol a student on the Students tab.</small></label>
+        <label class="field-in">Price in US$ (outside Kenya) <input name="price_usd" type="number" min="0" step="1" value="${c.price_usd ?? ''}" placeholder="${c.price_kes ? TWPrice.usdFor(c.price_kes) : ''}">
+          <small>Shown to visitors outside Kenya. Blank = the suggested price shown.</small></label>
+        <label class="field-in">Card payment link (HustleSasa) <input name="card_url" type="url" maxlength="300" value="${esc(c.card_url || '')}" placeholder="https://tinkerwithme.hustlesasa.shop/…">
+          <small>Optional. Set the product's redirect to <code>https://tinkerwith.me/course.html?c=${esc(c.slug || 'web-address')}&amp;paid=card</code></small></label>
         <label class="field-in">Order on the courses page <input name="position" type="number" step="1" value="${c.position}"><small>Lower numbers come first.</small></label>
         <label class="field-in wide">Short summary <input name="summary" maxlength="200" value="${esc(c.summary)}"><small>One or two sentences for the course card.</small></label>
         <div class="field-in wide">Cover picture
           <div class="btns" style="margin-top:0"><input name="cover_url" placeholder="Picture link, or upload one →" value="${esc(c.cover_url)}" style="flex:1">
           <button class="ib" type="button" data-upload="cover">Upload</button></div></div>
-        <div class="field-in wide">Description <span class="hint">— what the course covers and who it’s for</span>${mdEditor('description', c.description)}</div>
+        <div class="field-in wide">Description <span class="hint">— what the course covers and who it’s for</span>${mdEditor('description', c.description, true)}</div>
         <label class="check wide"><input type="checkbox" name="is_published" ${c.is_published ? 'checked' : ''}> Published (visible on the courses page)</label>
       </div>
       <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">${isNew ? 'Create course' : 'Save course'}</button>
@@ -258,6 +262,7 @@ async function courseEditor(id) {
     e.preventDefault();
     const row = { title: f.title.value.trim(), slug: f.slug.value.trim(), summary: f.summary.value.trim(), description: f.description.value,
       age_range: f.age_range.value.trim(), cover_url: f.cover_url.value.trim(), price_kes: Math.max(0, parseInt(f.price_kes.value, 10) || 0),
+      price_usd: f.price_usd.value === '' ? null : Math.max(0, parseInt(f.price_usd.value, 10) || 0), card_url: f.card_url.value.trim(),
       position: parseInt(f.position.value, 10) || 0, is_published: f.is_published.checked };
     try {
       const saved = isNew ? must(await db().from('lms_courses').insert(row).select('id').single())
@@ -303,7 +308,7 @@ async function lessonEditor(key) {
         <datalist id="sections">${sections.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
         <label class="field-in">YouTube video (optional) <input name="video_url" value="${esc(l.video_url)}" placeholder="https://youtu.be/…"></label>
         <div class="field-in wide">Lesson content
-          <span class="hint">Write normally. <b>**bold**</b>, <i>*italic*</i>, “- ” for bullet points, “## ” for a heading. Use <b>Add picture</b> to upload images.</span>
+          <span class="hint">Write normally. <b>**bold**</b>, <i>*italic*</i>, “- ” for bullet points, “## ” for a heading. Use the buttons to add pictures, videos (they play in the lesson) and links, as many as you like.</span>
           ${mdEditor('body', l.body, true)}</div>
       </div>
       <h2 style="margin-top:1.4rem">Quiz <span class="hint">— optional. With a quiz, students must get 60% right to finish the lesson.</span></h2>
@@ -367,10 +372,38 @@ async function lessonEditor(key) {
 /* ── Markdown box with preview and picture upload ── */
 function mdEditor(name, value, pictures) {
   return `<div class="md" data-md="${name}"><div class="md-tabs"><button type="button" class="cur" data-mode="write">Write</button><button type="button" data-mode="preview">Preview</button>
-    ${pictures ? `<button type="button" data-upload="${name}">🖼 Add picture</button>` : ''}</div>
+    ${pictures ? `<button type="button" data-upload="${name}">🖼 Add picture</button>
+      <button type="button" data-insert="video" data-for="${name}">🎬 Add video</button>
+      <button type="button" data-insert="link" data-for="${name}">🔗 Add link</button>` : ''}</div>
     <textarea name="${name}" rows="${pictures ? 16 : 6}">${esc(value)}</textarea><div class="md-preview prose" hidden></div></div>`;
 }
+// Insert a video (plays in place) or a link at the cursor.
+function insertAt(ta, text) {
+  // At the cursor if you were typing in the box, otherwise at the end.
+  const at = ta.dataset.typed ? (ta.selectionStart ?? ta.value.length) : ta.value.length;
+  ta.value = ta.value.slice(0, at) + text + ta.value.slice(at);
+  ta.focus(); ta.selectionStart = ta.selectionEnd = at + text.length;
+  ta.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function wireInserts(form) {
+  form.querySelectorAll('.md textarea').forEach(ta => ta.addEventListener('click', () => { ta.dataset.typed = 1; }));
+  form.querySelectorAll('[data-insert]').forEach(b => b.onclick = () => {
+    const ta = form[b.dataset.for];
+    if (b.dataset.insert === 'video') {
+      const url = (prompt('Paste a YouTube, Vimeo or Google Drive video link.\n(Google Drive: set sharing to "Anyone with the link".)') || '').trim();
+      if (!url) return;
+      if (!/youtu\.?be|vimeo\.com|drive\.google\.com\/file/.test(url)) return toast('That link isn’t a YouTube, Vimeo or Google Drive video.');
+      insertAt(ta, `\n\n${url}\n\n`); toast('Video added. Check it in Preview ✓');
+    } else {
+      const url = (prompt('Paste the link (web address):', 'https://') || '').trim();
+      if (!/^https?:\/\/\S+\.\S+/.test(url)) return url && url !== 'https://' ? toast('That doesn’t look like a web address.') : undefined;
+      const text = (prompt('Text to show for the link:', '') || '').trim() || url;
+      insertAt(ta, `[${text.replace(/[\[\]]/g, '')}](${url})`); toast('Link added ✓');
+    }
+  });
+}
 function wireMd(form) {
+  wireInserts(form);
   form.querySelectorAll('.md').forEach(box => box.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
     const prev = b.dataset.mode === 'preview';
     box.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('cur', x === b));
@@ -498,20 +531,21 @@ async function payments() {
   const pend = list.filter(p => p.pending), done = list.filter(p => !p.pending);
   const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : 'New enrolment';
-  const amount = p => p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
+  const amount = p => p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
+    : p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
     : p.amount_kes === p.expected_kes ? `KES ${p.amount_kes.toLocaleString()} ✓`
     : `<span class="pay-warn">KES ${p.amount_kes.toLocaleString()}, expected ${p.expected_kes.toLocaleString()}</span>`;
   const row = (p, open) => `<div class="row" style="align-items:flex-start">
       <div class="grow"><strong>${esc(p.full_name || p.email)}</strong>
         <small>${esc(p.email)} · ${esc(p.title || '(course deleted)')} · ${what(p)} · ${when(p.created_at)}</small>
-        <div style="margin-top:4px;font-size:14.5px"><code style="font-size:15px;font-weight:700">${esc(p.code)}</code> · ${amount(p)}</div>
+        <div style="margin-top:4px;font-size:14.5px">${p.method === 'card' ? 'Order ' : ''}<code style="font-size:15px;font-weight:700">${esc(p.code)}</code> · ${amount(p)}</div>
         ${p.message && p.message.toUpperCase() !== p.code ? `<details style="font-size:13.5px;color:var(--text-2);margin-top:4px"><summary>Message they pasted</summary>${esc(p.message)}</details>` : ''}
         ${!open ? `<small>${p.status === 'approved' ? '✅ Approved' : '❌ Rejected'} ${when(p.decided_at)}${p.note ? ` · ${esc(p.note)}` : ''}</small>` : ''}</div>
       ${open ? `<button class="ib" type="button" data-approve="${p.id}" data-code="${esc(p.code)}">Approve</button>
         <button class="ib danger" type="button" data-reject="${p.id}">Reject</button>` : ''}</div>`;
   $('view').innerHTML = `
     <div class="panel box"><h2>Waiting for approval (${pend.length})</h2>
-      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Check each code and amount against your M-Pesa statement, then approve. Approving a course or renewal unlocks 12 months straight away.</p>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Check each M-Pesa code against your M-Pesa statement, and each card order number against your HustleSasa orders, then approve. Approving a course or renewal unlocks 12 months straight away.</p>
       <div class="rows">${pend.map(p => row(p, true)).join('') || '<p class="muted">Nothing waiting. 🎉</p>'}</div></div>
     ${done.length ? `<div class="panel box"><h2>Recent decisions</h2><div class="rows">${done.map(p => row(p, false)).join('')}</div></div>` : ''}`;
   $('view').onclick = async e => {
