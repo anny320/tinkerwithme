@@ -278,6 +278,7 @@ function show(lessonId) {
 
 /* ── Overview: description, enrolment, certificate ── */
 const offerNote = () => C.regular_kes ? `<p class="offer-note">🎉 Launch price until <strong>${day(new Date(new Date(C.offer_ends_at) - 1))}</strong>, then ${TWPrice.fmt(C.regular_kes, C.regular_usd)}.</p>` : '';
+const bundleNote = () => (C.bundles || []).map(b => `<p class="offer-note">💡 Save with the <a href="bundle.html?b=${encodeURIComponent(b.slug)}">${esc(b.title)}</a>: this course and more for ${TWPrice.fmt(b.price_kes, b.price_usd)}.</p>`).join('');
 function previewBox() {
   const pv = C.lessons.filter(l => l.preview);
   if (C.can_access || !pv.length) return '';
@@ -288,7 +289,7 @@ function renderOverview() {
   const next = C.lessons.find(l => !l.done) || C.lessons[0];
   let act = '';
   if (!LMS.user) {
-    act = previewBox() + `<div class="action"><h3>Ready to start?</h3>${C.price_kes ? `<p class="price-line">${coursePrice()}</p>${offerNote()}` : ''}<p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
+    act = previewBox() + `<div class="action"><h3>Ready to start?</h3>${C.price_kes ? `<p class="price-line">${coursePrice()}</p>${offerNote()}${bundleNote()}` : ''}<p>Sign in or create a free account to ${C.price_kes ? 'get this course' : 'start this course'} and save your progress.</p>
       <button class="tw-btn tw-btn-orange" type="button" id="b-signin">Sign in to start</button></div>`;
   } else if (C.can_access) {
     act = next ? `<div class="action"><h3>${doneCount() ? (finished() ? 'You finished this course! 🎉' : 'Welcome back!') : 'You’re enrolled!'}</h3>
@@ -305,7 +306,7 @@ function renderOverview() {
     const renew = C.enrolled && C.expired;
     const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
         <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
-    act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}
+    act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
       <p class="promise">✓ Not happy within 7 days? Full refund.</p>
       ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}

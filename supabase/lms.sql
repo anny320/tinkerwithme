@@ -251,6 +251,9 @@ begin
     'price_usd', case when offer then c.offer_price_usd else c.price_usd end,
     'regular_kes', case when offer then c.price_kes end, 'regular_usd', case when offer then c.price_usd end,
     'offer_ends_at', case when offer then c.offer_ends_at end,
+    -- bundles that include this course (lms_bundles, further down), for a "save with the bundle" note
+    'bundles', coalesce((select json_agg(json_build_object('slug', b.slug, 'title', b.title, 'price_kes', b.price_kes, 'price_usd', b.price_usd))
+      from lms_bundle_courses bc join lms_bundles b on b.slug = bc.bundle_slug where bc.course_id = c.id and b.is_published), '[]'::json),
     'enrolled', enrolled, 'can_access', lms_can_access(c.id) or (lms_is_admin()),
     'expires_at', ends, 'expired', coalesce(ends <= now(), false),
     'lessons', coalesce((
@@ -544,10 +547,11 @@ begin
   return coalesce((select json_agg(x order by x.pending desc, x.created_at desc) from (
     select p.id, p.kind, p.hours, p.code, p.amount_kes, p.message, p.status, p.note, p.created_at, p.decided_at, p.method,
            p.status = 'pending' as pending, p.email, coalesce(pr.full_name, '') as full_name, p.product,
-           case when p.kind = 'curriculum' then 'Curriculum: ' || p.product else c.title end as title,
-           case p.kind when 'trainer' then p.hours * lms_trainer_rate() when 'curriculum' then lms_curriculum_price() else case when c.offer_price_kes is not null and p.created_at < c.offer_ends_at then c.offer_price_kes else c.price_kes end end as expected_kes,
-           case p.kind when 'trainer' then p.hours * lms_trainer_rate_usd() when 'curriculum' then lms_curriculum_price_usd() else case when c.offer_price_usd is not null and p.created_at < c.offer_ends_at then c.offer_price_usd else c.price_usd end end as expected_usd
+           case p.kind when 'curriculum' then 'Curriculum: ' || p.product when 'bundle' then 'Bundle: ' || coalesce(b.title, p.product) else c.title end as title,
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate() when 'curriculum' then lms_curriculum_price() when 'bundle' then b.price_kes else case when c.offer_price_kes is not null and p.created_at < c.offer_ends_at then c.offer_price_kes else c.price_kes end end as expected_kes,
+           case p.kind when 'trainer' then p.hours * lms_trainer_rate_usd() when 'curriculum' then lms_curriculum_price_usd() when 'bundle' then b.price_usd else case when c.offer_price_usd is not null and p.created_at < c.offer_ends_at then c.offer_price_usd else c.price_usd end end as expected_usd
     from lms_payments p left join lms_courses c on c.id = p.course_id left join lms_profiles pr on pr.user_id = p.user_id
+      left join lms_bundles b on p.kind = 'bundle' and b.slug = p.product
     where p.status = 'pending' or p.id in (select id from lms_payments where status <> 'pending' order by decided_at desc limit 30)
   ) x), '[]'::json);
 end $$;
@@ -632,10 +636,105 @@ end $$;
 revoke all on function public.lms_submit_curriculum_payment(text, text, text), public.lms_my_curriculum(text) from public;
 grant execute on function public.lms_submit_curriculum_payment(text, text, text), public.lms_my_curriculum(text) to authenticated;
 
--- Approve (unlocks or renews the course; trainer hours just get marked paid) or reject with a note the parent sees.
+-- ── Course bundles ─────────────────────────────────────────────────────
+-- Several online courses for one payment (bundle.html?b=<slug>). Approving a
+-- bundle payment unlocks (or renews) every course in it for 12 months.
+
+alter table public.lms_payments drop constraint if exists lms_payments_kind_check;
+alter table public.lms_payments add constraint lms_payments_kind_check check (kind in ('course', 'renewal', 'trainer', 'curriculum', 'bundle'));
+
+create table if not exists public.lms_bundles (
+  slug         text primary key check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' and char_length(slug) <= 60),
+  title        text not null check (char_length(title) between 1 and 120),
+  summary      text not null default '',
+  price_kes    int  not null check (price_kes > 0),
+  price_usd    int  check (price_usd is null or price_usd > 0),
+  card_url     text not null default '' check (card_url = '' or card_url ~ '^https://'),
+  is_published boolean not null default false,
+  position     int  not null default 0,
+  created_at   timestamptz not null default now()
+);
+create table if not exists public.lms_bundle_courses (
+  bundle_slug text not null references public.lms_bundles(slug) on delete cascade on update cascade,
+  course_id   uuid not null references public.lms_courses(id) on delete cascade,
+  position    int  not null default 0,
+  primary key (bundle_slug, course_id)
+);
+alter table public.lms_bundles enable row level security;
+alter table public.lms_bundle_courses enable row level security;
+revoke all on public.lms_bundles, public.lms_bundle_courses from anon, authenticated;
+grant select on public.lms_bundles, public.lms_bundle_courses to anon, authenticated;
+grant insert, update, delete on public.lms_bundles, public.lms_bundle_courses to authenticated;
+drop policy if exists "published" on public.lms_bundles;
+drop policy if exists "admin all" on public.lms_bundles;
+drop policy if exists "published" on public.lms_bundle_courses;
+drop policy if exists "admin all" on public.lms_bundle_courses;
+create policy "published" on public.lms_bundles for select to anon, authenticated using (is_published);
+create policy "admin all" on public.lms_bundles for all to authenticated using (lms_is_admin()) with check (lms_is_admin());
+create policy "published" on public.lms_bundle_courses for select to anon, authenticated
+  using (exists (select 1 from lms_bundles b where b.slug = bundle_slug and b.is_published));
+create policy "admin all" on public.lms_bundle_courses for all to authenticated using (lms_is_admin()) with check (lms_is_admin());
+
+-- A bundle page: its courses, what they'd cost separately, and (if signed in) my access and payments.
+create or replace function public.lms_bundle(p_slug text)
+returns json language plpgsql stable security definer set search_path = public as $$
+declare b lms_bundles;
+begin
+  select * into b from lms_bundles where slug = p_slug and (is_published or lms_is_admin());
+  if not found then return null; end if;
+  return json_build_object('slug', b.slug, 'title', b.title, 'summary', b.summary,
+    'price_kes', b.price_kes, 'price_usd', b.price_usd, 'card_url', b.card_url, 'is_published', b.is_published,
+    'worth_kes', (select sum(c.price_kes) from lms_bundle_courses bc join lms_courses c on c.id = bc.course_id where bc.bundle_slug = b.slug),
+    'worth_usd', (select sum(c.price_usd) from lms_bundle_courses bc join lms_courses c on c.id = bc.course_id where bc.bundle_slug = b.slug),
+    'has_access', lms_uid() is not null and not exists (select 1 from lms_bundle_courses bc where bc.bundle_slug = b.slug and not lms_can_access(bc.course_id)),
+    'courses', coalesce((select json_agg(json_build_object('slug', c.slug, 'title', c.title, 'summary', c.summary,
+        'age_range', c.age_range, 'cover_url', c.cover_url, 'price_kes', c.price_kes, 'price_usd', c.price_usd,
+        'is_published', c.is_published, 'access', lms_can_access(c.id),
+        'lessons', (select count(*) from lms_lessons l where l.course_id = c.id)) order by bc.position, c.title)
+      from lms_bundle_courses bc join lms_courses c on c.id = bc.course_id where bc.bundle_slug = b.slug), '[]'::json),
+    'payments', coalesce((select json_agg(json_build_object('code', code, 'amount_kes', amount_kes, 'method', method,
+        'status', status, 'note', note, 'created_at', created_at) order by created_at desc)
+      from (select * from lms_payments where user_id = lms_uid() and kind = 'bundle' and product = b.slug order by created_at desc limit 10) p), '[]'::json));
+end $$;
+
+-- Submit a payment for a bundle (M-Pesa code or card order number).
+create or replace function public.lms_submit_bundle_payment(p_bundle text, p_message text, p_method text default 'mpesa')
+returns json language plpgsql security definer set search_path = public as $$
+declare uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 600); v_code text; v_amount int; r lms_payments;
+begin
+  if uid is null then raise exception 'Please sign in.'; end if;
+  if not exists (select 1 from lms_bundles where slug = p_bundle and is_published) then raise exception 'Bundle not found.'; end if;
+  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
+  if p_method = 'card' then
+    v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
+    if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  else
+    select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
+      where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
+    if v_code is null then
+      raise exception 'We couldn''t find the M-Pesa code. Paste the whole M-Pesa message, or just the 10-character code (like SJK4AB12CD).';
+    end if;
+    v_amount := nullif(replace((regexp_match(upper(msg), 'KSHS?\.?\s*([0-9,]+)'))[1], ',', ''), '')::int;
+  end if;
+  if exists (select 1 from lms_payments where code = v_code) then raise exception 'That payment has already been sent to us.'; end if;
+  if (select count(*) from lms_payments where user_id = uid and status = 'pending') >= 5 then
+    raise exception 'You already have 5 payments waiting. We''ll check them soon.';
+  end if;
+  insert into lms_payments (user_id, email, kind, product, code, amount_kes, message, method)
+    values (uid, coalesce(lms_email(), ''), 'bundle', p_bundle, v_code, v_amount, msg, p_method)
+    returning * into r;
+  return json_build_object('id', r.id, 'kind', r.kind, 'code', r.code, 'amount_kes', r.amount_kes, 'status', r.status);
+end $$;
+
+revoke all on function public.lms_bundle(text), public.lms_submit_bundle_payment(text, text, text) from public;
+grant execute on function public.lms_bundle(text) to anon, authenticated;
+grant execute on function public.lms_submit_bundle_payment(text, text, text) to authenticated;
+
+-- Approve (unlocks or renews the course, or every course in a bundle; trainer hours just get
+-- marked paid) or reject with a note the parent sees.
 create or replace function public.lms_admin_decide_payment(p_id uuid, p_approve boolean, p_note text default '')
 returns text language plpgsql security definer set search_path = public as $$
-declare p lms_payments; res text := 'rejected';
+declare p lms_payments; res text := 'rejected'; n int;
 begin
   if not lms_is_admin() then raise exception 'Admins only.'; end if;
   select * into p from lms_payments where id = p_id for update;
@@ -645,6 +744,10 @@ begin
     res := 'approved';
     if p.kind = 'curriculum' then
       insert into lms_curriculum_access (user_id, premium_id) values (p.user_id, p.product) on conflict do nothing;
+    elsif p.kind = 'bundle' then
+      select count(lms_grant_access(p.user_id, bc.course_id)) into n from lms_bundle_courses bc where bc.bundle_slug = p.product;
+      if n = 0 then raise exception 'That bundle has no courses.'; end if;
+      res := 'unlocked ' || n || ' courses';
     elsif p.kind <> 'trainer' then
       if p.course_id is null then raise exception 'That course no longer exists.'; end if;
       res := lms_grant_access(p.user_id, p.course_id);
