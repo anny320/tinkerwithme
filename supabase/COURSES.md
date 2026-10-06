@@ -35,8 +35,9 @@ students from reading paid lessons, seeing quiz answers or editing anything.
 1. **Authentication → Sign In / Providers → Third-Party Auth → Add provider
    → Clerk**. Paste the Clerk domain with no trailing `/`.
 2. **SQL Editor**: run `lms.sql`. It's safe to run again after updates.
-3. **SQL Editor**: run `seed-tutor-courses.sql`. That brings in the 4 Tutor
-   LMS courses, and it skips any course that already exists.
+3. **SQL Editor**: run `private/seed-tutor-courses.sql` (kept off GitHub, see
+   below). That brings in the 4 Tutor LMS courses, and it skips any course that
+   already exists.
 4. Sign in on `teach.html`. It shows a one-line SQL statement that makes you
    an admin. Run it in the SQL Editor, then refresh.
 
@@ -55,6 +56,11 @@ students from reading paid lessons, seeing quiz answers or editing anything.
 ## Moving off WordPress
 
 `import_tutor.py` rebuilt `seed-tutor-courses.sql` from the WordPress export.
+
+**Paid content and personal data stay off GitHub** (this repo is public): the
+WordPress export (user emails, enrolments) and the SQL files holding full paid
+lessons live in the private backup on Google Drive and in `supabase/private/`,
+which git ignores. Keep it that way for new course SQL too.
 A WordPress export doesn't include:
 
 - **Quiz questions.** Tutor stores them in its own tables. Re-enter the 9

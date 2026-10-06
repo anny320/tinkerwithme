@@ -14,8 +14,9 @@ name: Make Online Courses
 # Downloads (students see it once they have access). Courses that already
 # have it are skipped, so re-running only fills gaps.
 #
-# The written course JSON and curriculum PDFs are also uploaded as a 1-day
-# artifact (paid content) so you can save copies to Drive.
+# Paid content is never uploaded as a run artifact (on a public repo anyone
+# signed in to GitHub could download it). Courses and PDFs go straight to
+# Supabase; download the PDFs from teach.html → Curriculums if you want copies.
 #
 # Run from the Actions tab → "Make Online Courses" → Run workflow.
 
@@ -71,14 +72,3 @@ jobs:
           if [ -n "$PRICE" ]; then ARGS="--price $PRICE"; fi
           if [ "$CURRICULUM" = "true" ]; then ARGS="$ARGS --curriculum"; fi
           python generate_elearning.py $ARGS $COURSES
-
-      - name: Upload the written courses (1 day)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: online-courses
-          path: |
-            elearning_drafts/
-            curriculums/
-          retention-days: 1
-          if-no-files-found: ignore

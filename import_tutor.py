@@ -6,7 +6,7 @@ platform (supabase/lms.sql). One-off migration; no AI tokens, no network.
 Run:  pip install markdownify
       python import_tutor.py content_source/wordpress/tinkerwith-export-20260819.xml
 
-Writes supabase/seed-tutor-courses.sql. Paste it into Supabase → SQL Editor
+Writes supabase/private/seed-tutor-courses.sql (git-ignored: paid content). Paste it into Supabase → SQL Editor
 → Run, after lms.sql. Courses whose web address (slug) already exists are
 skipped, so it is safe to run twice and never overwrites your edits.
 
@@ -118,7 +118,8 @@ def main(export_path):
             out.append(f"  insert into public.lms_lessons (course_id, position, section, title, body) values (cid, {n}, {sql_text(section)}, {sql_text(title)}, {sql_text(body)});")
         out.append("end $$;\n")
 
-    dest = Path(__file__).resolve().parent / "supabase" / "seed-tutor-courses.sql"
+    dest = Path(__file__).resolve().parent / "supabase" / "private" / "seed-tutor-courses.sql"
+    dest.parent.mkdir(exist_ok=True)
     dest.write_text("\n".join(out), encoding="utf-8")
     print(f"Wrote {dest.relative_to(Path.cwd()) if dest.is_relative_to(Path.cwd()) else dest}\n")
     for title, status, paid, n, quizzes, imgs in report:

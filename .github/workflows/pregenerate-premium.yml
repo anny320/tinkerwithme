@@ -4,11 +4,11 @@ name: Pre-generate Premium Curriculums
 # per course) and renders a full-curriculum PDF per course. Uses the Anthropic API.
 #
 # These are paid content, so they are NEVER committed to this public repo
-# (curriculums/ and premium_content/ are git-ignored). The run uploads them as a
-# private-ish build artifact that expires after 1 day: download it from the run
-# page, save it to the private Google Drive folder, then delete the artifact.
-# Note: on a public repo any signed-in GitHub user can download artifacts while
-# they exist, which is why retention is kept to 1 day.
+# (curriculums/ and premium_content/ are git-ignored) and never uploaded as a
+# run artifact (anyone signed in to GitHub can download artifacts on a public
+# repo). The PDFs go straight to the private Supabase bucket, where buyers
+# download them on curriculum.html; you can download copies from
+# teach.html → Curriculums. Needs SUPABASE_URL and SUPABASE_SECRET_KEY secrets.
 #
 # Nothing is cached between runs, so each run regenerates the courses you ask
 # for — use "only" to limit it (and the API cost) to the courses you need.
@@ -68,12 +68,10 @@ jobs:
       - name: Render full-curriculum PDFs
         run: python generate_premium.py --curriculums
 
-      - name: Upload curriculums (download, save to Drive, then delete)
-        uses: actions/upload-artifact@v4
-        with:
-          name: premium-curriculums
-          path: |
-            curriculums/
-            premium_content/
-          retention-days: 1
-          if-no-files-found: error
+      - name: Upload the PDFs to the curriculum shop (private Supabase storage)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          pip install requests
+          python upload_curriculums.py

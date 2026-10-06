@@ -12,3 +12,10 @@ premium_content/
 
 # Online-course drafts written by generate_elearning.py (paid content).
 elearning_drafts/
+
+# Paid course content and personal data: keep these out of the public repo.
+# Course SQL with full lessons lives in supabase/private/ (and on Google Drive);
+# the old WordPress export has user emails and enrolments.
+supabase/private/
+content_source/wordpress/
+*.xml.export
