@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotics coloring book — TinkerWith_</title>
+<meta name="description" content="A 12-page robotics coloring book featuring line-art of robots, electronics, engineering and careers. Color on screen or download the printable PDF, free.">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<script src="analytics.js"></script>
+<script src="forms.js" defer></script>
+<style>
+.page-head{background:#FFD23F;padding:3.25rem 0 3rem}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:52ch}
+
+.cb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:2rem}
+@media(max-width:1080px){.cb-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.cb-grid{grid-template-columns:1fr}}
+
+.cb-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column}
+.cb-preview{height:280px;background:var(--cream);padding:1rem;display:grid;place-items:center;border-bottom:2px solid var(--ink)}
+.cb-preview img{width:100%;height:100%;max-height:250px;object-fit:contain}
+.cb-info{padding:1.4rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:10px;flex:1}
+.cb-info h3{font-size:18px;font-weight:600}
+.cb-info .cb-page{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.cb-tags{display:flex;gap:6px;flex-wrap:wrap}
+.cb-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--ink);border-radius:99px;padding:3px 8px;background:var(--cream)}
+.cb-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.cb-btn{font:inherit;font-size:13px;font-weight:600;padding:9px 13px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--white);color:var(--ink);cursor:pointer;transition:all .12s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.cb-btn:hover{background:var(--ink);color:var(--white)}
+.cb-btn.primary{background:var(--orange);color:var(--white)}
+.cb-btn.primary:hover{background:var(--orange-deep)}
+
+.download-section{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:2.5rem 2.2rem;margin-top:3.5rem;text-align:center}
+.download-section h2{font-size:clamp(24px,3vw,32px);font-weight:600;margin-bottom:8px}
+.download-section p{color:var(--on-ink);font-size:16px;max-width:55ch;margin:0 auto 1.5rem}
+.download-btn{display:inline-block;font:inherit;font-size:16px;font-weight:600;padding:16px 32px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink);text-decoration:none;cursor:pointer;transition:all .12s}
+.download-btn:hover{background:transparent;color:var(--white)}
+
+/* ── Color studio modal ───────────────────────────────── */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;place-items:center;padding:1rem}
+.modal.open{display:grid}
+.studio{background:var(--white);border-radius:var(--radius-lg);width:min(680px,95vw);max-height:92vh;overflow:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3);border:2px solid var(--ink)}
+.studio-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.3rem;border-bottom:2px solid var(--ink)}
+.studio-head h3{font-size:17px;font-weight:600}
+.modal-close{width:32px;height:32px;border:2px solid var(--ink);border-radius:50%;background:var(--white);font:700 18px var(--font-display);color:var(--ink);cursor:pointer;flex-shrink:0}
+.modal-close:hover{background:var(--ink);color:var(--white)}
+.cs-stage{padding:1.2rem;display:grid;place-items:center;background:var(--cream)}
+.cs-stage svg{width:100%;height:auto;max-height:58vh;background:#fff;border:1px solid var(--border, #e7e2de);border-radius:var(--radius-sm)}
+.cs-stage svg .cb-fill{cursor:pointer;transition:fill .1s}
+.cs-tools{padding:1rem 1.3rem 1.4rem;display:flex;flex-direction:column;gap:12px}
+.cs-swatches{display:flex;flex-wrap:wrap;gap:8px}
+.cs-swatch{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);cursor:pointer;padding:0}
+.cs-swatch.active{box-shadow:0 0 0 3px var(--orange)}
+.cs-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cs-custom{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600}
+.cs-custom input[type=color]{width:38px;height:30px;border:2px solid var(--ink);border-radius:6px;background:none;cursor:pointer;padding:0}
+.cs-hint{font-size:13px;color:var(--text-2)}
+
+.lead-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:101;place-items:center;padding:1rem}
+.lead-modal.open{display:grid}
+.lead-modal-content{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);max-width:500px;width:100%;padding:2.4rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.lead-modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border:2px solid var(--ink);border-radius:50%;background:var(--white);font:700 16px var(--font-display);color:var(--ink);cursor:pointer}
+.lead-modal-close:hover{background:var(--ink);color:var(--white)}
+.lead-modal h2{font-size:24px;font-weight:600;margin-bottom:8px;color:var(--ink)}
+.lead-modal p{color:var(--text-2);font-size:15.5px;margin-bottom:1.5rem}
+.lead-form{display:grid;grid-template-columns:1fr;gap:1rem}
+.lead-form input,.lead-form select{font:inherit;font-size:14px;padding:12px 14px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--white);color:var(--ink)}
+.lead-form input::placeholder{color:var(--text-3)}
+.lead-form input:focus,.lead-form select:focus{outline:none;border-color:var(--orange-deep);box-shadow:0 0 0 3px rgba(255,127,50,.1)}
+.lead-form input[name=_gotcha]{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.lead-form button{font:inherit;font-size:15px;font-weight:600;padding:14px 20px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--orange);color:var(--white);cursor:pointer;transition:all .12s}
+.lead-form button:hover{background:var(--orange-deep)}
+.lead-form button:disabled{opacity:.6;cursor:not-allowed}
+.lead-status{font-size:14px;margin-top:2px;min-height:1.2em}
+.lead-status[data-kind=ok]{color:var(--green-deep)}
+.lead-status[data-kind=error]{color:#C0392B}
+.lead-status a{color:var(--blue);font-weight:600}
+.privacy-note{font-size:13px;color:var(--text-2);margin-top:1.5rem;line-height:1.6}
+.privacy-note strong{font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body>
+<nav class="tw-nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <h1 class="tw-h1" style="font-size:clamp(28px,4vw,44px)">Robotics coloring book</h1>
+    <p>Twelve line-art pages of robots, circuits, engineering and careers. Color any page right here on screen, save your art, or download the whole book as a printable PDF.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+    <div class="cb-grid" id="gallery">
+      <!-- Cards generated by JS -->
+    </div>
+
+    <div class="download-section">
+      <h2>Download the full book</h2>
+      <p>Get all 12 pages as one printable PDF — ready for color pencils, markers or watercolors.</p>
+      <button class="download-btn" id="download-pdf">📥 Download the printable PDF</button>
+    </div>
+  </div>
+</section>
+
+<!-- Color studio -->
+<div class="modal" id="studio-modal">
+  <div class="studio">
+    <div class="studio-head">
+      <h3 id="studio-title">Color</h3>
+      <button class="modal-close" id="studio-close" aria-label="Close">×</button>
+    </div>
+    <div class="cs-stage"><div id="cs-canvas"></div></div>
+    <div class="cs-tools">
+      <p class="cs-hint">Pick a color, then tap any part of the drawing to fill it.</p>
+      <div class="cs-swatches" id="cs-swatches"></div>
+      <div class="cs-row">
+        <label class="cs-custom">Custom color <input type="color" id="cs-custom" value="#FF7F32"></label>
+        <button class="cb-btn" id="cs-eraser">⌫ Eraser</button>
+        <button class="cb-btn" id="cs-clear">↺ Clear</button>
+        <button class="cb-btn primary" id="cs-save">⬇ Save my art (PNG)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lead-capture for the full PDF -->
+<div class="lead-modal" id="lead-modal">
+  <div class="lead-modal-content">
+    <button class="lead-modal-close" id="lead-modal-close" aria-label="Close">×</button>
+    <h2>Get the full PDF book</h2>
+    <p>Pop in your details and the printable 12-page PDF downloads right away.</p>
+    <form class="lead-form" id="lead-form" novalidate>
+      <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
+      <input type="email" name="email" placeholder="Your email" autocomplete="email" required>
+      <select name="experience" required>
+        <option value="">Your experience level</option>
+        <option value="beginner">Beginner (no robotics experience)</option>
+        <option value="dabbler">Dabbler (played with robotics)</option>
+        <option value="maker">Maker (built projects before)</option>
+        <option value="engineer">Engineer (professional background)</option>
+      </select>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit">📥 Download PDF</button>
+      <p class="lead-status" id="lead-status" role="status" aria-live="polite"></p>
+    </form>
+    <div class="privacy-note">
+      <strong>Your privacy:</strong> We use your email only to send occasional activity updates. We never share your data or use it for third-party marketing. <a href="privacy.html">See our privacy policy</a>.
+    </div>
+  </div>
+</div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="for-adults.html">For adults</a></li>
+        <li><a href="free-for-kids.html">Free for kids</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="courses.html">Courses</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="train-an-ai.html">Train an AI</a></li>
+        <li><a href="ai-careers-crossword.html">Careers crossword</a></li>
+        <li><a href="coloring-book.html">Kids coloring</a></li>
+        <li><a href="picker.html">Course picker</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>About</h4>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+const PDF_URL = 'downloads/robotics-coloring-book-adults.pdf';
+
+// Gallery data — all 12 pages.
+const pages = [
+  { id: 1,  title: 'Robotic Arm',        topic: 'Robotics',    file: 'assets/coloring-book/01-robotic-arm.svg' },
+  { id: 2,  title: 'Arduino & Sensors',  topic: 'Electronics', file: 'assets/coloring-book/02-arduino-circuit.svg' },
+  { id: 3,  title: 'Gear Systems',       topic: 'Engineering', file: 'assets/coloring-book/03-gears.svg' },
+  { id: 4,  title: 'Roboticist at Work', topic: 'Career',      file: 'assets/coloring-book/04-roboticist-at-work.svg' },
+  { id: 5,  title: 'Soldering & Building',topic: 'Hands-on',   file: 'assets/coloring-book/05-soldering-components.svg' },
+  { id: 6,  title: 'Humanoid Robot',     topic: 'Robotics',    file: 'assets/coloring-book/06-humanoid-robot.svg' },
+  { id: 7,  title: 'Quadcopter Drone',   topic: 'Aerial',      file: 'assets/coloring-book/07-drone-quadcopter.svg' },
+  { id: 8,  title: 'Circuit Board',      topic: 'Electronics', file: 'assets/coloring-book/08-circuit-board.svg' },
+  { id: 9,  title: 'Breadboard & MCU',   topic: 'Electronics', file: 'assets/coloring-book/09-breadboard-microcontroller.svg' },
+  { id: 10, title: 'Robot Gripper',      topic: 'Mechanisms',  file: 'assets/coloring-book/10-robot-gripper.svg' },
+  { id: 11, title: 'Mars Rover',         topic: 'Robotics',    file: 'assets/coloring-book/11-mars-rover.svg' },
+  { id: 12, title: 'Ultrasonic Sensor',  topic: 'Sensors',     file: 'assets/coloring-book/12-ultrasonic-sensor.svg' },
+];
+
+const PALETTE = ['#E0341B','#FF7F32','#FFD23F','#3DA35D','#2E86C1','#8E44AD','#E67EA2','#8B5A2B','#1E1B18','#FFFFFF'];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+
+// ── Render gallery ──────────────────────────────────────
+const gallery = $('gallery');
+pages.forEach(page => {
+  const card = document.createElement('div');
+  card.className = 'cb-card';
+  card.innerHTML = `
+    <div class="cb-preview">
+      <img src="${page.file}" alt="Line drawing: ${esc(page.title)}" loading="lazy">
+    </div>
+    <div class="cb-info">
+      <h3>${esc(page.title)}</h3>
+      <span class="cb-page">Page ${page.id} of ${pages.length}</span>
+      <div class="cb-tags"><span class="cb-tag">${esc(page.topic)}</span></div>
+      <div class="cb-actions">
+        <button class="cb-btn primary color-btn" data-page="${page.id}">🖍 Color this</button>
+        <a href="${page.file}" download class="cb-btn">⬇ SVG</a>
+      </div>
+    </div>`;
+  gallery.appendChild(card);
+});
+
+// ── Color studio ────────────────────────────────────────
+let currentColor = PALETTE[1]; // orange
+let currentPage = null;
+
+// Build swatches
+const swatchWrap = $('cs-swatches');
+PALETTE.forEach((c, i) => {
+  const b = document.createElement('button');
+  b.className = 'cs-swatch' + (i === 1 ? ' active' : '');
+  b.style.background = c;
+  b.setAttribute('aria-label', 'Color ' + c);
+  b.addEventListener('click', () => setColor(c, b));
+  swatchWrap.appendChild(b);
+});
+function setColor(c, btn) {
+  currentColor = c;
+  document.querySelectorAll('.cs-swatch').forEach(s => s.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+$('cs-custom').addEventListener('input', e => setColor(e.target.value, null));
+$('cs-eraser').addEventListener('click', () => { currentColor = '#FFFFFF'; });
+$('cs-clear').addEventListener('click', () => {
+  $('cs-canvas').querySelectorAll('.cb-fill').forEach(el => el.setAttribute('fill', '#FFFFFF'));
+});
+
+// Make the shapes of an SVG clickable-to-fill. Skips the title text and the
+// faint background grid rectangle so only real line-art is colorable.
+function wireColoring(svg) {
+  svg.querySelectorAll('path,circle,rect,ellipse,polygon,polyline,use').forEach(el => {
+    if (el.closest('defs')) return;
+    const fill = (el.getAttribute('fill') || '').trim();
+    if (fill.startsWith('url(')) return;                       // background grid
+    if (el.tagName.toLowerCase() === 'rect') {
+      const w = parseFloat(el.getAttribute('width') || 0);
+      if (w >= 380) return;                                    // full-page background
+    }
+    if (fill === 'black' || fill === '#000' || fill === '#000000') return; // solid detail dots
+    el.classList.add('cb-fill');
+    el.setAttribute('fill', '#FFFFFF');
+    el.addEventListener('click', () => el.setAttribute('fill', currentColor));
+  });
+}
+
+async function openStudio(page) {
+  currentPage = page;
+  $('studio-title').textContent = 'Color: ' + page.title;
+  const canvas = $('cs-canvas');
+  canvas.innerHTML = '<p style="padding:2rem;color:#999">Loading…</p>';
+  $('studio-modal').classList.add('open');
+  try {
+    const txt = await fetch(page.file).then(r => r.text());
+    canvas.innerHTML = txt;
+    const svg = canvas.querySelector('svg');
+    svg.removeAttribute('width'); svg.removeAttribute('height');
+    wireColoring(svg);
+    if (typeof gtag === 'function') gtag('event', 'coloring_book_color', { page: page.id });
+  } catch (e) {
+    canvas.innerHTML = '<p style="padding:2rem;color:#C0392B">Could not load this page. Please try again.</p>';
+  }
+}
+
+gallery.addEventListener('click', e => {
+  const btn = e.target.closest('.color-btn');
+  if (!btn) return;
+  const page = pages.find(p => p.id == btn.dataset.page);
+  if (page) openStudio(page);
+});
+$('studio-close').addEventListener('click', () => $('studio-modal').classList.remove('open'));
+$('studio-modal').addEventListener('click', e => { if (e.target.id === 'studio-modal') e.currentTarget.classList.remove('open'); });
+
+// Save colored art as PNG
+$('cs-save').addEventListener('click', () => {
+  const svgEl = $('cs-canvas').querySelector('svg');
+  if (!svgEl) return;
+  const clone = svgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  const vb = (clone.getAttribute('viewBox') || '0 0 400 500').split(/\s+/).map(Number);
+  const W = vb[2] || 400, H = vb[3] || 500;
+  const scale = 2;
+  const img = new Image();
+  img.onload = () => {
+    const cv = document.createElement('canvas');
+    cv.width = W * scale; cv.height = H * scale;
+    const g = cv.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+    g.drawImage(img, 0, 0, cv.width, cv.height);
+    g.fillStyle = '#E0641B';
+    g.font = `700 ${14 * scale}px 'Space Mono', monospace`;
+    g.textAlign = 'right';
+    g.fillText('tinkerwith.me', cv.width - 12 * scale, cv.height - 12 * scale);
+    const a = document.createElement('a');
+    a.href = cv.toDataURL('image/png');
+    a.download = 'my-' + (currentPage ? currentPage.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'coloring') + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    if (typeof gtag === 'function') gtag('event', 'coloring_book_save_art', { page: currentPage && currentPage.id });
+  };
+  img.onerror = () => alert('Could not save the image. Please try a different browser.');
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+});
+
+// ── Full-book PDF (lead capture, then download) ─────────
+function startDownload() {
+  const a = document.createElement('a');
+  a.href = PDF_URL; a.download = 'robotics-coloring-book-adults.pdf';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+$('download-pdf').addEventListener('click', () => {
+  $('lead-modal').classList.add('open');
+  if (typeof gtag === 'function') gtag('event', 'coloring_book_pdf_requested');
+});
+$('lead-modal-close').addEventListener('click', () => $('lead-modal').classList.remove('open'));
+$('lead-modal').addEventListener('click', e => { if (e.target.id === 'lead-modal') e.currentTarget.classList.remove('open'); });
+
+$('lead-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  if (form._gotcha.value) return;               // honeypot tripped
+  const btn = form.querySelector('button');
+  const status = $('lead-status');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Sending…';
+  status.textContent = ''; status.removeAttribute('data-kind');
+
+  const data = {
+    name: form.name.value.trim(),
+    email: form.email.value.trim(),
+    experience: form.experience.value,
+    source: 'coloring-book-adults-pdf',
+    timestamp: new Date().toISOString(),
+  };
+
+  if (typeof gtag === 'function') {
+    gtag('event', 'coloring_book_signup', { experience_level: data.experience });
+  }
+
+  try {
+    if (typeof twSubmitForm === 'function') await twSubmitForm('lead', data);
+    status.dataset.kind = 'ok';
+    status.textContent = '✓ Thanks! Your download is starting…';
+    startDownload();
+    setTimeout(() => {
+      $('lead-modal').classList.remove('open');
+      form.reset();
+      btn.disabled = false; btn.textContent = orig;
+      status.textContent = '';
+    }, 2500);
+  } catch (err) {
+    // The book is free either way — let them grab it and surface the issue.
+    status.dataset.kind = 'error';
+    status.innerHTML = (err && err.message ? esc(err.message) + ' ' : '') +
+      'Your <a href="' + PDF_URL + '" download>download link is here</a>.';
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
+</script>
+</body>
+</html>

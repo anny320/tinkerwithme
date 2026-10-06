@@ -1,0 +1,59 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Mars Rover</text>
+  <!-- solar panel -->
+  <rect x="70" y="150" width="260" height="90" rx="4" stroke="black" fill="none" stroke-width="2"/>
+  <line x1="122" y1="150" x2="122" y2="240" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="174" y1="150" x2="174" y2="240" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="226" y1="150" x2="226" y2="240" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="278" y1="150" x2="278" y2="240" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="70" y1="195" x2="330" y2="195" stroke="black" fill="none" stroke-width="1"/>
+  <!-- body -->
+  <rect x="140" y="250" width="120" height="70" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="160" y="268" width="36" height="30" stroke="black" fill="none" stroke-width="1.2"/>
+  <circle cx="230" cy="285" r="14" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- mast camera -->
+  <line x1="200" y1="250" x2="200" y2="190" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="182" y="160" width="40" height="32" rx="4" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="195" cy="176" r="7" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="212" cy="176" r="5" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- suspension -->
+  <path d="M 160 320 L 110 360 M 200 320 L 200 360 M 240 320 L 290 360" stroke="black" fill="none" stroke-width="2"/>
+  <line x1="110" y1="360" x2="305" y2="360" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="95" cy="370" r="34" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="95" cy="370" r="14" stroke="black" fill="none" stroke-width="1.5"/>
+  <line x1="109.0" y1="370.0" x2="129.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="104.9" y1="379.9" x2="119.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="95.0" y1="384.0" x2="95.0" y2="404.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="85.1" y1="379.9" x2="71.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="81.0" y1="370.0" x2="61.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="85.1" y1="360.1" x2="71.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="95.0" y1="356.0" x2="95.0" y2="336.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="104.9" y1="360.1" x2="119.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+  <circle cx="200" cy="370" r="34" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="200" cy="370" r="14" stroke="black" fill="none" stroke-width="1.5"/>
+  <line x1="214.0" y1="370.0" x2="234.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="209.9" y1="379.9" x2="224.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="200.0" y1="384.0" x2="200.0" y2="404.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="190.1" y1="379.9" x2="176.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="186.0" y1="370.0" x2="166.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="190.1" y1="360.1" x2="176.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="200.0" y1="356.0" x2="200.0" y2="336.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="209.9" y1="360.1" x2="224.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+  <circle cx="305" cy="370" r="34" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="305" cy="370" r="14" stroke="black" fill="none" stroke-width="1.5"/>
+  <line x1="319.0" y1="370.0" x2="339.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="314.9" y1="379.9" x2="329.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="305.0" y1="384.0" x2="305.0" y2="404.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="295.1" y1="379.9" x2="281.0" y2="394.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="291.0" y1="370.0" x2="271.0" y2="370.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="295.1" y1="360.1" x2="281.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="305.0" y1="356.0" x2="305.0" y2="336.0" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="314.9" y1="360.1" x2="329.0" y2="346.0" stroke="black" fill="none" stroke-width="1"/>
+
+  <defs>
+    <pattern id="g11" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#g11)" opacity="0.3"/>
+</svg>

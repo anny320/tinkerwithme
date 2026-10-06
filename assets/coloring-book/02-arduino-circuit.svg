@@ -1,0 +1,68 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Arduino &amp; Sensors</text>
+
+  <!-- Arduino board base -->
+  <rect x="60" y="80" width="280" height="200" rx="10" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="65" y="85" width="270" height="190" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Board pattern -->
+  <circle cx="80" cy="100" r="2" fill="black"/>
+  <circle cx="100" cy="100" r="2" fill="black"/>
+  <circle cx="120" cy="100" r="2" fill="black"/>
+  <circle cx="80" cy="120" r="2" fill="black"/>
+  <circle cx="100" cy="120" r="2" fill="black"/>
+  <circle cx="280" cy="100" r="2" fill="black"/>
+  <circle cx="300" cy="100" r="2" fill="black"/>
+  <circle cx="320" cy="100" r="2" fill="black"/>
+  <circle cx="280" cy="120" r="2" fill="black"/>
+  <circle cx="300" cy="120" r="2" fill="black"/>
+
+  <!-- Micro USB connector -->
+  <rect x="85" y="265" width="40" height="15" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="87" y="267" width="36" height="11" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Power pins -->
+  <text x="100" y="300" font-size="10" font-weight="bold">PWR</text>
+  <line x1="90" y1="310" x2="110" y2="310" stroke="black" stroke-width="1"/>
+  <circle cx="92" cy="310" r="2" fill="black"/>
+  <circle cx="98" cy="310" r="2" fill="black"/>
+  <circle cx="104" cy="310" r="2" fill="black"/>
+
+  <!-- Sensor - Temperature -->
+  <circle cx="150" cy="340" r="25" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="150" cy="340" r="20" fill="none" stroke="black" stroke-width="1"/>
+  <line x1="150" y1="320" x2="150" y2="360" stroke="black" stroke-width="1.5"/>
+  <line x1="130" y1="340" x2="170" y2="340" stroke="black" stroke-width="1.5"/>
+  <text x="145" y="345" font-size="10" font-weight="bold">T</text>
+  <line x1="155" y1="330" x2="160" y2="325" stroke="black" stroke-width="1"/>
+  <line x1="160" y1="325" x2="165" y2="330" stroke="black" stroke-width="1"/>
+
+  <!-- Sensor - Light -->
+  <circle cx="270" cy="340" r="25" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="270" cy="340" r="18" fill="none" stroke="black" stroke-width="1"/>
+  <circle cx="270" cy="340" r="12" fill="none" stroke="black" stroke-width="1"/>
+  <circle cx="270" cy="340" r="6" fill="none" stroke="black" stroke-width="1"/>
+  <line x1="270" y1="315" x2="270" y2="335" stroke="black" stroke-width="1.5"/>
+  <line x1="290" y1="330" x2="300" y2="320" stroke="black" stroke-width="1.5"/>
+
+  <!-- Connection wires -->
+  <path d="M 130 310 Q 140 325 150 340" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <path d="M 160 310 Q 210 330 245 340" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- Resistor symbol -->
+  <rect x="200" y="380" width="60" height="20" rx="3" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="205" cy="390" r="2" fill="black"/>
+  <circle cx="220" cy="390" r="2" fill="black"/>
+  <circle cx="235" cy="390" r="2" fill="black"/>
+  <circle cx="250" cy="390" r="2" fill="black"/>
+  <circle cx="255" cy="390" r="2" fill="black"/>
+  <text x="210" y="415" font-size="10">1kΩ</text>
+
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#grid2)" opacity="0.3"/>
+</svg>

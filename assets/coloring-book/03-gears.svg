@@ -1,0 +1,81 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Gear Systems</text>
+
+  <!-- Large gear left -->
+  <circle cx="120" cy="200" r="70" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="120" cy="200" r="60" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="120" cy="200" r="45" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Teeth for left gear -->
+  <g id="tooth">
+    <rect x="185" y="195" width="12" height="10" fill="none" stroke="black" stroke-width="1.5"/>
+  </g>
+  <use href="#tooth" transform="rotate(0 120 200)"/>
+  <use href="#tooth" transform="rotate(30 120 200)"/>
+  <use href="#tooth" transform="rotate(60 120 200)"/>
+  <use href="#tooth" transform="rotate(90 120 200)"/>
+  <use href="#tooth" transform="rotate(120 120 200)"/>
+  <use href="#tooth" transform="rotate(150 120 200)"/>
+  <use href="#tooth" transform="rotate(180 120 200)"/>
+  <use href="#tooth" transform="rotate(210 120 200)"/>
+  <use href="#tooth" transform="rotate(240 120 200)"/>
+  <use href="#tooth" transform="rotate(270 120 200)"/>
+  <use href="#tooth" transform="rotate(300 120 200)"/>
+  <use href="#tooth" transform="rotate(330 120 200)"/>
+
+  <!-- Center hub left gear -->
+  <circle cx="120" cy="200" r="18" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="120" cy="200" r="12" fill="none" stroke="black" stroke-width="1"/>
+  <circle cx="120" cy="200" r="6" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Right gear (smaller, interlocking) -->
+  <circle cx="280" cy="200" r="50" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="280" cy="200" r="42" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="280" cy="200" r="32" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Teeth for right gear -->
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(15 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(45 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(75 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(105 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(135 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(165 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(195 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(225 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(255 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(285 280 200)"/>
+  <use href="#tooth" transform="scale(0.85) translate(-6,-2) rotate(315 280 200)"/>
+
+  <!-- Center hub right gear -->
+  <circle cx="280" cy="200" r="14" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="280" cy="200" r="10" fill="none" stroke="black" stroke-width="1"/>
+  <circle cx="280" cy="200" r="5" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Connecting shaft -->
+  <line x1="138" y1="200" x2="262" y2="200" stroke="black" stroke-width="2"/>
+  <rect x="195" y="195" width="10" height="10" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Rotation indicators -->
+  <path d="M 100 140 A 50 50 0 0 1 140 150" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="2,3"/>
+  <polygon points="142,150 148,140 140,135" fill="black"/>
+
+  <path d="M 300 140 A 40 40 0 0 0 260 150" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="2,3"/>
+  <polygon points="258,150 250,140 256,135" fill="black"/>
+
+  <!-- Technical annotations -->
+  <circle cx="120" cy="80" r="15" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="118" y="85" font-size="10" font-weight="bold">12</text>
+  <text x="95" y="65" font-size="9">teeth</text>
+
+  <circle cx="280" cy="80" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="277" y="85" font-size="10" font-weight="bold">9</text>
+  <text x="255" y="65" font-size="9">teeth</text>
+
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid3" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#grid3)" opacity="0.3"/>
+</svg>

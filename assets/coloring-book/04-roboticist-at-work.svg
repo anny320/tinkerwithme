@@ -1,0 +1,84 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Roboticist at Work</text>
+
+  <!-- Workbench -->
+  <rect x="50" y="350" width="300" height="120" rx="5" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="80" y1="350" x2="80" y2="470" stroke="black" stroke-width="1.5"/>
+  <line x1="320" y1="350" x2="320" y2="470" stroke="black" stroke-width="1.5"/>
+
+  <!-- Shelving above workbench -->
+  <rect x="70" y="250" width="130" height="90" fill="none" stroke="black" stroke-width="1.5"/>
+  <line x1="70" y1="280" x2="200" y2="280" stroke="black" stroke-width="1"/>
+  <line x1="70" y1="310" x2="200" y2="310" stroke="black" stroke-width="1"/>
+
+  <!-- Tools on shelf -->
+  <rect x="80" y="260" width="15" height="12" fill="none" stroke="black" stroke-width="1"/>
+  <text x="83" y="270" font-size="8">⚙</text>
+  <circle cx="110" cy="265" r="6" fill="none" stroke="black" stroke-width="1"/>
+  <circle cx="130" cy="265" r="6" fill="none" stroke="black" stroke-width="1"/>
+  <line x1="150" y1="260" x2="150" y2="275" stroke="black" stroke-width="1.5"/>
+  <line x1="155" y1="262" x2="162" y2="275" stroke="black" stroke-width="1.5"/>
+
+  <!-- Soldering iron holder -->
+  <rect x="210" y="260" width="20" height="40" fill="none" stroke="black" stroke-width="1.5"/>
+  <line x1="210" y1="270" x2="230" y2="270" stroke="black" stroke-width="1"/>
+  <line x1="210" y1="280" x2="230" y2="280" stroke="black" stroke-width="1"/>
+  <line x1="218" y1="290" x2="222" y2="300" stroke="black" stroke-width="1.5"/>
+
+  <!-- Person (simplified, detailed style) -->
+  <!-- Head -->
+  <circle cx="150" cy="140" r="20" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="142" cy="135" r="3" fill="black"/>
+  <circle cx="158" cy="135" r="3" fill="black"/>
+  <line x1="145" y1="150" x2="155" y2="150" stroke="black" stroke-width="1.5"/>
+  <!-- Hair detail -->
+  <path d="M 132 125 Q 130 110 140 105 Q 150 100 160 105 Q 170 110 168 125" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Safety goggles -->
+  <circle cx="140" cy="130" r="8" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="160" cy="130" r="8" fill="none" stroke="black" stroke-width="1.5"/>
+  <line x1="148" y1="130" x2="152" y2="130" stroke="black" stroke-width="1.5"/>
+
+  <!-- Body/Torso -->
+  <rect x="135" y="165" width="30" height="40" rx="5" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="140" y1="175" x2="160" y2="175" stroke="black" stroke-width="1"/>
+  <line x1="140" y1="190" x2="160" y2="190" stroke="black" stroke-width="1"/>
+
+  <!-- Arms -->
+  <line x1="135" y1="175" x2="100" y2="200" stroke="black" stroke-width="2"/>
+  <line x1="165" y1="175" x2="200" y2="200" stroke="black" stroke-width="2"/>
+
+  <!-- Hands holding components -->
+  <circle cx="95" cy="205" r="6" fill="none" stroke="black" stroke-width="1.5"/>
+  <rect x="85" y="215" width="15" height="20" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <circle cx="205" cy="210" r="6" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="210" cy="220" r="8" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="206" cy="228" r="2" fill="black"/>
+
+  <!-- Legs -->
+  <line x1="140" y1="205" x2="140" y2="280" stroke="black" stroke-width="2"/>
+  <line x1="155" y1="205" x2="155" y2="280" stroke="black" stroke-width="2"/>
+
+  <!-- Shoes -->
+  <ellipse cx="140" cy="285" rx="8" ry="5" fill="none" stroke="black" stroke-width="1.5"/>
+  <ellipse cx="155" cy="285" rx="8" ry="5" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Workbench items -->
+  <rect x="230" y="370" width="25" height="20" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="242" cy="375" r="3" fill="black"/>
+  <circle cx="248" cy="378" r="2" fill="black"/>
+
+  <!-- Laptop on desk -->
+  <rect x="260" y="360" width="50" height="35" rx="3" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="262" y="362" width="46" height="20" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="280" y="387" width="14" height="8" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid4" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#grid4)" opacity="0.3"/>
+</svg>

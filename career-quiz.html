@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotics career quiz — TinkerWith_</title>
+<meta name="description" content="Answer 10 quick questions and discover which robotics career path fits you best — from AI and mechanical design to embedded systems and research. Free, no sign-up.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Which robotics career fits you? — TinkerWith_">
+<meta property="og:description" content="A 10-question quiz that matches your interests to a real robotics career path.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<script src="analytics.js"></script>
+<style>
+.page-head{background:var(--green-soft);padding:3rem 0 2.5rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.08) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:12px 0 10px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:52ch}
+
+.quiz-wrap{max-width:720px;margin:0 auto}
+.card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:2.2rem}
+
+/* progress */
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
+.progress-bar{flex:1;height:10px;background:var(--cream);border:2px solid var(--ink);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--orange);width:0;transition:width .3s}
+.progress-txt{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--text-2);white-space:nowrap}
+
+.q-text{font-size:clamp(20px,3vw,26px);font-weight:600;line-height:1.25;margin-bottom:1.5rem}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{font:inherit;font-size:16px;text-align:left;padding:15px 18px;border:2px solid var(--ink);border-radius:var(--radius);
+  background:var(--white);color:var(--ink);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:12px}
+.option:hover{background:var(--cream);transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.option .dot{width:22px;height:22px;border:2px solid var(--ink);border-radius:50%;flex-shrink:0}
+.option.sel{background:var(--orange-soft);border-color:var(--orange-deep)}
+.option.sel .dot{background:var(--orange);border-color:var(--orange-deep)}
+
+.q-nav{display:flex;justify-content:space-between;margin-top:1.8rem}
+.btn-back{background:none;border:0;font:inherit;font-size:15px;font-weight:600;color:var(--text-2);cursor:pointer}
+.btn-back:hover{color:var(--ink)}
+.btn-back[hidden]{visibility:hidden}
+
+/* start + result */
+.intro{text-align:center}
+.intro .paths{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:1.4rem 0 1.8rem}
+.intro .chip{font-family:var(--font-mono);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:6px 13px;background:var(--cream)}
+
+.result-eyebrow{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-deep)}
+.result h2{font-size:clamp(26px,4vw,36px);font-weight:600;margin:6px 0 10px}
+.result .lede{font-size:17px;color:var(--text-2);line-height:1.6;margin-bottom:1.5rem}
+.result-section{margin-top:1.3rem}
+.result-section h3{font-size:13px;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px}
+.result-section ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.result-section .pill{font-size:14px;border:2px solid var(--ink);border-radius:99px;padding:6px 13px;background:var(--white)}
+.result-section p{font-size:15.5px;color:var(--text-2);line-height:1.6}
+.result-runner{font-size:14.5px;color:var(--text-2);margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--border,#e7e2de)}
+.result-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:1.8rem}
+.backlink{display:inline-flex;margin-top:1.2rem;font-weight:600;color:var(--blue)}
+</style>
+</head>
+<body>
+<nav class="tw-nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <a class="tw-eyebrow-pill" href="for-adults.html" style="text-decoration:none">← For adults</a>
+    <h1 class="tw-h1" style="font-size:clamp(30px,5vw,46px)">Robotics career quiz</h1>
+    <p>Ten quick questions to find the robotics career path that fits how you think — and what it actually takes to get there.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+    <div class="quiz-wrap">
+      <div class="card" id="card"><!-- JS renders here --></div>
+      <a class="backlink" href="for-adults.html">← Back to all adult activities</a>
+    </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="for-adults.html">For adults</a></li>
+        <li><a href="free-for-kids.html">Free for kids</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="courses.html">Courses</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="coloring-book-adults.html">Coloring book</a></li>
+        <li><a href="bristlebot.html">Build a Bristlebot</a></li>
+        <li><a href="train-an-ai.html">Train an AI</a></li>
+        <li><a href="picker.html">Course picker</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>About</h4>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── Career paths ────────────────────────────────────────
+const PATHS = {
+  eng: {
+    name: 'Robotics Engineer',
+    emoji: '🤖',
+    lede: 'You love seeing the whole machine come together — a bit of mechanics, a bit of electronics, a bit of code, all working as one. You\'re a builder and an integrator who turns ideas into things that actually move.',
+    does: 'Design, build and test complete robots; bring mechanical, electrical and software pieces together; get prototypes working in the real world.',
+    roles: ['Robotics Engineer', 'Systems Integrator', 'Automation Engineer', 'Robotics Generalist'],
+    grow: ['Programming (Python & C++)', 'ROS (Robot Operating System)', 'Systems thinking', 'CAD & prototyping'],
+    insight: 'Generalist robotics engineers are in demand because few people can span hardware and software. Many start by building lots of small projects — exactly like a Bristlebot — before working up to full robots.'
+  },
+  ai: {
+    name: 'AI / Machine Learning Engineer',
+    emoji: '🧠',
+    lede: 'You\'re drawn to the brains of the robot — how it sees, learns and decides. Patterns, data and clever algorithms are your playground.',
+    does: 'Build the perception and decision-making: computer vision, path planning, and models that let a robot learn from data and its environment.',
+    roles: ['Machine Learning Engineer', 'Computer Vision Engineer', 'Robotics AI Researcher', 'Perception Engineer'],
+    grow: ['Python', 'Math: linear algebra & probability', 'ML frameworks (PyTorch, TensorFlow)', 'Working with data'],
+    insight: 'AI is the fastest-growing corner of robotics. A strong maths foundation plus hands-on model-building projects is the usual way in — and it pays well.'
+  },
+  mech: {
+    name: 'Mechanical / Mechatronics Engineer',
+    emoji: '⚙️',
+    lede: 'You think with your hands. Joints, gears, actuators and how physical things hold together and move — that\'s what fascinates you.',
+    does: 'Design the body of the robot: structures, mechanisms, motors and the physical systems that make it move reliably.',
+    roles: ['Mechanical Engineer', 'Mechatronics Engineer', 'Hardware Design Engineer', 'Robotics Mechanical Designer'],
+    grow: ['CAD (Fusion 360, SolidWorks)', 'Materials & mechanics', 'Dynamics & motion', '3D printing & prototyping'],
+    insight: 'Mechanical skills are the backbone of every physical robot. Tinkering with real builds and learning CAD early gives you a huge head start.'
+  },
+  embedded: {
+    name: 'Embedded / Firmware Engineer',
+    emoji: '🔌',
+    lede: 'You like getting close to the metal — the code that talks directly to motors, sensors and chips, running reliably on tiny hardware.',
+    does: 'Write the low-level software on microcontrollers; read sensors, drive motors, and make hardware behave in real time.',
+    roles: ['Embedded Systems Engineer', 'Firmware Engineer', 'IoT Developer', 'Electronics Engineer'],
+    grow: ['C / C++', 'Microcontrollers (Arduino, STM32, ESP32)', 'Electronics & circuits', 'Real-time systems'],
+    insight: 'Embedded engineers are everywhere hardware exists — robots, cars, appliances, wearables. Arduino projects are the classic on-ramp into this career.'
+  },
+  research: {
+    name: 'Robotics Researcher / Scientist',
+    emoji: '🔬',
+    lede: 'You\'re pulled toward the frontier — the hard, unsolved problems. You enjoy going deep, questioning how things work, and inventing what doesn\'t exist yet.',
+    does: 'Push what robots can do: new algorithms, novel mechanisms and experiments, often in universities, labs or R&D teams.',
+    roles: ['Research Scientist', 'R&D Engineer', 'PhD Researcher', 'Robotics Scientist'],
+    grow: ['Advanced maths', 'Research methods', 'Reading & writing papers', 'Deep focus in one area'],
+    insight: 'Research careers usually mean further study, but they\'re where the breakthroughs happen. Curiosity and persistence matter as much as grades.'
+  },
+  product: {
+    name: 'Robotics Product & UX',
+    emoji: '🎯',
+    lede: 'You care about the human side — whether a robot is actually useful, usable and worth building. You connect the technology to the people who use it.',
+    does: 'Decide what to build and why; shape how people interact with robots; balance what\'s possible with what people need.',
+    roles: ['Product Manager', 'UX Designer', 'Robotics Consultant', 'Solutions Engineer'],
+    grow: ['User research', 'Design & communication', 'Enough technical fluency to earn trust', 'Understanding the market'],
+    insight: 'As robots reach everyday life, people who bridge tech and users are increasingly valuable — and you don\'t always need an engineering degree to start.'
+  },
+};
+
+// ── Questions ───────────────────────────────────────────
+// Each option awards points to one or more paths.
+const QUESTIONS = [
+  { q: 'When a gadget breaks, your first instinct is to…', a: [
+    { t: 'Take it apart and see how it works', s: { mech: 2, embedded: 1 } },
+    { t: 'Work out the logic of why it failed', s: { ai: 2, research: 1 } },
+    { t: 'Look up the best way to fix it', s: { embedded: 1, research: 1, eng: 1 } },
+    { t: 'Think how it could be less annoying to use', s: { product: 2 } },
+  ]},
+  { q: 'Pick the most fun way to spend a free Saturday:', a: [
+    { t: 'Building something physical with your hands', s: { mech: 2, eng: 1 } },
+    { t: 'Writing code that does something clever', s: { ai: 1, embedded: 2 } },
+    { t: 'Reading about a new scientific breakthrough', s: { research: 2 } },
+    { t: 'Sketching and improving a design', s: { product: 2 } },
+  ]},
+  { q: 'A robot vacuum keeps getting stuck. You\'d rather…', a: [
+    { t: 'Redesign its wheels and body', s: { mech: 2 } },
+    { t: 'Improve how it navigates and learns the room', s: { ai: 2 } },
+    { t: 'Tweak the sensor code that drives it', s: { embedded: 2 } },
+    { t: 'Study why owners find it frustrating', s: { product: 2 } },
+  ]},
+  { q: 'Which subject would you happily go deep on?', a: [
+    { t: 'Mechanics & materials', s: { mech: 2 } },
+    { t: 'Maths & algorithms', s: { ai: 1, research: 2 } },
+    { t: 'Electronics & microcontrollers', s: { embedded: 2 } },
+    { t: 'Psychology & design', s: { product: 2 } },
+  ]},
+  { q: 'On a team, the role you\'d naturally take is…', a: [
+    { t: 'The one who makes the prototype real', s: { eng: 2, mech: 1 } },
+    { t: 'The one who makes it smart', s: { ai: 2 } },
+    { t: 'The one who makes the hardware reliable', s: { embedded: 2 } },
+    { t: 'The one who asks "should we build this at all?"', s: { product: 2, research: 1 } },
+  ]},
+  { q: 'How do you feel about maths?', a: [
+    { t: 'Love it — the more theoretical the better', s: { research: 2, ai: 1 } },
+    { t: 'Like it when it solves a real problem', s: { eng: 1, embedded: 1 } },
+    { t: 'Prefer hands-on building over equations', s: { mech: 2 } },
+    { t: 'I care more about people than numbers', s: { product: 2 } },
+  ]},
+  { q: 'Your dream project would be…', a: [
+    { t: 'A walking or flying robot', s: { eng: 2, mech: 1 } },
+    { t: 'A system that learns from data', s: { ai: 2 } },
+    { t: 'A tiny device that runs for years on one battery', s: { embedded: 2 } },
+    { t: 'A frontier problem nobody has solved', s: { research: 2 } },
+  ]},
+  { q: 'You\'d most want your work to…', a: [
+    { t: 'Ship to real users soon', s: { eng: 1, product: 2 } },
+    { t: 'Advance what\'s possible', s: { research: 2 } },
+    { t: 'Run flawlessly behind the scenes', s: { embedded: 2 } },
+    { t: 'Be the brains of the operation', s: { ai: 2 } },
+  ]},
+  { q: 'Which tool excites you most?', a: [
+    { t: 'A 3D printer or machine shop', s: { mech: 2 } },
+    { t: 'A computer training an AI model', s: { ai: 2 } },
+    { t: 'A soldering iron and an oscilloscope', s: { embedded: 2 } },
+    { t: 'A whiteboard full of ideas and proofs', s: { research: 2 } },
+    { t: 'A design and prototyping app', s: { product: 2 } },
+  ]},
+  { q: 'In five years, you\'d love to be known as…', a: [
+    { t: 'The person who can build almost anything', s: { eng: 2 } },
+    { t: 'The AI expert', s: { ai: 2 } },
+    { t: 'The hardware wizard', s: { embedded: 1, mech: 1 } },
+    { t: 'The one pushing the field forward', s: { research: 2 } },
+    { t: 'The one who shaped a product people love', s: { product: 2 } },
+  ]},
+];
+
+// ── State & rendering ───────────────────────────────────
+const card = document.getElementById('card');
+let step = -1;                       // -1 = intro, 0..n-1 = questions, n = result
+const answers = new Array(QUESTIONS.length).fill(null);
+
+function renderIntro() {
+  const chips = Object.values(PATHS).map(p => `<span class="chip">${p.emoji} ${p.name.split(' / ')[0]}</span>`).join('');
+  card.innerHTML = `
+    <div class="intro">
+      <h2 style="font-size:clamp(22px,3vw,28px);font-weight:600;margin-bottom:10px">Which robotics career fits you?</h2>
+      <p style="font-size:16px;color:var(--text-2);line-height:1.6">Answer honestly — there are no wrong answers. In about two minutes you'll get a path that matches how you think, with the real roles and skills behind it.</p>
+      <div class="paths">${chips}</div>
+      <button class="tw-btn tw-btn-ink" id="start-btn" style="font-size:16px">Start the quiz →</button>
+    </div>`;
+  document.getElementById('start-btn').addEventListener('click', () => { step = 0; render(); track('career_quiz_start'); });
+}
+
+function renderQuestion() {
+  const Q = QUESTIONS[step];
+  const pct = Math.round((step) / QUESTIONS.length * 100);
+  card.innerHTML = `
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="progress-txt">${step + 1} / ${QUESTIONS.length}</span>
+    </div>
+    <div class="q-text">${Q.q}</div>
+    <div class="options">
+      ${Q.a.map((o, i) => `<button class="option${answers[step] === i ? ' sel' : ''}" data-i="${i}"><span class="dot"></span><span>${o.t}</span></button>`).join('')}
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" id="back-btn"${step === 0 ? ' hidden' : ''}>← Back</button>
+    </div>`;
+  card.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      answers[step] = +btn.dataset.i;
+      // brief highlight, then advance
+      card.querySelectorAll('.option').forEach(o => o.classList.remove('sel'));
+      btn.classList.add('sel');
+      setTimeout(() => { step++; render(); }, 180);
+    });
+  });
+  const back = document.getElementById('back-btn');
+  if (back) back.addEventListener('click', () => { step = Math.max(0, step - 1); render(); });
+}
+
+function tally() {
+  const score = { eng: 0, ai: 0, mech: 0, embedded: 0, research: 0, product: 0 };
+  answers.forEach((ai_, qi) => {
+    if (ai_ == null) return;
+    const s = QUESTIONS[qi].a[ai_].s;
+    for (const k in s) score[k] += s[k];
+  });
+  return Object.entries(score).sort((a, b) => b[1] - a[1]);
+}
+
+function renderResult() {
+  const ranked = tally();
+  const top = PATHS[ranked[0][0]];
+  const runner = PATHS[ranked[1][0]];
+  card.innerHTML = `
+    <div class="result">
+      <div class="result-eyebrow">Your best-fit path</div>
+      <h2>${top.emoji} ${top.name}</h2>
+      <p class="lede">${top.lede}</p>
+
+      <div class="result-section">
+        <h3>What you'd do</h3>
+        <p>${top.does}</p>
+      </div>
+      <div class="result-section">
+        <h3>Real roles</h3>
+        <ul>${top.roles.map(r => `<li class="pill">${r}</li>`).join('')}</ul>
+      </div>
+      <div class="result-section">
+        <h3>Skills to grow</h3>
+        <ul>${top.grow.map(r => `<li class="pill">${r}</li>`).join('')}</ul>
+      </div>
+      <div class="result-section">
+        <h3>Good to know</h3>
+        <p>${top.insight}</p>
+      </div>
+
+      <p class="result-runner"><strong>Runner-up:</strong> ${runner.emoji} ${runner.name}. Many careers blend two paths — it's worth exploring both.</p>
+
+      <div class="result-cta">
+        <a class="tw-btn tw-btn-ink" href="courses.html" data-ga="career-quiz-courses">Explore our courses</a>
+        <a class="tw-btn tw-btn-white" href="bristlebot.html" data-ga="career-quiz-bristlebot">Build a Bristlebot</a>
+        <button class="tw-btn tw-btn-outline" id="retake-btn">Retake quiz</button>
+      </div>
+    </div>`;
+  document.getElementById('retake-btn').addEventListener('click', () => {
+    answers.fill(null); step = -1; render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  track('career_quiz_result', { path: ranked[0][0] });
+}
+
+function track(ev, params) { if (typeof gtag === 'function') gtag('event', ev, params || {}); }
+
+function render() {
+  if (step < 0) return renderIntro();
+  if (step >= QUESTIONS.length) return renderResult();
+  renderQuestion();
+}
+
+render();
+</script>
+</body>
+</html>

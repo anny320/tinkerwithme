@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build a Bristlebot — TinkerWith_</title>
+<meta name="description" content="Build your first robot in five minutes: a vibrating Bristlebot made from a toothbrush head, a tiny motor and a coin-cell battery. Step-by-step visual guide, no soldering.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Build a Bristlebot — your first robot in 5 minutes">
+<meta property="og:description" content="A clever vibrating robot from everyday parts. Step-by-step guide, no soldering, for curious adults.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<script src="analytics.js"></script>
+<style>
+:root{--purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578}
+.page-head{background:var(--blue-soft);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.08) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:54ch}
+.ph-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.ph-meta .tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:5px 12px;background:var(--white)}
+
+.layout{display:grid;grid-template-columns:1fr;gap:2.5rem;max-width:860px;margin:0 auto}
+
+.supplies{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.8rem 2rem}
+.supplies h2{font-size:22px;font-weight:600;margin-bottom:4px}
+.supplies .sub{font-size:14.5px;color:var(--text-2);margin-bottom:1.1rem}
+.supply-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:620px){.supply-list{grid-template-columns:1fr}}
+.supply{display:flex;gap:11px;align-items:flex-start;font-size:15px;cursor:pointer;padding:9px 11px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--cream);transition:all .12s}
+.supply:hover{background:var(--white)}
+.supply input{margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:var(--orange)}
+.supply.checked{background:var(--green-soft)}
+.supply strong{font-weight:600}
+.supply span{display:block;font-size:13px;color:var(--text-2)}
+
+.steps-head{text-align:center;margin-top:1rem}
+.steps-head h2{font-size:clamp(24px,3vw,30px);font-weight:600}
+.steps-head p{color:var(--text-2);font-size:16px;margin-top:6px}
+
+.step{display:grid;grid-template-columns:200px 1fr;gap:1.6rem;align-items:center;
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.6rem 1.8rem}
+@media(max-width:620px){.step{grid-template-columns:1fr;text-align:center}}
+.step-art{background:var(--cream);border:2px solid var(--ink);border-radius:var(--radius);padding:12px;display:grid;place-items:center}
+.step-art svg{width:100%;height:auto;max-height:150px}
+.step-num{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-deep)}
+.step h3{font-size:20px;font-weight:600;margin:4px 0 8px}
+.step p{font-size:15.5px;color:var(--text-2);line-height:1.55}
+.step .tip{font-size:13.5px;color:var(--blue);margin-top:8px;font-weight:600}
+
+.how{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:2.2rem 2.2rem}
+.how h2{color:var(--white);font-size:24px;font-weight:600;margin-bottom:10px}
+.how p{color:var(--on-ink);font-size:15.5px;line-height:1.6;margin-bottom:10px}
+.how .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.2rem}
+@media(max-width:620px){.how .how-grid{grid-template-columns:1fr}}
+.how-grid b{color:var(--white);display:block;margin-bottom:3px}
+.how-grid span{color:var(--on-ink);font-size:14.5px}
+
+.ideas{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.8rem 2rem}
+.ideas h2{font-size:22px;font-weight:600;margin-bottom:12px}
+.ideas ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.ideas li{font-size:15px;color:var(--text-2);padding-left:26px;position:relative}
+.ideas li::before{content:'★';position:absolute;left:0;color:var(--orange-deep)}
+
+.safety{border:2px solid var(--orange-deep);border-radius:var(--radius-lg);background:var(--orange-soft);padding:1.5rem 1.8rem}
+.safety h2{font-size:19px;font-weight:600;margin-bottom:8px}
+.safety p{font-size:14.5px;color:var(--text-2);line-height:1.6}
+.safety strong{color:var(--ink)}
+
+.cta-box{background:var(--purple);color:#fff;border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:2.2rem;text-align:center}
+.cta-box h2{font-size:clamp(22px,3vw,28px);font-weight:600;margin-bottom:8px;color:#fff}
+.cta-box p{color:rgba(255,255,255,.88);font-size:16px;max-width:48ch;margin:0 auto 1.3rem}
+.cta-box .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.backlink{display:inline-flex;margin-top:1rem;font-weight:600;color:var(--blue)}
+</style>
+</head>
+<body>
+<nav class="tw-nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <a class="tw-eyebrow-pill" href="for-adults.html" style="text-decoration:none">← For adults</a>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,50px)">Build a Bristlebot</h1>
+    <p>Your first robot: a tiny machine that scoots across the table on a vibrating toothbrush head. No soldering, no code — just a motor, a battery and about five minutes.</p>
+    <div class="ph-meta">
+      <span class="tag">⏱ 5 minutes</span>
+      <span class="tag">🔧 No soldering</span>
+      <span class="tag">💸 Pocket-money parts</span>
+      <span class="tag">👍 Total beginner</span>
+    </div>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+  <div class="layout">
+
+    <!-- Supplies -->
+    <div class="supplies">
+      <h2>What you'll need</h2>
+      <p class="sub">Tap each item as you gather it. Everything here costs very little and is easy to find.</p>
+      <ul class="supply-list" id="supply-list">
+        <li class="supply"><input type="checkbox"><div><strong>Toothbrush head</strong><span>The bristly end of any cheap toothbrush, cut off</span></div></li>
+        <li class="supply"><input type="checkbox"><div><strong>Small vibration motor</strong><span>A pager / phone-buzzer motor (3V, with an offset weight)</span></div></li>
+        <li class="supply"><input type="checkbox"><div><strong>Coin-cell battery</strong><span>A 3V CR2032 — the flat, round kind</span></div></li>
+        <li class="supply"><input type="checkbox"><div><strong>Double-sided foam tape</strong><span>A small square to stack the parts</span></div></li>
+        <li class="supply"><input type="checkbox"><div><strong>Scissors or snips</strong><span>To cut the brush head free</span></div></li>
+        <li class="supply"><input type="checkbox"><div><strong>Googly eyes (optional)</strong><span>Purely for personality</span></div></li>
+      </ul>
+    </div>
+
+    <div class="steps-head">
+      <h2>Build it, step by step</h2>
+      <p>Six quick steps from a pile of parts to a robot on the move.</p>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="60" width="150" height="20" rx="6" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--ink)" stroke-width="2">
+            <line x1="35" y1="80" x2="35" y2="110"/><line x1="50" y1="80" x2="50" y2="112"/>
+            <line x1="65" y1="80" x2="65" y2="110"/><line x1="80" y1="80" x2="80" y2="112"/>
+          </g>
+          <line x1="95" y1="40" x2="95" y2="100" stroke="var(--orange-deep)" stroke-width="2" stroke-dasharray="5,4"/>
+          <path d="M 88 46 L 95 38 L 102 46" fill="none" stroke="var(--orange-deep)" stroke-width="2"/>
+          <text x="118" y="55" font-size="12" font-family="monospace" fill="var(--orange-deep)">cut</text>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 1</div>
+        <h3>Cut off the brush head</h3>
+        <p>Snip the head off a toothbrush so you're left with just the bristly block, about 3–4 cm long. Angle the cut slightly if you can — angled bristles help the bot pick a direction.</p>
+        <p class="tip">Tip: shorter is faster. A smaller, lighter head vibrates across the table more eagerly.</p>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="30" y="80" width="140" height="18" rx="6" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--ink)" stroke-width="2">
+            <line x1="45" y1="98" x2="45" y2="126"/><line x1="62" y1="98" x2="62" y2="128"/>
+            <line x1="79" y1="98" x2="79" y2="126"/><line x1="96" y1="98" x2="96" y2="128"/>
+          </g>
+          <rect x="55" y="58" width="90" height="20" rx="4" fill="none" stroke="var(--orange-deep)" stroke-width="2" stroke-dasharray="4,3"/>
+          <text x="60" y="48" font-size="11" font-family="monospace" fill="var(--orange-deep)">foam tape</text>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 2</div>
+        <h3>Stick foam tape on top</h3>
+        <p>Press a small square of double-sided foam tape onto the flat top of the brush head. This is the platform you'll stack the motor and battery onto — the foam also soaks up a little vibration so nothing rattles loose.</p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="95" width="120" height="16" rx="5" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--ink)" stroke-width="2">
+            <line x1="55" y1="111" x2="55" y2="134"/><line x1="72" y1="111" x2="72" y2="136"/>
+            <line x1="89" y1="111" x2="89" y2="134"/><line x1="106" y1="111" x2="106" y2="136"/>
+          </g>
+          <circle cx="100" cy="70" r="20" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <circle cx="100" cy="70" r="7" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+          <path d="M 100 70 L 114 62" stroke="var(--orange-deep)" stroke-width="3"/>
+          <line x1="86" y1="90" x2="82" y2="100" stroke="var(--ink)" stroke-width="2"/>
+          <line x1="114" y1="90" x2="118" y2="100" stroke="var(--ink)" stroke-width="2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 3</div>
+        <h3>Mount the motor</h3>
+        <p>Press the vibration motor onto the foam tape, sitting flat across the top. The little off-centre weight on its shaft is what makes the whole thing shake when it spins — that shake is your bot's engine.</p>
+        <p class="tip">Tip: let the two thin motor wires poke up and to the side so you can reach them in the next step.</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="100" width="120" height="16" rx="5" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--ink)" stroke-width="2">
+            <line x1="55" y1="116" x2="55" y2="138"/><line x1="78" y1="116" x2="78" y2="140"/>
+            <line x1="101" y1="116" x2="101" y2="138"/>
+          </g>
+          <ellipse cx="100" cy="62" rx="34" ry="14" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <line x1="66" y1="62" x2="134" y2="62" stroke="var(--ink)" stroke-width="1"/>
+          <text x="92" y="58" font-size="13" font-family="monospace" fill="var(--ink)">+</text>
+          <text x="78" y="78" font-size="9" font-family="monospace" fill="var(--text-2)">CR2032</text>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 4</div>
+        <h3>Add the battery</h3>
+        <p>Stack the coin-cell battery on top, flat side (the <strong>+</strong> side) facing up. A second strip of foam tape under it keeps it steady. You now have a neat little tower: bristles, motor, battery.</p>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="75" rx="40" ry="16" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <text x="94" y="70" font-size="13" font-family="monospace">+</text>
+          <text x="92" y="98" font-size="13" font-family="monospace">−</text>
+          <path d="M 60 70 C 35 55 40 40 70 42" fill="none" stroke="#E0341B" stroke-width="2.5"/>
+          <path d="M 140 80 C 165 95 160 110 130 108" fill="none" stroke="#2E86C1" stroke-width="2.5"/>
+          <text x="64" y="34" font-size="10" font-family="monospace" fill="#E0341B">motor +</text>
+          <text x="112" y="122" font-size="10" font-family="monospace" fill="#2E86C1">motor −</text>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 5</div>
+        <h3>Touch the wires to the battery</h3>
+        <p>Hold one motor wire on the top (<strong>+</strong>) of the battery and the other on the bottom (<strong>−</strong>). The motor whirs to life. With a coin cell there's no polarity to worry about — if it doesn't spin, just swap the two wires.</p>
+        <p class="tip">Tip: a dab of tape over each wire holds the connection so your bot can run hands-free.</p>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step">
+      <div class="step-art">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="60" y="70" width="80" height="14" rx="5" fill="none" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--ink)" stroke-width="2">
+            <line x1="72" y1="84" x2="72" y2="104"/><line x1="90" y1="84" x2="90" y2="106"/>
+            <line x1="108" y1="84" x2="108" y2="104"/><line x1="126" y1="84" x2="126" y2="106"/>
+          </g>
+          <circle cx="85" cy="55" r="5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+          <circle cx="115" cy="55" r="5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+          <circle cx="85" cy="55" r="2" fill="var(--ink)"/><circle cx="115" cy="55" r="2" fill="var(--ink)"/>
+          <path d="M 150 60 q 12 10 0 20 M 160 54 q 20 16 0 32" fill="none" stroke="var(--orange-deep)" stroke-width="2"/>
+          <path d="M 50 60 q -12 10 0 20 M 40 54 q -20 16 0 32" fill="none" stroke="var(--orange-deep)" stroke-width="2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="step-num">Step 6</div>
+        <h3>Set it loose</h3>
+        <p>Put your Bristlebot down on a smooth, hard surface and let go. It'll buzz, wobble, then scurry off in its own direction. Congratulations — you just built and powered your first robot.</p>
+        <p class="tip">To switch it off, simply peel one wire off the battery.</p>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="how">
+      <h2>Why does it move?</h2>
+      <p>The motor has a tiny weight bolted <em>off-centre</em> to its shaft. As the shaft spins, that lopsided weight throws the motor — and everything taped to it — into a fast, tight shimmy, thousands of times a minute.</p>
+      <p>Each shimmy lifts the bristles a hair off the table and nudges them forward. Because the bristles are springy and slightly angled, they flick back down pointing the same way — so instead of buzzing in place, the whole bot ratchets across the surface. It's the same trick that makes your phone "walk" across a desk when it vibrates.</p>
+      <div class="how-grid">
+        <div><b>Off-centre weight</b><span>Turns smooth spinning into a shake.</span></div>
+        <div><b>Springy bristles</b><span>Grip, flick and release to create steps.</span></div>
+        <div><b>Angle &amp; balance</b><span>Decide which way it heads and how fast.</span></div>
+        <div><b>More voltage</b><span>Faster spin, stronger shake, quicker bot.</span></div>
+      </div>
+    </div>
+
+    <!-- Ideas -->
+    <div class="ideas">
+      <h2>Make it your own</h2>
+      <ul>
+        <li>Trim or bend the bristles on one side to steer it in circles or figure-eights.</li>
+        <li>Add a dab of modelling clay to shift the balance and change its path.</li>
+        <li>Build two and race them down a cardboard track — first to the end wins.</li>
+        <li>Trap one inside a paper ring to watch it bounce around like a pinball.</li>
+        <li>Decorate with googly eyes, paper fins or a tiny flag — same physics, more character.</li>
+      </ul>
+    </div>
+
+    <!-- Safety -->
+    <div class="safety">
+      <h2>A quick word on safety</h2>
+      <p><strong>Coin-cell batteries are dangerous if swallowed</strong> — keep them well away from small children and pets, before and after the build. Disconnect a wire when you're done so the battery doesn't drain or warm up, and recycle flat batteries rather than binning them. The motor is harmless, but its spinning weight can catch loose hair, so tie it back.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h2>Caught the building bug?</h2>
+      <p>The Bristlebot is step one. If you'd like to go further — motors you can control, sensors, a robot that responds — we run hands-on courses for all ages.</p>
+      <div class="btns">
+        <a class="tw-btn tw-btn-ink" href="courses.html" data-ga="bristlebot-courses">Explore robotics courses</a>
+        <a class="tw-btn tw-btn-white" href="for-adults.html" data-ga="bristlebot-more-adults">More adult activities</a>
+      </div>
+    </div>
+
+    <a class="backlink" href="for-adults.html">← Back to all adult activities</a>
+
+  </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="for-adults.html">For adults</a></li>
+        <li><a href="free-for-kids.html">Free for kids</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="courses.html">Courses</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="coloring-book-adults.html">Coloring book</a></li>
+        <li><a href="career-quiz.html">Career quiz</a></li>
+        <li><a href="train-an-ai.html">Train an AI</a></li>
+        <li><a href="picker.html">Course picker</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>About</h4>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Supplies checklist — tick items, remember them on this device.
+const KEY = 'tw-bristlebot-supplies';
+const items = Array.from(document.querySelectorAll('#supply-list .supply'));
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+items.forEach((li, i) => {
+  const box = li.querySelector('input');
+  box.checked = !!saved[i];
+  li.classList.toggle('checked', box.checked);
+  const sync = () => { li.classList.toggle('checked', box.checked); saved[i] = box.checked;
+    try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} };
+  box.addEventListener('change', sync);
+  li.addEventListener('click', e => { if (e.target !== box) { box.checked = !box.checked; sync(); } });
+});
+</script>
+</body>
+</html>
