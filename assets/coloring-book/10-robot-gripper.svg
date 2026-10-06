@@ -1,0 +1,33 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Robot Gripper</text>
+  <!-- base/wrist -->
+  <rect x="165" y="380" width="70" height="80" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="200" cy="420" r="14" stroke="black" fill="none" stroke-width="1.5"/>
+  <rect x="175" y="340" width="50" height="45" rx="6" stroke="black" fill="none" stroke-width="2"/>
+  <!-- palm -->
+  <path d="M 150 300 Q 200 270 250 300 L 250 345 L 150 345 Z" stroke="black" fill="none" stroke-width="2"/>
+  <!-- finger left -->
+  <rect x="150" y="210" width="26" height="90" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="150" y="150" width="26" height="60" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="163" cy="210" r="8" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="163" cy="150" r="7" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- finger right -->
+  <rect x="224" y="210" width="26" height="90" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="224" y="150" width="26" height="60" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="237" cy="210" r="8" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="237" cy="150" r="7" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- middle finger -->
+  <rect x="187" y="200" width="26" height="100" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="187" y="135" width="26" height="65" rx="8" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="200" cy="200" r="8" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="200" cy="135" r="7" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- hydraulic lines -->
+  <path d="M 185 345 C 180 330 180 320 176 300" stroke="black" fill="none" stroke-width="1" stroke-dasharray="3,2"/>
+  <path d="M 215 345 C 220 330 220 320 224 300" stroke="black" fill="none" stroke-width="1" stroke-dasharray="3,2"/>
+  <defs>
+    <pattern id="g10" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#g10)" opacity="0.3"/>
+</svg>

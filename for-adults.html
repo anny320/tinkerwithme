@@ -15,7 +15,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="brand.css">
 <style>
-.page-head{background:var(--purple);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
+:root{--purple:#7A3FB0;--purple-light:#F1E9F8;--purple-dark:#4E2578}
+.page-head{background:var(--purple-light);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
 .page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
   background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
 .page-head .tw-container{position:relative;z-index:1}
@@ -102,18 +103,18 @@
         </div>
         <div class="act-body">
           <div class="act-tags"><span class="tag type">Coloring book</span><span class="tag">Meditative</span><span class="tag">Printable PDF</span></div>
-          <h2>30 Robotics Coloring Pages</h2>
+          <h2>Robotics Coloring Book</h2>
           <p>Detailed, artistic line-art inspired by adult coloring books. Explore robotics through your pencil.</p>
           <ul>
-            <li>30 intricate illustrations of robots, circuits &amp; engineering</li>
+            <li>12 line-art illustrations of robots, circuits &amp; engineering</li>
             <li>Topics: robotics, electronics, mechanisms, careers &amp; builds</li>
-            <li>Download as printable PDF or color on screen</li>
+            <li>Color on screen or download the printable PDF</li>
           </ul>
           <span class="go"><span class="tw-btn tw-btn-ink">Browse &amp; download <span aria-hidden="true">&rarr;</span></span></span>
         </div>
       </a>
 
-      <a class="act build" href="#" id="bristlebot-link" data-ga="for-adults-bristlebot">
+      <a class="act build" href="bristlebot.html" data-ga="for-adults-bristlebot">
         <div class="act-art">
           <svg viewBox="0 0 300 200" style="width:240px;height:160px">
             <rect x="50" y="30" width="80" height="100" rx="5" fill="none" stroke="black" stroke-width="2"/>
@@ -140,7 +141,7 @@
         </div>
       </a>
 
-      <a class="act quiz" href="#" id="career-link" data-ga="for-adults-career-quiz">
+      <a class="act quiz" href="career-quiz.html" data-ga="for-adults-career-quiz">
         <div class="act-art">
           <svg viewBox="0 0 300 200" style="width:240px;height:160px">
             <circle cx="75" cy="70" r="30" fill="none" stroke="black" stroke-width="2"/>
@@ -225,17 +226,6 @@
 
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
-
-// Form submission handler
-// Placeholder for remaining activity pages
-document.getElementById('bristlebot-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  alert('Bristlebot guide coming soon!');
-});
-document.getElementById('career-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  alert('Career quiz coming soon!');
-});
 </script>
 </body>
 </html>

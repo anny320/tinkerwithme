@@ -1,5 +1,5 @@
 <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
-  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Soldering & Building</text>
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Soldering &amp; Building</text>
 
   <!-- Circuit board being soldered -->
   <rect x="80" y="120" width="240" height="180" rx="8" fill="none" stroke="black" stroke-width="2"/>

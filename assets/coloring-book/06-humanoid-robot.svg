@@ -1,0 +1,37 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Humanoid Robot</text>
+  <!-- head -->
+  <rect x="150" y="70" width="100" height="85" rx="14" stroke="black" fill="none" stroke-width="2"/>
+  <line x1="200" y1="55" x2="200" y2="70" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="200" cy="50" r="7" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="175" cy="105" r="12" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="225" cy="105" r="12" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="175" cy="105" r="4" fill="black"/>
+  <circle cx="225" cy="105" r="4" fill="black"/>
+  <rect x="172" y="130" width="56" height="10" rx="5" stroke="black" fill="none" stroke-width="1.5"/>
+  <!-- neck + torso -->
+  <rect x="185" y="155" width="30" height="18" stroke="black" fill="none" stroke-width="1.5"/>
+  <rect x="130" y="173" width="140" height="150" rx="12" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="200" cy="230" r="26" stroke="black" fill="none" stroke-width="1.5"/>
+  <circle cx="200" cy="230" r="12" stroke="black" fill="none" stroke-width="1.5"/>
+  <rect x="150" y="285" width="100" height="26" rx="4" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="170" y1="285" x2="170" y2="311" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="200" y1="285" x2="200" y2="311" stroke="black" fill="none" stroke-width="1"/>
+  <line x1="230" y1="285" x2="230" y2="311" stroke="black" fill="none" stroke-width="1"/>
+  <!-- arms -->
+  <rect x="95" y="185" width="30" height="90" rx="10" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="275" y="185" width="30" height="90" rx="10" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="110" cy="295" r="15" stroke="black" fill="none" stroke-width="2"/>
+  <circle cx="290" cy="295" r="15" stroke="black" fill="none" stroke-width="2"/>
+  <!-- legs -->
+  <rect x="150" y="328" width="34" height="110" rx="10" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="216" y="328" width="34" height="110" rx="10" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="140" y="438" width="54" height="22" rx="6" stroke="black" fill="none" stroke-width="2"/>
+  <rect x="206" y="438" width="54" height="22" rx="6" stroke="black" fill="none" stroke-width="2"/>
+  <defs>
+    <pattern id="g6" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#g6)" opacity="0.3"/>
+</svg>
