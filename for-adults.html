@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For adults — TinkerWith_</title>
+<meta name="description" content="Robotics activities for curious adults: a meditative coloring book, hands-on Bristlebot project, circuit puzzles, and a career pathway quiz. Free, no sign-up required.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Robotics for curious adults — TinkerWith_">
+<meta property="og:description" content="Color, build, puzzle & explore. A robotics coloring book and hands-on activities for adults.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:var(--purple);padding:3.25rem 0 3rem;position:relative;overflow:hidden}
+.page-head::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:radial-gradient(rgba(34,1,17,.09) 1px,transparent 1px);background-size:26px 26px}
+.page-head .tw-container{position:relative;z-index:1}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:50ch}
+
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+@media(max-width:1080px){.acts{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.acts{grid-template-columns:1fr}}
+.act{
+  background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);
+  display:flex;flex-direction:column;overflow:hidden;text-decoration:none;color:var(--ink);
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+.act:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.act-art{display:grid;place-items:center;padding:1.4rem;border-bottom:2px solid var(--ink);height:250px;background:var(--cream)}
+@media(max-width:820px){.act-art{height:auto;min-height:180px}}
+.act-art svg{width:100%;height:100%;max-height:210px}
+.act.color .act-art{background:#FFD23F}
+.act.build .act-art{background:var(--blue-soft)}
+.act.quiz .act-art{background:var(--green-soft)}
+.act-body{padding:1.5rem 1.6rem 1.7rem;display:flex;flex-direction:column;gap:10px;flex:1}
+.act-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:4px 11px;background:var(--white)}
+.tag.type{background:var(--ink);color:var(--white)}
+.act h2{font-size:clamp(24px,3vw,30px);font-weight:600;line-height:1.1}
+.act p{font-size:15.5px;color:var(--text-2)}
+.act ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--text-2)}
+.act li::before{content:'★';color:var(--orange-deep);margin-right:9px}
+.act .go{margin-top:auto;padding-top:8px}
+
+.lead-section{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:2.5rem 2.2rem;margin-top:3.5rem}
+.lead-section h2{font-size:clamp(24px,3vw,30px);font-weight:600;margin-bottom:8px;color:var(--white)}
+.lead-section p{color:var(--on-ink);font-size:15.5px;margin-bottom:1.5rem;max-width:55ch}
+.lead-form{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:900px){.lead-form{grid-template-columns:1fr}}
+.lead-form input{font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink)}
+.lead-form input::placeholder{color:var(--text-3)}
+.lead-form button{grid-column:span 3;font:inherit;font-size:15px;font-weight:600;padding:14px 20px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink);cursor:pointer}
+@media(max-width:900px){.lead-form button{grid-column:1}}
+.lead-form button:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.lead-form input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.1)}
+.privacy-note{font-size:13.5px;color:var(--on-ink);margin-top:1.2rem;line-height:1.5}
+.privacy-note strong{font-weight:600}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">For adults · Free activities</span>
+    <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Robotics for curious adults</h1>
+    <p>Explore electronics, engineering and robotics careers through coloring, building, and puzzles. No experience needed.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+    <div class="acts">
+      <a class="act color" href="#" id="coloring-link" data-ga="for-adults-coloring-book">
+        <div class="act-art">
+          <svg viewBox="0 0 300 200" style="width:240px;height:160px">
+            <rect x="30" y="30" width="100" height="120" rx="5" fill="none" stroke="black" stroke-width="2"/>
+            <circle cx="80" cy="80" r="35" fill="none" stroke="black" stroke-width="1.5"/>
+            <line x1="50" y1="50" x2="110" y2="110" stroke="black" stroke-width="1"/>
+            <rect x="170" y="50" width="80" height="80" rx="8" fill="none" stroke="black" stroke-width="2"/>
+            <circle cx="210" cy="90" r="25" fill="none" stroke="black" stroke-width="1.5"/>
+            <path d="M 190 110 Q 210 130 230 110" fill="none" stroke="black" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag type">Coloring book</span><span class="tag">Meditative</span><span class="tag">Printable PDF</span></div>
+          <h2>30 Robotics Coloring Pages</h2>
+          <p>Detailed, artistic line-art inspired by adult coloring books. Explore robotics through your pencil.</p>
+          <ul>
+            <li>30 intricate illustrations of robots, circuits &amp; engineering</li>
+            <li>Topics: robotics, electronics, mechanisms, careers &amp; builds</li>
+            <li>Download as printable PDF or color on screen</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">Browse &amp; download <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
+
+      <a class="act build" href="#" id="bristlebot-link" data-ga="for-adults-bristlebot">
+        <div class="act-art">
+          <svg viewBox="0 0 300 200" style="width:240px;height:160px">
+            <rect x="50" y="30" width="80" height="100" rx="5" fill="none" stroke="black" stroke-width="2"/>
+            <circle cx="90" cy="80" r="15" fill="none" stroke="black" stroke-width="2"/>
+            <line x1="70" y1="50" x2="110" y2="50" stroke="black" stroke-width="1.5"/>
+            <line x1="60" y1="110" x2="120" y2="110" stroke="black" stroke-width="1.5"/>
+            <circle cx="65" cy="120" r="6" fill="black"/>
+            <circle cx="90" cy="125" r="6" fill="black"/>
+            <circle cx="115" cy="120" r="6" fill="black"/>
+            <rect x="160" y="70" width="100" height="50" rx="3" fill="none" stroke="black" stroke-width="2"/>
+            <text x="180" y="105" font-size="14" font-weight="bold">Quick Build</text>
+          </svg>
+        </div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag type">Hands-on project</span><span class="tag">5 minutes</span><span class="tag">No soldering</span></div>
+          <h2>Build a Bristlebot</h2>
+          <p>Your first robot: a simple, clever vibrating machine made from everyday parts.</p>
+          <ul>
+            <li>Step-by-step visual guide with supplies checklist</li>
+            <li>Learn how vibration creates motion</li>
+            <li>Customize your bot's bristle pattern</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">See the guide <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
+
+      <a class="act quiz" href="#" id="career-link" data-ga="for-adults-career-quiz">
+        <div class="act-art">
+          <svg viewBox="0 0 300 200" style="width:240px;height:160px">
+            <circle cx="75" cy="70" r="30" fill="none" stroke="black" stroke-width="2"/>
+            <text x="65" y="80" font-size="14" font-weight="bold">?</text>
+            <rect x="50" y="110" width="60" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+            <circle cx="80" cy="135" r="8" fill="black"/>
+            <rect x="175" y="50" width="80" height="100" rx="5" fill="none" stroke="black" stroke-width="2"/>
+            <line x1="180" y1="70" x2="250" y2="70" stroke="black" stroke-width="1"/>
+            <line x1="180" y1="90" x2="250" y2="90" stroke="black" stroke-width="1"/>
+            <line x1="180" y1="110" x2="250" y2="110" stroke="black" stroke-width="1"/>
+            <line x1="180" y1="130" x2="250" y2="130" stroke="black" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="act-body">
+          <div class="act-tags"><span class="tag type">Career assessment</span><span class="tag">Interactive</span><span class="tag">15 min</span></div>
+          <h2>Robotics Career Quiz</h2>
+          <p>Discover which robotics career path matches your interests and skills.</p>
+          <ul>
+            <li>10 questions on your interests &amp; strengths</li>
+            <li>Personalized career recommendations with real job insights</li>
+            <li>Learn about roles in robotics, AI, and engineering</li>
+          </ul>
+          <span class="go"><span class="tw-btn tw-btn-ink">Take the quiz <span aria-hidden="true">&rarr;</span></span></span>
+        </div>
+      </a>
+    </div>
+
+    <div class="lead-section">
+      <h2>Stay connected</h2>
+      <p>Get access to the full coloring book PDF, new robotics activities, and tips for adult makers—straight to your inbox.</p>
+      <form class="lead-form" id="lead-form">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <select name="experience" style="font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink)">
+          <option value="">Experience level</option>
+          <option value="beginner">Beginner (no experience)</option>
+          <option value="dabbler">Dabbler (played with robotics)</option>
+          <option value="maker">Maker (built projects before)</option>
+          <option value="engineer">Engineer (professional background)</option>
+        </select>
+        <button type="submit">Get the coloring book PDF</button>
+      </form>
+      <div class="privacy-note">
+        <strong>Privacy commitment:</strong> We collect your name and email only to send you the coloring book and occasional activity updates. We never share your data, sell it, or use it for marketing to third parties. You can unsubscribe anytime. See our <a href="privacy.html" style="color:var(--white);text-decoration:underline">privacy policy</a> for details.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+        <li><a href="for-adults.html">For adults</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Form submission handler
+document.getElementById('lead-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    experience: form.experience.value,
+    source: 'for-adults-coloring-book',
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    // TODO: Replace with your backend endpoint
+    // For now, just track with analytics
+    if (typeof gtag === 'function') {
+      gtag('event', 'for_adults_signup', {
+        email: data.email,
+        experience_level: data.experience
+      });
+    }
+
+    btn.textContent = '✓ Check your email!';
+    btn.style.background = 'var(--green)';
+    form.reset();
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = orig;
+      btn.style.background = '';
+    }, 3000);
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+  }
+});
+
+// Placeholder for activity links (will be replaced with real pages)
+document.getElementById('coloring-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  alert('Coloring book page coming soon!');
+});
+document.getElementById('bristlebot-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  alert('Bristlebot guide coming soon!');
+});
+document.getElementById('career-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  alert('Career quiz coming soon!');
+});
+</script>
+</body>
+</html>
