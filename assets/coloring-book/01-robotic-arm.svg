@@ -1,0 +1,57 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Title area -->
+  <text x="200" y="30" font-size="20" font-weight="bold" text-anchor="middle" font-family="sans-serif">Robotic Arm</text>
+
+  <!-- Base/mounting -->
+  <rect x="160" y="420" width="80" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="200" cy="420" r="8" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="175" y="410" width="50" height="10" fill="none" stroke="black" stroke-width="1.5"/>
+  <rect x="170" y="400" width="60" height="10" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Shoulder joint -->
+  <circle cx="200" cy="400" r="15" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="200" cy="400" r="10" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="200" cy="400" r="6" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Upper arm segment -->
+  <rect x="190" y="350" width="20" height="50" rx="10" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="185" y1="360" x2="215" y2="360" stroke="black" stroke-width="1"/>
+  <line x1="185" y1="370" x2="215" y2="370" stroke="black" stroke-width="1"/>
+  <line x1="185" y1="380" x2="215" y2="380" stroke="black" stroke-width="1"/>
+  <line x1="185" y1="390" x2="215" y2="390" stroke="black" stroke-width="1"/>
+
+  <!-- Elbow joint -->
+  <circle cx="200" cy="350" r="12" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="200" cy="350" r="8" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="200" cy="350" r="4" fill="none" stroke="black" stroke-width="1"/>
+
+  <!-- Forearm segment -->
+  <path d="M 200 338 Q 230 310 240 250" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 208 340 Q 236 313 246 255" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="210" cy="295" rx="8" ry="20" fill="none" stroke="black" stroke-width="1" transform="rotate(-25 210 295)"/>
+  <ellipse cx="225" cy="280" rx="8" ry="20" fill="none" stroke="black" stroke-width="1" transform="rotate(-25 225 280)"/>
+
+  <!-- Wrist joint -->
+  <circle cx="240" cy="250" r="10" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="240" cy="250" r="6" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- End effector/gripper -->
+  <rect x="235" y="220" width="10" height="30" fill="none" stroke="black" stroke-width="2"/>
+  <path d="M 235 230 L 220 200" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 245 230 L 260 200" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="220" cy="200" r="5" fill="none" stroke="black" stroke-width="1.5"/>
+  <circle cx="260" cy="200" r="5" fill="none" stroke="black" stroke-width="1.5"/>
+
+  <!-- Decorative circuit/technical patterns -->
+  <circle cx="245" cy="360" r="3" fill="black"/>
+  <circle cx="155" cy="370" r="3" fill="black"/>
+  <circle cx="180" cy="320" r="2" fill="black"/>
+
+  <!-- Grid background pattern for meditative coloring -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="500" fill="url(#grid)" opacity="0.3"/>
+</svg>
