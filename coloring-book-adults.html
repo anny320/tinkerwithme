@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotics coloring book — TinkerWith_</title>
+<meta name="description" content="A 30-page adult coloring book featuring intricate illustrations of robots, electronics, engineering and careers. Free to download as PDF.">
+<meta name="theme-color" content="#FF7F32">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+.page-head{background:#FFD23F;padding:3.25rem 0 3rem}
+.page-head h1{color:var(--ink);margin:14px 0 12px}
+.page-head p{color:var(--text-hero);font-size:18px;max-width:50ch}
+
+.cb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:2rem}
+@media(max-width:1080px){.cb-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.cb-grid{grid-template-columns:1fr}}
+
+.cb-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);overflow:hidden}
+.cb-preview{height:280px;background:var(--cream);padding:1rem;display:grid;place-items:center;border-bottom:2px solid var(--ink)}
+.cb-preview svg{width:100%;height:100%;max-height:250px}
+.cb-info{padding:1.5rem}
+.cb-info h3{font-size:18px;font-weight:600;margin-bottom:4px}
+.cb-info p{font-size:14.5px;color:var(--text-2);margin-bottom:10px}
+.cb-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.cb-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--ink);border-radius:99px;padding:3px 8px;background:var(--cream)}
+
+.cb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.cb-preview-btn{font:inherit;font-size:13px;font-weight:600;padding:8px 12px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--white);color:var(--ink);cursor:pointer;transition:all .12s}
+.cb-preview-btn:hover{background:var(--ink);color:var(--white)}
+
+.download-section{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:2.5rem 2.2rem;margin-top:3.5rem;text-align:center}
+.download-section h2{font-size:clamp(24px,3vw,32px);font-weight:600;margin-bottom:8px}
+.download-section p{color:var(--on-ink);font-size:16px;max-width:55ch;margin:0 auto 1.5rem}
+.download-btn{display:inline-block;font:inherit;font-size:16px;font-weight:600;padding:16px 32px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink);text-decoration:none;cursor:pointer;transition:all .12s}
+.download-btn:hover{background:var(--ink);color:var(--white);border-color:var(--white)}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;place-items:center;padding:1rem}
+.modal.open{display:grid}
+.modal-content{background:var(--white);border-radius:var(--radius-lg);max-width:90vw;max-height:90vh;overflow:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:2px solid var(--ink);border-radius:50%;background:var(--white);font:700 18px var(--font-display);color:var(--ink);cursor:pointer;z-index:101}
+.modal-close:hover{background:var(--ink);color:var(--white)}
+.modal svg{width:100%;height:auto;display:block;max-height:85vh}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="tw-btn tw-btn-orange tw-btn-sm" href="index.html#courses">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <h1 class="tw-h1" style="font-size:clamp(28px,4vw,44px)">30 Robotics Coloring Pages</h1>
+    <p>Detailed, meditative illustrations of robots, circuits, engineering and careers. Browse the gallery, color on screen or download the full PDF book.</p>
+  </div>
+</header>
+
+<section class="tw-section">
+  <div class="tw-container">
+    <div class="cb-grid" id="gallery">
+      <!-- Cards generated by JS -->
+    </div>
+
+    <div class="download-section">
+      <h2>Download the full book</h2>
+      <p>Get all 30 pages as a printable PDF. High resolution, ready for color pencils, markers or watercolors.</p>
+      <button class="download-btn" id="download-pdf">📥 Download PDF (18 MB)</button>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="preview-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="for-adults.html">For adults</a></li>
+        <li><a href="free-for-kids.html">Free for kids</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="courses.html">Courses</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="train-an-ai.html">Train an AI</a></li>
+        <li><a href="ai-careers-crossword.html">Careers crossword</a></li>
+        <li><a href="coloring-book.html">Kids coloring</a></li>
+        <li><a href="picker.html">Course picker</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>About</h4>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Gallery data
+const pages = [
+  { id: 1, title: 'Robotic Arm', topic: 'Robotics', file: 'assets/coloring-book/01-robotic-arm.svg' },
+  { id: 2, title: 'Arduino & Sensors', topic: 'Electronics', file: 'assets/coloring-book/02-arduino-circuit.svg' },
+  { id: 3, title: 'Gear Systems', topic: 'Engineering', file: 'assets/coloring-book/03-gears.svg' },
+  { id: 4, title: 'Roboticist at Work', topic: 'Career', file: 'assets/coloring-book/04-roboticist-at-work.svg' },
+  { id: 5, title: 'Soldering & Building', topic: 'Hands-on', file: 'assets/coloring-book/05-soldering-components.svg' },
+  // Add remaining 25 pages here in production
+];
+
+// Render gallery
+const gallery = document.getElementById('gallery');
+pages.forEach(page => {
+  const card = document.createElement('div');
+  card.className = 'cb-card';
+  card.innerHTML = `
+    <div class="cb-preview">
+      <img src="${page.file}" alt="${page.title}" style="width:100%;height:100%;object-fit:contain">
+    </div>
+    <div class="cb-info">
+      <h3>${page.title}</h3>
+      <p>Page ${page.id}</p>
+      <div class="cb-tags"><span class="cb-tag">${page.topic}</span></div>
+      <div class="cb-actions">
+        <button class="cb-preview-btn preview-btn" data-page="${page.id}">👁 Preview</button>
+        <a href="${page.file}" download class="cb-preview-btn" style="text-decoration:none;display:inline-block">⬇ SVG</a>
+      </div>
+    </div>
+  `;
+  gallery.appendChild(card);
+});
+
+// Preview modal
+document.querySelectorAll('.preview-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    const pageId = e.target.dataset.page;
+    const page = pages.find(p => p.id == pageId);
+    const modal = document.getElementById('preview-modal');
+    const body = document.getElementById('modal-body');
+
+    try {
+      const svg = await fetch(page.file).then(r => r.text());
+      body.innerHTML = svg;
+      modal.classList.add('open');
+      if (typeof gtag === 'function') gtag('event', 'coloring_book_preview', { page: pageId });
+    } catch (err) {
+      alert('Could not load preview');
+    }
+  });
+});
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('preview-modal').classList.remove('open');
+});
+
+// PDF download
+document.getElementById('download-pdf').addEventListener('click', () => {
+  alert('PDF download link coming soon! For now, download individual SVG pages above.');
+  if (typeof gtag === 'function') gtag('event', 'coloring_book_pdf_download');
+});
+</script>
+</body>
+</html>
