@@ -550,7 +550,10 @@ function renderMap(results) {
   // Training examples.
   ST.train.forEach(t => {
     const x = px(t.c), y = py(t.s);
-    out += `<circle cx="${x}" cy="${y}" r="9" fill="${bodyColor(t.c)}" stroke="#220111" stroke-width="2"/>`;
+    const bgGuess = any ? guess(ST.train, { c: t.c, s: t.s }) : null;
+    const isMismatch = t.l && bgGuess && t.l !== bgGuess;
+    out += `<circle cx="${x}" cy="${y}" r="9" fill="${bodyColor(t.c)}" stroke="#220111" stroke-width="2"${isMismatch ? ' opacity="0.6"' : ''}/>`;
+    if (isMismatch) out += `<circle cx="${x}" cy="${y}" r="11" fill="none" stroke="#FFD23F" stroke-width="2.5" stroke-dasharray="3 2"/>`;
     if (t.l) out += `<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-size="10">${t.l === 'F' ? '😊' : '😠'}</text>`;
   });
   // Axes.
