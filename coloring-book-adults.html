@@ -18,13 +18,13 @@
 .page-head h1{color:var(--ink);margin:14px 0 12px}
 .page-head p{color:var(--text-hero);font-size:18px;max-width:52ch}
 
-.cb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:2rem}
-@media(max-width:1080px){.cb-grid{grid-template-columns:repeat(2,1fr)}}
+.cb-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.75rem;margin-top:2rem}
 @media(max-width:640px){.cb-grid{grid-template-columns:1fr}}
 
 .cb-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column}
-.cb-preview{height:280px;background:var(--cream);padding:1rem;display:grid;place-items:center;border-bottom:2px solid var(--ink)}
-.cb-preview img{width:100%;height:100%;max-height:250px;object-fit:contain}
+.cb-preview{height:440px;background:var(--cream);padding:1.5rem;display:grid;place-items:center;border-bottom:2px solid var(--ink)}
+.cb-preview img{width:100%;height:100%;max-height:400px;object-fit:contain}
+@media(max-width:640px){.cb-preview{height:360px}.cb-preview img{max-height:320px}}
 .cb-info{padding:1.4rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:10px;flex:1}
 .cb-info h3{font-size:18px;font-weight:600}
 .cb-info .cb-page{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
@@ -102,7 +102,7 @@
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
       <a class="tw-nav-link" href="schools.html">For schools</a>
-      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">For adults</a>
+      <a class="tw-nav-link is-active" href="for-adults.html" aria-current="page">Free for adults</a>
       <a class="tw-nav-link" href="about.html">About</a>
     </div>
     <div class="tw-nav-tail">
@@ -192,7 +192,7 @@
     <div>
       <h4>Learn</h4>
       <ul>
-        <li><a href="for-adults.html">For adults</a></li>
+        <li><a href="for-adults.html">Free for adults</a></li>
         <li><a href="free-for-kids.html">Free for kids</a></li>
         <li><a href="schools.html">For schools</a></li>
         <li><a href="courses.html">Courses</a></li>
