@@ -48,19 +48,6 @@
 .act li::before{content:'★';color:var(--orange-deep);margin-right:9px}
 .act .go{margin-top:auto;padding-top:8px}
 
-.lead-section{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:2.5rem 2.2rem;margin-top:3.5rem}
-.lead-section h2{font-size:clamp(24px,3vw,30px);font-weight:600;margin-bottom:8px;color:var(--white)}
-.lead-section p{color:var(--on-ink);font-size:15.5px;margin-bottom:1.5rem;max-width:55ch}
-.lead-form{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-@media(max-width:900px){.lead-form{grid-template-columns:1fr}}
-.lead-form input{font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink)}
-.lead-form input::placeholder{color:var(--text-3)}
-.lead-form button{grid-column:span 3;font:inherit;font-size:15px;font-weight:600;padding:14px 20px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink);cursor:pointer}
-@media(max-width:900px){.lead-form button{grid-column:1}}
-.lead-form button:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
-.lead-form input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.1)}
-.privacy-note{font-size:13.5px;color:var(--on-ink);margin-top:1.2rem;line-height:1.5}
-.privacy-note strong{font-weight:600}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -102,7 +89,7 @@
 <section class="tw-section">
   <div class="tw-container">
     <div class="acts">
-      <a class="act color" href="#" id="coloring-link" data-ga="for-adults-coloring-book">
+      <a class="act color" href="coloring-book-adults.html" data-ga="for-adults-coloring-book">
         <div class="act-art">
           <svg viewBox="0 0 300 200" style="width:240px;height:160px">
             <rect x="30" y="30" width="100" height="120" rx="5" fill="none" stroke="black" stroke-width="2"/>
@@ -180,26 +167,6 @@
         </div>
       </a>
     </div>
-
-    <div class="lead-section">
-      <h2>Stay connected</h2>
-      <p>Get access to the full coloring book PDF, new robotics activities, and tips for adult makers—straight to your inbox.</p>
-      <form class="lead-form" id="lead-form">
-        <input type="text" name="name" placeholder="Your name" required>
-        <input type="email" name="email" placeholder="Your email" required>
-        <select name="experience" style="font:inherit;font-size:15px;padding:12px 14px;border:2px solid var(--white);border-radius:var(--radius);background:var(--white);color:var(--ink)">
-          <option value="">Experience level</option>
-          <option value="beginner">Beginner (no experience)</option>
-          <option value="dabbler">Dabbler (played with robotics)</option>
-          <option value="maker">Maker (built projects before)</option>
-          <option value="engineer">Engineer (professional background)</option>
-        </select>
-        <button type="submit">Get the coloring book PDF</button>
-      </form>
-      <div class="privacy-note">
-        <strong>Privacy commitment:</strong> We collect your name and email only to send you the coloring book and occasional activity updates. We never share your data, sell it, or use it for marketing to third parties. You can unsubscribe anytime. See our <a href="privacy.html" style="color:var(--white);text-decoration:underline">privacy policy</a> for details.
-      </div>
-    </div>
   </div>
 </section>
 
@@ -260,51 +227,7 @@
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 // Form submission handler
-document.getElementById('lead-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('button');
-  const orig = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-
-  const data = {
-    name: form.name.value,
-    email: form.email.value,
-    experience: form.experience.value,
-    source: 'for-adults-coloring-book',
-    timestamp: new Date().toISOString()
-  };
-
-  try {
-    // TODO: Replace with your backend endpoint
-    // For now, just track with analytics
-    if (typeof gtag === 'function') {
-      gtag('event', 'for_adults_signup', {
-        email: data.email,
-        experience_level: data.experience
-      });
-    }
-
-    btn.textContent = '✓ Check your email!';
-    btn.style.background = 'var(--green)';
-    form.reset();
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.textContent = orig;
-      btn.style.background = '';
-    }, 3000);
-  } catch (err) {
-    btn.disabled = false;
-    btn.textContent = 'Try again';
-  }
-});
-
-// Placeholder for activity links (will be replaced with real pages)
-document.getElementById('coloring-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  alert('Coloring book page coming soon!');
-});
+// Placeholder for remaining activity pages
 document.getElementById('bristlebot-link').addEventListener('click', (e) => {
   e.preventDefault();
   alert('Bristlebot guide coming soon!');
