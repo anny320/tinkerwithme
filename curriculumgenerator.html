@@ -760,11 +760,12 @@ function buildCurriculumDoc(o) {
 
 // Init
 
-// Content for every catalogue project is pre-generated into project_content/,
-// so a normal (non-custom) plan can be assembled right here in the browser —
-// no workflow run, no dispatch proxy, no token. Same output as the static
-// build path in generate_curriculum.py.
-const CONTENT_BASE = 'project_content/';
+// Lesson content lives in Supabase (the free courses). A normal (non-custom)
+// plan is assembled right here in the browser — no workflow run, no token.
+// Bodies are read by lesson title; only free, published lessons are exposed to
+// the public key (see the Supabase "free published lessons" read policy).
+const LESSONS_URL = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_lessons';
+const LESSONS_KEY = 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT';
 
 async function buildLocally(name, email, org, country, role, age) {
   const setStep = (msg, sub) => {
@@ -786,9 +787,11 @@ async function buildLocally(name, email, org, country, role, age) {
 
     const contentMap = {};
     for (const p of projects) {
-      const res = await fetch(CONTENT_BASE + p.id + '.json', { cache: 'no-store' });
+      const res = await fetch(LESSONS_URL + '?select=body&limit=1&title=eq.' + encodeURIComponent(p.title),
+        { headers: { apikey: LESSONS_KEY }, cache: 'no-store' });
       if (!res.ok) throw new Error(`Couldn't load content for "${p.title}". Please try again.`);
-      contentMap[p.id] = (await res.json()).content_html || '';
+      const rows = await res.json();
+      contentMap[p.id] = (rows[0] && rows[0].body) || '';
     }
 
     const titles = projects.map(p => p.title.replace(/\s+/g, '_'));
