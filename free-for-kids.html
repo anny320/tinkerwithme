@@ -61,6 +61,7 @@
 .fc-grid strong{font-size:18px}
 .fc-grid a>span:last-child{font-size:14.5px;color:var(--text-2)}
 .fc-grid .tag{align-self:flex-start}
+#buildalong-grid .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--ink);border-radius:8px;margin-bottom:4px}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -147,6 +148,12 @@
       </a>
     </div>
 
+    <div id="buildalong-block" hidden>
+      <h2 class="fc-head">Free build-along projects</h2>
+      <p class="fc-lede">34 hands-on Arduino &amp; AI projects with full step-by-step guides, wiring diagrams and a certificate &mdash; free. Grab the Maker Kit (or the free Tinkercad simulator) and build along.</p>
+      <div class="fc-grid" id="buildalong-grid"></div>
+    </div>
+
     <h2 class="fc-head">Free online courses</h2>
     <p class="fc-lede">Real lessons with quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace.</p>
     <div class="fc-grid">
@@ -216,6 +223,28 @@
     <span>DIY Electronics Projects</span>
   </div>
 </div>
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+// Free build-along courses — loaded live from Supabase, shown only once published.
+(async () => {
+  const SLUGS = ['first-circuits-lights','sound-sensors-signals','machines-movement','robots-smart-builds','ai-creator-studio','how-ai-really-works','ai-and-your-future'];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  try {
+    const url = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,cover_url,position&is_published=eq.true&slug=in.(' + SLUGS.join(',') + ')&order=position';
+    const r = await fetch(url, { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
+    if (!r.ok) throw new Error(r.status);
+    const list = await r.json();
+    if (!list.length) return;
+    document.getElementById('buildalong-grid').innerHTML = list.map(c =>
+      '<a href="course.html?c=' + encodeURIComponent(c.slug) + '" data-ga="free-for-kids-buildalong-' + esc(c.slug) + '">' +
+      (c.cover_url ? '<img class="fc-cover" src="' + esc(c.cover_url) + '" alt="" loading="lazy">' : '') +
+      (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
+      '<strong>' + esc(c.title) + '</strong><span>' + esc(c.summary) + '</span></a>'
+    ).join('');
+    document.getElementById('buildalong-block').hidden = false;
+    if (typeof gtag === 'function') gtag('event', 'free_buildalong_shown', { count: list.length });
+  } catch (e) { /* unavailable or none published — section stays hidden */ }
+})();
+</script>
 </body>
 </html>
