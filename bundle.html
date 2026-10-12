@@ -184,8 +184,7 @@ async function renderBuy() {
   const box = $('buy');
   const head = `<h2>Get the bundle</h2><div class="buy-price">${TWPrice.fmtWas(B.price_kes, B.price_usd, B.worth_kes, B.worth_usd)}</div>
     <span class="save">You save ${save()}</span> ${TWPrice.switcher()}
-    <p style="font-size:14.5px;color:var(--text-2);margin-top:8px">${B.courses.length} courses · 12 months of access to each</p>
-    <p class="promise">✓ Not happy within 7 days? Full refund.</p>`;
+    <p style="font-size:14.5px;color:var(--text-2);margin-top:8px">${B.courses.length} courses · 12 months of access to each</p>`;
   const r = await LMS.ready;
   if (!r.signIn) { box.innerHTML = head + '<p class="notice" style="margin-top:12px">Sign-in is taking a break. Please try again later.</p>'; return; }
   if (!LMS.user) {
