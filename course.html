@@ -311,9 +311,7 @@ function renderOverview() {
     const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
         <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
     act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
-      <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>
-      <p class="promise">✓ Not happy within 7 days? Full refund.</p>
-      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
+      <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
       <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${card}
