@@ -653,7 +653,7 @@ async function builds() {
       <div class="st-tiles">${stat(stats.learners, 'Young makers')}${stat(stats.lessons_done, 'Lessons finished')}${stat(stats.builds_shared, 'Builds live')}${stat(stats.courses_live, 'Courses live')}${stat(pend.length, 'Builds waiting')}</div>
       <p class="muted" style="margin-top:10px;font-size:14.5px">These are the live numbers shown on the <a href="builds-wall.html" target="_blank" rel="noopener">Builds Wall</a>.</p></div>
     <div class="panel box"><h2>Waiting for review (${pend.length})</h2>
-      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Photos are private until you approve them. Check each one is suitable — a real build, no faces of other children, nothing that identifies where a child lives or goes to school — then approve. Approving publishes it to the Builds Wall straight away.</p>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Photos are private until you approve them. Each one should be a photo of the <strong>project</strong>, not the child — <strong>reject anything showing a face or a person</strong>, or that could identify where a child lives or goes to school. Approving publishes it to the Builds Wall straight away.</p>
       <div class="rows">${pend.map(b => card(b, true)).join('') || '<p class="muted">Nothing waiting. 🎉</p>'}</div></div>
     ${done.length ? `<div class="panel box"><h2>Recent decisions</h2><div class="rows">${done.map(b => card(b, false)).join('')}</div></div>` : ''}`;
   $('view').onclick = async e => {

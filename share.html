@@ -120,7 +120,7 @@ LMS.ready.then(async r => {
   if (!r.signIn || !LMS.user) {
     $('gate').innerHTML = `<div class="panel box"><h2>Sign in to share your build</h2>
       <p>A free account keeps your builds together and lets us tell you when yours is featured. Parents can sign up for their child.</p>
-      <div class="safety">🔒 <strong>Your photo stays private</strong> until a Tinkerwith grown-up approves it. We only ever show a first name and age — never a full name, school or location.</div>
+      <div class="safety">📸 Share a photo of <strong>your project</strong> — your robot, circuit or AI creation, not a photo of yourself.<br>🔒 It stays private until a Tinkerwith grown-up approves it, and we only ever show a first name and age — never a full name, school or location.</div>
       <p style="margin-top:14px"><button class="tw-btn tw-btn-orange" type="button" id="b-si">Sign in or sign up</button></p></div>`;
     $('b-si').onclick = LMS.signIn;
     return;
@@ -147,10 +147,10 @@ async function renderForm() {
       <span class="hint">Tell us what it does or what you learned. Up to 500 characters.</span></label>
     <div class="field-in">Photo of your build
       <label class="drop" id="drop"><input type="file" id="photo" accept="image/*">
-        <div id="drop-text">📷 Tap to add a photo<br><span class="hint">JPG or PNG, up to 10 MB</span></div></label>
+        <div id="drop-text">📷 Tap to add a photo of your <strong>project</strong><br><span class="hint">Your robot, circuit or AI creation — <strong>not</strong> a photo of yourself. JPG or PNG, up to 10 MB.</span></div></label>
       <img id="preview" class="preview" hidden alt="Your build">
     </div>
-    <div class="safety">🔒 Your photo is <strong>private</strong> until we approve it. On the wall we show only your <strong>first name and age</strong> — never a full name, school or where you live. By sharing, a parent/guardian agrees we can show the photo on tinkerwith.me.</div>
+    <div class="safety">📸 Please photograph <strong>your build</strong>, not yourself — leave faces and other people out of the picture.<br>🔒 Your photo is <strong>private</strong> until we approve it. On the wall we show only a <strong>first name and age</strong> — never a full name, school or where you live. By sharing, a parent/guardian agrees we can show the project photo on tinkerwith.me.</div>
     <div class="btns" style="margin-top:16px"><button class="tw-btn tw-btn-orange" type="submit" id="b-send">Send for review</button></div>
   </form>`;
 
