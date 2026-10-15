@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share your build — TinkerWith_</title>
+<meta name="description" content="Built something with Tinkerwith? Share a photo of your project — we feature the best ones on our Builds Wall.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Share your build — TinkerWith_">
+<meta property="og:description" content="Show us what you made! Share a photo of your robotics or AI project.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.page-head{background:var(--ink)}
+.wrap{max-width:640px;margin:0 auto}
+.box{padding:1.4rem 1.5rem}
+@media(max-width:600px){.box{padding:1.1rem}}
+.box + .box{margin-top:1.5rem}
+.field-in{display:block;margin-bottom:14px}
+.field-in input,.field-in textarea,.field-in select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm);background:var(--white)}
+.field-in textarea{min-height:90px;resize:vertical}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+@media(max-width:480px){.grid2{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--border-strong);border-radius:var(--radius-sm);padding:22px;text-align:center;cursor:pointer;background:var(--cream)}
+.drop:hover{background:var(--cream-dim)}
+.drop input{display:none}
+.preview{max-width:100%;border-radius:var(--radius-sm);border:2px solid var(--ink);margin-top:10px}
+.hint{font-size:13.5px;color:var(--text-2)}
+.mine{display:flex;gap:12px;align-items:center;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:10px 12px;background:var(--white);margin-top:8px}
+.mine img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid var(--ink);flex:none;background:var(--cream)}
+.mine .grow{flex:1;min-width:0}
+.pill{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;border:2px solid var(--ink);display:inline-block}
+.pill.on{background:var(--green)}
+.pill.wait{background:var(--yellow,#FFD23F)}
+.pill.no{background:var(--cream-dim)}
+.safety{font-size:13.5px;color:var(--text-2);background:var(--cream);border-radius:var(--radius-sm);padding:12px 14px;margin-top:14px}
+</style>
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html"><img src="assets/mark.png" alt=""><span>Tinkerwith_</span></a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="builds-wall.html">Builds Wall</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Show us what you made</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.6vw,46px)">Share your build</h1>
+    <p>Finished a project? Share a photo — we feature the best ones on the <a href="builds-wall.html" style="color:#fff;text-decoration:underline">Builds Wall</a>. A grown-up checks every photo before it goes public.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container wrap">
+    <div id="gate"><p class="loading">Loading&hellip;</p></div>
+    <div id="app" hidden></div>
+    <div id="mine"></div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand"><img src="assets/mark-light.png" alt=""><span>Tinkerwith_</span></div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div><h4>Learn</h4><ul>
+      <li><a href="courses.html">Courses &amp; camps</a></li>
+      <li><a href="learn.html">Online courses</a></li>
+      <li><a href="free-for-kids.html">Free for kids</a></li>
+      <li><a href="builds-wall.html">Builds Wall</a></li>
+    </ul></div>
+    <div><h4>Company</h4><ul>
+      <li><a href="about.html">About</a></li>
+      <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li><a href="privacy.html">Privacy policy</a></li>
+    </ul></div>
+  </div>
+</footer>
+<div class="tw-footer-tail"><div class="tw-footer-tail-inner">
+  <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span><span>DIY Electronics Projects</span>
+</div></div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = LMS.esc;
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 3000); };
+const qs = new URLSearchParams(location.search);
+let photoFile = null;
+
+LMS.mountAccount($('acct'));
+LMS.ready.then(async r => {
+  if (!r.ok) return $('gate').innerHTML = `<div class="notice err">${esc(r.error || 'Something went wrong.')}</div>`;
+  if (!r.signIn || !LMS.user) {
+    $('gate').innerHTML = `<div class="panel box"><h2>Sign in to share your build</h2>
+      <p>A free account keeps your builds together and lets us tell you when yours is featured. Parents can sign up for their child.</p>
+      <div class="safety">🔒 <strong>Your photo stays private</strong> until a Tinkerwith grown-up approves it. We only ever show a first name and age — never a full name, school or location.</div>
+      <p style="margin-top:14px"><button class="tw-btn tw-btn-orange" type="button" id="b-si">Sign in or sign up</button></p></div>`;
+    $('b-si').onclick = LMS.signIn;
+    return;
+  }
+  $('gate').hidden = true; $('app').hidden = false;
+  renderForm();
+  loadMine();
+});
+
+async function renderForm() {
+  let courses = [];
+  try { courses = (await LMS.db.from('lms_courses').select('slug,title').eq('is_published', true).order('position')).data || []; } catch (_) {}
+  const pre = qs.get('c') || '';
+  const opts = ['<option value="">— Pick a course (optional) —</option>']
+    .concat(courses.map(c => `<option value="${esc(c.slug)}" ${c.slug === pre ? 'selected' : ''}>${esc(c.title)}</option>`)).join('');
+  $('app').innerHTML = `<form class="panel box" id="f">
+    <h2 style="margin-bottom:12px">Tell us about your build</h2>
+    <div class="grid2">
+      <label class="field-in">First name <input name="first_name" required maxlength="40" value="${esc((LMS.user.firstName || '').slice(0,40))}" placeholder="e.g. Amina"></label>
+      <label class="field-in">Age <input name="age" type="number" min="3" max="18" placeholder="9"></label>
+    </div>
+    <label class="field-in">Which course or project? <select name="course">${opts}</select></label>
+    <label class="field-in">What did you make? <textarea name="caption" maxlength="500" placeholder="e.g. My traffic lights change colour all by themselves!"></textarea>
+      <span class="hint">Tell us what it does or what you learned. Up to 500 characters.</span></label>
+    <div class="field-in">Photo of your build
+      <label class="drop" id="drop"><input type="file" id="photo" accept="image/*">
+        <div id="drop-text">📷 Tap to add a photo<br><span class="hint">JPG or PNG, up to 10 MB</span></div></label>
+      <img id="preview" class="preview" hidden alt="Your build">
+    </div>
+    <div class="safety">🔒 Your photo is <strong>private</strong> until we approve it. On the wall we show only your <strong>first name and age</strong> — never a full name, school or where you live. By sharing, a parent/guardian agrees we can show the photo on tinkerwith.me.</div>
+    <div class="btns" style="margin-top:16px"><button class="tw-btn tw-btn-orange" type="submit" id="b-send">Send for review</button></div>
+  </form>`;
+
+  const photo = $('photo'), preview = $('preview'), dropText = $('drop-text');
+  photo.onchange = () => {
+    const file = photo.files[0]; if (!file) return;
+    if (!file.type.startsWith('image/')) return toast('Please choose an image file.');
+    if (file.size > 10 * 1024 * 1024) return toast('Photos must be under 10 MB.');
+    photoFile = file;
+    preview.src = URL.createObjectURL(file); preview.hidden = false;
+    dropText.innerHTML = '📷 Photo added — tap to change';
+  };
+
+  $('f').onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target;
+    if (!photoFile) return toast('Please add a photo of your build.');
+    const b = $('b-send'); b.disabled = true; toast('Sending…');
+    try {
+      const id = await LMS.rpc('tw_submit_build', {
+        p_first_name: f.first_name.value.trim(),
+        p_age: f.age.value ? parseInt(f.age.value, 10) : null,
+        p_caption: f.caption.value.trim(),
+        p_course_slug: f.course.value || null,
+      });
+      const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'jpg';
+      const path = `${LMS.user.id}/${id}.${ext}`;
+      const up = await LMS.db.storage.from('tw-builds-pending').upload(path, photoFile, { contentType: photoFile.type, upsert: true });
+      if (up.error) throw new Error(up.error.message);
+      await LMS.rpc('tw_attach_build_photo', { p_id: id, p_path: path });
+      LMS.track('build_shared', { course: f.course.value || '' });
+      toast('🎉 Sent! We’ll review it and let you know.');
+      photoFile = null;
+      renderForm(); loadMine();
+    } catch (err) { toast(err.message || 'Could not send — please try again.'); b.disabled = false; }
+  };
+}
+
+async function loadMine() {
+  let mine = [];
+  try { mine = await LMS.rpc('tw_my_builds'); } catch (_) { return; }
+  if (!mine.length) { $('mine').innerHTML = ''; return; }
+  const pill = s => s === 'approved' ? '<span class="pill on">🎉 Live on the wall</span>'
+    : s === 'rejected' ? '<span class="pill no">Not this time</span>'
+    : '<span class="pill wait">⏳ Waiting for review</span>';
+  $('mine').innerHTML = `<div class="panel box"><h2 style="margin-bottom:10px">Your builds</h2>
+    ${mine.map(m => `<div class="mine">
+      ${m.photo_url ? `<img src="${esc(m.photo_url)}" alt="">` : '<img alt="" src="assets/mark.png" style="object-fit:contain;padding:10px">'}
+      <div class="grow"><strong>${esc(m.course_title || 'My build')}</strong>
+        ${m.caption ? `<div class="hint">${esc(m.caption)}</div>` : ''}
+        <div style="margin-top:6px">${pill(m.status)}</div></div></div>`).join('')}
+    <p style="margin-top:14px"><a class="tw-link-arrow" href="builds-wall.html">See the Builds Wall &rarr;</a></p></div>`;
+}
+</script>
+</body>
+</html>

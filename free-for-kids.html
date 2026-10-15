@@ -81,6 +81,7 @@
       <a class="tw-nav-link" href="learn.html">Learn online</a>
       <a class="tw-nav-link" href="picker.html">Plan a session</a>
       <a class="tw-nav-link is-active" href="free-for-kids.html" aria-current="page">Free for kids</a>
+      <a class="tw-nav-link" href="builds-wall.html">Builds Wall</a>
       <a class="tw-nav-link" href="schools.html">For schools</a>
       <a class="tw-nav-link" href="for-adults.html">Free for adults</a>
       <a class="tw-nav-link" href="about.html">About</a>
@@ -152,6 +153,15 @@
       <h2 class="fc-head">Free build-along projects</h2>
       <p class="fc-lede">34 hands-on Arduino &amp; AI projects with full step-by-step guides, wiring diagrams and a certificate &mdash; free. Grab the Maker Kit (or the free Tinkercad simulator) and build along.</p>
       <div class="fc-grid" id="buildalong-grid"></div>
+    </div>
+
+    <div class="fc-builds" style="margin:2.5rem 0;padding:1.6rem 1.5rem;border:2px solid var(--ink);border-radius:16px;background:var(--cream);text-align:center">
+      <h2 class="fc-head" style="margin-top:0">📷 Show us what you built</h2>
+      <p class="fc-lede" id="fc-builds-lede">Finished a project? Share a photo &mdash; we feature the best builds by kids across Kenya on our Builds Wall. A grown-up checks every photo first.</p>
+      <p style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="tw-btn tw-btn-orange" href="share.html" data-ga="free-for-kids-share-build">Share your build</a>
+        <a class="tw-btn tw-btn-white" href="builds-wall.html" data-ga="free-for-kids-builds-wall">See the Builds Wall &rarr;</a>
+      </p>
     </div>
 
     <h2 class="fc-head">Free online courses</h2>
@@ -244,6 +254,19 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     document.getElementById('buildalong-block').hidden = false;
     if (typeof gtag === 'function') gtag('event', 'free_buildalong_shown', { count: list.length });
   } catch (e) { /* unavailable or none published — section stays hidden */ }
+})();
+// Live build count for the Builds Wall call-to-action.
+(async () => {
+  try {
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/tw_stats', {
+      method: 'POST', headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' }, body: '{}' });
+    if (!r.ok) return;
+    const s = await r.json();
+    if (s && s.builds_shared > 0) {
+      const el = document.getElementById('fc-builds-lede');
+      if (el) el.textContent = `Join ${s.builds_shared.toLocaleString()} build${s.builds_shared === 1 ? '' : 's'} already shared by young makers across Kenya. Finished a project? Share a photo — a grown-up checks every one before it goes on the Builds Wall.`;
+    }
+  } catch (e) { /* counters are a nicety */ }
 })();
 </script>
 </body>

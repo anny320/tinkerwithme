@@ -504,6 +504,7 @@ function certificate() {
     <div class="cert-tools no-print">
       <label class="field-in">Name on the certificate <input id="cert-in" maxlength="60" value="${esc(name)}" placeholder="Type your name"></label>
       <button class="tw-btn tw-btn-orange" type="button" id="cert-print">🖨 Print</button>
+      <a class="tw-btn tw-btn-white" href="share.html?c=${encodeURIComponent(C.slug)}" data-ga="lms-share-build">📷 Share your build</a>
       <a class="tw-btn tw-btn-white" href="stories.html" data-ga="lms-share-story">💬 Share your story</a>
     </div></div>`;
 }
