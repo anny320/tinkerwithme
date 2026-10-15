@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builds Wall — TinkerWith_</title>
+<meta name="description" content="See what kids across Kenya are building with Tinkerwith — real robotics and AI projects made by young makers.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Builds Wall — TinkerWith_">
+<meta property="og:description" content="Real robotics and AI projects made by young makers with Tinkerwith.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.page-head{background:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 2rem}
+@media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:16px 14px;text-align:center;box-shadow:var(--shadow-sm,3px 3px 0 var(--ink))}
+.stat .n{display:block;font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--orange,#F07B1D);line-height:1.1}
+@media(max-width:620px){.stat .n{font-size:24px}}
+.stat .l{display:block;font-size:12.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.grid{columns:3 260px;column-gap:16px}
+.card{break-inside:avoid;border:2px solid var(--ink);border-radius:var(--radius-sm);background:var(--white);margin:0 0 16px;overflow:hidden;box-shadow:var(--shadow-sm,3px 3px 0 var(--ink))}
+.card img{width:100%;display:block;background:var(--cream)}
+.card .body{padding:12px 14px}
+.card .who{font-weight:600;font-size:15.5px}
+.card .cap{font-size:14.5px;color:var(--text-1,#2A1A0E);margin-top:4px}
+.card .course{display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--orange,#F07B1D);margin-top:8px}
+.card .star{float:right;font-size:14px}
+.cta{text-align:center;margin-top:2rem}
+.empty{text-align:center;color:var(--text-2);padding:2rem}
+</style>
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html"><img src="assets/mark.png" alt=""><span>Tinkerwith_</span></a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="builds-wall.html">Builds Wall</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+      <div class="acct" id="acct"></div>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Made by young makers</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.6vw,46px)">The Builds Wall</h1>
+    <p>Real robotics and AI projects built by kids learning with Tinkerwith. Built something? <a href="share.html" style="color:#fff;text-decoration:underline">Share yours →</a></p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="stats" id="stats" hidden>
+      <div class="stat"><span class="n" id="s-learners">—</span><span class="l">Young makers</span></div>
+      <div class="stat"><span class="n" id="s-lessons">—</span><span class="l">Lessons finished</span></div>
+      <div class="stat"><span class="n" id="s-builds">—</span><span class="l">Builds shared</span></div>
+      <div class="stat"><span class="n" id="s-courses">—</span><span class="l">Courses to try</span></div>
+    </div>
+    <div id="wall"><p class="loading">Loading builds…</p></div>
+    <div class="cta"><a class="tw-btn tw-btn-orange" href="share.html" data-ga="builds-share">📷 Share your build</a></div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand"><img src="assets/mark-light.png" alt=""><span>Tinkerwith_</span></div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div><h4>Learn</h4><ul>
+      <li><a href="courses.html">Courses &amp; camps</a></li>
+      <li><a href="learn.html">Online courses</a></li>
+      <li><a href="free-for-kids.html">Free for kids</a></li>
+      <li><a href="share.html">Share your build</a></li>
+    </ul></div>
+    <div><h4>Company</h4><ul>
+      <li><a href="about.html">About</a></li>
+      <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li><a href="privacy.html">Privacy policy</a></li>
+    </ul></div>
+  </div>
+</footer>
+<div class="tw-footer-tail"><div class="tw-footer-tail-inner">
+  <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span><span>DIY Electronics Projects</span>
+</div></div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = LMS.esc;
+LMS.mountAccount($('acct'));
+
+LMS.ready.then(() => { loadStats(); loadWall(); });
+
+async function loadStats() {
+  try {
+    const s = await LMS.rpc('tw_stats');
+    const set = (id, n) => { const el = $(id); if (el) animateTo(el, n || 0); };
+    set('s-learners', s.learners); set('s-lessons', s.lessons_done);
+    set('s-builds', s.builds_shared); set('s-courses', s.courses_live);
+    $('stats').hidden = false;
+  } catch (_) { /* counters are a nicety; hide if unavailable */ }
+}
+// Count up to the number so it feels alive.
+function animateTo(el, target) {
+  const dur = 900, start = performance.now();
+  const step = now => {
+    const p = Math.min(1, (now - start) / dur);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+async function loadWall() {
+  let builds = [];
+  try { builds = await LMS.rpc('tw_builds_wall', { p_limit: 120 }); } catch (e) {
+    return $('wall').innerHTML = `<div class="notice err">Couldn’t load the wall right now. Please try again.</div>`;
+  }
+  if (!builds.length) {
+    return $('wall').innerHTML = `<div class="empty"><h3>Be the first! 🚀</h3>
+      <p>No builds here yet. Finish a project and <a href="share.html">share a photo</a> to kick off the wall.</p></div>`;
+  }
+  $('wall').innerHTML = `<div class="grid">${builds.map(b => `<figure class="card">
+    <img src="${esc(b.photo_url)}" alt="A build by ${esc(b.first_name)}" loading="lazy">
+    <figcaption class="body">
+      <div class="who">${b.featured ? '<span class="star">⭐</span>' : ''}${esc(b.first_name)}${b.age ? `, ${b.age}` : ''}</div>
+      ${b.caption ? `<div class="cap">${esc(b.caption)}</div>` : ''}
+      ${b.course_title ? `<span class="course">${esc(b.course_title)}</span>` : ''}
+    </figcaption></figure>`).join('')}</div>`;
+  LMS.track('builds_wall_view', { count: builds.length });
+}
+</script>
+</body>
+</html>

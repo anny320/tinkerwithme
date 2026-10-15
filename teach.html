@@ -58,6 +58,11 @@
 .pill.off{background:var(--cream-dim)}
 .pay-warn{color:#B3261E;font-weight:600}
 .ib.cur-f{background:var(--ink);color:#fff}
+.b-thumb{width:84px;height:84px;object-fit:cover;border-radius:8px;border:2px solid var(--ink);flex:none;background:var(--cream)}
+.st-tiles{display:flex;flex-wrap:wrap;gap:10px}
+.st-tile{flex:1;min-width:110px;text-align:center;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:12px 10px;background:var(--cream)}
+.st-tile .n{display:block;font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--green-deep)}
+.st-tile .l{display:block;font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
@@ -102,7 +107,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -199,11 +204,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['students', 'payments', 'leads', 'curriculums'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'students', 'payments', 'leads', 'curriculums'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
-  payCount(); leadCount();
+  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  payCount(); leadCount(); buildsCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'curriculums' ? curriculums() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -603,6 +608,88 @@ async function leads() {
     if (!patch) return;
     try { must(await db().from('lms_leads').update(patch).eq('id', row.dataset.lead)); toast('Saved ✓'); if (patch.status) leadCount(); }
     catch (err) { toast(err.message); }
+  };
+}
+
+/* ── Builds: Share-your-build moderation + traction ──
+   Every submission is private and pending until approved here. Approving copies
+   the photo from the private bucket to the public one and publishes the row. */
+async function buildsCount() {
+  try {
+    const n = (await LMS.rpc('tw_admin_builds')).filter(b => b.status === 'pending').length;
+    $('t-builds').textContent = n ? `Builds (${n})` : 'Builds';
+  } catch (_) {}
+}
+
+async function builds() {
+  $('view').innerHTML = '<p class="loading">Loading builds…</p>';
+  const [stats, list] = await Promise.all([
+    LMS.rpc('tw_stats').catch(() => ({})),
+    LMS.rpc('tw_admin_builds'),
+  ]);
+  const bucket = db().storage.from('tw-builds-pending');
+  const pend = list.filter(b => b.status === 'pending');
+  const done = list.filter(b => b.status !== 'pending');
+  // Private photo previews for pending builds come through short-lived signed URLs.
+  const signed = {};
+  await Promise.all(pend.filter(b => b.photo_path).map(async b => {
+    const r = await bucket.createSignedUrl(b.photo_path, 3600);
+    if (!r.error) signed[b.id] = r.data.signedUrl;
+  }));
+  const when = d => d ? new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  const stat = (n, l) => `<div class="st-tile"><span class="n">${(n ?? 0).toLocaleString()}</span><span class="l">${l}</span></div>`;
+  const card = (b, open) => `<div class="row" style="align-items:flex-start" data-b="${b.id}">
+      <img class="b-thumb" src="${esc((open ? signed[b.id] : b.photo_url) || 'assets/mark.png')}" alt="">
+      <div class="grow"><strong>${esc(b.first_name)}${b.age ? ', ' + b.age : ''}</strong>${b.featured ? ' <span class="pill on">⭐ Featured</span>' : ''}
+        <small>${esc(b.course_title || 'No course')} · ${when(b.created_at)}</small>
+        ${b.caption ? `<p style="font-size:14.5px;margin-top:4px">“${esc(b.caption)}”</p>` : ''}
+        ${!open ? `<small>${b.status === 'approved' ? '✅ Live' : '❌ Rejected'} ${when(b.decided_at)}${b.note ? ' · ' + esc(b.note) : ''}</small>` : ''}</div>
+      ${open ? `<button class="ib" type="button" data-approve="${b.id}">Approve</button>
+        <button class="ib danger" type="button" data-reject="${b.id}">Reject</button>`
+        : `<button class="ib" type="button" data-feature="${b.id}">${b.featured ? 'Unfeature' : 'Feature'}</button>
+        <button class="ib danger" type="button" data-del="${b.id}">Delete</button>`}</div>`;
+  $('view').innerHTML = `
+    <div class="panel box"><h2>Traction</h2>
+      <div class="st-tiles">${stat(stats.learners, 'Young makers')}${stat(stats.lessons_done, 'Lessons finished')}${stat(stats.builds_shared, 'Builds live')}${stat(stats.courses_live, 'Courses live')}${stat(pend.length, 'Builds waiting')}</div>
+      <p class="muted" style="margin-top:10px;font-size:14.5px">These are the live numbers shown on the <a href="builds-wall.html" target="_blank" rel="noopener">Builds Wall</a>.</p></div>
+    <div class="panel box"><h2>Waiting for review (${pend.length})</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Photos are private until you approve them. Check each one is suitable — a real build, no faces of other children, nothing that identifies where a child lives or goes to school — then approve. Approving publishes it to the Builds Wall straight away.</p>
+      <div class="rows">${pend.map(b => card(b, true)).join('') || '<p class="muted">Nothing waiting. 🎉</p>'}</div></div>
+    ${done.length ? `<div class="panel box"><h2>Recent decisions</h2><div class="rows">${done.map(b => card(b, false)).join('')}</div></div>` : ''}`;
+  $('view').onclick = async e => {
+    const a = e.target.closest('[data-approve]'), r = e.target.closest('[data-reject]'),
+          f = e.target.closest('[data-feature]'), d = e.target.closest('[data-del]');
+    const btn = a || r || f || d; if (!btn) return;
+    try {
+      if (a) {
+        const b = pend.find(x => x.id === a.dataset.approve);
+        if (!b || !b.photo_path) return toast('This build has no photo yet.');
+        if (!confirm('Approve and publish this build to the Builds Wall?')) return;
+        btn.disabled = true; toast('Publishing…');
+        const dl = await bucket.download(b.photo_path);
+        if (dl.error) throw new Error(dl.error.message);
+        const ext = (b.photo_path.split('.').pop() || 'jpg').toLowerCase();
+        const pub = `${b.id}.${ext}`;
+        const up = await db().storage.from('tw-builds-public').upload(pub, dl.data, { contentType: dl.data.type || 'image/jpeg', upsert: true });
+        if (up.error) throw new Error(up.error.message);
+        const url = db().storage.from('tw-builds-public').getPublicUrl(pub).data.publicUrl;
+        await LMS.rpc('tw_admin_decide_build', { p_id: b.id, p_action: 'approve', p_photo_url: url });
+        toast('Published to the Builds Wall ✓');
+      } else if (r) {
+        const note = prompt('Reason (optional — the child sees this):', '');
+        if (note === null) return;
+        await LMS.rpc('tw_admin_decide_build', { p_id: r.dataset.reject, p_action: 'reject', p_note: note });
+        toast('Rejected');
+      } else if (f) {
+        await LMS.rpc('tw_admin_decide_build', { p_id: f.dataset.feature, p_action: 'feature' });
+        toast('Updated ✓');
+      } else if (d) {
+        if (!confirm('Delete this build for good?')) return;
+        await LMS.rpc('tw_admin_decide_build', { p_id: d.dataset.del, p_action: 'delete' });
+        toast('Deleted');
+      }
+      builds(); buildsCount();
+    } catch (err) { toast(err.message); btn.disabled = false; }
   };
 }
 
