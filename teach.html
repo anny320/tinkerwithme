@@ -214,10 +214,27 @@ async function courseList() {
   $('view').innerHTML = '<p class="loading">Loading courses…</p>';
   const courses = must(await db().from('lms_courses').select('id,slug,title,price_kes,is_published,position,lms_lessons(count)').order('position').order('title'));
   $('view').innerHTML = `<div class="panel box"><div class="sec-h"><h2>Courses</h2><a class="tw-btn tw-btn-orange tw-btn-sm" href="#course=new">+ New course</a></div>
-    <div class="rows">${courses.map(c => `<div class="row">
+    <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">A course only shows on the site once it’s <b>Published</b>. Use the button on each row to flip it live or back to draft — no need to open it.</p>
+    <div class="rows">${courses.map(c => `<div class="row" data-cid="${c.id}">
       <a class="grow" href="#course=${c.id}"><strong>${esc(c.title)}</strong><small>${c.lms_lessons[0].count} lessons · ${c.price_kes ? 'KES ' + c.price_kes.toLocaleString() : 'Free'} · /${esc(c.slug)}</small></a>
-      <span class="pill ${c.is_published ? 'on' : 'off'}">${c.is_published ? 'Published' : 'Draft'}</span>
+      <span class="pill ${c.is_published ? 'on' : 'off'}" data-pill>${c.is_published ? 'Published' : 'Draft'}</span>
+      <button class="ib${c.is_published ? '' : ' cur-f'}" type="button" data-pub="${c.id}" data-on="${c.is_published ? 1 : ''}">${c.is_published ? 'Unpublish' : 'Publish'}</button>
       <a class="ib" href="course.html?c=${encodeURIComponent(c.slug)}" target="_blank" rel="noopener">View</a></div>`).join('') || '<p class="muted">No courses yet. Create your first one!</p>'}</div></div>`;
+  $('view').onclick = async e => {
+    const b = e.target.closest('[data-pub]'); if (!b) return;
+    const publish = !b.dataset.on;
+    if (publish && !confirm('Publish this course? It will appear on the site straight away.')) return;
+    b.disabled = true;
+    try {
+      must(await db().from('lms_courses').update({ is_published: publish }).eq('id', b.dataset.pub).select('id').single());
+      const row = b.closest('[data-cid]'), pill = row.querySelector('[data-pill]');
+      b.dataset.on = publish ? 1 : ''; b.textContent = publish ? 'Unpublish' : 'Publish';
+      b.classList.toggle('cur-f', !publish);
+      pill.textContent = publish ? 'Published' : 'Draft'; pill.classList.toggle('on', publish); pill.classList.toggle('off', !publish);
+      toast(publish ? 'Published ✓ — now live on the site' : 'Unpublished — back to draft');
+    } catch (err) { toast(err.message); }
+    b.disabled = false;
+  };
 }
 
 /* ── Course editor (+ its lessons) ── */

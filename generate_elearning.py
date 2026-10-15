@@ -70,8 +70,8 @@ anything.
 online; mains electricity is never used (batteries and USB only).
 - End each lesson with a short "Try this" challenge.
 - Use Kenyan context where it fits naturally (places, names, everyday examples).
-- No purchase links. Name parts plainly (local shops such as Nerokas or Pixel \
-Electronics may be named in plain text).
+- No purchase links. Name parts plainly by item, spec and quantity — do not \
+name any shops or suppliers.
 
 Quizzes: every lesson has 3–4 multiple-choice questions that check \
 understanding of that lesson (not trivia). Each question has 3 or 4 options, \

@@ -54,6 +54,13 @@ CSS = """
             margin-bottom: 2rem;
         }
 
+        .header-logo {
+            height: 30px;
+            width: auto;
+            display: block;
+            margin-bottom: 0.45rem;
+        }
+
         .header-brand {
             font-size: 18px;
             font-weight: 700;
@@ -329,6 +336,28 @@ CSS = """
 """
 
 
+import base64
+from functools import lru_cache
+from pathlib import Path
+
+
+@lru_cache(maxsize=None)
+def _logo_tag():
+    """Return an <img> tag with the TinkerWithMe mark embedded as a data URI.
+
+    The logo is base64-inlined so the PDF renders the same no matter where the
+    generator runs (CI, a container, a laptop) — no external file fetch. Returns
+    an empty string if the asset isn't found, so PDFs still render unbranded
+    rather than erroring.
+    """
+    for name, mime in (("assets/mark.png", "image/png"), ("assets/logo.jpg", "image/jpeg")):
+        p = Path(__file__).resolve().parent / name
+        if p.exists():
+            data = base64.b64encode(p.read_bytes()).decode("ascii")
+            return f'<img class="header-logo" src="data:{mime};base64,{data}" alt="TinkerWithMe">'
+    return ""
+
+
 def build_header(title_line, subtitle_line, prepared_html, current_date):
     """Build the branded <header> block.
 
@@ -343,6 +372,7 @@ def build_header(title_line, subtitle_line, prepared_html, current_date):
             Nairobi, Kenya<br>
             {current_date}
         </div>
+        {_logo_tag()}
         <div class="header-brand">TinkerWithMe</div>
         <div class="header-title">{title_line}</div>
         <div class="header-subtitle">{subtitle_line}</div>
