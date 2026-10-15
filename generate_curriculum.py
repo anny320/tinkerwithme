@@ -93,7 +93,7 @@ KENYA_SOURCING_HTML = (
     "Nairobi suppliers stock everything this curriculum needs:</p>\n"
     "<ul>\n"
     "<li><strong>Nerokas Engineering</strong> — nerokas.co.ke</li>\n"
-    "<li><strong>Pixel Electronics</strong> — pixelelectronics.co.ke</li>\n"
+    "<li><strong>Pixel Electronics</strong> — pixelelectric.com</li>\n"
     "</ul>\n"
     "<p>The electronics are reusable, so one kit covers every project in this "
     "curriculum and many more beyond it.</p>\n"
@@ -204,7 +204,7 @@ This plan is for {setting}.
 Design an engaging, safe, age-appropriate, hands-on session on the requested topic.
 Tailor everything to the specific age group and time available.
 Do not include purchase links or URLs of any kind — list any materials by name, spec, and quantity only.
-Do not tag individual materials with shop names. Instead, if the session uses physical electronics components, end the plan with one "<h2>Where to buy your kit in Kenya</h2>" section naming local Nairobi suppliers the teacher can self-purchase from in plain text: Nerokas Engineering (nerokas.co.ke) and Pixel Electronics (pixelelectronics.co.ke). Omit that section for purely software/AI sessions with nothing to buy.
+Do not tag individual materials with shop names. Instead, if the session uses physical electronics components, end the plan with one "<h2>Where to buy your kit in Kenya</h2>" section naming local Nairobi suppliers the teacher can self-purchase from in plain text: Nerokas Engineering (nerokas.co.ke) and Pixel Electronics (pixelelectric.com). Omit that section for purely software/AI sessions with nothing to buy.
 Format output as clean HTML (not markdown) for PDF conversion — use <h2>/<h3>, <ul>/<li>, <table>, <strong>, <em>, <p>, and <pre><code> for any code. NO inline styles."""
 
     request_block = f"\n\n**Educator's request (verbatim):**\n{custom_request}" if custom_request else ""
@@ -252,7 +252,7 @@ def generate_freeform_curriculum_html(request_text, is_homeschool):
 An educator has described, in their own words, the session they want. Design a complete, safe, age-appropriate, hands-on lesson plan that matches their description as closely as possible.
 This plan is for {setting}.
 Infer the topic, age group and duration from their request; if something isn't stated, choose sensible defaults and say what you assumed.
-Do not include purchase links or URLs — list materials by name, spec and quantity only, without tagging individual items with shop names. If the session uses physical electronics components, end with one "<h2>Where to buy your kit in Kenya</h2>" section naming local Nairobi suppliers in plain text: Nerokas Engineering (nerokas.co.ke) and Pixel Electronics (pixelelectronics.co.ke). Omit it for purely software/AI sessions.
+Do not include purchase links or URLs — list materials by name, spec and quantity only, without tagging individual items with shop names. If the session uses physical electronics components, end with one "<h2>Where to buy your kit in Kenya</h2>" section naming local Nairobi suppliers in plain text: Nerokas Engineering (nerokas.co.ke) and Pixel Electronics (pixelelectric.com). Omit it for purely software/AI sessions.
 Always include the COMPLETE code or build steps needed to actually run each activity — never summarise them away. For Arduino/electronics put the full sketch in <pre><code> with comments; for AI activities give the exact tools, step-by-step workflow and example prompts/data.
 Output clean HTML (no markdown, no inline styles): <h2>/<h3>, <ul>/<li>, <table>, <strong>, <em>, <p>, <pre><code>."""
 
