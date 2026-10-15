@@ -15,6 +15,10 @@
     clerkKey: 'pk_live_Y2xlcmsudGlua2Vyd2l0aC5tZSQ=',
     supabaseUrl: 'https://xithafmrpqzwhkqzwfmk.supabase.co',
     supabaseKey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT',
+    // Paystack public key for card / M-Pesa checkout. Paste your pk_test_… to
+    // test, then pk_live_… once your Paystack account is approved. Blank = the
+    // "Pay with Paystack" buttons stay hidden and nothing changes.
+    paystackKey: '',
   };
 
   var LIBS = {
@@ -168,5 +172,8 @@
     esc: esc,
     youtubeEmbed: youtubeEmbed,
     track: track,
+    paystackKey: CONFIG.paystackKey,
+    // The email we charge / record a payment against.
+    get email() { return (state.me && state.me.email) || (state.user && state.user.primaryEmailAddress && state.user.primaryEmailAddress.emailAddress) || ''; },
   };
 })();

@@ -146,8 +146,9 @@ const CURRICULUM_CARD_URL = '';
 const params = new URLSearchParams(location.search);
 let id = params.get('c');
 const PAID_BY_CARD = params.get('paid') === 'card';
-// Back from HustleSasa without a course in the address: use the one they were buying.
-if (PAID_BY_CARD && !id) { try { id = localStorage.getItem('tw_curriculum_pending'); } catch (_) {} }
+const PAID_BY_PS = params.get('paid') === 'paystack';
+// Back from HustleSasa/Paystack without a course in the address: use the one they were buying.
+if ((PAID_BY_CARD || PAID_BY_PS) && !id) { try { id = localStorage.getItem('tw_curriculum_pending'); } catch (_) {} }
 let DATA = null, COURSE = null, MINE = null;
 
 const price = () => TWPrice.fmt(DATA.curriculum_price.price, DATA.curriculum_price.price_usd);
@@ -229,24 +230,36 @@ async function renderBuy() {
   }
   const email = (LMS.state.me && LMS.state.me.email) || '';
   const P = DATA.curriculum_price;
+  // Paystack storefront: a per-course product URL if set, else the store itself.
+  const PS_URL = (c && c.paystack_url) || (DATA.storefront || '');
+  const psDefault = PAID_BY_PS && PS_URL;
   box.innerHTML = head + `
     ${PAID_BY_CARD ? '<p style="margin-top:10px"><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
+    ${PAID_BY_PS ? '<p style="margin-top:10px"><strong>Thanks for paying with Paystack!</strong> Paste your payment reference below and tap <strong>Send</strong>.</p>' : ''}
     ${payStatus()}
-    <ol style="margin-top:12px">
+    ${PS_URL ? `<div class="action" style="margin:12px 0">
+      <a class="tw-btn tw-btn-orange" id="b-paystack" href="${esc(PS_URL)}" target="_blank" rel="noopener" data-ga="curriculum-paystack">💳 Pay ${price()} with Paystack — card or M-Pesa &rarr;</a>
+      <p class="muted" style="margin-top:8px;font-size:14px">Opens our secure Paystack store. After paying, come back and paste your <strong>payment reference</strong> below — we unlock your download for <strong>${esc(email)}</strong>, usually the same day.</p>
+    </div>
+    <p class="muted" style="font-size:13.5px;margin-top:14px">Or pay by M-Pesa Till:</p>` : ''}
+    <ol style="margin-top:8px">
       <li>Pay <strong>KES ${P.price.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${CURRICULUM_CARD_URL ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" id="b-card" href="${CURRICULUM_CARD_URL}">Pay US$${P.price_usd} by card &rarr;</a></li>` : ''}
-      <li>Paste the M-Pesa message${CURRICULUM_CARD_URL ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock your download for <strong>${esc(email)}</strong>, usually the same day.</li>
+      <li>Paste your payment below and tap <strong>Send</strong>. We check it and unlock your download for <strong>${esc(email)}</strong>, usually the same day.</li>
     </ol>
     <form id="pf">
-      ${CURRICULUM_CARD_URL ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500">I paid by
-        <label><input type="radio" name="method" value="mpesa" ${PAID_BY_CARD ? '' : 'checked'}> M-Pesa</label>
-        <label><input type="radio" name="method" value="card" ${PAID_BY_CARD ? 'checked' : ''}> Card</label></div>` : ''}
-      <label class="field-in">M-Pesa message or code${CURRICULUM_CARD_URL ? ', or card order number' : ''}
-        <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${P.price.toLocaleString()}.00 paid to …"></textarea></label>
+      <div class="field-in" style="flex-direction:row;gap:16px;font-weight:500;flex-wrap:wrap">I paid by
+        ${PS_URL ? `<label><input type="radio" name="method" value="paystack" ${psDefault ? 'checked' : ''}> Paystack</label>` : ''}
+        <label><input type="radio" name="method" value="mpesa" ${psDefault ? '' : 'checked'}> M-Pesa</label>
+        ${CURRICULUM_CARD_URL ? `<label><input type="radio" name="method" value="card" ${PAID_BY_CARD ? 'checked' : ''}> Card</label>` : ''}</div>
+      <label class="field-in">Payment reference, or M-Pesa message / code
+        <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="Paystack reference, or: SJK4AB12CD Confirmed. Ksh${P.price.toLocaleString()}.00 paid to …"></textarea></label>
       <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="curriculum-pay">Send payment</button></div>
     </form>`;
   const card = $('b-card');
   if (card) card.onclick = () => { try { localStorage.setItem('tw_curriculum_pending', c.id); } catch (_) {} };
+  const ps = $('b-paystack');
+  if (ps) ps.onclick = () => { try { localStorage.setItem('tw_curriculum_pending', c.id); } catch (_) {} };
   $('pf').onsubmit = async e => {
     e.preventDefault();
     const f = e.target, b = f.querySelector('button'); b.disabled = true;

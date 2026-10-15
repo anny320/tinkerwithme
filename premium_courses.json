@@ -3,6 +3,7 @@
   "price_range": {"min": 5000, "max": 9000},
   "price_range_usd": {"min": 69, "max": 115},
   "curriculum_price": {"price": 1500, "price_usd": 10},
+  "storefront": "https://paystack.shop/tinkerwith-store",
   "maker_kit": {
     "name": "Tinkerwith Maker Kit",
     "price": 8500,
