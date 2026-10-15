@@ -270,6 +270,18 @@ async function renderBuy() {
       renderBuy();
     } catch (err) { toast(err.message); b.disabled = false; }
   };
+  // Returning from the Paystack store: the reference rides on the URL
+  // (?reference=… / ?trxref=…). Fill it in and send it for us automatically.
+  const psRef = params.get('reference') || params.get('trxref');
+  if (psRef && $('pf')) {
+    const mr = document.querySelector('input[name="method"][value="paystack"]');
+    if (mr) mr.checked = true;
+    if ($('pf').msg && !$('pf').msg.value.trim()) $('pf').msg.value = psRef;
+    if (!renderBuy._sent) {
+      renderBuy._sent = true;
+      $('pf').requestSubmit ? $('pf').requestSubmit() : $('pf').dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+  }
 }
 
 LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
