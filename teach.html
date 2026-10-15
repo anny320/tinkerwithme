@@ -708,7 +708,8 @@ async function payments() {
   const pend = list.filter(p => p.pending), done = list.filter(p => !p.pending);
   const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : p.kind === 'bundle' ? 'Bundle (unlocks every course in it)' : 'New enrolment';
-  const amount = p => p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
+  const amount = p => p.method === 'paystack' ? `💳 Paystack · verify the reference in your Paystack dashboard (expected KES ${p.expected_kes.toLocaleString()} or US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)})`
+    : p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
     : p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`
     : p.amount_kes === p.expected_kes ? `KES ${p.amount_kes.toLocaleString()} ✓`
     : `<span class="pay-warn">KES ${p.amount_kes.toLocaleString()}, expected ${p.expected_kes.toLocaleString()}</span>`;

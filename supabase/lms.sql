@@ -461,12 +461,17 @@ create table if not exists public.lms_payments (
   decided_at  timestamptz
 );
 create index if not exists lms_payments_status on public.lms_payments (status, created_at desc);
--- M-Pesa codes are 10 characters; card payments (HustleSasa) store the order number.
-alter table public.lms_payments add column if not exists method text not null default 'mpesa' check (method in ('mpesa', 'card'));
+-- M-Pesa codes are 10 characters; card payments (HustleSasa) store the order
+-- number; Paystack stores the transaction reference.
+alter table public.lms_payments add column if not exists method text not null default 'mpesa';
+alter table public.lms_payments drop constraint if exists lms_payments_method_check;
+alter table public.lms_payments add constraint lms_payments_method_check check (method in ('mpesa', 'card', 'paystack'));
 alter table public.lms_payments drop constraint if exists lms_payments_code_check;
 alter table public.lms_payments drop constraint if exists lms_payments_code_ok;
 alter table public.lms_payments add constraint lms_payments_code_ok check (
-  (method = 'mpesa' and code ~ '^[A-Z0-9]{10}$') or (method = 'card' and code ~ '^[A-Z0-9-]{3,40}$'));
+  (method = 'mpesa' and code ~ '^[A-Z0-9]{10}$')
+  or (method = 'card' and code ~ '^[A-Z0-9-]{3,40}$')
+  or (method = 'paystack' and code ~ '^[A-Z0-9_-]{6,60}$'));
 -- Curriculum purchases are for a live course in premium_courses.json (its id), not an online course.
 alter table public.lms_payments add column if not exists product text check (product is null or product ~ '^[a-z0-9]+(-[a-z0-9]+)*$');
 alter table public.lms_payments drop constraint if exists lms_payments_kind_check;
@@ -495,13 +500,17 @@ declare
   v_code text; v_amount int; v_kind text; c lms_courses; r lms_payments;
 begin
   if uid is null then raise exception 'Please sign in.'; end if;
-  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
+  if p_method not in ('mpesa', 'card', 'paystack') then raise exception 'Unknown payment method.'; end if;
   select * into c from lms_courses where id = p_course and is_published;
   if not found then raise exception 'Course not found.'; end if;
   if p_method = 'card' then
     -- The first word with a digit in it, e.g. "Order #HS-48213" → HS-48213.
     v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
     if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  elsif p_method = 'paystack' then
+    -- Paystack transaction reference, pasted from the receipt.
+    v_code := left(regexp_replace(upper(btrim(msg)), '[^A-Z0-9_-]', '', 'g'), 60);
+    if coalesce(char_length(v_code), 0) < 6 then raise exception 'We couldn''t read your Paystack reference. Paste the reference from your Paystack receipt.'; end if;
   else
     select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
       where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
@@ -592,10 +601,13 @@ declare uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 
 begin
   if uid is null then raise exception 'Please sign in.'; end if;
   if coalesce(p_premium, '') !~ '^[a-z0-9]+(-[a-z0-9]+)*$' then raise exception 'Curriculum not found.'; end if;
-  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
+  if p_method not in ('mpesa', 'card', 'paystack') then raise exception 'Unknown payment method.'; end if;
   if p_method = 'card' then
     v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
     if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  elsif p_method = 'paystack' then
+    v_code := left(regexp_replace(upper(btrim(msg)), '[^A-Z0-9_-]', '', 'g'), 60);
+    if coalesce(char_length(v_code), 0) < 6 then raise exception 'We couldn''t read your Paystack reference. Paste the reference from your Paystack receipt.'; end if;
   else
     select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
       where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
@@ -704,10 +716,13 @@ declare uid text := lms_uid(); msg text := left(btrim(coalesce(p_message, '')), 
 begin
   if uid is null then raise exception 'Please sign in.'; end if;
   if not exists (select 1 from lms_bundles where slug = p_bundle and is_published) then raise exception 'Bundle not found.'; end if;
-  if p_method not in ('mpesa', 'card') then raise exception 'Unknown payment method.'; end if;
+  if p_method not in ('mpesa', 'card', 'paystack') then raise exception 'Unknown payment method.'; end if;
   if p_method = 'card' then
     v_code := left((regexp_match(upper(msg), '([A-Z0-9][A-Z0-9-]*[0-9][A-Z0-9-]*)'))[1], 40);
     if coalesce(char_length(v_code), 0) < 3 then raise exception 'Please paste your HustleSasa order number.'; end if;
+  elsif p_method = 'paystack' then
+    v_code := left(regexp_replace(upper(btrim(msg)), '[^A-Z0-9_-]', '', 'g'), 60);
+    if coalesce(char_length(v_code), 0) < 6 then raise exception 'We couldn''t read your Paystack reference. Paste the reference from your Paystack receipt.'; end if;
   else
     select m[1] into v_code from regexp_matches(upper(msg), '\m([A-Z0-9]{10})\M', 'g') as m
       where m[1] ~ '[0-9]' and m[1] ~ '[A-Z]' limit 1;
