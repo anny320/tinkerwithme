@@ -62,7 +62,7 @@ Typical duration: {time} minutes
 Include ALL of the following sections as clean HTML (no markdown, no inline styles):
 
 <h2>Materials</h2>
-Full component list with quantities. For each item include the local supplier in parentheses — use Nerokas (nerokas.co.ke) or Pixel Electronics (pixelelectronics.co.ke) for Nairobi.
+Full component list with quantities, by item, spec and quantity only. Do not name any shops or suppliers, and do not include purchase links or URLs.
 
 <h2>How It Works</h2>
 Plain-English explanation of the electronics/code concept. No jargon — explain as if to an intelligent 10-year-old.
