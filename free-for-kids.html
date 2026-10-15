@@ -62,6 +62,18 @@
 .fc-grid a>span:last-child{font-size:14.5px;color:var(--text-2)}
 .fc-grid .tag{align-self:flex-start}
 #buildalong-grid .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--ink);border-radius:8px;margin-bottom:4px}
+
+/* ── Section rhythm + jump nav ── */
+.fc-jump{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.fc-jump a{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  border:2px solid var(--ink);border-radius:99px;padding:7px 15px;background:var(--white);color:var(--ink);text-decoration:none;transition:background .12s,color .12s}
+.fc-jump a:hover{background:var(--ink);color:var(--white)}
+.fc-sec{margin-top:3.4rem;scroll-margin-top:90px}
+.fc-sec:first-of-type{margin-top:0}
+.fc-sec-head{margin-bottom:1.3rem}
+.fc-eyebrow{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-deep)}
+.fc-sec-head h2{font-size:clamp(24px,3.4vw,32px);font-weight:600;line-height:1.12;margin:7px 0 5px}
+.fc-sec-head p{color:var(--text-2);max-width:62ch;font-size:16px}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -98,11 +110,23 @@
     <span class="tw-eyebrow-pill">Free activities &amp; courses</span>
     <h1 class="tw-h1" style="font-size:clamp(32px,5vw,52px)">Free for kids</h1>
     <p>Robotics and AI activities to play on screen or print at home. Every one ends with a certificate to keep.</p>
+    <nav class="fc-jump" aria-label="Jump to a section">
+      <a href="#games">🎮 Games</a>
+      <a href="#projects">🔧 Build-along</a>
+      <a href="#courses">🎓 Courses</a>
+      <a href="#builds">📷 Builds Wall</a>
+    </nav>
   </div>
 </header>
 
 <section class="tw-section">
   <div class="tw-container">
+    <div class="fc-sec" id="games">
+    <div class="fc-sec-head">
+      <span class="fc-eyebrow">Play right now</span>
+      <h2>Games &amp; activities</h2>
+      <p>Jump straight in on screen, or print and play at home. No sign-up needed &mdash; and every one ends with a certificate to keep.</p>
+    </div>
     <div class="acts">
       <a class="act color" href="coloring-book.html" data-ga="free-for-kids-coloring-book">
         <div class="act-art"><img src="assets/coloring-preview.svg" alt="Three colored robots from the coloring book: a humanoid robot, a robot dog and a drone" width="960" height="260"></div>
@@ -148,28 +172,38 @@
         </div>
       </a>
     </div>
+    </div>
 
-    <div id="buildalong-block" hidden>
-      <h2 class="fc-head">Free build-along projects</h2>
-      <p class="fc-lede">34 hands-on Arduino &amp; AI projects with full step-by-step guides, wiring diagrams and a certificate &mdash; free. Grab the Maker Kit (or the free Tinkercad simulator) and build along.</p>
+    <div class="fc-sec" id="projects" hidden>
+      <div class="fc-sec-head">
+        <span class="fc-eyebrow">Hands-on &middot; free</span>
+        <h2>Build-along projects</h2>
+        <p>34 real Arduino &amp; AI projects with full step-by-step guides, wiring diagrams and a certificate. Grab the Maker Kit (or the free Tinkercad simulator) and build along.</p>
+      </div>
       <div class="fc-grid" id="buildalong-grid"></div>
     </div>
 
-    <div class="fc-builds" style="margin:2.5rem 0;padding:1.6rem 1.5rem;border:2px solid var(--ink);border-radius:16px;background:var(--cream);text-align:center">
-      <h2 class="fc-head" style="margin-top:0">📷 Show us what you built</h2>
-      <p class="fc-lede" id="fc-builds-lede">Finished a project? Share a photo &mdash; we feature the best builds by kids across Kenya on our Builds Wall. A grown-up checks every photo first.</p>
-      <p style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a class="tw-btn tw-btn-orange" href="share.html" data-ga="free-for-kids-share-build">Share your build</a>
-        <a class="tw-btn tw-btn-white" href="builds-wall.html" data-ga="free-for-kids-builds-wall">See the Builds Wall &rarr;</a>
-      </p>
-    </div>
-
-    <h2 class="fc-head">Free online courses</h2>
-    <p class="fc-lede">Real lessons with quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace.</p>
-    <div class="fc-grid">
+    <div class="fc-sec" id="courses">
+      <div class="fc-sec-head">
+        <span class="fc-eyebrow">Lessons &amp; certificate</span>
+        <h2>Free online courses</h2>
+        <p>Real lessons with quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace.</p>
+      </div>
+      <div class="fc-grid">
       <a href="course.html?c=ai-skills-for-kids" data-ga="free-for-kids-ai-skills"><span class="tag age">Ages 7&ndash;9</span><strong>AI Skills for Kids</strong><span>How AI works, how it learns, and how to use it kindly and safely.</span></a>
       <a href="course.html?c=what-is-ai" data-ga="free-for-kids-what-is-ai"><span class="tag age">Ages 10+</span><strong>What is Artificial Intelligence?</strong><span>Spot AI in everyday life, see how chatbots work, and think about fairness.</span></a>
       <a href="course.html?c=robotics-101" data-ga="free-for-kids-robotics-101"><span class="tag age">Ages 8&ndash;14</span><strong>Robotics 101</strong><span>Wire up Arduino traffic lights. Needs an Arduino starter kit or the Tinkerwith Maker Kit.</span></a>
+    </div>
+    </div>
+
+    <div class="fc-sec fc-builds" id="builds" style="padding:1.9rem 1.6rem;border:2px solid var(--ink);border-radius:16px;background:var(--cream);text-align:center">
+      <span class="fc-eyebrow">Made something? Show it off</span>
+      <h2 style="font-size:clamp(24px,3.4vw,32px);font-weight:600;margin:7px 0 6px">📷 Share your build</h2>
+      <p class="fc-lede" id="fc-builds-lede" style="margin:0 auto;max-width:60ch">Finished a project? Share a photo &mdash; we feature the best builds by kids across Kenya on our Builds Wall. A grown-up checks every photo first.</p>
+      <p style="margin-top:1.1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="tw-btn tw-btn-orange" href="share.html" data-ga="free-for-kids-share-build">Share your build</a>
+        <a class="tw-btn tw-btn-white" href="builds-wall.html" data-ga="free-for-kids-builds-wall">See the Builds Wall &rarr;</a>
+      </p>
     </div>
 
     <div class="note">
@@ -251,7 +285,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
       '<strong>' + esc(c.title) + '</strong><span>' + esc(c.summary) + '</span></a>'
     ).join('');
-    document.getElementById('buildalong-block').hidden = false;
+    document.getElementById('projects').hidden = false;
     if (typeof gtag === 'function') gtag('event', 'free_buildalong_shown', { count: list.length });
   } catch (e) { /* unavailable or none published — section stays hidden */ }
 })();
