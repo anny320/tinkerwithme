@@ -63,6 +63,20 @@
 .fc-grid .tag{align-self:flex-start}
 #buildalong-grid .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--ink);border-radius:8px;margin-bottom:4px}
 
+/* ── Big course cards (unified free-courses block) ── */
+.fc-courses{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:1080px){.fc-courses{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.fc-courses{grid-template-columns:1fr}}
+.fc-course{display:flex;flex-direction:column;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .12s ease,box-shadow .12s ease}
+.fc-course:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.fc-course .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--ink);display:block;background:var(--cream)}
+.fc-course .fc-course-body{padding:1.1rem 1.25rem 1.3rem;display:flex;flex-direction:column;gap:9px;flex:1}
+.fc-course h3{font-size:21px;font-weight:600;line-height:1.15}
+.fc-course p{font-size:15px;color:var(--text-2);flex:1}
+.fc-course .tag{align-self:flex-start}
+.fc-course .go{margin-top:2px;font-weight:600;color:var(--orange-deep)}
+.fc-courses .loading{grid-column:1/-1}
+
 /* ── Section rhythm + jump nav ── */
 .fc-jump{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
 .fc-jump a{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -112,8 +126,7 @@
     <p>Robotics and AI activities to play on screen or print at home. Every one ends with a certificate to keep.</p>
     <nav class="fc-jump" aria-label="Jump to a section">
       <a href="#games">🎮 Games</a>
-      <a href="#projects">🔧 Build-along</a>
-      <a href="#courses">🎓 Courses</a>
+      <a href="#courses">🎓 Free courses</a>
       <a href="#builds">📷 Builds Wall</a>
     </nav>
   </div>
@@ -174,26 +187,13 @@
     </div>
     </div>
 
-    <div class="fc-sec" id="projects" hidden>
-      <div class="fc-sec-head">
-        <span class="fc-eyebrow">Hands-on &middot; free</span>
-        <h2>Build-along projects</h2>
-        <p>34 real Arduino &amp; AI projects with full step-by-step guides, wiring diagrams and a certificate. Grab the Maker Kit (or the free Tinkercad simulator) and build along.</p>
-      </div>
-      <div class="fc-grid" id="buildalong-grid"></div>
-    </div>
-
     <div class="fc-sec" id="courses">
       <div class="fc-sec-head">
-        <span class="fc-eyebrow">Lessons &amp; certificate</span>
+        <span class="fc-eyebrow">Lessons, projects &amp; certificates</span>
         <h2>Free online courses</h2>
-        <p>Real lessons with quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace.</p>
+        <p>Real courses with step-by-step lessons, quizzes and a certificate. A grown-up signs up free (no card), then you learn at your own pace &mdash; on screen or building along at home.</p>
       </div>
-      <div class="fc-grid">
-      <a href="course.html?c=ai-skills-for-kids" data-ga="free-for-kids-ai-skills"><span class="tag age">Ages 7&ndash;9</span><strong>AI Skills for Kids</strong><span>How AI works, how it learns, and how to use it kindly and safely.</span></a>
-      <a href="course.html?c=what-is-ai" data-ga="free-for-kids-what-is-ai"><span class="tag age">Ages 10+</span><strong>What is Artificial Intelligence?</strong><span>Spot AI in everyday life, see how chatbots work, and think about fairness.</span></a>
-      <a href="course.html?c=robotics-101" data-ga="free-for-kids-robotics-101"><span class="tag age">Ages 8&ndash;14</span><strong>Robotics 101</strong><span>Wire up Arduino traffic lights. Needs an Arduino starter kit or the Tinkerwith Maker Kit.</span></a>
-    </div>
+      <div class="fc-courses" id="free-courses-grid"><p class="loading">Loading free courses&hellip;</p></div>
     </div>
 
     <div class="fc-sec fc-builds" id="builds" style="padding:1.9rem 1.6rem;border:2px solid var(--ink);border-radius:16px;background:var(--cream);text-align:center">
@@ -269,25 +269,35 @@
 </div>
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
-// Free build-along courses — loaded live from Supabase, shown only once published.
+// Free online courses — the 7 curated courses (live from Supabase) + 3 classics.
 (async () => {
-  const SLUGS = ['first-circuits-lights','sound-sensors-signals','machines-movement','robots-smart-builds','ai-creator-studio','how-ai-really-works','ai-and-your-future'];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const PLACEHOLDER = 'assets/courses/free/placeholder.svg';
+  // Older free courses kept in the same block (branded covers, no Supabase needed).
+  const CLASSICS = [
+    { slug:'ai-skills-for-kids', title:'AI Skills for Kids', age_range:'7–9', cover_url:'assets/courses/free/ai-skills-for-kids.svg', summary:'How AI works, how it learns, and how to use it kindly and safely.' },
+    { slug:'what-is-ai', title:'What is Artificial Intelligence?', age_range:'10+', cover_url:'assets/courses/free/what-is-ai.svg', summary:'Spot AI in everyday life, see how chatbots work, and think about fairness.' },
+    { slug:'robotics-101', title:'Robotics 101', age_range:'8–14', cover_url:'assets/courses/free/robotics-101.svg', summary:'Wire up Arduino traffic lights. Needs an Arduino starter kit or the Tinkerwith Maker Kit.' },
+  ];
+  const SLUGS = ['first-circuits-lights','sound-sensors-signals','machines-movement','robots-smart-builds','ai-creator-studio','how-ai-really-works','ai-and-your-future'];
+  let curated = [];
   try {
     const url = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,cover_url,position&is_published=eq.true&slug=in.(' + SLUGS.join(',') + ')&order=position';
     const r = await fetch(url, { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
-    if (!r.ok) throw new Error(r.status);
-    const list = await r.json();
-    if (!list.length) return;
-    document.getElementById('buildalong-grid').innerHTML = list.map(c =>
-      '<a href="course.html?c=' + encodeURIComponent(c.slug) + '" data-ga="free-for-kids-buildalong-' + esc(c.slug) + '">' +
-      (c.cover_url ? '<img class="fc-cover" src="' + esc(c.cover_url) + '" alt="" loading="lazy">' : '') +
-      (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
-      '<strong>' + esc(c.title) + '</strong><span>' + esc(c.summary) + '</span></a>'
-    ).join('');
-    document.getElementById('projects').hidden = false;
-    if (typeof gtag === 'function') gtag('event', 'free_buildalong_shown', { count: list.length });
-  } catch (e) { /* unavailable or none published — section stays hidden */ }
+    if (r.ok) curated = await r.json();
+  } catch (e) { /* show the classics regardless */ }
+  const all = curated.concat(CLASSICS);
+  const grid = document.getElementById('free-courses-grid');
+  if (!grid) return;
+  grid.innerHTML = all.map(c =>
+    '<a class="fc-course" href="course.html?c=' + encodeURIComponent(c.slug) + '" data-ga="free-for-kids-course-' + esc(c.slug) + '">' +
+    '<img class="fc-cover" src="' + esc(c.cover_url || PLACEHOLDER) + '" alt="" loading="lazy">' +
+    '<div class="fc-course-body">' +
+    (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
+    '<h3>' + esc(c.title) + '</h3><p>' + esc(c.summary || '') + '</p>' +
+    '<span class="go">Start course &rarr;</span></div></a>'
+  ).join('');
+  if (typeof gtag === 'function') gtag('event', 'free_courses_shown', { count: all.length });
 })();
 // Live build count for the Builds Wall call-to-action.
 (async () => {
