@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://tinkerwith.me/resources.html">
+<title>Teach with what you have — a resources guide — TinkerWith_</title>
+<meta name="description" content="A resources guide for teachers: run every Tinkerwith robotics and AI project with everyday technology and cheap local parts. One small core buy (a microcontroller) and everything else you can salvage, source locally or skip with the free simulator.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TinkerWith_">
+<meta property="og:url" content="https://tinkerwith.me/resources.html">
+<meta property="og:title" content="Teach with what you have — a resources guide">
+<meta property="og:description" content="Run every Tinkerwith robotics &amp; AI project with everyday tech and cheap local parts. One small core buy; everything else you salvage or source locally.">
+<meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Teach with what you have — a resources guide">
+<meta name="twitter:description" content="Run every Tinkerwith robotics &amp; AI project with everyday tech and cheap local parts.">
+<meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.sec-h{font-size:clamp(24px,3.4vw,34px);font-weight:600;margin-bottom:.4rem}
+.sec-lede{color:var(--text-2);max-width:62ch;margin-bottom:1.3rem}
+/* Core-buy callout */
+.buy{display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:center;background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.4rem 1.6rem}
+@media(max-width:600px){.buy{grid-template-columns:1fr}}
+.buy .chip{font-size:40px;width:70px;height:70px;display:grid;place-items:center;border-radius:16px;border:2px solid var(--ink);background:var(--white)}
+.buy h3{font-size:20px;font-weight:600;margin-bottom:4px}
+.buy p{font-size:15px;color:var(--ink)}
+/* Salvage shelf */
+.salvage{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+@media(max-width:760px){.salvage{grid-template-columns:1fr}}
+.salvage div{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:4px 4px 0 var(--ink);padding:1rem 1.2rem;display:flex;gap:12px;align-items:flex-start}
+.salvage .si{font-size:26px;width:48px;height:48px;flex:none;display:grid;place-items:center;border-radius:12px;border:2px solid var(--ink);background:var(--cream)}
+.salvage strong{display:block;font-size:16px}
+.salvage span{font-size:14px;color:var(--text-2)}
+/* Project cards */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+@media(max-width:820px){.proj-grid{grid-template-columns:1fr}}
+.proj{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.2rem 1.3rem}
+.proj h3{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.proj .have,.proj .add{font-size:14.5px;margin-top:6px}
+.proj .lab{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:2px 7px;margin-right:6px}
+.proj .lab.have{background:var(--green,#8BD450);border:2px solid var(--ink)}
+.proj .lab.add{background:var(--cream);border:2px solid var(--ink)}
+.track-head{display:flex;align-items:center;gap:10px;margin:2rem 0 1rem}
+.track-head .tn{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:99px;padding:4px 12px}
+.track-head.ar .tn{background:var(--orange-soft,#FFE3CF)}
+.track-head.ai .tn{background:var(--green-soft,#DFF4C9)}
+.ai-note{background:var(--green-soft,#DFF4C9);border:2px solid var(--ink);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;font-size:15px}
+.note{background:var(--ink);color:var(--white);border-radius:var(--radius-lg);padding:1.5rem 1.6rem;margin-top:2.4rem}
+.note h3{color:var(--white);font-size:19px;font-weight:600;margin-bottom:6px}
+.note p{color:var(--on-ink,rgba(255,255,255,.86));font-size:15px;max-width:66ch}
+.note a{color:var(--white);font-weight:600}
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html">
+      <img src="assets/mark.png" alt="">
+      <span>Tinkerwith_</span>
+    </a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link is-active" href="teachers.html" aria-current="page">For teachers</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail">
+      <a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">The Teachers' Workbench &middot; resources guide</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">Teach with what you have</h1>
+    <p>Run every Tinkerwith project with everyday technology and cheap local parts. One small core buy &mdash; a microcontroller &mdash; and everything else you can salvage, source locally, or skip with the free simulator.</p>
+    <p style="margin-top:1rem"><a class="tw-btn tw-btn-white" style="color:var(--ink)" href="teachers.html" data-ga="resources-back">&larr; Back to the Workbench</a></p>
+  </div>
+</header>
+
+<!-- ── THE ONE CORE BUY ──────────────────────────────────── -->
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="buy">
+      <div class="chip">🧠</div>
+      <div>
+        <h3>The one thing to buy: a microcontroller</h3>
+        <p>It&rsquo;s the &ldquo;brain&rdquo; every Arduino project shares &mdash; an Arduino Uno or Nano, or a low-cost clone for a few hundred shillings, reused across all nine projects. Can&rsquo;t buy one yet? Build and test the whole circuit free in the <strong>Tinkercad simulator</strong> first. Everything else on this page, you can tinker with what you have.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE SALVAGE SHELF ─────────────────────────────────── -->
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">The salvage shelf</h2>
+    <p class="sec-lede">Start a classroom box. These everyday things hide the parts most projects need &mdash; ask families and repair shops to save them.</p>
+    <div class="salvage">
+      <div><span class="si">🚗</span><div><strong>Broken toys &amp; RC cars</strong><span>DC motors, wheels, gears, battery holders, switches</span></div></div>
+      <div><span class="si">📱</span><div><strong>Old phones &amp; chargers</strong><span>5V power, a vibration motor, a tiny speaker, a camera for AI vision</span></div></div>
+      <div><span class="si">🔌</span><div><strong>Dead electronics &amp; e-waste boards</strong><span>LEDs, resistors, wires, buttons, capacitors</span></div></div>
+      <div><span class="si">✨</span><div><strong>Fairy lights &amp; decorations</strong><span>LEDs by the dozen</span></div></div>
+      <div><span class="si">🎵</span><div><strong>Musical greeting cards</strong><span>a piezo buzzer / speaker</span></div></div>
+      <div><span class="si">📻</span><div><strong>Old radios &amp; speakers</strong><span>potentiometers (volume knobs), speakers</span></div></div>
+      <div><span class="si">📺</span><div><strong>TV &amp; AC remotes</strong><span>IR LEDs, buttons, phototransistors</span></div></div>
+      <div><span class="si">🏠</span><div><strong>Around the house</strong><span>cardboard, bottles, bottle caps, ice-cream sticks, foil, nails &amp; wire (DIY sensors), rubber bands, pegs</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT EACH PROJECT NEEDS ───────────────────────────── -->
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">What each project needs</h2>
+    <p class="sec-lede">The <span class="lab add" style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;background:var(--cream);border:2px solid var(--ink);border-radius:6px;padding:2px 7px">Optional add-on</span> is a cheap part to buy only if you can&rsquo;t salvage it. Everything under <strong>You already have</strong> comes from the salvage shelf.</p>
+
+    <div class="track-head ar"><span class="tn">🔧 Arduino &middot; 9 projects</span></div>
+    <div class="proj-grid">
+      <div class="proj"><h3>🏠 Smart Home Builder</h3>
+        <p class="have"><span class="lab have">Have</span>Cardboard house, salvaged LEDs, a card buzzer, an LDR from a remote, bottle-cap buttons.</p>
+        <p class="add"><span class="lab add">Add-on</span>A PIR motion sensor, or a small servo for a door.</p></div>
+      <div class="proj"><h3>🚗 Self-Driving Car</h3>
+        <p class="have"><span class="lab have">Have</span>Motors &amp; wheels from a toy car, a cardboard or bottle chassis, AA holder or power bank, a bottle-cap caster.</p>
+        <p class="add"><span class="lab add">Add-on</span>A motor driver + an ultrasonic or IR sensor.</p></div>
+      <div class="proj"><h3>🏙️ Smart City</h3>
+        <p class="have"><span class="lab have">Have</span>Cardboard blocks, salvaged LEDs for traffic lights and street lamps, an LDR, a buzzer.</p>
+        <p class="add"><span class="lab add">Add-on</span>None needed.</p></div>
+      <div class="proj"><h3>🦾 Robot Arm &amp; Claw</h3>
+        <p class="have"><span class="lab have">Have</span>Ice-cream sticks, cardboard, bottle caps and rubber bands for the arm (or syringes for unplugged hydraulics).</p>
+        <p class="add"><span class="lab add">Add-on</span>2&ndash;4 hobby servos &mdash; the one part worth buying here.</p></div>
+      <div class="proj"><h3>⌚ Wearable Tech Lab</h3>
+        <p class="have"><span class="lab have">Have</span>An old cap or T-shirt, salvaged LEDs, foil tape as a conductive track, a coin or AA battery.</p>
+        <p class="add"><span class="lab add">Add-on</span>A tilt or temperature sensor, if you want sensing.</p></div>
+      <div class="proj"><h3>🌱 IoT Garden Monitor</h3>
+        <p class="have"><span class="lab have">Have</span>Two nails + wire for a DIY soil-moisture probe, a bottle planter, salvaged LEDs.</p>
+        <p class="add"><span class="lab add">Add-on</span>A temperature / humidity sensor.</p></div>
+      <div class="proj"><h3>🎹 Musical Instrument Builder</h3>
+        <p class="have"><span class="lab have">Have</span>A speaker or piezo from old electronics, buttons from a remote, a potentiometer from a radio, a cardboard body.</p>
+        <p class="add"><span class="lab add">Add-on</span>None needed.</p></div>
+      <div class="proj"><h3>🪴 Smart Plant Carer</h3>
+        <p class="have"><span class="lab have">Have</span>A DIY nail moisture probe, a bottle reservoir, LED or buzzer alerts from salvage.</p>
+        <p class="add"><span class="lab add">Add-on</span>A mini water pump, for auto-watering.</p></div>
+      <div class="proj"><h3>📶 Bluetooth Control Lab</h3>
+        <p class="have"><span class="lab have">Have</span>Your phone as the remote, salvaged LEDs and motors.</p>
+        <p class="add"><span class="lab add">Add-on</span>A Bluetooth module (HC-05 / HC-06).</p></div>
+    </div>
+
+    <div class="track-head"><span class="tn" style="background:#FFD23F;border:2px solid var(--ink)">🏙️🤖 Combo</span></div>
+    <div class="proj-grid">
+      <div class="proj"><h3>🏙️ Smart City 2.0 — AI-Powered</h3>
+        <p class="have"><span class="lab have">Have</span>The Smart City salvage above, plus a phone or laptop for the AI parts.</p>
+        <p class="add"><span class="lab add">Add-on</span>Same as Smart City &mdash; the AI runs in a browser.</p></div>
+    </div>
+
+    <div class="track-head ai"><span class="tn">🤖 AI &middot; 7 projects</span></div>
+    <div class="ai-note">
+      <strong>No kit at all.</strong> The seven AI courses &mdash; AI Game Designer, AI Movie Studio, AI Entrepreneur, Deepfake Detective &amp; AI Safety, AI Music Producer, Computer Vision Explorer and AI for Social Good &mdash; need only a phone, tablet or computer with a browser, and free tools (including the Tinkerwith AI tutor). Computer Vision Explorer uses the device&rsquo;s camera. A shared device for a small group is plenty.
+    </div>
+  </div>
+</section>
+
+<!-- ── START WITH ZERO HARDWARE ──────────────────────────── -->
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="note">
+      <h3>A starting point &mdash; check it against the curriculum</h3>
+      <p>These are suggestions to spark local sourcing, not a parts list. Always follow a project&rsquo;s own materials list, and test salvaged parts before class. Want help adapting a project to what your learners can find locally? <a href="https://wa.me/254117784724?text=Hi%20Anne%2C%20a%20question%20about%20the%20teacher%20resources%20guide%3A%20" target="_blank" rel="noopener" data-ga="resources-wa">Message Anne on WhatsApp</a> or head back to <a href="teachers.html">the Workbench</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div>
+      <div class="tw-footer-brand">
+        <img src="assets/mark-light.png" alt="">
+        <span>Tinkerwith_</span>
+      </div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p>
+    </div>
+    <div>
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="picker.html">Plan a session</a></li>
+        <li><a href="courses.html">Courses &amp; camps</a></li>
+        <li><a href="learn.html">Online courses</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="schools.html">For schools</a></li>
+        <li><a href="teachers.html">For teachers</a></li>
+        <li><a href="curriculum.html">Curriculums for teachers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="picker.html">Course picker</a></li>
+        <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+        <li><a href="camp-planner.html">Camp planner</a></li>
+        <li><a href="coloring-book.html">Robot coloring book</a></li>
+        <li><a href="ai-careers-crossword.html">AI careers crossword</a></li>
+        <li><a href="train-an-ai.html">Train an AI game</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+        <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://wakaratech.com" target="_blank" rel="noopener">Wakara Technologies</a></li>
+        <li><a href="stories.html">Share your story</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="tw-footer-tail">
+  <div class="tw-footer-tail-inner">
+    <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span>
+    <span>DIY Electronics Projects</span>
+  </div>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

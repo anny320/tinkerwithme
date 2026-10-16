@@ -76,7 +76,7 @@
 .way li::before{content:'—';color:var(--accent);margin-right:9px;font-weight:600}
 .way .tw-link-arrow{margin-top:auto;padding-top:10px}
 @media(max-width:900px){.ways{grid-template-columns:1fr}}
-.choose{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.choose{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:1.2rem}
 @media(max-width:860px){.choose{grid-template-columns:1fr}}
 .choose-card{display:flex;flex-direction:column;gap:6px;background:var(--white);border:2px solid var(--ink);border-top:6px solid var(--accent);border-radius:var(--radius-lg);
   box-shadow:6px 6px 0 var(--ink);padding:1.3rem 1.4rem;color:var(--ink);text-decoration:none;transition:transform .12s,box-shadow .12s}
@@ -432,6 +432,8 @@
     <div class="choose">
       <a class="choose-card" href="#free" style="--accent:var(--green)"><span class="ch-icon">👩</span><b>I'm a parent</b>
         <span>Find the right learning journey for your child &mdash; start with a free course.</span><i>Start free &darr;</i></a>
+      <a class="choose-card" href="teachers.html" style="--accent:var(--orange)" data-ga="choose-teacher"><span class="ch-icon">🧑&zwj;🏫</span><b>I'm a teacher</b>
+        <span>Teach robotics &amp; AI with what you have &mdash; curriculums, planners and free projects.</span><i>Open the Workbench &rarr;</i></a>
       <a class="choose-card" href="schools.html" style="--accent:var(--blue)"><span class="ch-icon">🏫</span><b>I'm a school</b>
         <span>Bring AI, robotics &amp; engineering to your classroom or holiday camp.</span><i>See school programmes &rarr;</i></a>
       <a class="choose-card" href="organisation.html" style="--accent:#7A3FB0"><span class="ch-icon">🤝</span><b>I'm an organisation</b>
@@ -647,7 +649,7 @@
       <details><summary>We don&rsquo;t live in Kenya. Can my child join?</summary>
         <p>Yes. Online courses work from anywhere, and live classes run online 1:1 or in small groups, scheduled in your time zone. Prices show in US$, and you can pay by card.</p></details>
       <details><summary>What does my child need?</summary>
-        <p>A computer or tablet with internet for online lessons. AI courses need nothing else. Arduino courses use the Tinkerwith Maker Kit, which you can buy once and reuse in every course, or build free in the Tinkercad simulator first.</p></details>
+        <p>A computer or tablet with internet for online lessons. AI courses need nothing else. Arduino courses need only a microcontroller and everyday parts — you can build free in the Tinkercad simulator, tinker with what you have, or buy the optional Tinkerwith Maker Kit.</p></details>
       <details><summary>How do I pay?</summary>
         <p>In Kenya, by M-Pesa (Till 3022049; the prompt shows Wakara Technologies Limited, the company behind Tinkerwith). From abroad, by card. Online courses unlock once we&rsquo;ve checked the payment, usually the same day. Schools can ask for an invoice.</p></details>
       <details><summary>What if it&rsquo;s not right for my child?</summary>
