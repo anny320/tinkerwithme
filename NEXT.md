@@ -1,9 +1,10 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 15 Oct 2026_
+_Last updated: 16 Oct 2026_
 
 ## ▶️ Do first when we resume
-1. **Paystack storefront** (once the account is approved, ~7 days): create the 17 products on `paystack.shop/tinkerwith-store` using the delivered **cover images**, **descriptions** (Word doc), and **After-Purchase** redirect + success message (Word doc). Optionally add each product URL into `premium_courses.json` as `paystack_url` for per-product deep links.
+1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (expect ~23 URLs). Then watch **Indexing → Pages**. The sitemap + robots.txt + canonicals are already live on the site (SEO pass merged). _Note: the "agentic OAuth" email from Google = no action needed; Sign-in-with-Google is auth only, not a Workspace AI agent._
+2. **Paystack storefront** (once the account is approved, ~7 days): create the 17 products on `paystack.shop/tinkerwith-store` using the delivered **cover images**, **descriptions** (Word doc), and **After-Purchase** redirect + success message (Word doc). Optionally add each product URL into `premium_courses.json` as `paystack_url` for per-product deep links.
 
 _(All Supabase SQL for this session is already run: supplier removal, AI student-POV, publish, Paystack method, and the Robots renames/upsells.)_
 
