@@ -86,6 +86,18 @@
 .wl-err a,.wl-done a{color:#fff;font-weight:600}
 .wl-done{color:var(--on-ink,rgba(255,255,255,.9));font-size:15px}
 .wl-done strong{color:var(--white)}
+/* Free-vs-full value ladder */
+.ladder{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+@media(max-width:760px){.ladder{grid-template-columns:1fr}}
+.rung{border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:8px;background:var(--white)}
+.rung.full{background:var(--orange-soft,#FFE3CF)}
+.rung .rtag{align-self:flex-start;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
+.rung.free .rtag{background:var(--green,#8BD450)}
+.rung.full .rtag{background:#FFD23F}
+.rung h3{font-size:19px;font-weight:600}
+.rung ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14.5px;color:var(--text-2)}
+.rung li::before{content:'✓';color:var(--orange-deep,#D2691E);font-weight:700;margin-right:8px}
+.rung a{margin-top:auto;padding-top:8px;align-self:flex-start}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -181,6 +193,38 @@
         <p>Enrol a whole class &mdash; lessons, quizzes and certificates.</p>
         <span class="meta">Group pricing on request</span>
         <a class="tw-link-arrow" href="learn.html" data-ga="teachers-wb-online">See the online courses &rarr;</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRY FREE, THEN GO DEEPER (value ladder) ───────────── -->
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <h2 class="sec-h">Try it free, then go deeper</h2>
+    <p class="sec-lede">The free courses are short <strong>taster</strong> projects. When you&rsquo;re ready to run a full course with your class, the complete curriculum picks up where they leave off.</p>
+    <div class="ladder">
+      <div class="rung free">
+        <span class="rtag">Free</span>
+        <h3>Taster projects — the minis</h3>
+        <ul>
+          <li>34 short build-along projects</li>
+          <li>Lessons, quizzes and a certificate</li>
+          <li>Kid-led and self-paced</li>
+          <li>Great to try, or set as homework</li>
+        </ul>
+        <a class="tw-link-arrow" href="free-for-kids.html" data-ga="teachers-ladder-free">Browse the free projects &rarr;</a>
+      </div>
+      <div class="rung full">
+        <span class="rtag">KES 1,500 / teacher &middot; ~$10</span>
+        <h3>Full ready-to-teach curriculum</h3>
+        <ul>
+          <li>The complete session-by-session plan for a premium course</li>
+          <li>Lesson plans, timings, full code and materials</li>
+          <li>Skill checks you can assess</li>
+          <li>Everything to run it in a class or club</li>
+        </ul>
+        <a class="tw-btn tw-btn-orange" href="curriculum.html" data-ga="teachers-ladder-paid">Browse the curriculums &rarr;</a>
+      </div>
     </div>
   </div>
 </section>
