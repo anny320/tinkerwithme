@@ -119,6 +119,9 @@ a{color:inherit}
   .tw-nav-tail{padding-bottom:6px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px}
   .tw-nav-link{text-align:center;font-size:16px;padding:11px}
   .tw-nav-meta{text-align:center}
+  /* On mobile, surface the two most-used entry points at the top of the menu. */
+  .tw-nav-links .tw-nav-link[href="free-for-kids.html"]{order:-2}
+  .tw-nav-links .tw-nav-link[href="teachers.html"]{order:-1}
 }
 
 /* ── BUTTONS ─────────────────────────────────────────────── */
