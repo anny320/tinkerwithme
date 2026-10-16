@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Private / admin pages (also carry a noindex meta tag)
+Disallow: /admin.html
+Disallow: /staff.html
+Disallow: /teach.html
+
+Sitemap: https://tinkerwith.me/sitemap.xml

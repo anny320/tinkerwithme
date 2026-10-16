@@ -3,10 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TinkerWith_">
+<meta property="og:title" content="Course — TinkerWith_">
+<meta property="og:description" content="An online AI and robotics course for kids from Tinkerwith.">
+<meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script>/*canonical-injector*/(function(){var c=location.origin+location.pathname+location.search;var l=document.querySelector('link[rel="canonical"]')||document.createElement("link");l.rel="canonical";l.href=c;document.head.appendChild(l);})();</script>
 <title>Course — TinkerWith_</title>
 <meta name="description" content="An online AI and robotics course for kids from Tinkerwith.">
 <meta name="theme-color" content="#FF7F32">
-<meta property="og:image" content="assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,6 +235,26 @@ function renderTags() {
     + (C.is_published ? '' : '<span class="tag draft">Draft</span>');
 }
 
+function setCourseSchema() {
+  try {
+    const free = !C.price_kes;
+    const data = {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": C.title,
+      "description": C.summary || '',
+      "url": location.origin + location.pathname + location.search,
+      "inLanguage": "en",
+      "provider": { "@type": "Organization", "name": "TinkerWith_", "sameAs": "https://tinkerwith.me/" },
+      "offers": { "@type": "Offer", "category": free ? "Free" : "Paid", "price": free ? 0 : C.price_kes, "priceCurrency": "KES", "availability": "https://schema.org/InStock" },
+      "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "online", "courseWorkload": "PT" + Math.max(1, (C.lessons || []).length) + "H" }
+    };
+    let el = document.getElementById('course-schema');
+    if (!el) { el = document.createElement('script'); el.id = 'course-schema'; el.type = 'application/ld+json'; document.head.appendChild(el); }
+    el.textContent = JSON.stringify(data);
+  } catch (e) { /* structured data is a nicety */ }
+}
+
 async function loadCourse() {
   try { C = await LMS.rpc('lms_course', { p_slug: slug }); }
   catch (e) { return status(`<div class="notice err">${esc(e.message)}</div>`); }
@@ -240,6 +266,7 @@ async function loadCourse() {
   $('c-title').textContent = C.title;
   await loadPays();
   $('c-summary').textContent = C.summary;
+  setCourseSchema();
   renderTags();
   document.addEventListener('tw:currency', () => { renderTags(); if (!location.hash.startsWith('#l=')) renderOverview(); });
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://tinkerwith.me/">
 <title>TinkerWith_ — DIY electronics, robotics &amp; AI for young makers</title>
 <meta name="description" content="TinkerWith_ is the playground where young minds explore robotics, electronics and AI. Guided projects, self-paced online courses, and live courses online and across Nairobi.">
 <meta name="theme-color" content="#FF7F32">
@@ -306,6 +307,30 @@
 <script src="analytics.js"></script>
 <script src="price.js"></script>
 <script src="site-data.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "TinkerWith_",
+  "alternateName": "Tinkerwith",
+  "url": "https://tinkerwith.me/",
+  "logo": "https://tinkerwith.me/assets/logo.jpg",
+  "description": "DIY electronics, robotics and AI eLearning for young minds, ages 5–16 — online worldwide and in person in Nairobi.",
+  "email": "tinkerwithanne@gmail.com",
+  "founder": { "@type": "Person", "name": "Anne Salim" },
+  "areaServed": "Worldwide",
+  "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
+  "contactPoint": { "@type": "ContactPoint", "telephone": "+254117784724", "contactType": "customer service", "availableLanguage": "en" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "TinkerWith_",
+  "url": "https://tinkerwith.me/"
+}
+</script>
 </head>
 <body>
 
@@ -357,7 +382,7 @@
         <a class="tw-btn tw-btn-ink" href="#free" data-ga="hero-free-course">Start a free course <span aria-hidden="true">&rarr;</span></a>
         <a class="tw-btn tw-btn-white" href="#live" data-ga="hero-live-courses">See live courses</a>
       </div>
-      <p class="hero-note">3 free courses for ages 7&ndash;14 &middot; no card needed &middot; start in 2 minutes</p>
+      <p class="hero-note">Free courses &amp; games for ages 5&ndash;16 &middot; no card needed &middot; start in 2 minutes</p>
       <ul class="hero-trust">
         <li>★ 170+ young makers taught</li>
         <li>🏫 6 partner schools in Nairobi</li>      </ul>
@@ -397,7 +422,7 @@
     </div>
     <div class="free-grid">
       <div class="free-card is-lead">
-        <span class="tw-sticker">3 free courses</span>
+        <span class="tw-sticker" id="free-count">Free courses</span>
         <h3 class="tw-h3">Free online courses</h3>
         <p class="free-meta">Lessons &amp; a certificate &middot; sign up free, no card</p>
         <ul class="free-courses">
@@ -405,6 +430,7 @@
           <li><a href="course.html?c=what-is-ai" data-ga="free-what-is-ai"><strong>What is Artificial Intelligence?</strong><span>Ages 10+ &middot; spot AI around you and see how chatbots work</span></a></li>
           <li><a href="course.html?c=robotics-101" data-ga="free-robotics-101"><strong>Robotics 101</strong><span>Ages 8&ndash;14 &middot; build Arduino traffic lights</span></a></li>
         </ul>
+        <a class="tw-link-arrow" href="free-for-kids.html#courses" data-ga="free-see-all-courses" style="margin-top:10px">See all free courses <span aria-hidden="true">&rarr;</span></a>
       </div>
       <a class="free-card" href="coloring-book.html" data-ga="free-coloring-book">
         <img src="assets/coloring-preview.svg" alt="" loading="lazy">
@@ -784,6 +810,21 @@ async function loadHomeOnline() {
   } catch (_) { /* keep the static "Online courses" card */ }
 }
 loadHomeOnline();
+
+/* Free-courses badge: keep the count in step with the Free for kids page
+   (7 curated curricula live from Supabase + the 3 classics below). */
+(async () => {
+  const CURATED = ['first-circuits-lights','sound-sensors-signals','machines-movement','robots-smart-builds','ai-creator-studio','how-ai-really-works','ai-and-your-future'];
+  const CLASSICS = 3;   // ai-skills-for-kids, what-is-ai, robotics-101
+  try {
+    const url = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug&is_published=eq.true&slug=in.(' + CURATED.join(',') + ')';
+    const r = await fetch(url, { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
+    if (!r.ok) return;
+    const total = (await r.json()).length + CLASSICS;
+    const badge = document.getElementById('free-count');
+    if (badge && total > 0) badge.textContent = total + ' free courses';
+  } catch (_) { /* badge keeps its static "Free courses" label */ }
+})();
 
 /* Live courses: counts and from-prices for the Explore cards, from premium_courses.json. */
 let LIVE = null;
