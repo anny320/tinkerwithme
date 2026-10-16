@@ -278,6 +278,20 @@ async function loadCourse() {
 const doneCount = () => C.lessons.filter(l => l.done).length;
 const finished = () => C.lessons.length > 0 && doneCount() === C.lessons.length;
 
+// Reading-only lessons complete themselves the moment the learner moves on, so
+// finishing the course always unlocks the certificate — no manual "mark done"
+// click to forget. Quizzes still gate: they complete only on a pass.
+let justCompleted = false;
+function autoComplete(leavingId, nextId) {
+  if (!leavingId || leavingId === nextId || !LMS.user || !C.can_access) return;
+  const l = C.lessons.find(x => x.id === leavingId);
+  if (!l || l.done || l.quiz_count > 0) return;
+  l.done = true;                                  // optimistic, so the certificate can render now
+  if (finished()) justCompleted = true;
+  LMS.track('lms_lesson_complete', { course: C.slug, auto: true });
+  LMS.rpc('lms_complete_lesson', { p_lesson: leavingId }).catch(() => {});   // best-effort persist
+}
+
 function renderOutline() {
   const n = C.lessons.length, d = doneCount();
   $('prog').innerHTML = C.can_access && LMS.user
@@ -301,6 +315,7 @@ function adminBar() {
 function show(lessonId) {
   if (lessonId && !C.lessons.some(l => l.id === lessonId)) lessonId = null;
   if (lessonId && !canOpen(C.lessons.find(l => l.id === lessonId))) { history.replaceState(null, '', location.pathname + location.search); lessonId = null; toast(LMS.user ? 'Enrol in the course to open its lessons.' : 'Sign in to open the lessons.'); }
+  autoComplete(cur, lessonId);          // reading lesson we're leaving counts as done
   cur = lessonId;
   renderOutline();
   if (cur) openLesson(cur); else renderOverview();
@@ -353,6 +368,12 @@ function renderOverview() {
   if (PAID_BY_CARD && $('pay-panel')) $('pay-panel').scrollIntoView({ block: 'center' });
   if ($('downloads')) showDownloads();
   wireCertificate();
+  // Just crossed the finish line? Celebrate and take them straight to the certificate.
+  if (finished() && justCompleted) {
+    justCompleted = false;
+    const cert = $('cert');
+    if (cert) { toast('🎓 Course complete! Here’s your certificate.'); setTimeout(() => cert.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }
+  }
 }
 
 // Optional paid 1:1 help with a trainer: agree a time on WhatsApp, then pay and paste the M-Pesa message.
@@ -478,7 +499,7 @@ async function openLesson(id) {
     <div class="navrow">
       ${prev ? `<a class="tw-btn tw-btn-white" href="#l=${prev.id}">&larr; Previous</a>` : '<a class="tw-btn tw-btn-white" href="#">&larr; Overview</a>'}
       ${next ? (canOpen(next) ? `<a class="tw-btn tw-btn-ink" href="#l=${next.id}">Next lesson &rarr;</a>` : '<a class="tw-btn tw-btn-orange" href="#">🔓 Unlock the full course &rarr;</a>')
-        : '<a class="tw-btn tw-btn-ink" href="#">Finish &rarr;</a>'}
+        : '<a class="tw-btn tw-btn-ink" href="#">🎓 Finish the course &rarr;</a>'}
     </div>
     ${C.can_access ? '' : `<div class="action preview-cta"><h3>Enjoying the free preview?</h3>
       <p>Get all ${C.lessons.length} lessons, quizzes and your certificate for ${coursePrice()}. 12 months of access.</p>${offerNote()}
@@ -513,7 +534,7 @@ function markDone(id) {
   l.done = true;
   LMS.track('lms_lesson_complete', { course: C.slug });
   renderOutline();
-  if (finished()) { LMS.track('lms_course_complete', { course: C.slug }); toast('🎓 Course complete! Your certificate is on the overview page.'); }
+  if (finished()) { LMS.track('lms_course_complete', { course: C.slug }); justCompleted = true; toast('🎓 Course complete! Open the overview for your certificate.'); }
   else toast('✓ Lesson complete!');
 }
 
