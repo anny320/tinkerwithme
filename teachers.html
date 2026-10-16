@@ -72,6 +72,20 @@
 .method .mi{font-size:26px;width:52px;height:52px;display:grid;place-items:center;border-radius:14px;border:2px solid var(--ink);background:var(--cream);margin-bottom:10px}
 .method strong{display:block;font-size:17px;margin-bottom:3px}
 .method p{font-size:14.5px;color:var(--text-2)}
+/* Teacher waitlist form */
+.wl{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:1.3rem 1.4rem}
+.wl h3{color:var(--white);font-size:18px;font-weight:600;margin-bottom:3px}
+.wl .wl-sub{color:var(--on-ink,rgba(255,255,255,.7));font-size:13.5px;margin-bottom:12px}
+.wl label{display:block;font-size:13px;font-weight:600;color:var(--on-ink,rgba(255,255,255,.9));margin-bottom:10px}
+.wl input,.wl textarea{display:block;width:100%;margin-top:5px;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:2px solid transparent;background:var(--white);color:var(--ink)}
+.wl textarea{min-height:74px;resize:vertical}
+.wl input:focus-visible,.wl textarea:focus-visible{outline:none;border-color:var(--orange)}
+.wl button{margin-top:4px}
+.wl-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.wl-err{color:#FFB2A0;font-weight:600;font-size:13.5px;margin-top:8px;min-height:1em}
+.wl-err a,.wl-done a{color:#fff;font-weight:600}
+.wl-done{color:var(--on-ink,rgba(255,255,255,.9));font-size:15px}
+.wl-done strong{color:var(--white)}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -196,22 +210,27 @@
           <li>Ready-made &ldquo;what you have&rdquo; projects you can run today</li>
           <li>An AI tutor for your students &mdash; and for you when you&rsquo;re stuck</li>
         </ul>
-        <div class="join-btns">
-          <a class="tw-btn tw-btn-orange" href="https://wa.me/254117784724?text=Hi%20Anne%2C%20I%27d%20like%20to%20run%20Tinkerwith%20with%20my%20own%20learners.%20A%20bit%20about%20me%3A%20" target="_blank" rel="noopener" data-ga="teachers-join-wa">Join the teacher programme</a>
-          <a class="tw-btn tw-btn-white" style="color:var(--ink)" href="mailto:tinkerwithanne@gmail.com?subject=I%27d%20like%20to%20teach%20with%20Tinkerwith" data-ga="teachers-join-email">Email us</a>
-        </div>
-        <p class="join-soon">🎓 Teacher certification &amp; termly outcomes reports are launching soon &mdash; join the waitlist and we&rsquo;ll bring you on first.</p>
-      </div>
-      <div class="join-card">
-        <img src="assets/courses/free/robots-smart-builds.svg" alt="A friendly robot built from everyday parts" loading="lazy">
-        <h3>Who it&rsquo;s for</h3>
-        <ul>
-          <li>Teachers, club leaders and youth-programme staff</li>
-          <li>No specialist kit or lab needed</li>
-          <li>Some Arduino or AI curiosity &mdash; we teach the rest</li>
-          <li>In Nairobi, across Kenya, or beyond</li>
+        <ul class="who" style="list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:4px;font-size:14px;color:var(--on-ink,rgba(255,255,255,.75))">
+          <li>✓ Teachers, clubs &amp; youth programmes</li>
+          <li>✓ No specialist kit or lab needed</li>
+          <li>✓ Nairobi, across Kenya, or beyond</li>
         </ul>
+        <p class="join-soon">🎓 Certification &amp; termly outcomes reports are launching soon &mdash; waitlisters come on first.</p>
       </div>
+
+      <form class="wl" id="wl-form" novalidate>
+        <h3>Join the teacher waitlist</h3>
+        <p class="wl-sub">Tell us a little about you and we&rsquo;ll bring you on first as certification opens.</p>
+        <label>Your name <input name="name" required maxlength="80" autocomplete="name" placeholder="e.g. Amina Otieno"></label>
+        <label>Email <input name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@example.com"></label>
+        <label>WhatsApp number <input name="whatsapp" type="tel" required maxlength="20" pattern="\+?[0-9 ]{7,20}" autocomplete="tel" placeholder="+254 7…"></label>
+        <label>Ages you teach <input name="ages" required maxlength="20" placeholder="e.g. 8–13"></label>
+        <label>What do you teach, and what are your goals? <textarea name="goals" maxlength="1000" placeholder="e.g. I run an after-school club for ages 9–12 and want to add robotics without buying kits."></textarea></label>
+        <input class="wl-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="tw-btn tw-btn-orange" type="submit" data-ga="teachers-waitlist">Join the waitlist</button>
+        <p class="wl-err" id="wl-err" role="alert" aria-live="polite"></p>
+      </form>
+      <div class="wl wl-done" id="wl-done" hidden></div>
     </div>
   </div>
 </section>
@@ -283,5 +302,41 @@
   </div>
 </div>
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>
+/* Teacher waitlist → the shared leads list (lms_submit_lead, source
+   'teacher-waitlist'), shown in teach.html → Leads. No sign-in needed. */
+(function () {
+  const f = document.getElementById('wl-form'), err = document.getElementById('wl-err'), done = document.getElementById('wl-done');
+  if (!f) return;
+  const waText = p => `Hi Anne, I'd like to join the Tinkerwith teacher waitlist.\n\nName: ${p.parent_name}\nAges I teach: ${p.child_age}${p.message ? '\nGoals: ' + p.message : ''}`;
+  const waLink = p => 'https://wa.me/254117784724?text=' + encodeURIComponent(waText(p));
+  f.onsubmit = async e => {
+    e.preventDefault();
+    if (!f.checkValidity()) { err.textContent = 'Please add your name, a valid email, your WhatsApp number and the ages you teach.'; return; }
+    const p = {
+      source: 'teacher-waitlist',
+      parent_name: f.name.value.trim(), whatsapp: f.whatsapp.value.trim(), email: f.email.value.trim(),
+      child_age: f.ages.value.trim(), mode: 'not-sure', preferred_dates: 'Teacher waitlist',
+      message: f.goals.value.trim(), website: f.website.value,
+      courses: [{ id: 'teacher-waitlist', title: 'Teacher waitlist' }],
+      extras: { kind: 'teacher-waitlist', ages_taught: f.ages.value.trim(), goals: f.goals.value.trim() },
+    };
+    const b = f.querySelector('button'); b.disabled = true; err.textContent = '';
+    try {
+      const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/lms_submit_lead', {
+        method: 'POST', headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p }) });
+      if (!r.ok) throw new Error(((await r.json().catch(() => ({}))).message) || 'Something went wrong.');
+      if (typeof gtag === 'function') gtag('event', 'generate_lead', { source: 'teacher-waitlist' });
+      f.hidden = true; done.hidden = false;
+      done.innerHTML = '<strong>You&rsquo;re on the list! 🎉</strong><br>We&rsquo;ll be in touch as certification opens. Want to say more now? <a href="' + waLink(p) + '" target="_blank" rel="noopener">Message Anne on WhatsApp</a>.';
+    } catch (x) {
+      err.innerHTML = '';
+      err.append((x.message || 'Something went wrong.') + ' You can also ');
+      const a = document.createElement('a'); a.href = waLink(p); a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'join on WhatsApp'; err.append(a, '.');
+    } finally { b.disabled = false; }
+  };
+})();
+</script>
 </body>
 </html>
