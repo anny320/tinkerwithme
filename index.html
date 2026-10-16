@@ -382,7 +382,7 @@
         <a class="tw-btn tw-btn-ink" href="#free" data-ga="hero-free-course">Start a free course <span aria-hidden="true">&rarr;</span></a>
         <a class="tw-btn tw-btn-white" href="#live" data-ga="hero-live-courses">See live courses</a>
       </div>
-      <p class="hero-note">Free courses &amp; games for ages 5&ndash;16 &middot; no card needed &middot; start in 2 minutes</p>
+      <p class="hero-note">34 free projects + games for ages 5&ndash;16 &middot; no card needed &middot; start in 2 minutes</p>
       <ul class="hero-trust">
         <li>★ 170+ young makers taught</li>
         <li>🏫 6 partner schools in Nairobi</li>      </ul>
@@ -422,9 +422,9 @@
     </div>
     <div class="free-grid">
       <div class="free-card is-lead">
-        <span class="tw-sticker" id="free-count">Free courses</span>
+        <span class="tw-sticker" id="free-count">34 free projects</span>
         <h3 class="tw-h3">Free online courses</h3>
-        <p class="free-meta">Lessons &amp; a certificate &middot; sign up free, no card</p>
+        <p class="free-meta">34 hands-on projects across 10 free courses &middot; certificate &middot; no card</p>
         <ul class="free-courses">
           <li><a href="course.html?c=ai-skills-for-kids" data-ga="free-ai-course"><strong>AI Skills for Kids</strong><span>Ages 7&ndash;9 &middot; how AI works and how to use it kindly and safely</span></a></li>
           <li><a href="course.html?c=what-is-ai" data-ga="free-what-is-ai"><strong>What is Artificial Intelligence?</strong><span>Ages 10+ &middot; spot AI around you and see how chatbots work</span></a></li>
@@ -810,21 +810,6 @@ async function loadHomeOnline() {
   } catch (_) { /* keep the static "Online courses" card */ }
 }
 loadHomeOnline();
-
-/* Free-courses badge: keep the count in step with the Free for kids page
-   (7 curated curricula live from Supabase + the 3 classics below). */
-(async () => {
-  const CURATED = ['first-circuits-lights','sound-sensors-signals','machines-movement','robots-smart-builds','ai-creator-studio','how-ai-really-works','ai-and-your-future'];
-  const CLASSICS = 3;   // ai-skills-for-kids, what-is-ai, robotics-101
-  try {
-    const url = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug&is_published=eq.true&slug=in.(' + CURATED.join(',') + ')';
-    const r = await fetch(url, { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
-    if (!r.ok) return;
-    const total = (await r.json()).length + CLASSICS;
-    const badge = document.getElementById('free-count');
-    if (badge && total > 0) badge.textContent = total + ' free courses';
-  } catch (_) { /* badge keeps its static "Free courses" label */ }
-})();
 
 /* Live courses: counts and from-prices for the Explore cards, from premium_courses.json. */
 let LIVE = null;
