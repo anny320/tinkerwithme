@@ -205,7 +205,8 @@ function payStatus() {
 async function renderBuy() {
   const box = $('buy'), c = COURSE;
   const head = `<h2>Get the full curriculum</h2><div class="buy-price">${price()}</div>${TWPrice.switcher()}
-    <p style="font-size:14.5px;color:var(--text-2);margin-top:8px">One course · one teacher or family · PDF download</p>`;
+    <p style="font-size:14px;color:var(--text-2);margin-top:8px">The complete ${c.sessions.length}-session facilitator curriculum &mdash; lesson plans, full code, materials &amp; assessment. Part of our <strong>${TWPrice.fmt(c.price, c.price_usd)}</strong> live course; yours to teach for <strong>${price()}</strong>.</p>
+    <p style="font-size:14.5px;color:var(--text-2);margin-top:4px">One course · one teacher or family · PDF download</p>`;
   const r = await LMS.ready;
   if (!r.signIn) { box.innerHTML = head + '<p class="notice" style="margin-top:12px">Sign-in is taking a break. Please try again later.</p>'; return; }
   if (!LMS.user) {
@@ -215,7 +216,10 @@ async function renderBuy() {
   }
   try { MINE = await LMS.rpc('lms_my_curriculum', { p_premium: c.id }); } catch (e) { box.innerHTML = head + `<div class="notice err">${esc(e.message)}</div>`; return; }
   if (MINE.has_access) {
-    box.innerHTML = `<h2>Your curriculum 🎉</h2><p style="font-size:15px;color:var(--text-2)">Download it any time from this page.</p><div class="dl" id="dl"><p class="loading">Loading files&hellip;</p></div>
+    const adminView = LMS.isAdmin;
+    box.innerHTML = `<h2>${adminView ? 'Curriculum &mdash; admin preview' : 'Your curriculum 🎉'}</h2>
+      ${adminView ? `<p style="background:#FFD23F;border:2px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:10px">👑 <strong>Admin preview.</strong> You see the download because you&rsquo;re an admin. A teacher who hasn&rsquo;t paid sees the &ldquo;Pay ${price()}&rdquo; screen here &mdash; and the file itself is blocked for non-buyers.</p>` : ''}
+      <p style="font-size:15px;color:var(--text-2)">Download it any time from this page.</p><div class="dl" id="dl"><p class="loading">Loading files&hellip;</p></div>
       <p class="licence">For your own class or children only. Please don&rsquo;t share or resell it.</p>`;
     const bucket = LMS.db.storage.from('lms-files');
     const { data } = await bucket.list(`curriculum/${c.id}`, { sortBy: { column: 'name', order: 'asc' } });
