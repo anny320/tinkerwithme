@@ -30,7 +30,7 @@
 @media(max-width:900px){.wb-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.wb-grid{grid-template-columns:1fr}}
 .wb{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:8px}
-.wb .ic{font-size:30px}
+.wb .ic{font-size:26px;width:54px;height:54px;display:grid;place-items:center;border-radius:14px;background:var(--cream);border:2px solid var(--ink)}
 .wb h3{font-size:19px;font-weight:600}
 .wb p{font-size:14.5px;color:var(--text-2)}
 .wb .meta{font-size:13px;font-weight:600;color:var(--ink)}
@@ -59,6 +59,19 @@
 .join-card h3{color:var(--white);font-size:16px;font-weight:600;margin-bottom:8px}
 .join-card ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:var(--on-ink,rgba(255,255,255,.86))}
 .join-card li::before{content:'—';color:var(--orange);margin-right:8px}
+.join-card img{width:100%;height:auto;border-radius:var(--radius);border:2px solid rgba(255,255,255,.18);margin-bottom:12px;display:block}
+/* Hero 2-col */
+.th-head{display:grid;grid-template-columns:1.08fr .92fr;gap:2.5rem;align-items:center}
+@media(max-width:860px){.th-head{grid-template-columns:1fr;gap:1.4rem}}
+.th-visual{background:rgba(255,255,255,.16);border-radius:var(--radius-lg);padding:12px}
+.th-visual img{width:100%;height:auto;display:block;border-radius:var(--radius)}
+/* Method tiles */
+.method{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:.6rem}
+@media(max-width:760px){.method{grid-template-columns:1fr}}
+.method div{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.1rem 1.2rem}
+.method .mi{font-size:26px;width:52px;height:52px;display:grid;place-items:center;border-radius:14px;border:2px solid var(--ink);background:var(--cream);margin-bottom:10px}
+.method strong{display:block;font-size:17px;margin-bottom:3px}
+.method p{font-size:14.5px;color:var(--text-2)}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -89,14 +102,19 @@
 </nav>
 
 <header class="page-head">
-  <div class="tw-container">
-    <span class="tw-eyebrow-pill">The Teachers' Workbench &middot; tinker with what you have</span>
-    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,48px)">Teach robotics &amp; AI with what you already have</h1>
-    <p>No expensive imported kit required. The Teachers' Workbench gives you ready-to-teach projects built around everyday technology and cheap local parts &mdash; so one teacher can run hands-on robotics and AI with a whole class, in a school, a club or at home.</p>
-    <p style="margin-top:1rem;display:flex;gap:10px;flex-wrap:wrap">
-      <a class="tw-btn tw-btn-orange" href="#workbench" data-ga="teachers-hero-workbench">See what&rsquo;s on your workbench &rarr;</a>
-      <a class="tw-btn tw-btn-white" style="color:var(--ink)" href="#join" data-ga="teachers-hero-join">Become a Tinkerwith teacher</a>
-    </p>
+  <div class="tw-container th-head">
+    <div>
+      <span class="tw-eyebrow-pill">The Teachers' Workbench &middot; tinker with what you have</span>
+      <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,48px)">Teach robotics &amp; AI with what you already have</h1>
+      <p>No expensive kit needed &mdash; ready-to-teach projects built from everyday tech and cheap local parts. One teacher, a whole class.</p>
+      <p style="margin-top:1rem;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="tw-btn tw-btn-orange" href="#workbench" data-ga="teachers-hero-workbench">See your workbench &rarr;</a>
+        <a class="tw-btn tw-btn-white" style="color:var(--ink)" href="#join" data-ga="teachers-hero-join">Become a teacher</a>
+      </p>
+    </div>
+    <div class="th-visual">
+      <img src="assets/hero.svg" alt="A circuit board wired up to a small robot built from everyday parts" width="800" height="620">
+    </div>
   </div>
 </header>
 
@@ -104,11 +122,11 @@
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
     <h2 class="sec-h">Tinker with what you have</h2>
-    <p class="sec-lede">Children learn engineering best by hacking the technology already around them. Our projects start from everyday things &mdash; an old phone, a toy, a solar lamp, cheap local parts &mdash; applied to problems they recognise. One trained teacher reaches a whole class, and an imported kit is optional, never the price of entry.</p>
-    <div class="how" style="margin-top:.4rem">
-      <div><strong>🔌 Everyday tech</strong><p>Old phones, radios, toys, solar lamps and motors become sensors, robots and smart builds.</p></div>
-      <div><strong>🧰 Cheap local parts</strong><p>Source what you need locally &mdash; we show you what to look for and roughly what to spend.</p></div>
-      <div><strong>📦 Kit optional</strong><p>Prefer a ready-made set? The Tinkerwith Maker Kit is a convenience, not a requirement.</p></div>
+    <p class="sec-lede">Kids learn engineering by hacking the tech around them. An imported kit is optional &mdash; never the price of entry.</p>
+    <div class="method">
+      <div><div class="mi">🔌</div><strong>Everyday tech</strong><p>Old phones, toys, radios and solar lamps become sensors, robots and smart builds.</p></div>
+      <div><div class="mi">🧰</div><strong>Cheap local parts</strong><p>Source locally &mdash; we show you what to look for and roughly what to spend.</p></div>
+      <div><div class="mi">📦</div><strong>Kit optional</strong><p>Only the microcontroller is a must. The Maker Kit is a convenience, not a requirement.</p></div>
     </div>
   </div>
 </section>
@@ -120,32 +138,32 @@
     <p class="sec-lede">Grab what you need. Most of it is free; the full curriculums are a small one-off per teacher.</p>
     <div class="wb-grid">
       <div class="wb"><div class="ic">📘</div><h3>Ready-to-teach curriculums</h3>
-        <p>The full session-by-session plan for any of our 17 courses: lesson plans, timings, materials lists and complete code. Teach it exactly as written.</p>
+        <p>Full session-by-session plans for all 17 courses &mdash; timings, materials and code.</p>
         <span class="meta">KES 1,500 per teacher &middot; school licences on request</span>
         <a class="tw-link-arrow" href="curriculum.html" data-ga="teachers-wb-curriculum">Browse the curriculums &rarr;</a></div>
 
       <div class="wb"><span class="free-tag">Free</span><div class="ic">🛠️</div><h3>Curriculum generator</h3>
-        <p>Turn any topic into a full, printable curriculum &mdash; lessons, activities and materials &mdash; ready for your class in minutes.</p>
-        <span class="meta">Free to use, no account needed</span>
+        <p>Turn any topic into a printable curriculum in minutes.</p>
+        <span class="meta">Free &middot; no account needed</span>
         <a class="tw-link-arrow" href="curriculumgenerator.html" data-ga="teachers-wb-generator">Open the generator &rarr;</a></div>
 
       <div class="wb"><span class="free-tag">Free</span><div class="ic">🗓️</div><h3>Full-day camp planner</h3>
-        <p>Timings, activities, materials and a printable run sheet for a holiday camp or a full school day of making.</p>
+        <p>Timings, activities and a printable run sheet for a full day of making.</p>
         <span class="meta">Free to use</span>
         <a class="tw-link-arrow" href="camp-planner.html" data-ga="teachers-wb-camp">Plan a camp day &rarr;</a></div>
 
       <div class="wb"><span class="free-tag">Free</span><div class="ic">🎛️</div><h3>Session planner</h3>
-        <p>Pick projects by age and track and get a ready-to-run plan for a 1:1 or a group session &mdash; great for tutors and clubs.</p>
+        <p>A ready-to-run plan by age and track for 1:1s, clubs and groups.</p>
         <span class="meta">Free to use</span>
         <a class="tw-link-arrow" href="picker.html" data-ga="teachers-wb-picker">Build a session plan &rarr;</a></div>
 
       <div class="wb"><span class="free-tag">Free</span><div class="ic">🎁</div><h3>34 free class-ready courses</h3>
-        <p>34 hands-on build-along projects and games across 10 free courses &mdash; step-by-step, with a certificate. Use them straight in class or set them as homework.</p>
+        <p>34 hands-on projects and games across 10 free courses, each with a certificate.</p>
         <span class="meta">Free &middot; ages 5&ndash;16</span>
         <a class="tw-link-arrow" href="free-for-kids.html" data-ga="teachers-wb-free">See the free courses &rarr;</a></div>
 
       <div class="wb"><div class="ic">💻</div><h3>Online courses for a class</h3>
-        <p>Enrol a whole class in our self-paced online courses. Learners get lessons, quizzes and certificates &mdash; ask us about group pricing.</p>
+        <p>Enrol a whole class &mdash; lessons, quizzes and certificates.</p>
         <span class="meta">Group pricing on request</span>
         <a class="tw-link-arrow" href="learn.html" data-ga="teachers-wb-online">See the online courses &rarr;</a></div>
     </div>
@@ -171,7 +189,7 @@
       <div>
         <span class="tw-eyebrow" style="color:var(--orange)">Run it yourself</span>
         <h2>Become a Tinkerwith teacher</h2>
-        <p>Teach the programme with your own learners &mdash; your classroom, club or community group. We give you the &ldquo;what you have&rdquo; projects and an AI tutor that coaches both you and your students, with a short teacher course and outcomes reports on the way &mdash; so you can run hands-on robotics and AI without us in the room.</p>
+        <p>Run the programme with your own learners. We hand you the &ldquo;what you have&rdquo; projects and an AI tutor for you and your students &mdash; so you can teach robotics and AI without us in the room.</p>
         <ul class="join-list">
           <li>One trained teacher reaches 20&ndash;30 children</li>
           <li>Ready-made &ldquo;what you have&rdquo; projects you can run today</li>
@@ -184,12 +202,13 @@
         <p class="join-soon">🎓 Teacher certification &amp; termly outcomes reports are launching soon &mdash; join the waitlist and we&rsquo;ll bring you on first.</p>
       </div>
       <div class="join-card">
+        <img src="assets/courses/free/robots-smart-builds.svg" alt="A friendly robot built from everyday parts" loading="lazy">
         <h3>Who it&rsquo;s for</h3>
         <ul>
           <li>Teachers, club leaders and youth-programme staff</li>
-          <li>No specialist kit or lab needed &mdash; tinker with what you have</li>
-          <li>Some Arduino or AI curiosity helps; the course teaches the rest</li>
-          <li>Anywhere &mdash; in Nairobi, across Kenya, or beyond</li>
+          <li>No specialist kit or lab needed</li>
+          <li>Some Arduino or AI curiosity &mdash; we teach the rest</li>
+          <li>In Nairobi, across Kenya, or beyond</li>
         </ul>
       </div>
     </div>
@@ -201,10 +220,10 @@
   <div class="tw-container">
     <h2 class="sec-h">Good to know</h2>
     <div class="facts" style="margin-top:1rem">
-      <div><h3>Materials</h3><p>Start with everyday tech and cheap local parts, or build free in the Tinkercad simulator; AI needs only a browser. Prefer a ready-made set? The Tinkerwith Maker Kit is an optional convenience, reused across every course.</p></div>
-      <div><h3>Curriculum licences</h3><p>A curriculum is KES 1,500 per teacher. Teaching a whole school or running a club for pay? Ask about a school or multi-teacher licence.</p></div>
-      <div><h3>Payment</h3><p>Pay by M-Pesa (Till 3022049 &mdash; the prompt shows Wakara Technologies Limited, the company behind Tinkerwith) or by card from outside Kenya.</p></div>
-      <div><h3>Support &amp; safeguarding</h3><p>Questions as you teach? Message Anne on WhatsApp. We keep learners&rsquo; details only to run sessions, as set out in our <a href="privacy.html">privacy policy</a>.</p></div>
+      <div><h3>Materials</h3><p>Everyday parts, the free Tinkercad simulator, or an optional Maker Kit. AI needs only a browser.</p></div>
+      <div><h3>Curriculum licences</h3><p>KES 1,500 per teacher. School and multi-teacher licences on request.</p></div>
+      <div><h3>Payment</h3><p>M-Pesa Till 3022049 (shows Wakara Technologies), or card from outside Kenya.</p></div>
+      <div><h3>Support &amp; safeguarding</h3><p>Message Anne on WhatsApp. We keep learners&rsquo; details only to run sessions &mdash; see our <a href="privacy.html">privacy policy</a>.</p></div>
     </div>
     <p style="margin-top:1.4rem"><a class="tw-link-arrow" href="schools.html">Teaching a whole school or organisation? See programmes for schools &rarr;</a></p>
   </div>
