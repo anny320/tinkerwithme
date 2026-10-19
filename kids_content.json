@@ -4,6 +4,44 @@
   "lessons": {
     "traffic light simulation": {
       "intro": "Let's build a real traffic light! It will blink red, then green, then yellow — all by itself. 🚦",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led-red",
+          "label": "Red LED light"
+        },
+        {
+          "icon": "led-yellow",
+          "label": "Yellow LED light"
+        },
+        {
+          "icon": "led-green",
+          "label": "Green LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "3 resistors (220Ω)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧠",
@@ -53,6 +91,21 @@
     },
     "prompting power": {
       "intro": "AI chatbots like ChatGPT can help with almost anything — but only if you ask in a smart way. Let’s learn the secret! 🤖",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT",
+          "url": "chat.openai.com"
+        },
+        {
+          "icon": "notebook",
+          "label": "Paper for a Recipe Card"
+        }
+      ],
       "steps": [
         {
           "icon": "💬",
@@ -102,6 +155,26 @@
     },
     "ai art studio": {
       "intro": "Today you're an AI art director — you'll make pictures just by typing words! 🎨",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "Bing Image Creator",
+          "url": "bing.com/images/create"
+        },
+        {
+          "icon": "internet",
+          "label": "or Craiyon",
+          "url": "craiyon.com"
+        },
+        {
+          "icon": "notebook",
+          "label": "Somewhere to save pictures"
+        }
+      ],
       "steps": [
         {
           "icon": "🖥️",
@@ -143,6 +216,26 @@
     },
     "ai music & sound": {
       "intro": "Today you'll make real music with AI — just by describing it! 🎵",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "headphones",
+          "label": "Headphones or speaker"
+        },
+        {
+          "icon": "internet",
+          "label": "Soundraw",
+          "url": "soundraw.io"
+        },
+        {
+          "icon": "internet",
+          "label": "or Boomy",
+          "url": "boomy.com"
+        }
+      ],
       "steps": [
         {
           "icon": "🎧",
@@ -184,6 +277,26 @@
     },
     "ai storytelling": {
       "intro": "You're an author AND illustrator — and AI is your helper. 📖",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT",
+          "url": "chat.openai.com"
+        },
+        {
+          "icon": "internet",
+          "label": "Image maker",
+          "url": "designer.microsoft.com"
+        },
+        {
+          "icon": "notebook",
+          "label": "Notebook or Google Docs"
+        }
+      ],
       "steps": [
         {
           "icon": "🗂️",
@@ -225,6 +338,17 @@
     },
     "teachable machine": {
       "intro": "Today you'll train your own AI to recognise things — with no code at all! 🧠",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer with a webcam"
+        },
+        {
+          "icon": "internet",
+          "label": "Teachable Machine",
+          "url": "teachablemachine.withgoogle.com"
+        }
+      ],
       "steps": [
         {
           "icon": "🌐",
@@ -266,6 +390,32 @@
     },
     "mashup madness": {
       "intro": "You're the AI director, joining several AI tools into one cool project! 🎬",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT",
+          "url": "chat.openai.com"
+        },
+        {
+          "icon": "internet",
+          "label": "Bing Image Creator",
+          "url": "bing.com/images/create"
+        },
+        {
+          "icon": "internet",
+          "label": "TTSMaker",
+          "url": "ttsmaker.com"
+        },
+        {
+          "icon": "internet",
+          "label": "Canva",
+          "url": "canva.com"
+        }
+      ],
       "steps": [
         {
           "icon": "🔗",
@@ -307,6 +457,31 @@
     },
     "bias detective": {
       "intro": "You're a bias detective! AI can give unfair or stereotyped results — let's catch it. 🕵️",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "Bing Image Creator",
+          "url": "bing.com/images/create"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT",
+          "url": "chat.openai.com"
+        },
+        {
+          "icon": "internet",
+          "label": "Google Translate",
+          "url": "translate.google.com"
+        },
+        {
+          "icon": "notebook",
+          "label": "A report table"
+        }
+      ],
       "steps": [
         {
           "icon": "📋",
@@ -348,6 +523,21 @@
     },
     "ai careers deep dive": {
       "intro": "Meet three real AI jobs and find out what they actually do all day. 💼",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT",
+          "url": "chat.openai.com"
+        },
+        {
+          "icon": "notebook",
+          "label": "Paper or Google Slides"
+        }
+      ],
       "steps": [
         {
           "icon": "🧩",
@@ -389,6 +579,27 @@
     },
     "build your portfolio": {
       "intro": "Turn something you've built into a professional portfolio piece you can share. 🚀",
+      "materials": [
+        {
+          "icon": "computer",
+          "label": "Computer or tablet"
+        },
+        {
+          "icon": "internet",
+          "label": "GitHub",
+          "url": "github.com"
+        },
+        {
+          "icon": "internet",
+          "label": "Gamma or Slides",
+          "url": "gamma.app"
+        },
+        {
+          "icon": "internet",
+          "label": "ChatGPT or Claude",
+          "url": "claude.ai"
+        }
+      ],
       "steps": [
         {
           "icon": "🗃️",
@@ -430,6 +641,16 @@
     },
     "how ai systems work": {
       "intro": "Every AI, however clever, is built from three simple parts. Let's see them! 🔍",
+      "materials": [
+        {
+          "icon": "notebook",
+          "label": "Whiteboard or big paper"
+        },
+        {
+          "icon": "notebook",
+          "label": "Sticky notes"
+        }
+      ],
       "steps": [
         {
           "icon": "✏️",
@@ -463,6 +684,12 @@
     },
     "good data, bad data": {
       "intro": "AI learns from data — so bad data in means bad answers out! 📊",
+      "materials": [
+        {
+          "icon": "notebook",
+          "label": "Paper or whiteboard to tally"
+        }
+      ],
       "steps": [
         {
           "icon": "🙋",
@@ -504,6 +731,12 @@
     },
     "ethical ai design": {
       "intro": "Ethics asks not just what an AI CAN do, but what it SHOULD do. ⚖️",
+      "materials": [
+        {
+          "icon": "notebook",
+          "label": "Whiteboard or paper"
+        }
+      ],
       "steps": [
         {
           "icon": "📜",
@@ -545,6 +778,12 @@
     },
     "explain ai to others": {
       "intro": "If you can explain AI simply, in plain words, you really understand it. 🗣️",
+      "materials": [
+        {
+          "icon": "notebook",
+          "label": "Paper, a pen & a timer"
+        }
+      ],
       "steps": [
         {
           "icon": "🎯",
@@ -586,6 +825,40 @@
     },
     "button controlled led": {
       "intro": "Today a button turns a light on and off — like a real wall switch! 🔘",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "button",
+          "label": "Push button"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistors (220Ω + 10kΩ)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -631,6 +904,36 @@
     },
     "fade an led": {
       "intro": "Today your light will fade in and out smoothly, not just blink. 🌙",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (220Ω)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -672,6 +975,40 @@
     },
     "rgb led colour mixer": {
       "intro": "Today you'll mix your own colours with light, just like a TV screen does! 🌈",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "RGB LED"
+        },
+        {
+          "icon": "knob",
+          "label": "3 knobs (potentiometers)"
+        },
+        {
+          "icon": "resistor",
+          "label": "3 resistors (220Ω)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -713,6 +1050,40 @@
     },
     "capacitive touch sensor": {
       "intro": "Today a light turns on when you just TOUCH a pad — no button to press! ✋",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "sensor",
+          "label": "Touch sensor (TTP223)"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (220Ω)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -754,6 +1125,36 @@
     },
     "buzzer melody": {
       "intro": "Today you make a tiny speaker play a real tune! 🎶",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "buzzer",
+          "label": "Buzzer (piezo)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (100Ω, optional)"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -795,6 +1196,40 @@
     },
     "morse code blinker": {
       "intro": "Today your light sends secret messages in Morse code! 🔦",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (220Ω)"
+        },
+        {
+          "icon": "button",
+          "label": "Push button (optional)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -836,6 +1271,36 @@
     },
     "temperature logger": {
       "intro": "Today you build a tiny weather sensor that reads the temperature! 🌡️",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "sensor",
+          "label": "DHT11 sensor"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "screen",
+          "label": "LCD screen (optional)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -877,6 +1342,44 @@
     },
     "ultrasonic distance sensor": {
       "intro": "Today your sensor measures distance using sound — just like a bat! 📏",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "sensor",
+          "label": "Ultrasonic sensor (HC-SR04)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (220Ω)"
+        },
+        {
+          "icon": "buzzer",
+          "label": "Buzzer (optional)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -918,6 +1421,36 @@
     },
     "servo motor control": {
       "intro": "Today you steer a motor to any angle just by turning a knob! 🤖",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "servo",
+          "label": "Servo motor (SG90)"
+        },
+        {
+          "icon": "knob",
+          "label": "Knob (potentiometer)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -959,6 +1492,40 @@
     },
     "light-activated led": {
       "intro": "Today your light turns itself ON when it gets dark — like a streetlight! 💡",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "sensor",
+          "label": "Light sensor (LDR)"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistors (10kΩ + 220Ω)"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "🧰",
@@ -1000,6 +1567,40 @@
     },
     "digital dice": {
       "intro": "Today you build an electronic dice made of lights! 🎲",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "7 LEDs"
+        },
+        {
+          "icon": "resistor",
+          "label": "7 resistors (220Ω)"
+        },
+        {
+          "icon": "button",
+          "label": "Push button"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -1041,6 +1642,48 @@
     },
     "basic alarm system": {
       "intro": "Today you build an alarm that catches movement! 🚨",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "sensor",
+          "label": "Motion sensor (PIR)"
+        },
+        {
+          "icon": "buzzer",
+          "label": "Buzzer"
+        },
+        {
+          "icon": "led-red",
+          "label": "Red LED"
+        },
+        {
+          "icon": "led-green",
+          "label": "Green LED"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistors (220Ω + 10kΩ)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "button",
+          "label": "Push button"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        }
+      ],
       "steps": [
         {
           "icon": "👮",
@@ -1082,6 +1725,48 @@
     },
     "fan control": {
       "intro": "Today a sensor turns a fan on all by itself when it gets too hot. 🌡️",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "sensor",
+          "label": "Temp sensor (TMP36)"
+        },
+        {
+          "icon": "module",
+          "label": "Relay module"
+        },
+        {
+          "icon": "motor",
+          "label": "12V fan"
+        },
+        {
+          "icon": "battery",
+          "label": "12V power"
+        },
+        {
+          "icon": "led",
+          "label": "An LED light"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistor (220Ω)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "computer",
+          "label": "A computer"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -1123,6 +1808,44 @@
     },
     "simon says game": {
       "intro": "Today you build the classic Simon memory game! 🎮",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "4 LEDs (R/G/Y/B)"
+        },
+        {
+          "icon": "button",
+          "label": "4 push buttons"
+        },
+        {
+          "icon": "buzzer",
+          "label": "Buzzer"
+        },
+        {
+          "icon": "resistor",
+          "label": "Resistors (220Ω + 10kΩ)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "battery",
+          "label": "9V battery (optional)"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -1164,6 +1887,40 @@
     },
     "line-following robot": {
       "intro": "Today you build a robot that drives itself along a line! 🤖",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "module",
+          "label": "Motor driver (L298N)"
+        },
+        {
+          "icon": "sensor",
+          "label": "2 line sensors (IR)"
+        },
+        {
+          "icon": "motor",
+          "label": "2 motors + wheels"
+        },
+        {
+          "icon": "chassis",
+          "label": "Robot chassis"
+        },
+        {
+          "icon": "battery",
+          "label": "AA batteries"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        }
+      ],
       "steps": [
         {
           "icon": "👀",
@@ -1205,6 +1962,44 @@
     },
     "mini smart city": {
       "intro": "Today you build a mini smart city — 3 systems on one Arduino! 🏙️",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "led",
+          "label": "6 LEDs + resistors"
+        },
+        {
+          "icon": "sensor",
+          "label": "Light sensor (LDR)"
+        },
+        {
+          "icon": "sensor",
+          "label": "Ultrasonic sensor"
+        },
+        {
+          "icon": "screen",
+          "label": "LCD screen"
+        },
+        {
+          "icon": "knob",
+          "label": "Knob (for screen)"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        }
+      ],
       "steps": [
         {
           "icon": "🚦",
@@ -1246,6 +2041,44 @@
     },
     "obstacle-avoiding robot": {
       "intro": "Today you build a robot that drives around without bumping into things! 🤖",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "sensor",
+          "label": "Ultrasonic sensor"
+        },
+        {
+          "icon": "servo",
+          "label": "Servo (to look around)"
+        },
+        {
+          "icon": "module",
+          "label": "Motor driver (L298N)"
+        },
+        {
+          "icon": "motor",
+          "label": "2 motors + wheels"
+        },
+        {
+          "icon": "chassis",
+          "label": "Robot chassis"
+        },
+        {
+          "icon": "battery",
+          "label": "Battery pack"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        }
+      ],
       "steps": [
         {
           "icon": "👂",
@@ -1287,6 +2120,32 @@
     },
     "weather station": {
       "intro": "Today you build a weather station that shows temperature and humidity on a screen! 🌦️",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "sensor",
+          "label": "DHT11 sensor"
+        },
+        {
+          "icon": "screen",
+          "label": "LCD screen (I2C)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        }
+      ],
       "steps": [
         {
           "icon": "💡",
@@ -1328,6 +2187,40 @@
     },
     "voice- / gesture-controlled robot": {
       "intro": "Today AI meets robot — you'll drive a robot with your gestures or your voice! 🧠",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "module",
+          "label": "Motor driver (L298N)"
+        },
+        {
+          "icon": "motor",
+          "label": "2 motors + wheels"
+        },
+        {
+          "icon": "chassis",
+          "label": "Robot chassis"
+        },
+        {
+          "icon": "battery",
+          "label": "Battery pack"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "computer",
+          "label": "Laptop with webcam/mic"
+        }
+      ],
       "steps": [
         {
           "icon": "🌐",
@@ -1369,6 +2262,40 @@
     },
     "robot arm basics": {
       "intro": "Today you build a cardboard robot arm and steer it with knobs! 🦾",
+      "materials": [
+        {
+          "icon": "board",
+          "label": "Arduino board"
+        },
+        {
+          "icon": "usb",
+          "label": "USB cable"
+        },
+        {
+          "icon": "servo",
+          "label": "4 servo motors"
+        },
+        {
+          "icon": "knob",
+          "label": "4 knobs (potentiometers)"
+        },
+        {
+          "icon": "breadboard",
+          "label": "Breadboard"
+        },
+        {
+          "icon": "wires",
+          "label": "Jumper wires"
+        },
+        {
+          "icon": "battery",
+          "label": "Battery for servos"
+        },
+        {
+          "icon": "cardboard",
+          "label": "Cardboard, scissors & glue"
+        }
+      ],
       "steps": [
         {
           "icon": "✂️",

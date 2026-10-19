@@ -86,6 +86,15 @@
   margin-right:10px;background:var(--green);color:#fff;border-radius:50%;font-size:15px;font-weight:700;vertical-align:2px}
 .kid-steps li.reading{background:#FFF1C2;border-color:var(--orange-deep)}
 .kid-note{font-size:14.5px;color:var(--text-2);margin-top:4px}
+/* Materials strip — shows in both modes so kids can see what to grab */
+.mat-strip{border:2px solid var(--ink);border-radius:var(--radius);padding:14px 16px;background:var(--cream)}
+.mat-strip h3{font-size:16px;font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:7px}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.mat-item{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--white);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);padding:10px 6px}
+.mat-item .mat-ic{width:44px;height:44px;color:var(--ink)}
+.mat-item .mat-ic svg{width:100%;height:100%;display:block}
+.mat-item .mat-lb{font-size:12.5px;font-weight:600;line-height:1.2}
+.mat-item .mat-url{font-family:var(--font-mono);font-size:10px;color:var(--text-3);word-break:break-all;line-height:1.15}
 .done-pill{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);border:2px solid var(--green-deep);color:var(--green-deep);
   border-radius:99px;padding:6px 14px;font-weight:600;font-size:14.5px}
 .admin-bar{background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;font-weight:600}
@@ -507,6 +516,37 @@ async function loadKidData() {
 }
 const kidFor = L => (KID_DATA && KID_DATA.lessons && KID_DATA.lessons[normTitle(L.title)]) || null;
 
+// Simple brand-styled material icons (hand-drawn SVGs, royalty-free). Outlines follow the theme via currentColor.
+function matLED(c) { return '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M14 21a8 8 0 0116 0v5H14z" fill="' + c + '" stroke="currentColor" stroke-width="2"/><rect x="14" y="25" width="16" height="3" rx="1" fill="currentColor" opacity=".3"/><path d="M19 28v11M26 28v7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'; }
+const MAT_ICONS = {
+  board: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="5" y="11" width="34" height="23" rx="3" stroke="currentColor" stroke-width="2.4"/><rect x="23" y="17" width="11" height="11" rx="1.5" fill="currentColor" opacity=".22"/><path d="M9 11V8M13 11V8M17 11V8M9 34v3M13 34v3M17 34v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="20" r="1.4" fill="currentColor"/><circle cx="11" cy="26" r="1.4" fill="currentColor"/></svg>',
+  breadboard: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="5" y="8" width="34" height="28" rx="3" stroke="currentColor" stroke-width="2.4"/><path d="M11 15h22M11 20h22M11 24h22M11 29h22" stroke="currentColor" stroke-width="1.4" stroke-dasharray="1.3 3" stroke-linecap="round" opacity=".7"/></svg>',
+  resistor: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M3 22h9M32 22h9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect x="12" y="15" width="20" height="14" rx="7" stroke="currentColor" stroke-width="2.2" fill="currentColor" fill-opacity=".1"/><path d="M18 15.5v13" stroke="#E0641B" stroke-width="2.4"/><path d="M22 15.5v13" stroke="#5E8700" stroke-width="2.4"/><path d="M26 15.5v13" stroke="#004C97" stroke-width="2.4"/></svg>',
+  wires: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 29c5-17 20 6 29-9" stroke="#FF7F32" stroke-width="3" stroke-linecap="round"/><path d="M8 36c5-17 20 6 29-9" stroke="#004C97" stroke-width="3" stroke-linecap="round"/></svg>',
+  usb: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M22 9v22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect x="18" y="4" width="8" height="6" rx="1.3" fill="currentColor"/><path d="M22 20l-6 5M22 24l6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="25" r="2.3" fill="currentColor"/><rect x="26" y="16" width="4.6" height="4.6" rx="1" fill="currentColor"/><circle cx="22" cy="35" r="4" stroke="currentColor" stroke-width="2.4"/></svg>',
+  computer: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="9" y="9" width="26" height="18" rx="2.2" stroke="currentColor" stroke-width="2.4"/><path d="M4 35l4-6h28l4 6z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  button: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="12" y="12" width="20" height="20" rx="3" stroke="currentColor" stroke-width="2.4"/><circle cx="22" cy="22" r="6" fill="currentColor" fill-opacity=".2" stroke="currentColor" stroke-width="2.2"/><path d="M12 16H8M36 16h-4M12 28H8M36 28h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  buzzer: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="21" cy="22" r="11" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><circle cx="21" cy="22" r="2.2" fill="currentColor"/><path d="M35 15c2 4 2 10 0 14M31 18c1 2.5 1 5.5 0 8" stroke="#FF7F32" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  servo: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="10" y="16" width="16" height="18" rx="2" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><circle cx="18" cy="13" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M18 13h16" stroke="#FF7F32" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="13" r="2" fill="#FF7F32"/></svg>',
+  knob: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="22" cy="22" r="12" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><path d="M22 22l6-6" stroke="#FF7F32" stroke-width="3" stroke-linecap="round"/><path d="M22 7v3M37 22h-3M22 37v-3M7 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  sensor: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="9" y="13" width="26" height="18" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".1"/><circle cx="17" cy="22" r="4.5" stroke="currentColor" stroke-width="2.2"/><circle cx="29" cy="22" r="4.5" stroke="currentColor" stroke-width="2.2"/><path d="M15 31v5M22 31v5M29 31v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  motor: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="8" y="15" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><path d="M26 19h5v6h-5" stroke="currentColor" stroke-width="2.4"/><circle cx="17" cy="22" r="3" fill="currentColor"/><path d="M12 29v5h10v-5" stroke="currentColor" stroke-width="2.2"/></svg>',
+  battery: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="7" y="14" width="28" height="16" rx="2.5" stroke="currentColor" stroke-width="2.4"/><rect x="35" y="19" width="3.5" height="6" rx="1" fill="currentColor"/><path d="M13 22h7M16.5 18.5v7" stroke="#5E8700" stroke-width="2.4" stroke-linecap="round"/><path d="M25 22h5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  screen: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="7" y="11" width="30" height="20" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".1"/><path d="M12 18h20M12 24h14" stroke="#5E8700" stroke-width="2.2" stroke-linecap="round"/><path d="M18 31v4h8v-4" stroke="currentColor" stroke-width="2.2"/></svg>',
+  chassis: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="11" y="15" width="22" height="14" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><circle cx="14" cy="33" r="3.5" stroke="currentColor" stroke-width="2.4"/><circle cx="30" cy="33" r="3.5" stroke="currentColor" stroke-width="2.4"/><path d="M9 20v4M35 20v4" stroke="#FF7F32" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  cardboard: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M6 16l16-7 16 7-16 7z" stroke="currentColor" stroke-width="2.2" fill="currentColor" fill-opacity=".12" stroke-linejoin="round"/><path d="M6 16v12l16 7V23M38 16v12l-16 7" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  internet: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="22" cy="22" r="13" stroke="currentColor" stroke-width="2.4"/><path d="M9 22h26M22 9c5 4 5 22 0 26M22 9c-5 4-5 22 0 26" stroke="currentColor" stroke-width="2" opacity=".75"/></svg>',
+  notebook: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="12" y="7" width="22" height="30" rx="2.5" stroke="currentColor" stroke-width="2.4"/><path d="M17 15h12M17 21h12M17 27h8" stroke="#5E8700" stroke-width="2" stroke-linecap="round"/><path d="M12 12h-3v20h3" stroke="currentColor" stroke-width="2.4"/></svg>',
+  headphones: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M10 25v-3a12 12 0 0124 0v3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect x="7" y="24" width="7" height="12" rx="3" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".15"/><rect x="30" y="24" width="7" height="12" rx="3" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".15"/></svg>',
+  module: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="8" y="12" width="28" height="20" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".1"/><rect x="13" y="17" width="10" height="10" rx="1.5" fill="currentColor" opacity=".25"/><path d="M28 17h4M28 22h4M28 27h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 32v4M20 32v4M28 32v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  'led-red': matLED('#E53935'), 'led-yellow': matLED('#FDB515'), 'led-green': matLED('#84BD00'), 'led-blue': matLED('#2E7DE0'), led: matLED('#E53935'),
+};
+function matStripHTML(kid) {
+  if (!kid || !kid.materials || !kid.materials.length) return '';
+  return `<div class="mat-strip"><h3>🧰 What you need</h3><div class="mat-grid">${kid.materials.map(m =>
+    `<div class="mat-item"><span class="mat-ic">${MAT_ICONS[m.icon] || '🧰'}</span><span class="mat-lb">${esc(m.label)}</span>${m.url ? `<span class="mat-url">${esc(m.url)}</span>` : ''}</div>`).join('')}</div></div>`;
+}
+
 // Reads the visible lesson aloud, one sentence/step at a time, with the browser's built-in voice.
 const twSay = {
   on: false, items: [], i: 0, btn: null, highlight: false, voice: null,
@@ -564,6 +604,7 @@ function wireLessonTools(L) {
   const tools = $('lesson-tools'), body = $('lesson-body');
   if (!tools || !body) return;
   const kid = kidFor(L);
+  const mats = $('lesson-mats'); if (mats) mats.innerHTML = matStripHTML(kid);   // shows in both modes
   const readLabel = '🔊 Read to me';
   tools.innerHTML =
     (twSay.supported() ? `<button type="button" class="tool-btn" id="t-read" data-idle="${readLabel}">${readLabel}</button>` : '')
@@ -634,6 +675,7 @@ async function openLesson(id) {
   $('main').innerHTML = adminBar() + `
     <div>${L.section ? `<div class="lesson-sec">${esc(L.section)}</div>` : ''}<h2 class="lt">${esc(L.title)}</h2></div>
     ${vid ? `<div class="video"><iframe src="${vid}" title="${esc(L.title)} video" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : ''}
+    <div id="lesson-mats"></div>
     <div id="lesson-tools" class="lesson-tools no-print"></div>
     <div id="lesson-body">${L.body ? `<div class="prose">${md(L.body)}</div>` : ''}</div>
     ${quiz}
