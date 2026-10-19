@@ -26,6 +26,7 @@ _Last updated: 19 Oct 2026_
 
 ### Standing / cleanup (do together)
 - **#22** strip `project_content` off GitHub · **#21** point the curriculum generator at Supabase (reader move) · **#23** route generator output to Supabase.
+- **#29 — Admin alert on new sign-ups?** When a user creates an account, does admin get any notification (email / admin dashboard entry)? If not, decide whether to add one (e.g. Supabase auth trigger → email, or a "new users" count in teach.html/admin.html). For now just investigate what exists.
 
 ### Nice-to-have
 - Normalise relative `og:image` paths to absolute on older pages (index, free-for-kids).
