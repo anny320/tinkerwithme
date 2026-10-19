@@ -509,8 +509,26 @@ const kidFor = L => (KID_DATA && KID_DATA.lessons && KID_DATA.lessons[normTitle(
 
 // Reads the visible lesson aloud, one sentence/step at a time, with the browser's built-in voice.
 const twSay = {
-  on: false, items: [], i: 0, btn: null, highlight: false,
+  on: false, items: [], i: 0, btn: null, highlight: false, voice: null,
   supported: () => 'speechSynthesis' in window,
+  // Pick the warmest English voice the device offers — natural/named voices sound far friendlier to kids than the robotic default.
+  pickVoice() {
+    if (!this.supported()) return;
+    const vs = speechSynthesis.getVoices();
+    if (!vs.length) return;
+    const en = vs.filter(v => /^en/i.test(v.lang));
+    const pool = en.length ? en : vs;
+    const pref = ['natural', 'google', 'samantha', 'karen', 'moira', 'tessa', 'libby', 'aria', 'jenny', 'sonia', 'female', 'zira'];
+    let best = pool[0], score = -1;
+    pool.forEach(v => {
+      const n = v.name.toLowerCase();
+      let s = 0;
+      pref.forEach((p, i) => { if (n.includes(p)) s = Math.max(s, pref.length - i); });
+      if (/en-?gb/i.test(v.lang)) s += 0.5;   // UK voices tend to read our Kenyan English nicely
+      if (s > score) { score = s; best = v; }
+    });
+    this.voice = best;
+  },
   clean: t => (t || '').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}←-⇿⬀-⯿️]/gu, '').replace(/\s+/g, ' ').trim(),
   stop() {
     this.on = false; this.i = 0;
@@ -533,12 +551,14 @@ const twSay = {
     document.querySelectorAll('.kid-steps li.reading').forEach(el => el.classList.remove('reading'));
     if (this.highlight && it.el) { it.el.classList.add('reading'); it.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     const u = new SpeechSynthesisUtterance(this.clean(it.text));
-    u.rate = 0.92; u.pitch = 1.05;
+    if (this.voice) u.voice = this.voice;
+    u.rate = 0.9; u.pitch = 1.15;   // a touch slower and higher — warmer and easier for young ears
     u.onend = () => { if (this.on) { this.i++; this.next(); } };
     u.onerror = () => { if (this.on) { this.i++; this.next(); } };
     speechSynthesis.speak(u);
   }
 };
+if (twSay.supported()) { twSay.pickVoice(); speechSynthesis.onvoiceschanged = () => twSay.pickVoice(); }
 
 function wireLessonTools(L) {
   const tools = $('lesson-tools'), body = $('lesson-body');

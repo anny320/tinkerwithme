@@ -1,36 +1,37 @@
 {
   "version": 1,
-  "_note": "Simplified 'Kid mode' steps for early readers (5-10). Keyed by lesson title, normalised to lowercase. course.html overlays these on the full lesson when Kid mode is on, and the Read-to-me button reads them aloud. Add a lesson by copying a block below and keeping steps short (aim for <= 8 words).",
+  "_note": "Simplified 'Kid mode' steps for early readers (5-10). Keyed by lesson title, normalised to lowercase. course.html overlays these on the full lesson when Kid mode is on, and the Read-to-me button reads them aloud. Steps should be friendly AND explain the why in simple words (not just commands). Keep each step to one or two short sentences.",
   "lessons": {
     "traffic light simulation": {
-      "intro": "We build a tiny traffic light that blinks all by itself.",
+      "intro": "Let's build a real traffic light! It will blink red, then green, then yellow — all by itself. 🚦",
       "steps": [
-        { "icon": "🚦", "text": "We make a tiny traffic light." },
-        { "icon": "🧰", "text": "Get your board, 3 lights, and wires." },
-        { "icon": "🔴", "text": "Push the red, yellow, and green lights in." },
-        { "icon": "🧷", "text": "Add one little resistor to each light. It keeps them safe." },
-        { "icon": "🔗", "text": "Join the wires: red to 13, yellow to 12, green to 11." },
-        { "icon": "💻", "text": "Plug the board into the computer." },
-        { "icon": "📥", "text": "Copy our code. Press the arrow to send it." },
-        { "icon": "👀", "text": "Watch! Red, then green, then yellow, again and again." },
-        { "icon": "🛠️", "text": "A light not on? Turn it around and try again." },
-        { "icon": "🎉", "text": "You made a real traffic light. Well done!" }
+        { "icon": "🧠", "text": "The brain of our traffic light is a tiny computer called an Arduino. It tells the lights when to turn on and off." },
+        { "icon": "🧰", "text": "Grab your kit: the Arduino, a breadboard, a red light, a yellow light, a green light, 3 little resistors, and some wires." },
+        { "icon": "💡", "text": "Look closely at each light. One leg is long and one is short. The LONG leg is the plus (+) side. The SHORT leg is the minus (−) side. This matters!" },
+        { "icon": "🔌", "text": "Gently push each light into the breadboard so its two legs sit in different rows." },
+        { "icon": "🧷", "text": "Add one little resistor to each light. Too much electricity can burn a light out, so the resistor is like a gate that keeps it safe." },
+        { "icon": "🔗", "text": "Now the wires. Join the long leg of red to pin 13, yellow to pin 12, and green to pin 11. Then join the short legs to the ground row (GND)." },
+        { "icon": "💻", "text": "Plug the Arduino into the computer with the USB cable." },
+        { "icon": "📥", "text": "Open our code, copy it in, and click the arrow button to send it to the Arduino." },
+        { "icon": "👀", "text": "Watch the magic! Red says wait… green says go… then a quick yellow… then red again, over and over." },
+        { "icon": "🛠️", "text": "A light not working? It might be in backwards. Turn it around so the long leg points the right way, then try again." },
+        { "icon": "🎉", "text": "You did it — a real working traffic light! High five! 🙌" }
       ]
     },
     "prompting power": {
-      "intro": "We learn the secret to getting great answers from an AI.",
+      "intro": "AI chatbots like ChatGPT can help with almost anything — but only if you ask in a smart way. Let's learn the secret! 🤖",
       "steps": [
-        { "icon": "🤖", "text": "We learn to ask an AI smart questions." },
-        { "icon": "💬", "text": "Open ChatGPT with a grown-up." },
-        { "icon": "🐶", "text": "Type: Tell me about dogs. Read the answer." },
-        { "icon": "🤔", "text": "A bit boring, right? It is too fuzzy." },
-        { "icon": "📝", "text": "Learn the magic recipe: Role, Task, Detail, Format." },
-        { "icon": "✨", "text": "Try: You are a vet. Tell a kid 3 fun dog facts." },
-        { "icon": "😍", "text": "Wow, a much better answer!" },
-        { "icon": "🎯", "text": "Now pick your own topic and ask the smart way." },
-        { "icon": "🪄", "text": "Add one more rule to make it even better." },
-        { "icon": "🗂️", "text": "Save your best question on a Recipe Card." },
-        { "icon": "🏆", "text": "You can talk to an AI like a pro now!" }
+        { "icon": "💬", "text": "Sit with a grown-up and open ChatGPT (or Copilot, or Gemini)." },
+        { "icon": "🐶", "text": "First, ask a lazy question. Type: Tell me about dogs. Read what it says." },
+        { "icon": "🤔", "text": "Kind of boring, right? The question was fuzzy, so the answer is fuzzy too." },
+        { "icon": "📝", "text": "Here is the magic recipe with 4 parts: Role (who the AI pretends to be), Task (what you want), Detail (extra info), and Format (a list, a story, or a table)." },
+        { "icon": "✨", "text": "Try it: You are a vet. Tell a curious kid 3 fun facts about why dogs wag their tails, with emojis." },
+        { "icon": "😍", "text": "Wow — see how much better that answer is? The better the question, the better the answer." },
+        { "icon": "🎯", "text": "Now pick something YOU love. Ask about it the lazy way first, then the smart way using all 4 parts." },
+        { "icon": "🪄", "text": "Make it even better. Add one more rule, like keep it short or make it funny." },
+        { "icon": "🔒", "text": "Stay safe: never type your real full name, home address, or school into the chat. Keep those private!" },
+        { "icon": "🗂️", "text": "Write your best question on a Recipe Card so you can use it again and again." },
+        { "icon": "🏆", "text": "Amazing — now you can talk to an AI like a pro!" }
       ]
     }
   }
