@@ -94,6 +94,7 @@
 .mat-item .mat-ic{width:44px;height:44px;color:var(--ink)}
 .mat-item .mat-ic svg{width:100%;height:100%;display:block}
 .mat-item .mat-lb{font-size:12.5px;font-weight:600;line-height:1.2}
+.mat-item .mat-url{font-family:var(--font-mono);font-size:10px;color:var(--text-3);word-break:break-all;line-height:1.15}
 .done-pill{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);border:2px solid var(--green-deep);color:var(--green-deep);
   border-radius:99px;padding:6px 14px;font-weight:600;font-size:14.5px}
 .admin-bar{background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;font-weight:600}
@@ -534,12 +535,16 @@ const MAT_ICONS = {
   screen: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="7" y="11" width="30" height="20" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".1"/><path d="M12 18h20M12 24h14" stroke="#5E8700" stroke-width="2.2" stroke-linecap="round"/><path d="M18 31v4h8v-4" stroke="currentColor" stroke-width="2.2"/></svg>',
   chassis: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="11" y="15" width="22" height="14" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".12"/><circle cx="14" cy="33" r="3.5" stroke="currentColor" stroke-width="2.4"/><circle cx="30" cy="33" r="3.5" stroke="currentColor" stroke-width="2.4"/><path d="M9 20v4M35 20v4" stroke="#FF7F32" stroke-width="2.4" stroke-linecap="round"/></svg>',
   cardboard: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M6 16l16-7 16 7-16 7z" stroke="currentColor" stroke-width="2.2" fill="currentColor" fill-opacity=".12" stroke-linejoin="round"/><path d="M6 16v12l16 7V23M38 16v12l-16 7" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  internet: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="22" cy="22" r="13" stroke="currentColor" stroke-width="2.4"/><path d="M9 22h26M22 9c5 4 5 22 0 26M22 9c-5 4-5 22 0 26" stroke="currentColor" stroke-width="2" opacity=".75"/></svg>',
+  notebook: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="12" y="7" width="22" height="30" rx="2.5" stroke="currentColor" stroke-width="2.4"/><path d="M17 15h12M17 21h12M17 27h8" stroke="#5E8700" stroke-width="2" stroke-linecap="round"/><path d="M12 12h-3v20h3" stroke="currentColor" stroke-width="2.4"/></svg>',
+  headphones: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M10 25v-3a12 12 0 0124 0v3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect x="7" y="24" width="7" height="12" rx="3" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".15"/><rect x="30" y="24" width="7" height="12" rx="3" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".15"/></svg>',
+  module: '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="8" y="12" width="28" height="20" rx="2.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".1"/><rect x="13" y="17" width="10" height="10" rx="1.5" fill="currentColor" opacity=".25"/><path d="M28 17h4M28 22h4M28 27h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 32v4M20 32v4M28 32v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   'led-red': matLED('#E53935'), 'led-yellow': matLED('#FDB515'), 'led-green': matLED('#84BD00'), 'led-blue': matLED('#2E7DE0'), led: matLED('#E53935'),
 };
 function matStripHTML(kid) {
   if (!kid || !kid.materials || !kid.materials.length) return '';
   return `<div class="mat-strip"><h3>🧰 What you need</h3><div class="mat-grid">${kid.materials.map(m =>
-    `<div class="mat-item"><span class="mat-ic">${MAT_ICONS[m.icon] || '🧰'}</span><span class="mat-lb">${esc(m.label)}</span></div>`).join('')}</div></div>`;
+    `<div class="mat-item"><span class="mat-ic">${MAT_ICONS[m.icon] || '🧰'}</span><span class="mat-lb">${esc(m.label)}</span>${m.url ? `<span class="mat-url">${esc(m.url)}</span>` : ''}</div>`).join('')}</div></div>`;
 }
 
 // Reads the visible lesson aloud, one sentence/step at a time, with the browser's built-in voice.
