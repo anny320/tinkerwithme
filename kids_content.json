@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "_note": "Simplified 'Kid mode' steps for early readers (5-10). Keyed by lesson title, normalised to lowercase. course.html overlays these on the full lesson when Kid mode is on, and the Read-to-me button reads them aloud. Add a lesson by copying a block below and keeping steps short (aim for <= 8 words).",
+  "lessons": {
+    "traffic light simulation": {
+      "intro": "We build a tiny traffic light that blinks all by itself.",
+      "steps": [
+        { "icon": "🚦", "text": "We make a tiny traffic light." },
+        { "icon": "🧰", "text": "Get your board, 3 lights, and wires." },
+        { "icon": "🔴", "text": "Push the red, yellow, and green lights in." },
+        { "icon": "🧷", "text": "Add one little resistor to each light. It keeps them safe." },
+        { "icon": "🔗", "text": "Join the wires: red to 13, yellow to 12, green to 11." },
+        { "icon": "💻", "text": "Plug the board into the computer." },
+        { "icon": "📥", "text": "Copy our code. Press the arrow to send it." },
+        { "icon": "👀", "text": "Watch! Red, then green, then yellow, again and again." },
+        { "icon": "🛠️", "text": "A light not on? Turn it around and try again." },
+        { "icon": "🎉", "text": "You made a real traffic light. Well done!" }
+      ]
+    },
+    "prompting power": {
+      "intro": "We learn the secret to getting great answers from an AI.",
+      "steps": [
+        { "icon": "🤖", "text": "We learn to ask an AI smart questions." },
+        { "icon": "💬", "text": "Open ChatGPT with a grown-up." },
+        { "icon": "🐶", "text": "Type: Tell me about dogs. Read the answer." },
+        { "icon": "🤔", "text": "A bit boring, right? It is too fuzzy." },
+        { "icon": "📝", "text": "Learn the magic recipe: Role, Task, Detail, Format." },
+        { "icon": "✨", "text": "Try: You are a vet. Tell a kid 3 fun dog facts." },
+        { "icon": "😍", "text": "Wow, a much better answer!" },
+        { "icon": "🎯", "text": "Now pick your own topic and ask the smart way." },
+        { "icon": "🪄", "text": "Add one more rule to make it even better." },
+        { "icon": "🗂️", "text": "Save your best question on a Recipe Card." },
+        { "icon": "🏆", "text": "You can talk to an AI like a pro now!" }
+      ]
+    }
+  }
+}

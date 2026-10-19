@@ -66,6 +66,26 @@
 .qq.wrong legend::after{content:' ✗ Try again';color:#C23B3B;font-size:14px}
 .qq input{accent-color:var(--ink);width:18px;height:18px}
 .navrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:2px dashed var(--border-strong);padding-top:1.1rem}
+/* Read-aloud + Kid mode tools */
+.lesson-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:2px 0 4px}
+.tool-btn{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:var(--radius-pill);
+  background:var(--white);color:var(--ink);font-family:var(--font-display);font-size:15px;font-weight:600;
+  padding:8px 16px;cursor:pointer;line-height:1.1}
+.tool-btn:hover{background:var(--cream)}
+.tool-btn[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.tool-btn.speaking{background:var(--orange);color:var(--white);border-color:var(--orange-deep)}
+.kid-intro{font-size:clamp(18px,2.6vw,22px);font-weight:600;line-height:1.3;background:var(--orange-soft);
+  border:2px solid var(--orange);border-radius:var(--radius);padding:14px 18px}
+.kid-steps{list-style:none;display:flex;flex-direction:column;gap:14px;margin:0;padding:0;counter-reset:ks}
+.kid-steps li{counter-increment:ks;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;
+  border:2px solid var(--ink);border-radius:var(--radius);padding:16px 18px;background:var(--white)}
+.kid-steps .ks-icon{font-size:40px;line-height:1;width:56px;height:56px;display:grid;place-items:center;
+  background:var(--cream);border-radius:var(--radius-sm)}
+.kid-steps .ks-text{font-size:clamp(19px,3vw,24px);font-weight:600;line-height:1.3}
+.kid-steps .ks-text::before{content:counter(ks);display:inline-grid;place-items:center;width:28px;height:28px;
+  margin-right:10px;background:var(--green);color:#fff;border-radius:50%;font-size:15px;font-weight:700;vertical-align:2px}
+.kid-steps li.reading{background:#FFF1C2;border-color:var(--orange-deep)}
+.kid-note{font-size:14.5px;color:var(--text-2);margin-top:4px}
 .done-pill{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);border:2px solid var(--green-deep);color:var(--green-deep);
   border-radius:99px;padding:6px 14px;font-weight:600;font-size:14.5px}
 .admin-bar{background:#FFD23F;border:2px solid var(--ink);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;font-weight:600}
@@ -315,6 +335,7 @@ function adminBar() {
 }
 
 function show(lessonId) {
+  twSay.stop();
   if (lessonId && !C.lessons.some(l => l.id === lessonId)) lessonId = null;
   if (lessonId && !canOpen(C.lessons.find(l => l.id === lessonId))) { history.replaceState(null, '', location.pathname + location.search); lessonId = null; toast(LMS.user ? 'Enrol in the course to open its lessons.' : 'Sign in to open the lessons.'); }
   autoComplete(cur, lessonId);          // reading lesson we're leaving counts as done
@@ -470,11 +491,109 @@ async function enrol() {
 }
 
 /* ── Lessons ── */
+/* ── Kid mode + Read-aloud ───────────────────────────────────────────
+   Kid content is a static file (kids_content.json) keyed by lesson title,
+   so it ships with the site on GitHub — no Supabase change needed. The
+   Read-to-me button uses the browser's own speech, so it costs nothing. */
+const normTitle = s => (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+let KID_DATA = null, kidWanted = false;
+try { kidWanted = localStorage.getItem('tw_kidmode') === '1'; } catch (_) {}
+
+async function loadKidData() {
+  if (KID_DATA) return KID_DATA;
+  try { const r = await fetch('kids_content.json', { cache: 'no-cache' }); KID_DATA = r.ok ? await r.json() : { lessons: {} }; }
+  catch (_) { KID_DATA = { lessons: {} }; }
+  return KID_DATA;
+}
+const kidFor = L => (KID_DATA && KID_DATA.lessons && KID_DATA.lessons[normTitle(L.title)]) || null;
+
+// Reads the visible lesson aloud, one sentence/step at a time, with the browser's built-in voice.
+const twSay = {
+  on: false, items: [], i: 0, btn: null, highlight: false,
+  supported: () => 'speechSynthesis' in window,
+  clean: t => (t || '').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}←-⇿⬀-⯿️]/gu, '').replace(/\s+/g, ' ').trim(),
+  stop() {
+    this.on = false; this.i = 0;
+    if (this.supported()) speechSynthesis.cancel();
+    if (this.btn) { this.btn.classList.remove('speaking'); this.btn.innerHTML = this.btn.dataset.idle; this.btn = null; }
+    document.querySelectorAll('.kid-steps li.reading').forEach(el => el.classList.remove('reading'));
+  },
+  start(items, btn, highlight) {
+    if (!this.supported()) { toast('This browser can’t read aloud — try Chrome, Edge or Safari.'); return; }
+    this.stop();
+    this.items = items.filter(x => this.clean(x.text).length > 1);
+    if (!this.items.length) return;
+    this.on = true; this.i = 0; this.btn = btn; this.highlight = !!highlight;
+    if (btn) { btn.classList.add('speaking'); btn.innerHTML = '⏹ Stop reading'; }
+    this.next();
+  },
+  next() {
+    if (!this.on || this.i >= this.items.length) return this.stop();
+    const it = this.items[this.i];
+    document.querySelectorAll('.kid-steps li.reading').forEach(el => el.classList.remove('reading'));
+    if (this.highlight && it.el) { it.el.classList.add('reading'); it.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    const u = new SpeechSynthesisUtterance(this.clean(it.text));
+    u.rate = 0.92; u.pitch = 1.05;
+    u.onend = () => { if (this.on) { this.i++; this.next(); } };
+    u.onerror = () => { if (this.on) { this.i++; this.next(); } };
+    speechSynthesis.speak(u);
+  }
+};
+
+function wireLessonTools(L) {
+  const tools = $('lesson-tools'), body = $('lesson-body');
+  if (!tools || !body) return;
+  const kid = kidFor(L);
+  const readLabel = '🔊 Read to me';
+  tools.innerHTML =
+    (twSay.supported() ? `<button type="button" class="tool-btn" id="t-read" data-idle="${readLabel}">${readLabel}</button>` : '')
+    + (kid ? `<button type="button" class="tool-btn" id="t-kid" aria-pressed="${kidWanted}">${kidWanted ? '📖 Grown-up version' : '👶 Kid mode'}</button>` : '');
+
+  const renderBody = () => {
+    if (kid && kidWanted) {
+      body.innerHTML = `${kid.intro ? `<p class="kid-intro">${esc(kid.intro)}</p>` : ''}
+        <ol class="kid-steps">${kid.steps.map(s => `<li><span class="ks-icon" aria-hidden="true">${esc(s.icon || '•')}</span><span class="ks-text">${esc(s.text)}</span></li>`).join('')}</ol>
+        <p class="kid-note">👆 Doing this with a grown-up? Tap <strong>Grown-up version</strong> for the full steps, code and tips.</p>`;
+    } else {
+      body.innerHTML = L.body ? `<div class="prose">${md(L.body)}</div>` : '';
+    }
+  };
+  renderBody();
+
+  const kb = $('t-kid');
+  if (kb) kb.onclick = () => {
+    twSay.stop();
+    kidWanted = !kidWanted;
+    try { localStorage.setItem('tw_kidmode', kidWanted ? '1' : '0'); } catch (_) {}
+    kb.setAttribute('aria-pressed', kidWanted);
+    kb.textContent = kidWanted ? '📖 Grown-up version' : '👶 Kid mode';
+    try { LMS.track('lms_kidmode', { course: C.slug, on: kidWanted }); } catch (_) {}
+    renderBody();
+  };
+
+  const rb = $('t-read');
+  if (rb) rb.onclick = () => {
+    if (twSay.on) return twSay.stop();
+    if (kid && kidWanted) {
+      const els = body.querySelectorAll('.kid-steps li');
+      const items = kid.steps.map((s, i) => ({ text: s.text, el: els[i] }));
+      if (kid.intro) items.unshift({ text: kid.intro, el: null });
+      twSay.start(items, rb, true);
+    } else {
+      const text = ((body.querySelector('.prose') || body).innerText || '');
+      twSay.start(text.split(/(?<=[.!?])\s+/).map(t => ({ text: t })), rb, false);
+    }
+    try { LMS.track('lms_readaloud', { course: C.slug, kid: !!(kid && kidWanted) }); } catch (_) {}
+  };
+}
+
 async function openLesson(id) {
   $('main').innerHTML = '<p class="loading">Loading the lesson…</p>';
+  const kidReady = loadKidData();   // tiny same-origin file, usually ready before the lesson RPC
   let L;
   try { L = await LMS.rpc('lms_lesson', { p_lesson: id }); }
   catch (e) { $('main').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; return; }
+  await kidReady;          // so the Kid-mode button shows on the first lesson too
   if (cur !== id) return;  // the reader moved on while this loaded
   const idx = C.lessons.findIndex(l => l.id === id);
   const prev = C.lessons[idx - 1], next = C.lessons[idx + 1];
@@ -495,7 +614,8 @@ async function openLesson(id) {
   $('main').innerHTML = adminBar() + `
     <div>${L.section ? `<div class="lesson-sec">${esc(L.section)}</div>` : ''}<h2 class="lt">${esc(L.title)}</h2></div>
     ${vid ? `<div class="video"><iframe src="${vid}" title="${esc(L.title)} video" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : ''}
-    ${L.body ? `<div class="prose">${md(L.body)}</div>` : ''}
+    <div id="lesson-tools" class="lesson-tools no-print"></div>
+    <div id="lesson-body">${L.body ? `<div class="prose">${md(L.body)}</div>` : ''}</div>
     ${quiz}
     <div id="finish">${finish}</div>
     <div class="navrow">
@@ -506,6 +626,7 @@ async function openLesson(id) {
     ${C.can_access ? '' : `<div class="action preview-cta"><h3>Enjoying the free preview?</h3>
       <p>Get all ${C.lessons.length} lessons, quizzes and your certificate for ${coursePrice()}. 12 months of access.</p>${offerNote()}
       <a class="tw-btn tw-btn-orange" href="#">Get the full course &rarr;</a></div>`}`;
+  wireLessonTools(L);
   const qs = $('b-quiz-signin'); if (qs) qs.onclick = LMS.signIn;
   const bd = $('b-done');
   if (bd && !LMS.user) bd.outerHTML = '';
