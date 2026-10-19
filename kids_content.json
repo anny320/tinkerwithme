@@ -1,0 +1,1412 @@
+{
+  "version": 1,
+  "_note": "Simplified 'Kid mode' steps for early readers. Keyed by lesson title, normalised to lowercase. course.html overlays these when Kid mode is on; Read-to-me reads them aloud. Steps are friendly and explain the why in simple words. Younger tracks read playfully; the teen (13-16) lessons are kept plain but not babyish.",
+  "lessons": {
+    "traffic light simulation": {
+      "intro": "Let's build a real traffic light! It will blink red, then green, then yellow — all by itself. 🚦",
+      "steps": [
+        {
+          "icon": "🧠",
+          "text": "The brain of our traffic light is a tiny computer called an Arduino. It tells the lights when to turn on and off."
+        },
+        {
+          "icon": "🧰",
+          "text": "Grab your kit: the Arduino, a breadboard, a red light, a yellow light, a green light, 3 little resistors, and some wires."
+        },
+        {
+          "icon": "💡",
+          "text": "Look closely at each light. One leg is long and one is short. The LONG leg is the plus (+) side. The SHORT leg is the minus (−) side. This matters!"
+        },
+        {
+          "icon": "🔌",
+          "text": "Gently push each light into the breadboard so its two legs sit in different rows."
+        },
+        {
+          "icon": "🧷",
+          "text": "Add one little resistor to each light. Too much electricity can burn a light out, so the resistor is like a gate that keeps it safe."
+        },
+        {
+          "icon": "🔗",
+          "text": "Now the wires. Join the long leg of red to pin 13, yellow to pin 12, and green to pin 11. Then join the short legs to the ground row (GND)."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug the Arduino into the computer with the USB cable."
+        },
+        {
+          "icon": "📥",
+          "text": "Open our code, copy it in, and click the arrow button to send it to the Arduino."
+        },
+        {
+          "icon": "👀",
+          "text": "Watch the magic! Red says wait… green says go… then a quick yellow… then red again, over and over."
+        },
+        {
+          "icon": "🛠️",
+          "text": "A light not working? It might be in backwards. Turn it around so the long leg points the right way, then try again."
+        },
+        {
+          "icon": "🎉",
+          "text": "You did it — a real working traffic light! High five! 🙌"
+        }
+      ]
+    },
+    "prompting power": {
+      "intro": "AI chatbots like ChatGPT can help with almost anything — but only if you ask in a smart way. Let’s learn the secret! 🤖",
+      "steps": [
+        {
+          "icon": "💬",
+          "text": "Sit with a grown-up and open ChatGPT (or Copilot, or Gemini)."
+        },
+        {
+          "icon": "🐶",
+          "text": "First, ask a lazy question. Type: Tell me about dogs. Read what it says."
+        },
+        {
+          "icon": "🤔",
+          "text": "Kind of boring, right? The question was fuzzy, so the answer is fuzzy too."
+        },
+        {
+          "icon": "📝",
+          "text": "Here is the magic recipe with 4 parts: Role (who the AI pretends to be), Task (what you want), Detail (extra info), and Format (a list, a story, or a table)."
+        },
+        {
+          "icon": "✨",
+          "text": "Try it: You are a vet. Tell a curious kid 3 fun facts about why dogs wag their tails, with emojis."
+        },
+        {
+          "icon": "😍",
+          "text": "Wow — see how much better that answer is? The better the question, the better the answer."
+        },
+        {
+          "icon": "🎯",
+          "text": "Now pick something YOU love. Ask about it the lazy way first, then the smart way using all 4 parts."
+        },
+        {
+          "icon": "🪄",
+          "text": "Make it even better. Add one more rule, like keep it short or make it funny."
+        },
+        {
+          "icon": "🔒",
+          "text": "Stay safe: never type your real full name, home address, or school into the chat. Keep those private!"
+        },
+        {
+          "icon": "🗂️",
+          "text": "Write your best question on a Recipe Card so you can use it again and again."
+        },
+        {
+          "icon": "🏆",
+          "text": "Amazing — now you can talk to an AI like a pro!"
+        }
+      ]
+    },
+    "ai art studio": {
+      "intro": "Today you're an AI art director — you'll make pictures just by typing words! 🎨",
+      "steps": [
+        {
+          "icon": "🖥️",
+          "text": "Open an AI art tool like Bing Image Creator or Craiyon with a grown-up."
+        },
+        {
+          "icon": "✏️",
+          "text": "The words you type are called a prompt. The AI turns your prompt into a picture."
+        },
+        {
+          "icon": "🚲",
+          "text": "Try a simple one: A red bicycle under a mango tree. See what it drew."
+        },
+        {
+          "icon": "🔍",
+          "text": "What did it get right? What looks funny or wrong? AI isn't perfect!"
+        },
+        {
+          "icon": "🌈",
+          "text": "Add more detail: watercolour painting, warm afternoon light. Make it again and compare."
+        },
+        {
+          "icon": "💾",
+          "text": "Save each prompt and picture so you can see how your words changed the art."
+        },
+        {
+          "icon": "🤔",
+          "text": "Notice the AI's funny quirks. Who is the real artist — you or the computer?"
+        },
+        {
+          "icon": "⏳",
+          "text": "Free tools only give a few tries, so plan your words before you click."
+        },
+        {
+          "icon": "🖼️",
+          "text": "Make a little gallery of your best AI artworks. You drew with words!"
+        }
+      ]
+    },
+    "ai music & sound": {
+      "intro": "Today you'll make real music with AI — just by describing it! 🎵",
+      "steps": [
+        {
+          "icon": "🎧",
+          "text": "Grab headphones and open a tool like Soundraw or Boomy with a grown-up."
+        },
+        {
+          "icon": "💡",
+          "text": "The AI has listened to thousands of songs and learned which sounds go together."
+        },
+        {
+          "icon": "🥁",
+          "text": "Try a quick beat: type upbeat, hopeful, hip-hop, 30 seconds. Press play!"
+        },
+        {
+          "icon": "🎬",
+          "text": "Now score a scene — maybe battle music for a game, or a walk through Nairobi."
+        },
+        {
+          "icon": "🔁",
+          "text": "Didn't love it? Change one word, like the mood, and make it again."
+        },
+        {
+          "icon": "⏳",
+          "text": "Each track takes a minute to make, so use the wait to plan the next one."
+        },
+        {
+          "icon": "🏷️",
+          "text": "Give your favourite track a title and a job, like music for my video."
+        },
+        {
+          "icon": "🤔",
+          "text": "Think about it: who owns a song a machine helped make? There's no easy answer!"
+        },
+        {
+          "icon": "🏆",
+          "text": "You made your very own AI song. Composer!"
+        }
+      ]
+    },
+    "ai storytelling": {
+      "intro": "You're an author AND illustrator — and AI is your helper. 📖",
+      "steps": [
+        {
+          "icon": "🗂️",
+          "text": "Plan first. Fill in four boxes: Character, Setting, Problem, Ending."
+        },
+        {
+          "icon": "🤖",
+          "text": "Open a text AI like ChatGPT and ask it to help draft your story idea."
+        },
+        {
+          "icon": "✍️",
+          "text": "You are the boss. Keep what you like, change what you don't — you're the editor."
+        },
+        {
+          "icon": "🎨",
+          "text": "Use an image AI to draw your characters and settings from your words."
+        },
+        {
+          "icon": "📐",
+          "text": "Give clear instructions. The better you describe it, the better the picture."
+        },
+        {
+          "icon": "🧩",
+          "text": "Shape it into a beginning, a middle and an end — about 3 to 6 pages."
+        },
+        {
+          "icon": "🖼️",
+          "text": "Put the words and pictures together in Canva or on paper as a little booklet."
+        },
+        {
+          "icon": "🔒",
+          "text": "Keep it safe: don't put your real full name or school into the AI."
+        },
+        {
+          "icon": "🎉",
+          "text": "Read your illustrated story out loud. You directed the whole thing!"
+        }
+      ]
+    },
+    "teachable machine": {
+      "intro": "Today you'll train your own AI to recognise things — with no code at all! 🧠",
+      "steps": [
+        {
+          "icon": "🌐",
+          "text": "Open teachablemachine.withgoogle.com and choose Image Project."
+        },
+        {
+          "icon": "📸",
+          "text": "Make classes — like Thumbs Up and Thumbs Down — and give lots of example photos for each."
+        },
+        {
+          "icon": "💡",
+          "text": "Big idea: AI learns from examples. More good examples make a smarter model."
+        },
+        {
+          "icon": "🏋️",
+          "text": "Click Train. The AI studies your photos and learns the difference."
+        },
+        {
+          "icon": "🎥",
+          "text": "Test it live with your webcam. Does it guess right?"
+        },
+        {
+          "icon": "⚖️",
+          "text": "Try to trick it. When it's wrong, ask: did I give it enough fair examples?"
+        },
+        {
+          "icon": "🧭",
+          "text": "When data is unfair, the AI gets unfair too. An AI is only as good as its data."
+        },
+        {
+          "icon": "💾",
+          "text": "Export your model before you close the tab, or it's gone!"
+        },
+        {
+          "icon": "🏆",
+          "text": "You built a real machine-learning model. Awesome!"
+        }
+      ]
+    },
+    "mashup madness": {
+      "intro": "You're the AI director, joining several AI tools into one cool project! 🎬",
+      "steps": [
+        {
+          "icon": "🔗",
+          "text": "The flow is a pipeline: Idea → text AI → image AI → voice AI → put it together."
+        },
+        {
+          "icon": "📝",
+          "text": "Pick a brief, like a poster for a made-up product or a story page."
+        },
+        {
+          "icon": "💬",
+          "text": "Step 1: ask a chatbot to write the idea or the words."
+        },
+        {
+          "icon": "🎨",
+          "text": "Step 2: give those words to an image AI to make a picture."
+        },
+        {
+          "icon": "🔊",
+          "text": "Step 3: use a text-to-speech tool to add a voice."
+        },
+        {
+          "icon": "🖼️",
+          "text": "Step 4: stitch it all together in Canva or Google Slides."
+        },
+        {
+          "icon": "💡",
+          "text": "Each tool is a specialist, like a film crew. A good prompt helps the next step."
+        },
+        {
+          "icon": "⏳",
+          "text": "Each tool has free limits, so write good prompts the first time."
+        },
+        {
+          "icon": "🏆",
+          "text": "Show off your finished AI mashup!"
+        }
+      ]
+    },
+    "bias detective": {
+      "intro": "You're a bias detective! AI can give unfair or stereotyped results — let's catch it. 🕵️",
+      "steps": [
+        {
+          "icon": "📋",
+          "text": "Make a report table: Tool · Prompt · What I expected · What I got · Bias spotted."
+        },
+        {
+          "icon": "🖼️",
+          "text": "Ask an image AI for things like a doctor or a nurse. Save the results."
+        },
+        {
+          "icon": "💬",
+          "text": "Try a chatbot and a translator too, with prompts that might reveal stereotypes."
+        },
+        {
+          "icon": "🔎",
+          "text": "Collect at least 4 pieces of evidence — screenshots or copied text."
+        },
+        {
+          "icon": "💡",
+          "text": "Bias happens when the training data over-shows some groups and leaves others out."
+        },
+        {
+          "icon": "🧩",
+          "text": "Spot the patterns. What might have caused each one?"
+        },
+        {
+          "icon": "⚖️",
+          "text": "The goal isn't to distrust AI — it's to use it wisely. What AI shows isn't always true."
+        },
+        {
+          "icon": "🛠️",
+          "text": "Write one real idea for how a fairer tool would work."
+        },
+        {
+          "icon": "🏆",
+          "text": "Finish your Bias Report. Great detective work!"
+        }
+      ]
+    },
+    "ai careers deep dive": {
+      "intro": "Meet three real AI jobs and find out what they actually do all day. 💼",
+      "steps": [
+        {
+          "icon": "🧩",
+          "text": "ML Engineer builds the models. Data Scientist finds and cleans the data. Ethicist checks it's fair and safe."
+        },
+        {
+          "icon": "🤖",
+          "text": "Use a chatbot as a virtual interviewee. Ask it to role-play each job."
+        },
+        {
+          "icon": "🎤",
+          "text": "Run three mini-interviews. Ask what they do all day and what tools they use."
+        },
+        {
+          "icon": "📝",
+          "text": "Take notes on each one's answers."
+        },
+        {
+          "icon": "🗺️",
+          "text": "Draw a career pipeline showing who does what on one real project."
+        },
+        {
+          "icon": "⚡",
+          "text": "Spot where they clash — like speed versus fairness."
+        },
+        {
+          "icon": "💡",
+          "text": "See why ethics and good data matter just as much as coding."
+        },
+        {
+          "icon": "🗣️",
+          "text": "Explain how the three roles work together to build AI you can trust."
+        },
+        {
+          "icon": "🏆",
+          "text": "You can now name three AI careers. Nice work!"
+        }
+      ]
+    },
+    "build your portfolio": {
+      "intro": "Turn something you've built into a professional portfolio piece you can share. 🚀",
+      "steps": [
+        {
+          "icon": "🗃️",
+          "text": "Open or make a free GitHub account at github.com."
+        },
+        {
+          "icon": "📄",
+          "text": "Upload your project with a clear README explaining what it does and why."
+        },
+        {
+          "icon": "🎤",
+          "text": "Build a short pitch deck in Gamma or Google Slides for non-techie people."
+        },
+        {
+          "icon": "🗣️",
+          "text": "Write and rehearse a 2-minute showcase pitch about your project."
+        },
+        {
+          "icon": "🤖",
+          "text": "A chatbot can help you draft your README and your pitch script."
+        },
+        {
+          "icon": "💡",
+          "text": "This is about presentation and storytelling, not new coding."
+        },
+        {
+          "icon": "⏰",
+          "text": "Set up accounts early — sign-ups and email checks eat your time."
+        },
+        {
+          "icon": "🔗",
+          "text": "End with a live GitHub link and a polished deck."
+        },
+        {
+          "icon": "🏆",
+          "text": "You're ready to show your work to anyone. Go you!"
+        }
+      ]
+    },
+    "how ai systems work": {
+      "intro": "Every AI, however clever, is built from three simple parts. Let's see them! 🔍",
+      "steps": [
+        {
+          "icon": "✏️",
+          "text": "Draw it big: INPUT → AI SYSTEM → OUTPUT."
+        },
+        {
+          "icon": "📱",
+          "text": "Work one out loud: a reminder app. Input = your dates. Process = it checks the calendar. Output = a reminder pops up."
+        },
+        {
+          "icon": "🗒️",
+          "text": "Pick 3 AI tools you really use. On sticky notes, label each one's input, process and output."
+        },
+        {
+          "icon": "🤝",
+          "text": "Swap with a friend. Does every example have all three parts?"
+        },
+        {
+          "icon": "🔁",
+          "text": "Add a 4th box: Feedback. When you tap like, that becomes new input the AI learns from."
+        },
+        {
+          "icon": "💡",
+          "text": "A person always decides what goes in and what comes out — AI isn't magic."
+        },
+        {
+          "icon": "🏆",
+          "text": "Now you can see inside any AI tool!"
+        }
+      ]
+    },
+    "good data, bad data": {
+      "intro": "AI learns from data — so bad data in means bad answers out! 📊",
+      "steps": [
+        {
+          "icon": "🙋",
+          "text": "Survey everyone you can — like What's your favourite fruit? — and tally it."
+        },
+        {
+          "icon": "✅",
+          "text": "That's your good dataset: everyone got a say."
+        },
+        {
+          "icon": "🔎",
+          "text": "Check it: did anyone get missed or skipped? Is a group over- or under-counted?"
+        },
+        {
+          "icon": "✂️",
+          "text": "Now break it on purpose: pretend you only asked the front two rows. How does the answer change?"
+        },
+        {
+          "icon": "🤖",
+          "text": "If this unfair survey trained an AI, what wrong thing would it learn?"
+        },
+        {
+          "icon": "💡",
+          "text": "Real example: face-unlock trained on one skin tone works badly for everyone else."
+        },
+        {
+          "icon": "📝",
+          "text": "Write 3 rules for collecting fairer, more complete data."
+        },
+        {
+          "icon": "🧭",
+          "text": "Always ask the big question: who is missing?"
+        },
+        {
+          "icon": "🏆",
+          "text": "Now you know why fair data matters so much!"
+        }
+      ]
+    },
+    "ethical ai design": {
+      "intro": "Ethics asks not just what an AI CAN do, but what it SHOULD do. ⚖️",
+      "steps": [
+        {
+          "icon": "📜",
+          "text": "List the values any AI should keep: fairness, privacy, safety, and being explainable."
+        },
+        {
+          "icon": "💡",
+          "text": "Pick a product idea — like a face-scanning school gate or a homework-grading bot."
+        },
+        {
+          "icon": "🔎",
+          "text": "Pressure-test it: who could it treat unfairly? What private data does it collect?"
+        },
+        {
+          "icon": "🗂️",
+          "text": "Ask where that data is stored, and who can see it."
+        },
+        {
+          "icon": "🙋",
+          "text": "How would someone appeal a wrong decision? Add a human check."
+        },
+        {
+          "icon": "🛠️",
+          "text": "Redesign it to fix the biggest problems — or drop a risky feature entirely."
+        },
+        {
+          "icon": "🎤",
+          "text": "Give a 60-second ethics review of your before and after."
+        },
+        {
+          "icon": "💬",
+          "text": "There's rarely one right answer — a well-argued trade-off beats a tidy one."
+        },
+        {
+          "icon": "🏆",
+          "text": "You designed an AI you'd be proud to ship!"
+        }
+      ]
+    },
+    "explain ai to others": {
+      "intro": "If you can explain AI simply, in plain words, you really understand it. 🗣️",
+      "steps": [
+        {
+          "icon": "🎯",
+          "text": "Pick one person to explain it to — a parent, a little sibling, or a head teacher."
+        },
+        {
+          "icon": "✏️",
+          "text": "Write what AI is in just 3 sentences, with no jargon."
+        },
+        {
+          "icon": "🚫",
+          "text": "Ban yourself from fancy words like algorithm, model, and neural network."
+        },
+        {
+          "icon": "👂",
+          "text": "Say it to a partner. Can they repeat it back in their own words?"
+        },
+        {
+          "icon": "🔁",
+          "text": "Rewrite your weakest sentence using their feedback."
+        },
+        {
+          "icon": "💡",
+          "text": "Clear example: AI is a computer that learns from lots of examples, so it can make good guesses about new things."
+        },
+        {
+          "icon": "🎤",
+          "text": "Give your final version to your real listener."
+        },
+        {
+          "icon": "✅",
+          "text": "Prove it worked: have them explain the idea back to you."
+        },
+        {
+          "icon": "🏆",
+          "text": "Short and clear beats long and impressive, every time!"
+        }
+      ]
+    },
+    "button controlled led": {
+      "intro": "Today a button turns a light on and off — like a real wall switch! 🔘",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get your Arduino, breadboard, an LED light, a push button, resistors and wires."
+        },
+        {
+          "icon": "💡",
+          "text": "An LED's long leg is the plus (+) side and the short leg is the minus (−) side."
+        },
+        {
+          "icon": "🔌",
+          "text": "Push the LED and the button into the breadboard."
+        },
+        {
+          "icon": "🧷",
+          "text": "Give the LED a 220-ohm resistor so it doesn't get too much electricity."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the LED to a pin, the button to another pin, and both to the ground row."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug the Arduino into the computer and upload our code."
+        },
+        {
+          "icon": "🧠",
+          "text": "The Arduino remembers: press once and the light stays ON. Press again and it stays OFF."
+        },
+        {
+          "icon": "👆",
+          "text": "Press the button. Click — light on! Click again — light off!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Light won't turn on? Check the long leg is pointing the right way."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built your own push-button light switch!"
+        }
+      ]
+    },
+    "fade an led": {
+      "intro": "Today your light will fade in and out smoothly, not just blink. 🌙",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, breadboard, one LED, a 220-ohm resistor and 2 wires."
+        },
+        {
+          "icon": "💡",
+          "text": "Remember: the long leg of the LED is plus (+), the short leg is minus (−)."
+        },
+        {
+          "icon": "⚡",
+          "text": "The trick is called PWM — the light flicks on and off super fast, so your eyes see a smooth glow."
+        },
+        {
+          "icon": "🔢",
+          "text": "We give it a number from 0 (off) up to 255 (fully bright)."
+        },
+        {
+          "icon": "〰️",
+          "text": "Use a pin with a squiggly ~ next to it, like pin 9 — only those pins can fade."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the LED in the breadboard with its resistor, and wire it to pin 9."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👀",
+          "text": "Watch the light breathe — getting brighter, then dimmer, over and over."
+        },
+        {
+          "icon": "🎉",
+          "text": "You made a glowing, fading light!"
+        }
+      ]
+    },
+    "rgb led colour mixer": {
+      "intro": "Today you'll mix your own colours with light, just like a TV screen does! 🌈",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "An RGB LED is really 3 tiny lights in one: red, green and blue."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, breadboard, the RGB light, 3 knobs, 3 resistors and wires."
+        },
+        {
+          "icon": "🎛️",
+          "text": "A knob (potentiometer) is like a tap for electricity. Turning it changes a number from 0 to 1023."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the RGB light and the 3 knobs in the breadboard, each light leg with a resistor."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire each knob to an analog pin and each colour to a PWM (~) pin."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "🎨",
+          "text": "Turn the knobs! More red plus more blue makes purple. Mix your own colours."
+        },
+        {
+          "icon": "💡",
+          "text": "The code uses PWM to make each colour dimmer or brighter, from 0 to 255."
+        },
+        {
+          "icon": "🎉",
+          "text": "You're mixing millions of colours with light!"
+        }
+      ]
+    },
+    "capacitive touch sensor": {
+      "intro": "Today a light turns on when you just TOUCH a pad — no button to press! ✋",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a TTP223 touch sensor, an LED, a resistor, breadboard and wires."
+        },
+        {
+          "icon": "💡",
+          "text": "Your body holds a tiny charge. The sensor feels your finger getting close."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the sensor and the LED in the breadboard (the LED's long leg is +)."
+        },
+        {
+          "icon": "🧷",
+          "text": "Add the LED's 220-ohm resistor to keep it safe."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor's signal to a pin, and the LED to another pin."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👆",
+          "text": "Touch the pad: the Arduino flips the light on. Touch it again: off!"
+        },
+        {
+          "icon": "🧠",
+          "text": "This on-then-off trick is called toggling."
+        },
+        {
+          "icon": "🎉",
+          "text": "You made a touch switch — like magic!"
+        }
+      ]
+    },
+    "buzzer melody": {
+      "intro": "Today you make a tiny speaker play a real tune! 🎶",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a passive piezo buzzer, breadboard and 2 wires."
+        },
+        {
+          "icon": "💡",
+          "text": "Sound is air wobbling fast. A fast wobble is a high note, a slow wobble is a low note."
+        },
+        {
+          "icon": "🔢",
+          "text": "Notes are measured in Hertz (Hz). The note A wobbles 440 times a second!"
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the buzzer in the breadboard and wire it to a pin and to ground."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "📜",
+          "text": "The code has a list of notes and how long each one lasts — like sheet music."
+        },
+        {
+          "icon": "🎵",
+          "text": "Press play and listen to your tune, like Ode to Joy!"
+        },
+        {
+          "icon": "🔁",
+          "text": "Change the notes in the list to make up your own song."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a little music machine!"
+        }
+      ]
+    },
+    "morse code blinker": {
+      "intro": "Today your light sends secret messages in Morse code! 🔦",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "Morse code uses short flashes (dots) and long flashes (dashes) for each letter."
+        },
+        {
+          "icon": "🆘",
+          "text": "Example: S is dot-dot-dot and O is dash-dash-dash — together that spells SOS!"
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, an LED, a 220-ohm resistor, breadboard and wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the LED in the breadboard (long leg is +) with its resistor, and wire it to a pin."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "⏱️",
+          "text": "The code flashes the light: a short time for a dot, longer for a dash, with gaps between."
+        },
+        {
+          "icon": "👀",
+          "text": "Watch it blink out a word. Can you read the code?"
+        },
+        {
+          "icon": "✏️",
+          "text": "Change the message in the code to send your own secret word."
+        },
+        {
+          "icon": "🎉",
+          "text": "You're a Morse code messenger!"
+        }
+      ]
+    },
+    "temperature logger": {
+      "intro": "Today you build a tiny weather sensor that reads the temperature! 🌡️",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a DHT11 temperature sensor, breadboard and wires."
+        },
+        {
+          "icon": "💡",
+          "text": "The DHT11 feels how hot the air is and how much water (humidity) is in it."
+        },
+        {
+          "icon": "📨",
+          "text": "It sends the Arduino a fast pattern of pulses — a bit like Morse code."
+        },
+        {
+          "icon": "📚",
+          "text": "We use a library — ready-made code that reads those pulses for us."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the sensor in the breadboard and wire its 3 pins to the Arduino."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in, upload the code, then open the Serial Monitor to see the numbers."
+        },
+        {
+          "icon": "👀",
+          "text": "Watch the temperature appear, like 24 degrees Celsius!"
+        },
+        {
+          "icon": "🤚",
+          "text": "Breathe on the sensor and watch the numbers change."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a real thermometer!"
+        }
+      ]
+    },
+    "ultrasonic distance sensor": {
+      "intro": "Today your sensor measures distance using sound — just like a bat! 📏",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, an HC-SR04 sensor, an LED, a resistor, breadboard and wires."
+        },
+        {
+          "icon": "💡",
+          "text": "The sensor sends out a sound too high to hear, then listens for the echo coming back."
+        },
+        {
+          "icon": "⏱️",
+          "text": "It times the echo. Sound travels about 343 metres a second, so it works out the distance."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the sensor and LED in the breadboard (long leg is +, with its resistor)."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor's Trig and Echo pins and the LED to the Arduino."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "✋",
+          "text": "Move your hand closer — when it's near, the warning light comes on!"
+        },
+        {
+          "icon": "📐",
+          "text": "Check it with a ruler. How accurate is your sensor?"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a distance detector!"
+        }
+      ]
+    },
+    "servo motor control": {
+      "intro": "Today you steer a motor to any angle just by turning a knob! 🤖",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "A servo is a motor that moves to an exact angle (0 to 180 degrees) and holds it there."
+        },
+        {
+          "icon": "🎛️",
+          "text": "A knob (potentiometer) gives the Arduino a number from 0 to 1023 as you turn it."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, an SG90 servo, a knob, breadboard and wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the knob in the breadboard and connect the servo's 3 wires."
+        },
+        {
+          "icon": "🧮",
+          "text": "The code uses map() to turn 0–1023 from the knob into 0–180 degrees for the servo."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👆",
+          "text": "Turn the knob — the servo arm follows your hand!"
+        },
+        {
+          "icon": "💡",
+          "text": "This is how robot arms and remote-control steering really work."
+        },
+        {
+          "icon": "🎉",
+          "text": "You controlled a real motor!"
+        }
+      ]
+    },
+    "light-activated led": {
+      "intro": "Today your light turns itself ON when it gets dark — like a streetlight! 💡",
+      "steps": [
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a light sensor (LDR), 2 resistors, an LED, breadboard and wires."
+        },
+        {
+          "icon": "🔆",
+          "text": "An LDR lets more electricity through in bright light, and less in the dark."
+        },
+        {
+          "icon": "🔌",
+          "text": "Build a voltage divider: the LDR and a 10k resistor together, and read where they meet."
+        },
+        {
+          "icon": "💡",
+          "text": "Put the LED in the breadboard (long leg is +) with its 220-ohm resistor."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor to an analog pin and the LED to a digital pin."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "🖐️",
+          "text": "Cover the sensor with your hand — the light switches on!"
+        },
+        {
+          "icon": "🌃",
+          "text": "This is exactly how real streetlights know when it's night."
+        },
+        {
+          "icon": "🎉",
+          "text": "You made an automatic night light!"
+        }
+      ]
+    },
+    "digital dice": {
+      "intro": "Today you build an electronic dice made of lights! 🎲",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "7 lights are laid out like the dots on a dice, so they can show any number from 1 to 6."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, 7 LEDs, 7 resistors, a button, breadboard and lots of wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put all 7 lights in the dice pattern (long leg is +), each with a resistor."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire each light to a pin, and add the push button to roll."
+        },
+        {
+          "icon": "🎰",
+          "text": "The code picks a random number from 1 to 6 and lights up that dice pattern."
+        },
+        {
+          "icon": "🌀",
+          "text": "To feel truly random, it reads tiny electrical noise to kick off the randomness."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👆",
+          "text": "Press the button — watch the lights tumble, then show your roll!"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a glowing dice!"
+        }
+      ]
+    },
+    "basic alarm system": {
+      "intro": "Today you build an alarm that catches movement! 🚨",
+      "steps": [
+        {
+          "icon": "👮",
+          "text": "A PIR sensor is like a guard — it feels the body heat of someone moving nearby."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a PIR sensor, a buzzer, a red and a green LED, a button, resistors and wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the parts in the breadboard (LED long leg is +, each with a resistor)."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor, buzzer, lights and button to the Arduino."
+        },
+        {
+          "icon": "🔁",
+          "text": "The Arduino keeps asking the sensor did anything move? — that's called polling."
+        },
+        {
+          "icon": "🚦",
+          "text": "Press the button to arm the alarm (green). Press again to turn it off."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "🏃",
+          "text": "Wave your hand — the red light and buzzer go off! Alarm!"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a working security alarm!"
+        }
+      ]
+    },
+    "fan control": {
+      "intro": "Today a sensor turns a fan on all by itself when it gets too hot. 🌡️",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "A TMP36 sensor turns temperature into a tiny voltage the Arduino can read."
+        },
+        {
+          "icon": "⚠️",
+          "text": "A fan needs more power than the Arduino's pins can give, so we use a relay."
+        },
+        {
+          "icon": "🔀",
+          "text": "A relay is an electric switch: a small Arduino signal clicks a bigger circuit on."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a TMP36 sensor, a relay module, a 12V fan with its own power, an LED and wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Wire the sensor to an analog pin, the relay to a digital pin, and the fan to the relay."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code, which turns the voltage into degrees Celsius."
+        },
+        {
+          "icon": "🔥",
+          "text": "When it gets too warm, the Arduino clicks the relay and the fan spins up."
+        },
+        {
+          "icon": "❄️",
+          "text": "When it cools down again, the fan clicks off."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built an automatic cooling system!"
+        }
+      ]
+    },
+    "simon says game": {
+      "intro": "Today you build the classic Simon memory game! 🎮",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "The Arduino lights a colour and beeps. You press the matching button — then it adds one more."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, 4 coloured LEDs, 4 buttons, a buzzer, resistors and lots of wires."
+        },
+        {
+          "icon": "🔌",
+          "text": "Put the 4 lights and 4 buttons in the breadboard (LED long leg is +, with resistors)."
+        },
+        {
+          "icon": "🧷",
+          "text": "Give each button a 10k pull-down resistor so the Arduino reads it cleanly."
+        },
+        {
+          "icon": "📋",
+          "text": "The code stores the growing colour pattern in a list called an array."
+        },
+        {
+          "icon": "🎲",
+          "text": "It uses random numbers so every game is different."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "🕹️",
+          "text": "Play! Copy the pattern. Each round gets one colour longer — how far can you get?"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a real electronic game!"
+        }
+      ]
+    },
+    "line-following robot": {
+      "intro": "Today you build a robot that drives itself along a line! 🤖",
+      "steps": [
+        {
+          "icon": "👀",
+          "text": "It uses 2 infrared eyes that see how much light bounces off the floor."
+        },
+        {
+          "icon": "⬛",
+          "text": "White floor bounces lots of light (no line); black tape soaks it up (line here!)."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, an L298N motor driver, 2 IR sensors, 2 motors with wheels, a chassis and batteries."
+        },
+        {
+          "icon": "🔧",
+          "text": "Build the chassis: attach the motors, the wheels and a support ball."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the 2 sensors and the motor driver to the Arduino."
+        },
+        {
+          "icon": "🧠",
+          "text": "The code checks both eyes: line on the left? Steer left. On the right? Steer right."
+        },
+        {
+          "icon": "🛣️",
+          "text": "Make a track with black tape on a white board."
+        },
+        {
+          "icon": "💻",
+          "text": "Upload the code, switch on the batteries, and set it on the line!"
+        },
+        {
+          "icon": "🎉",
+          "text": "Your robot follows the track all by itself!"
+        }
+      ]
+    },
+    "mini smart city": {
+      "intro": "Today you build a mini smart city — 3 systems on one Arduino! 🏙️",
+      "steps": [
+        {
+          "icon": "🚦",
+          "text": "System 1: traffic lights that cycle green, then yellow, then red on a timer."
+        },
+        {
+          "icon": "💡",
+          "text": "System 2: a streetlight that turns on by itself when it gets dark, using an LDR."
+        },
+        {
+          "icon": "🅿️",
+          "text": "System 3: a smart parking bay that senses a car and shows FREE or FULL on a screen."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, lots of LEDs and resistors, an LDR, an ultrasonic sensor and an LCD screen."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire each part to its pins — follow the pin map carefully."
+        },
+        {
+          "icon": "⏱️",
+          "text": "The code uses millis() so all 3 systems run at once without stopping each other."
+        },
+        {
+          "icon": "💻",
+          "text": "Upload the code and watch your city come alive."
+        },
+        {
+          "icon": "🚗",
+          "text": "Put something in the parking bay — the screen flips to FULL!"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a working model city!"
+        }
+      ]
+    },
+    "obstacle-avoiding robot": {
+      "intro": "Today you build a robot that drives around without bumping into things! 🤖",
+      "steps": [
+        {
+          "icon": "👂",
+          "text": "It uses an ultrasonic sensor to see with sound, just like a bat."
+        },
+        {
+          "icon": "🔄",
+          "text": "A servo swings the sensor left and right, like a head looking around."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, an ultrasonic sensor, a servo, an L298N driver, 2 motors with wheels, a chassis and batteries."
+        },
+        {
+          "icon": "🔧",
+          "text": "Build the chassis and mount the sensor on top of the servo."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor, the servo and the motor driver to the Arduino."
+        },
+        {
+          "icon": "🧠",
+          "text": "The code: drive forward; if something's close, stop, look left and right, then turn the clear way."
+        },
+        {
+          "icon": "💻",
+          "text": "Upload the code and switch on the batteries."
+        },
+        {
+          "icon": "🚧",
+          "text": "Put a box in its path — watch it stop, look, and go around!"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built a robot that thinks for itself!"
+        }
+      ]
+    },
+    "weather station": {
+      "intro": "Today you build a weather station that shows temperature and humidity on a screen! 🌦️",
+      "steps": [
+        {
+          "icon": "💡",
+          "text": "A DHT11 sensor feels the heat and the water vapour in the air."
+        },
+        {
+          "icon": "🖥️",
+          "text": "An LCD screen shows the numbers, so you don't need a computer."
+        },
+        {
+          "icon": "🔌",
+          "text": "An I2C backpack lets the screen talk to the Arduino with just 2 wires."
+        },
+        {
+          "icon": "🧰",
+          "text": "Get the Arduino, a DHT11 sensor, an I2C LCD screen, breadboard and wires."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the sensor and the screen to the Arduino."
+        },
+        {
+          "icon": "📚",
+          "text": "The code uses libraries that read the sensor and drive the screen."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👀",
+          "text": "Watch live readings like 24°C and 60% appear on your screen."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built your very own weather station!"
+        }
+      ]
+    },
+    "voice- / gesture-controlled robot": {
+      "intro": "Today AI meets robot — you'll drive a robot with your gestures or your voice! 🧠",
+      "steps": [
+        {
+          "icon": "🌐",
+          "text": "First, train a mini AI brain on Teachable Machine in the Chrome browser."
+        },
+        {
+          "icon": "✋",
+          "text": "Show it examples: a hand pointing left, right, or a stop fist — or spoken words."
+        },
+        {
+          "icon": "🧰",
+          "text": "Build the robot: Arduino, an L298N driver, 2 motors with wheels, a chassis and batteries."
+        },
+        {
+          "icon": "🌉",
+          "text": "The AI runs in the browser. A small bridge sends a letter (like L) down the USB cable."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the motor driver to the Arduino and upload the robot code."
+        },
+        {
+          "icon": "💻",
+          "text": "Connect the browser to the Arduino so your gestures become commands."
+        },
+        {
+          "icon": "👋",
+          "text": "Point left — the robot turns left! Say stop — it stops!"
+        },
+        {
+          "icon": "💡",
+          "text": "You just joined a thinking AI to a doing robot."
+        },
+        {
+          "icon": "🎉",
+          "text": "You built an AI-powered robot — amazing!"
+        }
+      ]
+    },
+    "robot arm basics": {
+      "intro": "Today you build a cardboard robot arm and steer it with knobs! 🦾",
+      "steps": [
+        {
+          "icon": "✂️",
+          "text": "Cut the arm from cardboard: a base, two bones, and little gripper jaws. A grown-up does the knife cutting."
+        },
+        {
+          "icon": "🔩",
+          "text": "Fit 4 servos at the joints: base, shoulder, elbow and gripper."
+        },
+        {
+          "icon": "🎛️",
+          "text": "Each knob (potentiometer) gives the Arduino a number from 0 to 1023."
+        },
+        {
+          "icon": "🧮",
+          "text": "The code uses map() to turn that into a 0–180 degree angle for each servo."
+        },
+        {
+          "icon": "⚡",
+          "text": "Power the servos from their own battery, NOT the Arduino's 5V pin, so the board isn't overloaded."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire the 4 knobs and the 4 servos to the Arduino."
+        },
+        {
+          "icon": "💻",
+          "text": "Plug in and upload the code."
+        },
+        {
+          "icon": "👐",
+          "text": "Turn the 4 knobs to move the arm live — lift, bend, and grab!"
+        },
+        {
+          "icon": "🎉",
+          "text": "You built your own robot arm!"
+        }
+      ]
+    }
+  }
+}
