@@ -1,35 +1,75 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 16 Oct 2026_
+_Last updated: 19 Oct 2026_
 
 ## ▶️ Do first when we resume
-1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (expect ~23 URLs). Then watch **Indexing → Pages**. The sitemap + robots.txt + canonicals are already live on the site (SEO pass merged). _Note: the "agentic OAuth" email from Google = no action needed; Sign-in-with-Google is auth only, not a Workspace AI agent._
-2. **Paystack storefront** (once the account is approved, ~7 days): create the 17 products on `paystack.shop/tinkerwith-store` using the delivered **cover images**, **descriptions** (Word doc), and **After-Purchase** redirect + success message (Word doc). Optionally add each product URL into `premium_courses.json` as `paystack_url` for per-product deep links.
-
-_(All Supabase SQL for this session is already run: supplier removal, AI student-POV, publish, Paystack method, and the Robots renames/upsells.)_
+1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (now **~25 URLs**, incl. `teachers.html` + `resources.html`). Then watch **Indexing → Pages**. Sitemap + robots.txt + canonicals are already live. _Note: the "agentic OAuth" email from Google = no action needed (Sign-in-with-Google is auth only)._
+2. **Verify the teacher waitlist end-to-end** (owner): on the live teachers page submit a test signup, then confirm it shows in **teach.html → Leads** tagged `teacher-waitlist`.
+3. **Paystack storefront** (once the account is approved): create the 17 products on `paystack.shop/tinkerwith-store` using the delivered **cover images**, **descriptions** (Word doc) and **After-Purchase** settings (Word doc). Optionally add each product URL into `premium_courses.json` as `paystack_url`.
 
 ## 🗂️ Backlog (priority order)
-- **#28 — Membership subscription** (Club ~KES 2,000 / Premium ~KES 7,000): tiers, member access gating, Paystack **Plans + webhook** (the one bit of server code — a Supabase Edge Function verifying Paystack signatures with the secret key), live-class access. Recurring revenue — biggest next build. Card subscriptions auto-renew; M-Pesa members pay monthly via a request.
-- **#24 → #25 — Teachers/Tutors hub → tutor community + certification.**
-- **#27 — Paystack finish**: wire paid courses too (not just curriculums); test live with `pk_test_`, then flip to `pk_live_`. Optional later: inline on-site checkout (scaffolding already in `paystack.js` + `lms.js` `CONFIG.paystackKey`).
-- **Standing / cleanup (do together):** **#22** strip `project_content` off GitHub · **#21** point the curriculum generator at Supabase (reader move) · **#23** route generator output to Supabase.
 
-## ✅ Shipped & live on main (this session)
+### Teachers / tutors (continue #25)
+- **Decide curriculum price tiers**, then wire them (`curriculum.html` + Paystack). Owner to set numbers:
+  - Single curriculum: **KES 1,500 / $10** (set — keep low for KE teachers, on-strategy).
+  - **All-17 bundle** (e.g. ~KES 12,000 vs 25,500 à la carte) — number TBD.
+  - **School / multi-teacher licence** — quote (the thesis's $1,000 line).
+  - **International** (private / overseas schools) — higher USD tier (the $2,500 line).
+  - Approach: **anchor the value** (already added: "part of our KES 9,000 live course") + add a **"what's inside" preview**, rather than raising the base price.
+- **Dedicated teacher role (Supabase + Clerk)** — the gated side. A `lms_teachers` row (school, phone, subjects, `pending`/`approved`); self-serve "I'm a teacher" signup → pending → **approve in teach.html** → access to teacher-only resources (answer keys, slide decks, tutor certification). Keep authz in Supabase (like `lms_is_admin` / `lms_has_curriculum`); Clerk = identity only. _(Owner said Supabase + Clerk work happens next week.)_
+- **Leads filter / tab in teach.html** so `teacher-waitlist` signups are easy to see (currently mixed into the general Leads list).
+- **Tutor certification + community** (the rest of #25): the self-paced teacher course, outcomes/skill-check reports — flagged "coming soon" on the site; build when ready.
+
+### Revenue
+- **#28 — Membership subscription** (Club / Premium): tiers, member access gating, Paystack **Plans + webhook** (the one bit of server code — a Supabase Edge Function verifying Paystack signatures with the secret key), live-class access. Recurring revenue, biggest build. Card auto-renews; M-Pesa members pay monthly via a request.
+- **#27 — Paystack finish**: wire **paid courses** too (not just curriculums); test with `pk_test_`, then flip to `pk_live_`. Optional later: inline on-site checkout (scaffolding in `paystack.js` + `lms.js` `CONFIG.paystackKey`).
+
+### Standing / cleanup (do together)
+- **#22** strip `project_content` off GitHub · **#21** point the curriculum generator at Supabase (reader move) · **#23** route generator output to Supabase.
+
+### Nice-to-have
+- Normalise relative `og:image` paths to absolute on older pages (index, free-for-kids).
+
+## ✅ Shipped & live on main
+
+### Earlier this build
 - Publish/Unpublish button on the course manager (teach.html)
 - Supplier names stripped from Arduino lessons; **Kenya kit-sourcing kept on the teacher PDFs**; Tinkerwith **logo on all generated PDFs**
 - All **17 premium curricula** generated → private Supabase bucket
 - **13 AI lessons** rewritten to student-attempting POV
-- **7 free courses** published and live
-- **Engagement flywheel**: share-your-build (you approve first) + moderation + Builds Wall + live counters + admin traction view
-- **Privacy policy** updated for children's *project* photos (not child photos)
-- **Paystack** one-time curriculum wiring (storefront button + reference auto-capture + `paystack` payment method)
-- **Free-for-kids redesign**: one prominent big-card "Free online courses" block (7 curated + 3 classics), covers for all, jump-nav
-- **Anti-cannibalisation**: free "Robots & Smart Builds" renames ("Robot arm basics", "Mini smart city") + "Go deeper" premium upsells
+- **Free courses published**; **Free-for-kids redesign** (one big-card block, covers, jump-nav)
+- **Engagement flywheel**: share-your-build + moderation + Builds Wall + live counters + admin traction view
+- **Privacy policy** updated for children's *project* photos
+- **Paystack** one-time curriculum wiring (storefront button + reference auto-capture + `paystack` method)
+- **Anti-cannibalisation**: free "Robots & Smart Builds" renames + "Go deeper" upsells
+
+### Recent (Oct 16–19)
+- **Course certificate fix** — reading-only lessons auto-complete on Next/Finish, so finishing a course reliably unlocks the certificate (scrolls straight to it)
+- **Holiday "34 free projects" campaign** — homepage banner ("Swap 'I'm bored' for 'I built a robot'") + poster-matched "34 projects / 10 courses" copy across homepage + free-for-kids
+- **Sitewide SEO pass** — `robots.txt`, `sitemap.xml`, canonicals on all public pages, OG/Twitter tags, Organization + Course JSON-LD, `noindex` on admin
+- **share.html** mobile dropzone fix
+- **The Teachers' Workbench** (`teachers.html`) — "tinker with what you have" positioning; "For teachers" nav + footer sitewide; mobile menu surfaces **Free for kids + For teachers** at the top; illustrations + trimmed copy
+- **Resources guide** (`resources.html`) — everyday-parts → each of the 17 projects; **microcontroller = the one core buy**, everything else optional
+- **Teacher waitlist form** — name / email / WhatsApp / ages taught / goals → `lms_submit_lead` (`source: 'teacher-waitlist'`); works now, no new backend
+- **Free-vs-full value ladder** on the teachers page — concrete **Self-Driving Car** example (free obstacle-avoider taster → full 3-session curriculum)
+- **curriculum.html** — value anchor on the buy box + **admin-preview label** (so the admin preview is never mistaken for a leak)
+- **Kit-optional for kids** — homepage FAQ + Robotics 101 no longer imply a kit is required
+- Landing **"I'm a teacher"** card in "Where do you fit in?"
+
+## 🔎 Verified (reassurances)
+- **No premium leak.** The 17 `proposals/*.pdf` are 2-page marketing brochures (verified — no code/wiring/step-by-step). The full curriculum downloads are gated by `lms_has_curriculum` = **admin OR a purchase row**, enforced in the frontend **and** a storage RLS policy. The "leak" scare was the admin preview.
+- **GA4** (`G-26H8GCM572`) via `analytics.js` is on **all** pages, incl. `teachers.html` + `resources.html`.
+
+## 💵 Pricing reference
+- Curriculum (teacher PDF download): **KES 1,500 / $10**
+- Live course: **from KES 9,000** (per course, varies)
+- Maker Kit (optional hardware): **KES 8,500**
+- Strategy: affordability is the thesis's core, so keep the **individual KE** curriculum price low; capture more via **bundle / school / international** tiers and by **anchoring value**, not by raising the base.
 
 ## 🔑 Operating reminders
 - **Supabase writes are manual**: Claude shares SQL files, owner runs them in the SQL Editor. No service-role key in play.
-- Keep `project_content` for now (the curriculum generator depends on it); GitHub content cleanup is a standing task (#22).
 - **Premium curriculum content is PDF-only** → generated in the workflow → private Supabase bucket; never committed to GitHub.
+- Keep `project_content` for now (the generator depends on it); GitHub cleanup is a standing task (#22).
 - Deliverables for the owner go in the working directory / scratchpad so they open in the app.
 
 ## 📦 Deliverables already handed over (for the storefront)
