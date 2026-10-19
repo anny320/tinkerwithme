@@ -4,6 +4,17 @@
   "lessons": {
     "traffic light simulation": {
       "intro": "Let's build a real traffic light! It will blink red, then green, then yellow — all by itself. 🚦",
+      "materials": [
+        { "icon": "board", "label": "Arduino board" },
+        { "icon": "usb", "label": "USB cable" },
+        { "icon": "breadboard", "label": "Breadboard" },
+        { "icon": "led-red", "label": "Red LED light" },
+        { "icon": "led-yellow", "label": "Yellow LED light" },
+        { "icon": "led-green", "label": "Green LED light" },
+        { "icon": "resistor", "label": "3 resistors (220Ω)" },
+        { "icon": "wires", "label": "Jumper wires" },
+        { "icon": "computer", "label": "A computer" }
+      ],
       "steps": [
         {
           "icon": "🧠",
