@@ -151,6 +151,11 @@ a.sp-card{color:inherit;text-decoration:none}
 .pcard.t-arduino{border-top:4px solid var(--orange)}
 .pcard.t-ai{border-top:4px solid var(--green)}
 .pcard.t-combo{border-top:4px solid var(--purple)}
+.pcard-banner{margin:-1.25rem -1.25rem .3rem;height:92px;border-radius:calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;display:flex;align-items:center;justify-content:center;color:var(--text);overflow:hidden}
+.pcard-banner svg{width:100%;height:100%;display:block}
+.pcb-arduino{background:var(--orange-light)}
+.pcb-ai{background:var(--green-light)}
+.pcb-combo{background:var(--purple-light)}
 .badges{display:flex;flex-wrap:wrap;gap:6px}
 .badge{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:var(--radius-pill);background:var(--bg);color:var(--text-2);border:1px solid var(--border)}
 .badge.track-arduino{background:var(--orange-light);color:var(--orange-dark);border-color:transparent}
@@ -544,6 +549,13 @@ function extrasHtml(course){
     </div>`;
 }
 
+/* Track banner illustrations for course cards — brand-styled inline SVGs, royalty-free.
+   Outlines use currentColor (follow the theme); accents use brand colours. viewBox 0 0 300 104. */
+const TRACK_BANNERS = {
+  arduino: '<svg viewBox="0 0 300 104" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="26" y="34" width="150" height="46" rx="7" stroke="currentColor" stroke-width="3"/><rect x="128" y="44" width="26" height="26" rx="3" fill="#E0641B"/><path d="M133 50h16M133 55h16M133 60h16" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/><circle cx="40" cy="45" r="2.4" fill="currentColor"/><circle cx="40" cy="55" r="2.4" fill="currentColor"/><circle cx="40" cy="65" r="2.4" fill="currentColor"/><path d="M58 44v26M68 44v26M78 44v26" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round" opacity=".55"/><circle cx="210" cy="40" r="12" fill="#E53935"/><circle cx="240" cy="40" r="12" fill="#FDB515"/><circle cx="270" cy="40" r="12" fill="#84BD00"/><path d="M210 54v12M240 54v12M270 54v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M196 30c3-5 10-5 13 0M226 30c3-5 10-5 13 0M256 30c3-5 10-5 13 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".4"/></svg>',
+  ai: '<svg viewBox="0 0 300 104" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="28" y="24" width="128" height="52" rx="14" stroke="currentColor" stroke-width="3" fill="#84BD00" fill-opacity=".15"/><path d="M52 76l0 16 17-16z" fill="#84BD00" fill-opacity=".15" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="62" cy="50" r="4" fill="currentColor"/><circle cx="82" cy="50" r="4" fill="currentColor"/><circle cx="102" cy="50" r="4" fill="currentColor"/><path d="M226 22l5 13 13 5-13 5-5 13-5-13-13-5 13-5z" fill="#5E8700"/><circle cx="196" cy="74" r="6" stroke="currentColor" stroke-width="2.6"/><circle cx="232" cy="78" r="6" stroke="currentColor" stroke-width="2.6"/><circle cx="268" cy="66" r="6" stroke="currentColor" stroke-width="2.6"/><path d="M202 72l24 4M238 76l24-8" stroke="currentColor" stroke-width="2" opacity=".55"/></svg>',
+  combo: '<svg viewBox="0 0 300 104" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="110" y="34" width="80" height="54" rx="12" stroke="currentColor" stroke-width="3" fill="#7A3FB0" fill-opacity=".14"/><path d="M150 20v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="150" cy="18" r="4" fill="#7A3FB0"/><circle cx="133" cy="56" r="7" fill="#E53935"/><circle cx="167" cy="56" r="7" fill="#84BD00"/><path d="M132 74h36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M110 50H92v22h18M190 50h18v22h-18" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M60 62l6-6 6 6-6 6zM228 44l6-6 6 6-6 6z" fill="#FF7F32"/><path d="M240 70l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill="#004C97" opacity=".85"/></svg>',
+};
 function cardHtml(course){
   const prog = course.sessions.map(s => `<li><strong>${esc(s.title)}.</strong> ${esc(s.desc)}</li>`).join('');
   const prereq = course.standalone
@@ -553,6 +565,7 @@ function cardHtml(course){
     ? `<p class="prereq"><i class="ti ti-arrow-badge-right"></i> Prereq: ${course.prereqs.map(esc).join('; ')}</p>` : '';
   return `
   <article class="pcard t-${course.track}" data-track="${course.track}">
+    <div class="pcard-banner pcb-${course.track}" aria-hidden="true">${TRACK_BANNERS[course.track] || ''}</div>
     <div class="badges">
       <span class="badge track-${course.track}">${esc(DATA.tracks[course.track].label)}</span>
       <span class="badge">${esc(course.format)}</span>
