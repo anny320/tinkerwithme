@@ -208,7 +208,7 @@ function route() {
   const h = location.hash;
   const tab = ['students', 'payments', 'leads', 'builds', 'curriculums'].find(t => h.startsWith('#' + t)) || 'courses';
   ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
-  payCount(); leadCount(); buildsCount();
+  payCount(); leadCount(); buildsCount(); studentCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
   const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
@@ -748,10 +748,28 @@ async function payments() {
 // "lifetime", "until 5 Oct 2027" or "expired 5 Oct 2027".
 const access = d => !d ? 'lifetime' : `${new Date(d) > new Date() ? 'until' : 'expired'} ${new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
 
+// New sign-ups since you last opened the Students tab (first time: last 7 days).
+// Client-side only — created_at already comes back on every profile, no backend change.
+const STUDENTS_SEEN = 'tw_students_seen';
+const studentsSeenAt = () => { try { return localStorage.getItem(STUDENTS_SEEN); } catch (_) { return null; } };
+const seenSince = () => studentsSeenAt() || new Date(Date.now() - 7 * 864e5).toISOString();
+const markStudentsSeen = () => { try { localStorage.setItem(STUDENTS_SEEN, new Date().toISOString()); } catch (_) {} };
+const NEW_PILL = '<span style="display:inline-block;margin-left:7px;font:700 10px/1 system-ui;letter-spacing:.06em;color:#fff;background:#E0641B;border-radius:99px;padding:3px 7px;vertical-align:1px">NEW</span>';
+
+async function studentCount() {
+  try {
+    const { count } = await db().from('lms_profiles').select('user_id', { count: 'exact', head: true }).gt('created_at', seenSince());
+    $('t-students').textContent = count ? `Students (${count} new)` : 'Students';
+  } catch (_) {}
+}
+
 async function students() {
   $('view').innerHTML = '<p class="loading">Loading students…</p>';
+  const prevSeen = seenSince();                                   // capture BEFORE marking the tab seen
+  const isNew = s => !!(s.created_at && new Date(s.created_at) > new Date(prevSeen));
   const [data, courses] = await Promise.all([LMS.rpc('lms_admin_students'),
     db().from('lms_courses').select('id,title,price_kes').order('position').order('title').then(must)]);
+  const newCount = data.students.filter(isNew).length;
   const opts = courses.map(c => `<option value="${c.id}">${esc(c.title)}${c.price_kes ? ` (KES ${c.price_kes})` : ' (free)'}</option>`).join('');
   $('view').innerHTML = `
     <form class="panel box" id="ef"><h2>Enrol a student</h2>
@@ -762,12 +780,13 @@ async function students() {
     ${data.pending.length ? `<div class="panel box"><h2>Waiting for sign-up (${data.pending.length})</h2><div class="rows">${data.pending.map(p => `<div class="row">
       <div class="grow"><strong>${esc(p.email)}</strong><small>${esc(p.title)} · added ${new Date(p.created_at).toLocaleDateString()}</small></div>
       <button class="ib danger" type="button" data-unpend="${esc(p.email)}|${p.course_id}">Remove</button></div>`).join('')}</div></div>` : ''}
-    <div class="panel box"><h2>Students (${data.students.length})</h2><div class="rows">${data.students.map(s => `<div class="row">
-      <div class="grow"><strong>${esc(s.full_name || '(no name)')}</strong><small>${esc(s.email || 'no email')} · last seen ${new Date(s.last_seen_at).toLocaleDateString()}</small>
+    <div class="panel box"><h2>Students (${data.students.length})${newCount ? ` · <span class="muted" style="font-weight:600">${newCount} new</span>` : ''}</h2><div class="rows">${data.students.map(s => `<div class="row">
+      <div class="grow"><strong>${esc(s.full_name || '(no name)')}</strong>${isNew(s) ? NEW_PILL : ''}<small>${esc(s.email || 'no email')}${s.created_at ? ` · joined ${new Date(s.created_at).toLocaleDateString()}` : ''} · last seen ${new Date(s.last_seen_at).toLocaleDateString()}</small>
         <div class="st-courses">${s.courses.map(c => `<div><div class="bar"><i style="width:${c.lessons ? c.done / c.lessons * 100 : 0}%"></i></div>
           <span>${esc(c.title)} — ${c.done}/${c.lessons} · ${access(c.expires_at)}</span>
           ${c.expires_at ? `<button class="ib" type="button" data-renew="${esc(s.email)}|${c.course_id}" title="Add 12 months">Renew</button>` : ''}
           <button class="ib danger" type="button" data-unenrol="${esc(s.user_id)}|${c.course_id}" title="Remove from this course">×</button></div>`).join('') || '<small>No courses yet</small>'}</div></div></div>`).join('') || '<p class="muted">Nobody has signed in yet.</p>'}</div></div>`;
+  markStudentsSeen(); $('t-students').textContent = 'Students';   // viewing the tab clears the "new" badge
   const f = $('ef');
   f.onsubmit = async e => {
     e.preventDefault();
