@@ -609,10 +609,15 @@ function wireLessonTools(L) {
   if (!tools || !body) return;
   const kid = kidFor(L);
   const mats = $('lesson-mats'); if (mats) mats.innerHTML = matStripHTML(kid);   // shows in both modes
-  const dg = $('lesson-diagram');                                                 // wiring diagram, both modes
-  if (dg) dg.innerHTML = (kid && kid.diagram)
-    ? `<figure class="wire-diagram"><figcaption>🔌 Wiring diagram — how to connect it</figcaption><img src="assets/wiring/${esc(kid.diagram)}.svg" alt="Wiring diagram for ${esc(L.title)}" loading="lazy"></figure>`
-    : '';
+  const dg = $('lesson-diagram');                                                 // diagram, both modes
+  if (dg) {
+    if (kid && kid.diagram) {
+      const wire = /^ar/.test(kid.diagram);                                       // ar* = wiring, a* = AI "how it works"
+      const cap = wire ? '🔌 Wiring diagram — how to connect it' : '🧠 How it works';
+      const alt = (wire ? 'Wiring diagram for ' : 'How it works — ') + L.title;
+      dg.innerHTML = `<figure class="wire-diagram"><figcaption>${cap}</figcaption><img src="assets/wiring/${esc(kid.diagram)}.svg" alt="${esc(alt)}" loading="lazy"></figure>`;
+    } else dg.innerHTML = '';
+  }
   const readLabel = '🔊 Read to me';
   tools.innerHTML =
     (twSay.supported() ? `<button type="button" class="tool-btn" id="t-read" data-idle="${readLabel}">${readLabel}</button>` : '')
