@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 226" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="226" fill="#FBF7F2"/>
+<path d="M712 54 V196" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="705" y="46" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<rect x="44" y="56" width="150" height="118" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="24" y="78" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="119" y="148" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO</text>
+<text x="119" y="164" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">UNO</text>
+<rect x="190" y="149" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/>
+<text x="182" y="161" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">GND</text>
+<path d="M212 156 L212 202 L712 202" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="89" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="101" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">8</text>
+<path d="M212 96 L394 96" stroke="#E0641B" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="412" cy="96" r="18" fill="#2B2B2B" stroke="#220111" stroke-width="3"/>
+<circle cx="412" cy="96" r="4" fill="#C3C7CB"/>
+<text x="442" y="101" fill="#220111" font-size="13" font-weight="700">Buzzer (+ → pin, − → GND)</text>
+<path d="M430 96 L430 114 L712 114" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

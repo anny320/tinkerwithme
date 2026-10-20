@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 646" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="646" fill="#FBF7F2"/>
+<path d="M712 54 V616" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="705" y="46" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<rect x="44" y="56" width="150" height="538" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="24" y="78" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="119" y="568" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO</text>
+<text x="119" y="584" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">UNO</text>
+<rect x="190" y="569" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/>
+<text x="182" y="581" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">GND</text>
+<path d="M212 576 L212 622 L712 622" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="89" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="101" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">2</text>
+<path d="M212 96 L372 96" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 96.0 L383.0 103.0 L394.0 89.0 L405.0 103.0 L416.0 89.0 L427.0 103.0 L438.0 96.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="83" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 96 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="96" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="91" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="101" fill="#220111" font-size="13" font-weight="700">LED 1</text>
+<path d="M482 96 L482 114 L712 114" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="149" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="161" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">3</text>
+<path d="M212 156 L372 156" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 156.0 L383.0 163.0 L394.0 149.0 L405.0 163.0 L416.0 149.0 L427.0 163.0 L438.0 156.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="143" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 156 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="156" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="151" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="161" fill="#220111" font-size="13" font-weight="700">LED 2</text>
+<path d="M482 156 L482 174 L712 174" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="209" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="221" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">4</text>
+<path d="M212 216 L372 216" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 216.0 L383.0 223.0 L394.0 209.0 L405.0 223.0 L416.0 209.0 L427.0 223.0 L438.0 216.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="203" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 216 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="216" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="211" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="221" fill="#220111" font-size="13" font-weight="700">LED 3</text>
+<path d="M482 216 L482 234 L712 234" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="269" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="281" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">5</text>
+<path d="M212 276 L372 276" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 276.0 L383.0 283.0 L394.0 269.0 L405.0 283.0 L416.0 269.0 L427.0 283.0 L438.0 276.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="263" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 276 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="276" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="271" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="281" fill="#220111" font-size="13" font-weight="700">LED 4</text>
+<path d="M482 276 L482 294 L712 294" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="329" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="341" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">6</text>
+<path d="M212 336 L372 336" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 336.0 L383.0 343.0 L394.0 329.0 L405.0 343.0 L416.0 329.0 L427.0 343.0 L438.0 336.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="323" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 336 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="336" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="331" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="341" fill="#220111" font-size="13" font-weight="700">LED 5</text>
+<path d="M482 336 L482 354 L712 354" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="389" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="401" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">7</text>
+<path d="M212 396 L372 396" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 396.0 L383.0 403.0 L394.0 389.0 L405.0 403.0 L416.0 389.0 L427.0 403.0 L438.0 396.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="383" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 396 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="396" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="391" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="401" fill="#220111" font-size="13" font-weight="700">LED 6</text>
+<path d="M482 396 L482 414 L712 414" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="449" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="461" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">8</text>
+<path d="M212 456 L372 456" stroke="#2E7DE0" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 456.0 L383.0 463.0 L394.0 449.0 L405.0 463.0 L416.0 449.0 L427.0 463.0 L438.0 456.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="443" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 456 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="456" r="14" fill="#2E7DE0" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="451" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="461" fill="#220111" font-size="13" font-weight="700">LED 7</text>
+<path d="M482 456 L482 474 L712 474" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="509" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="521" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">9</text>
+<path d="M212 516 L382 516" stroke="#004C97" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="382" y="500" width="32" height="32" rx="5" fill="#fff" stroke="#220111" stroke-width="3"/>
+<circle cx="398" cy="516" r="8" fill="#E8B23A" stroke="#220111" stroke-width="2.5"/>
+<text x="426" y="514" fill="#220111" font-size="13" font-weight="700">Roll button</text>
+<text x="426" y="530" fill="#6E5F56" font-size="11" font-weight="700">other leg → GND</text>
+<path d="M414 524 L414 542 L712 542" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

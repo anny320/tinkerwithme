@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 388" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="388" fill="#FBF7F2"/>
+<path d="M712 54 V358" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="705" y="46" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M748 54 V358" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="755" y="46" text-anchor="start" fill="#D8322B" font-size="12.5" font-weight="700">5V (+)</text>
+<rect x="44" y="56" width="150" height="280" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="24" y="78" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="119" y="310" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO</text>
+<text x="119" y="326" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">UNO</text>
+<rect x="190" y="65" width="22" height="15" rx="2" fill="#D8A6A2" stroke="#8a3b36" stroke-width="2"/>
+<text x="182" y="77" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">5V</text>
+<path d="M212 72 L748 72" stroke="#D8322B" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="190" y="311" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/>
+<text x="182" y="323" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">GND</text>
+<path d="M212 318 L212 364 L712 364" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="378" y="62" width="172" height="64" rx="9" fill="#2b2f36" stroke="#220111" stroke-width="3"/>
+<text x="390" y="81" fill="#9fe8df" font-size="12.5" font-weight="700">TMP36 temp sensor</text>
+<rect x="190" y="89" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="101" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">A0</text>
+<path d="M212 96 L378 96" stroke="#E0641B" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="378" cy="96" r="3.5" fill="#E8B23A" stroke="#220111" stroke-width="1.5"/>
+<text x="388" y="100" fill="#EAF7F5" font-size="11.5" font-weight="700">OUT → A0</text>
+<circle cx="550" cy="78" r="3.5" fill="#D8A6A2" stroke="#220111" stroke-width="1.5"/>
+<path d="M550 78 L748 78" stroke="#D8322B" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="544" y="82" text-anchor="end" fill="#f0c0bc" font-size="10.5" font-weight="700">VCC</text>
+<circle cx="550" cy="110" r="3.5" fill="#9AA0A6" stroke="#220111" stroke-width="1.5"/>
+<path d="M550 110 L712 110" stroke="#3A3A3A" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="544" y="114" text-anchor="end" fill="#cfd3d6" font-size="10.5" font-weight="700">GND</text>
+<rect x="378" y="122" width="172" height="64" rx="9" fill="#2b2f36" stroke="#220111" stroke-width="3"/>
+<text x="390" y="141" fill="#9fe8df" font-size="12.5" font-weight="700">Relay module</text>
+<rect x="190" y="149" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="161" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">7</text>
+<path d="M212 156 L378 156" stroke="#E0641B" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="378" cy="156" r="3.5" fill="#E8B23A" stroke="#220111" stroke-width="1.5"/>
+<text x="388" y="160" fill="#EAF7F5" font-size="11.5" font-weight="700">IN → 7</text>
+<circle cx="550" cy="138" r="3.5" fill="#D8A6A2" stroke="#220111" stroke-width="1.5"/>
+<path d="M550 138 L748 138" stroke="#D8322B" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="544" y="142" text-anchor="end" fill="#f0c0bc" font-size="10.5" font-weight="700">VCC</text>
+<circle cx="550" cy="170" r="3.5" fill="#9AA0A6" stroke="#220111" stroke-width="1.5"/>
+<path d="M550 170 L712 170" stroke="#3A3A3A" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="544" y="174" text-anchor="end" fill="#cfd3d6" font-size="10.5" font-weight="700">GND</text>
+<rect x="190" y="209" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="182" y="221" text-anchor="end" fill="#EAF7F5" font-size="13" font-weight="700">6</text>
+<path d="M212 216 L372 216" stroke="#E0641B" stroke-width="4.0" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M372.0 216.0 L383.0 223.0 L394.0 209.0 L405.0 223.0 L416.0 209.0 L427.0 223.0 L438.0 216.0" stroke="#220111" stroke-width="3.3" fill="none" stroke-linejoin="round"/>
+<text x="405" y="203" text-anchor="middle" fill="#6E5F56" font-size="11.5" font-weight="700">220Ω</text>
+<path d="M438 216 H454" stroke="#220111" stroke-width="3.3" stroke-linecap="round"/>
+<circle cx="468" cy="216" r="14" fill="#E0641B" stroke="#220111" stroke-width="3"/>
+<circle cx="463" cy="211" r="3.5" fill="#fff" opacity=".65"/>
+<text x="490" y="221" fill="#220111" font-size="13" font-weight="700">Status LED</text>
+<path d="M482 216 L482 234 L712 234" stroke="#3A3A3A" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="372" y="286" fill="#6E5F56" font-size="12" font-weight="700">Fan + 12V power go to the relay COM/NO — a separate circuit, not the Arduino</text>
+</svg>

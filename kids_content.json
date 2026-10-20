@@ -4,6 +4,7 @@
   "lessons": {
     "traffic light simulation": {
       "intro": "Let's build a real traffic light! It will blink red, then green, then yellow — all by itself. 🚦",
+      "diagram": "ar1",
       "materials": [
         {
           "icon": "board",
@@ -45,27 +46,35 @@
       "steps": [
         {
           "icon": "🧠",
-          "text": "The brain of our traffic light is a tiny computer called an Arduino. It tells the lights when to turn on and off."
+          "text": "The Arduino is the brain. Keep it unplugged while you build so nothing gets hot."
         },
         {
-          "icon": "🧰",
-          "text": "Grab your kit: the Arduino, a breadboard, a red light, a yellow light, a green light, 3 little resistors, and some wires."
+          "icon": "🍞",
+          "text": "Put the breadboard flat. The holes in each short row are joined inside, like a secret tunnel."
         },
         {
           "icon": "💡",
-          "text": "Look closely at each light. One leg is long and one is short. The LONG leg is the plus (+) side. The SHORT leg is the minus (−) side. This matters!"
+          "text": "Look at each LED: one leg is LONG and one is SHORT. Long = plus (+), short = minus (−). Remember that!"
         },
         {
-          "icon": "🔌",
-          "text": "Gently push each light into the breadboard so its two legs sit in different rows."
+          "icon": "🔴",
+          "text": "Push the red LED in so its two legs sit in two different rows. Do the same for yellow and green, with a gap between."
         },
         {
           "icon": "🧷",
-          "text": "Add one little resistor to each light. Too much electricity can burn a light out, so the resistor is like a gate that keeps it safe."
+          "text": "For each LED, put one end of a 220 Ω resistor in the SAME row as the SHORT leg, and the other end in the blue (−) rail."
+        },
+        {
+          "icon": "⚫",
+          "text": "Run a black wire from the blue (−) rail to the Arduino's GND hole."
         },
         {
           "icon": "🔗",
-          "text": "Now the wires. Join the long leg of red to pin 13, yellow to pin 12, and green to pin 11. Then join the short legs to the ground row (GND)."
+          "text": "Now the colour wires (look at the diagram!): red LED's LONG-leg row → pin 13, yellow → pin 12, green → pin 11."
+        },
+        {
+          "icon": "🔍",
+          "text": "Check your board against the wiring diagram. Same pins? Resistors on the short-leg side? Great."
         },
         {
           "icon": "💻",
@@ -73,19 +82,19 @@
         },
         {
           "icon": "📥",
-          "text": "Open our code, copy it in, and click the arrow button to send it to the Arduino."
+          "text": "Open our code, copy it in, and press the arrow to send it to the board."
         },
         {
           "icon": "👀",
-          "text": "Watch the magic! Red says wait… green says go… then a quick yellow… then red again, over and over."
+          "text": "Watch! Red waits… green go… quick yellow… then red again, forever."
         },
         {
           "icon": "🛠️",
-          "text": "A light not working? It might be in backwards. Turn it around so the long leg points the right way, then try again."
+          "text": "A light won't turn on? It's probably backwards — swap its legs so the long leg goes to the pin side."
         },
         {
           "icon": "🎉",
-          "text": "You did it — a real working traffic light! High five! 🙌"
+          "text": "You built a real traffic light. High five! 🙌"
         }
       ]
     },
@@ -825,6 +834,7 @@
     },
     "button controlled led": {
       "intro": "Today a button turns a light on and off — like a real wall switch! 🔘",
+      "diagram": "ar2",
       "materials": [
         {
           "icon": "board",
@@ -861,49 +871,54 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get your Arduino, breadboard, an LED light, a push button, resistors and wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
           "icon": "💡",
-          "text": "An LED's long leg is the plus (+) side and the short leg is the minus (−) side."
+          "text": "LED legs: long = plus (+), short = minus (−)."
         },
         {
           "icon": "🔌",
-          "text": "Push the LED and the button into the breadboard."
+          "text": "Push the LED into the breadboard with its legs in two different rows."
         },
         {
           "icon": "🧷",
-          "text": "Give the LED a 220-ohm resistor so it doesn't get too much electricity."
+          "text": "Put a 220 Ω resistor from the LED's long-leg row to an empty row, then wire that row to pin 8. (See the diagram.)"
+        },
+        {
+          "icon": "⚫",
+          "text": "Run the LED's short leg to the blue (−) rail, and the rail to the Arduino's GND."
+        },
+        {
+          "icon": "🔘",
+          "text": "Push the button across the middle gap of the breadboard so its two sides aren't joined."
         },
         {
           "icon": "🔗",
-          "text": "Wire the LED to a pin, the button to another pin, and both to the ground row."
+          "text": "Wire one button leg to pin 2. Wire the other leg on that side to GND (through the 10 kΩ resistor)."
         },
         {
           "icon": "💻",
-          "text": "Plug the Arduino into the computer and upload our code."
-        },
-        {
-          "icon": "🧠",
-          "text": "The Arduino remembers: press once and the light stays ON. Press again and it stays OFF."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👆",
-          "text": "Press the button. Click — light on! Click again — light off!"
+          "text": "Press the button — the light turns ON and stays on. Press again — OFF."
         },
         {
           "icon": "🛠️",
-          "text": "Light won't turn on? Check the long leg is pointing the right way."
+          "text": "Nothing happens? Check the LED isn't backwards and the button straddles the centre gap."
         },
         {
           "icon": "🎉",
-          "text": "You built your own push-button light switch!"
+          "text": "You built a real push-button switch!"
         }
       ]
     },
     "fade an led": {
       "intro": "Today your light will fade in and out smoothly, not just blink. 🌙",
+      "diagram": "ar3",
       "materials": [
         {
           "icon": "board",
@@ -936,36 +951,44 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, breadboard, one LED, a 220-ohm resistor and 2 wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
           "icon": "💡",
-          "text": "Remember: the long leg of the LED is plus (+), the short leg is minus (−)."
-        },
-        {
-          "icon": "⚡",
-          "text": "The trick is called PWM — the light flicks on and off super fast, so your eyes see a smooth glow."
-        },
-        {
-          "icon": "🔢",
-          "text": "We give it a number from 0 (off) up to 255 (fully bright)."
+          "text": "LED legs: long = plus (+), short = minus (−)."
         },
         {
           "icon": "〰️",
-          "text": "Use a pin with a squiggly ~ next to it, like pin 9 — only those pins can fade."
+          "text": "Fading needs a PWM pin — one with a ~ next to the number. We use pin 9."
         },
         {
           "icon": "🔌",
-          "text": "Put the LED in the breadboard with its resistor, and wire it to pin 9."
+          "text": "Push the LED into the breadboard, legs in two rows."
+        },
+        {
+          "icon": "🧷",
+          "text": "Put a 220 Ω resistor from the short-leg row to the blue (−) rail, and run the rail to Arduino GND."
+        },
+        {
+          "icon": "🔗",
+          "text": "Run a wire from the LED's long-leg row to pin 9 (~). (See the diagram.)"
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
-          "icon": "👀",
-          "text": "Watch the light breathe — getting brighter, then dimmer, over and over."
+          "icon": "🌙",
+          "text": "Watch the light breathe — slowly brighter, then dimmer, forever."
+        },
+        {
+          "icon": "🔢",
+          "text": "The code counts from 0 to 255 to set the brightness. Try changing the numbers!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Just on/off, not fading? Make sure it's pin 9 with the ~ symbol."
         },
         {
           "icon": "🎉",
@@ -975,6 +998,7 @@
     },
     "rgb led colour mixer": {
       "intro": "Today you'll mix your own colours with light, just like a TV screen does! 🌈",
+      "diagram": "ar4",
       "materials": [
         {
           "icon": "board",
@@ -1011,36 +1035,40 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "An RGB LED is really 3 tiny lights in one: red, green and blue."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, breadboard, the RGB light, 3 knobs, 3 resistors and wires."
-        },
-        {
-          "icon": "🎛️",
-          "text": "A knob (potentiometer) is like a tap for electricity. Turning it changes a number from 0 to 1023."
+          "icon": "🌈",
+          "text": "An RGB LED is 3 lights in one. Its LONGEST leg is the shared minus (−)."
         },
         {
           "icon": "🔌",
-          "text": "Put the RGB light and the 3 knobs in the breadboard, each light leg with a resistor."
+          "text": "Push the RGB LED in. Run its longest leg to the blue (−) rail, and the rail to GND."
+        },
+        {
+          "icon": "🧷",
+          "text": "Give each colour leg its own 220 Ω resistor, then wire: Red → pin 9, Green → pin 10, Blue → pin 11. (See the diagram.)"
+        },
+        {
+          "icon": "🎛️",
+          "text": "Each knob has 3 legs: one outer → 5V, the other outer → GND, the middle → an analog pin."
         },
         {
           "icon": "🔗",
-          "text": "Wire each knob to an analog pin and each colour to a PWM (~) pin."
+          "text": "Wire the knob middles to A0 (red), A1 (green), A2 (blue)."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "🎨",
-          "text": "Turn the knobs! More red plus more blue makes purple. Mix your own colours."
+          "text": "Turn the knobs to mix your own colours — red + blue makes purple!"
         },
         {
-          "icon": "💡",
-          "text": "The code uses PWM to make each colour dimmer or brighter, from 0 to 255."
+          "icon": "🛠️",
+          "text": "A colour missing? Check that colour's resistor and its pin."
         },
         {
           "icon": "🎉",
@@ -1050,6 +1078,7 @@
     },
     "capacitive touch sensor": {
       "intro": "Today a light turns on when you just TOUCH a pad — no button to press! ✋",
+      "diagram": "ar5",
       "materials": [
         {
           "icon": "board",
@@ -1086,45 +1115,46 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, a TTP223 touch sensor, an LED, a resistor, breadboard and wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
           "icon": "💡",
-          "text": "Your body holds a tiny charge. The sensor feels your finger getting close."
+          "text": "LED legs: long = plus (+), short = minus (−)."
         },
         {
           "icon": "🔌",
-          "text": "Put the sensor and the LED in the breadboard (the LED's long leg is +)."
+          "text": "Put the LED in. Long leg → 220 Ω resistor → a row wired to pin 8. Short leg → (−) rail → Arduino GND."
         },
         {
-          "icon": "🧷",
-          "text": "Add the LED's 220-ohm resistor to keep it safe."
+          "icon": "✋",
+          "text": "The touch sensor (TTP223) has 3 pins: VCC, GND, OUT."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor's signal to a pin, and the LED to another pin."
+          "text": "Wire sensor VCC → 5V, GND → GND, OUT → pin 2. (See the diagram.)"
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👆",
-          "text": "Touch the pad: the Arduino flips the light on. Touch it again: off!"
+          "text": "Touch the pad — the light flips on. Touch again — off!"
         },
         {
-          "icon": "🧠",
-          "text": "This on-then-off trick is called toggling."
+          "icon": "🛠️",
+          "text": "No response? Re-check OUT → pin 2 and VCC → 5V."
         },
         {
           "icon": "🎉",
-          "text": "You made a touch switch — like magic!"
+          "text": "You made a magic touch switch!"
         }
       ]
     },
     "buzzer melody": {
       "intro": "Today you make a tiny speaker play a real tune! 🎶",
+      "diagram": "ar6",
       "materials": [
         {
           "icon": "board",
@@ -1157,36 +1187,32 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, a passive piezo buzzer, breadboard and 2 wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "💡",
-          "text": "Sound is air wobbling fast. A fast wobble is a high note, a slow wobble is a low note."
+          "icon": "🔎",
+          "text": "Find the buzzer's + leg (it's longer, or marked with a +)."
         },
         {
-          "icon": "🔢",
-          "text": "Notes are measured in Hertz (Hz). The note A wobbles 440 times a second!"
-        },
-        {
-          "icon": "🔌",
-          "text": "Put the buzzer in the breadboard and wire it to a pin and to ground."
+          "icon": "🔗",
+          "text": "Wire the + leg to pin 8 and the − leg to GND. (See the diagram.) A 100 Ω resistor in between is optional and softens the volume."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
-        },
-        {
-          "icon": "📜",
-          "text": "The code has a list of notes and how long each one lasts — like sheet music."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "🎵",
-          "text": "Press play and listen to your tune, like Ode to Joy!"
+          "text": "Listen — it plays a tune like Ode to Joy!"
         },
         {
-          "icon": "🔁",
-          "text": "Change the notes in the list to make up your own song."
+          "icon": "📜",
+          "text": "The code is a list of notes and how long each lasts. Change them to make your own song."
+        },
+        {
+          "icon": "🛠️",
+          "text": "No sound? Make sure it's a passive buzzer and the + leg is on pin 8."
         },
         {
           "icon": "🎉",
@@ -1196,6 +1222,7 @@
     },
     "morse code blinker": {
       "intro": "Today your light sends secret messages in Morse code! 🔦",
+      "diagram": "ar7",
       "materials": [
         {
           "icon": "board",
@@ -1232,36 +1259,36 @@
       ],
       "steps": [
         {
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
+        },
+        {
           "icon": "💡",
-          "text": "Morse code uses short flashes (dots) and long flashes (dashes) for each letter."
-        },
-        {
-          "icon": "🆘",
-          "text": "Example: S is dot-dot-dot and O is dash-dash-dash — together that spells SOS!"
-        },
-        {
-          "icon": "🧰",
-          "text": "Get the Arduino, an LED, a 220-ohm resistor, breadboard and wires."
+          "text": "LED legs: long = plus (+), short = minus (−)."
         },
         {
           "icon": "🔌",
-          "text": "Put the LED in the breadboard (long leg is +) with its resistor, and wire it to a pin."
+          "text": "Put the LED in. Long leg → 220 Ω resistor → a row wired to pin 9. Short leg → Arduino GND. (See the diagram.)"
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
-          "icon": "⏱️",
-          "text": "The code flashes the light: a short time for a dot, longer for a dash, with gaps between."
+          "icon": "🔦",
+          "text": "Watch the light flash: short = dot, long = dash, with gaps between."
         },
         {
-          "icon": "👀",
-          "text": "Watch it blink out a word. Can you read the code?"
+          "icon": "🆘",
+          "text": "S is dot-dot-dot, O is dash-dash-dash — that spells SOS!"
         },
         {
           "icon": "✏️",
           "text": "Change the message in the code to send your own secret word."
+        },
+        {
+          "icon": "🛠️",
+          "text": "Not blinking? Check the long leg → pin 9 through the resistor."
         },
         {
           "icon": "🎉",
@@ -1271,6 +1298,7 @@
     },
     "temperature logger": {
       "intro": "Today you build a tiny weather sensor that reads the temperature! 🌡️",
+      "diagram": "ar8",
       "materials": [
         {
           "icon": "board",
@@ -1303,36 +1331,32 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, a DHT11 temperature sensor, breadboard and wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "💡",
-          "text": "The DHT11 feels how hot the air is and how much water (humidity) is in it."
+          "icon": "🌡️",
+          "text": "The DHT11 has 3 pins: VCC (+), GND (−), and DATA."
         },
         {
-          "icon": "📨",
-          "text": "It sends the Arduino a fast pattern of pulses — a bit like Morse code."
-        },
-        {
-          "icon": "📚",
-          "text": "We use a library — ready-made code that reads those pulses for us."
-        },
-        {
-          "icon": "🔌",
-          "text": "Put the sensor in the breadboard and wire its 3 pins to the Arduino."
+          "icon": "🔗",
+          "text": "Wire VCC → 5V, GND → GND, DATA → pin 2. (See the diagram.)"
         },
         {
           "icon": "💻",
-          "text": "Plug in, upload the code, then open the Serial Monitor to see the numbers."
+          "text": "Plug in the USB cable, upload the code, then open the Serial Monitor."
         },
         {
           "icon": "👀",
-          "text": "Watch the temperature appear, like 24 degrees Celsius!"
+          "text": "Watch the temperature appear, like 24 °C!"
         },
         {
           "icon": "🤚",
-          "text": "Breathe on the sensor and watch the numbers change."
+          "text": "Breathe on the sensor — the number goes up."
+        },
+        {
+          "icon": "🛠️",
+          "text": "Says \"no reading\"? Check DATA → pin 2 and that the DHT library is installed."
         },
         {
           "icon": "🎉",
@@ -1342,6 +1366,7 @@
     },
     "ultrasonic distance sensor": {
       "intro": "Today your sensor measures distance using sound — just like a bat! 📏",
+      "diagram": "ar9",
       "materials": [
         {
           "icon": "board",
@@ -1382,36 +1407,36 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, an HC-SR04 sensor, an LED, a resistor, breadboard and wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "💡",
-          "text": "The sensor sends out a sound too high to hear, then listens for the echo coming back."
-        },
-        {
-          "icon": "⏱️",
-          "text": "It times the echo. Sound travels about 343 metres a second, so it works out the distance."
-        },
-        {
-          "icon": "🔌",
-          "text": "Put the sensor and LED in the breadboard (long leg is +, with its resistor)."
+          "icon": "👂",
+          "text": "The HC-SR04 has 4 pins: VCC, Trig, Echo, GND."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor's Trig and Echo pins and the LED to the Arduino."
+          "text": "Wire VCC → 5V, GND → GND, Trig → pin 9, Echo → pin 10. (See the diagram.)"
+        },
+        {
+          "icon": "💡",
+          "text": "Add the warning LED: long leg → 220 Ω → pin 7, short leg → GND."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "✋",
-          "text": "Move your hand closer — when it's near, the warning light comes on!"
+          "text": "Move your hand closer — when it's near, the light warns you!"
         },
         {
-          "icon": "📐",
-          "text": "Check it with a ruler. How accurate is your sensor?"
+          "icon": "📏",
+          "text": "Check it with a ruler. How close does the warning start?"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Always warning? Swap Trig and Echo if they got mixed up."
         },
         {
           "icon": "🎉",
@@ -1421,6 +1446,7 @@
     },
     "servo motor control": {
       "intro": "Today you steer a motor to any angle just by turning a knob! 🤖",
+      "diagram": "ar10",
       "materials": [
         {
           "icon": "board",
@@ -1453,36 +1479,32 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "A servo is a motor that moves to an exact angle (0 to 180 degrees) and holds it there."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
           "icon": "🎛️",
-          "text": "A knob (potentiometer) gives the Arduino a number from 0 to 1023 as you turn it."
+          "text": "The knob has 3 legs: one outer → 5V, the other outer → GND, the middle → A0."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, an SG90 servo, a knob, breadboard and wires."
+          "icon": "🔩",
+          "text": "The servo has 3 wires: red → 5V, brown/black → GND, orange/yellow → pin 9."
         },
         {
-          "icon": "🔌",
-          "text": "Put the knob in the breadboard and connect the servo's 3 wires."
-        },
-        {
-          "icon": "🧮",
-          "text": "The code uses map() to turn 0–1023 from the knob into 0–180 degrees for the servo."
+          "icon": "🔗",
+          "text": "Wire them as in the diagram, and make sure the knob and servo share the same GND."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👆",
           "text": "Turn the knob — the servo arm follows your hand!"
         },
         {
-          "icon": "💡",
-          "text": "This is how robot arms and remote-control steering really work."
+          "icon": "🛠️",
+          "text": "Servo jitters? Double-check the shared GND."
         },
         {
           "icon": "🎉",
@@ -1492,6 +1514,7 @@
     },
     "light-activated led": {
       "intro": "Today your light turns itself ON when it gets dark — like a streetlight! 💡",
+      "diagram": "ar11",
       "materials": [
         {
           "icon": "board",
@@ -1528,36 +1551,36 @@
       ],
       "steps": [
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, a light sensor (LDR), 2 resistors, an LED, breadboard and wires."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
           "icon": "🔆",
-          "text": "An LDR lets more electricity through in bright light, and less in the dark."
+          "text": "The LDR lets more electricity through in bright light and less in the dark."
         },
         {
           "icon": "🔌",
-          "text": "Build a voltage divider: the LDR and a 10k resistor together, and read where they meet."
-        },
-        {
-          "icon": "💡",
-          "text": "Put the LED in the breadboard (long leg is +) with its 220-ohm resistor."
+          "text": "Build a divider: one LDR leg → 5V; the other LDR leg shares a row with a 10 kΩ resistor that goes to GND."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor to an analog pin and the LED to a digital pin."
+          "text": "From the junction where they meet, run a wire to A0. (See the diagram.)"
+        },
+        {
+          "icon": "💡",
+          "text": "Add the LED: long leg → 220 Ω → pin 8, short leg → GND."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "🖐️",
           "text": "Cover the sensor with your hand — the light switches on!"
         },
         {
-          "icon": "🌃",
-          "text": "This is exactly how real streetlights know when it's night."
+          "icon": "🛠️",
+          "text": "Backwards (on in the light)? Swap the LDR and 10 kΩ, or change the threshold number in the code."
         },
         {
           "icon": "🎉",
@@ -1567,6 +1590,7 @@
     },
     "digital dice": {
       "intro": "Today you build an electronic dice made of lights! 🎲",
+      "diagram": "ar12",
       "materials": [
         {
           "icon": "board",
@@ -1603,36 +1627,36 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "7 lights are laid out like the dots on a dice, so they can show any number from 1 to 6."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, 7 LEDs, 7 resistors, a button, breadboard and lots of wires."
-        },
-        {
-          "icon": "🔌",
-          "text": "Put all 7 lights in the dice pattern (long leg is +), each with a resistor."
+          "icon": "🎲",
+          "text": "7 LEDs make the dice dots. Give each one a 220 Ω resistor on its SHORT leg down to the (−) rail, then the rail to GND."
         },
         {
           "icon": "🔗",
-          "text": "Wire each light to a pin, and add the push button to roll."
+          "text": "Wire the 7 LONG legs to pins 2, 3, 4, 5, 6, 7 and 8. (See the diagram.)"
         },
         {
-          "icon": "🎰",
-          "text": "The code picks a random number from 1 to 6 and lights up that dice pattern."
+          "icon": "🔘",
+          "text": "Add the roll button: one leg → pin 9, the other → GND."
         },
         {
-          "icon": "🌀",
-          "text": "To feel truly random, it reads tiny electrical noise to kick off the randomness."
+          "icon": "⚡",
+          "text": "Leave pin A0 empty — the code uses its random \"noise\" to shuffle the roll."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👆",
-          "text": "Press the button — watch the lights tumble, then show your roll!"
+          "text": "Press the button — the lights tumble, then show your roll!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "A dot missing? Check that LED's pin and that it isn't backwards."
         },
         {
           "icon": "🎉",
@@ -1642,6 +1666,7 @@
     },
     "basic alarm system": {
       "intro": "Today you build an alarm that catches movement! 🚨",
+      "diagram": "ar13",
       "materials": [
         {
           "icon": "board",
@@ -1686,36 +1711,40 @@
       ],
       "steps": [
         {
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
+        },
+        {
           "icon": "👮",
-          "text": "A PIR sensor is like a guard — it feels the body heat of someone moving nearby."
-        },
-        {
-          "icon": "🧰",
-          "text": "Get the Arduino, a PIR sensor, a buzzer, a red and a green LED, a button, resistors and wires."
-        },
-        {
-          "icon": "🔌",
-          "text": "Put the parts in the breadboard (LED long leg is +, each with a resistor)."
+          "text": "The PIR motion sensor has 3 pins: VCC, OUT, GND."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor, buzzer, lights and button to the Arduino."
+          "text": "Wire PIR VCC → 5V, GND → GND, OUT → pin 2. (See the diagram.)"
         },
         {
-          "icon": "🔁",
-          "text": "The Arduino keeps asking the sensor did anything move? — that's called polling."
+          "icon": "🔴",
+          "text": "Red LED: long leg → 220 Ω → pin 8, short leg → GND. Wire the Green LED to pin 9 the same way."
         },
         {
-          "icon": "🚦",
-          "text": "Press the button to arm the alarm (green). Press again to turn it off."
+          "icon": "🔊",
+          "text": "Wire the buzzer's + leg → pin 7 and its − leg → GND."
+        },
+        {
+          "icon": "🔘",
+          "text": "Add the arm button: one leg → pin 4, the other leg → GND through a 10 kΩ resistor."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
-          "icon": "🏃",
-          "text": "Wave your hand — the red light and buzzer go off! Alarm!"
+          "icon": "🚦",
+          "text": "Press the button to arm (green). Wave your hand — red light and buzzer go off!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Always alarming? Give the PIR about 30 seconds to settle after power-on."
         },
         {
           "icon": "🎉",
@@ -1725,6 +1754,7 @@
     },
     "fan control": {
       "intro": "Today a sensor turns a fan on all by itself when it gets too hot. 🌡️",
+      "diagram": "ar14",
       "materials": [
         {
           "icon": "board",
@@ -1769,36 +1799,40 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "A TMP36 sensor turns temperature into a tiny voltage the Arduino can read."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build — and don't connect the 12V yet."
         },
         {
-          "icon": "⚠️",
-          "text": "A fan needs more power than the Arduino's pins can give, so we use a relay."
+          "icon": "🌡️",
+          "text": "The TMP36 has 3 legs: VCC (5V), OUT (middle), GND. Check the flat face for the order."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire VCC → 5V, GND → GND, OUT → A0. (See the diagram.)"
+        },
+        {
+          "icon": "💡",
+          "text": "Status LED: long leg → 220 Ω → pin 6, short leg → GND."
         },
         {
           "icon": "🔀",
-          "text": "A relay is an electric switch: a small Arduino signal clicks a bigger circuit on."
+          "text": "The relay module has VCC, GND, IN. Wire VCC → 5V, GND → GND, IN → pin 7."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, a TMP36 sensor, a relay module, a 12V fan with its own power, an LED and wires."
-        },
-        {
-          "icon": "🔌",
-          "text": "Wire the sensor to an analog pin, the relay to a digital pin, and the fan to the relay."
+          "icon": "⚠️",
+          "text": "On the relay's big terminals (COM/NO), connect the fan and the 12V supply. This is a SEPARATE circuit — never the Arduino."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code, which turns the voltage into degrees Celsius."
+          "text": "Plug in the USB cable, upload the code, THEN connect the 12V."
         },
         {
           "icon": "🔥",
-          "text": "When it gets too warm, the Arduino clicks the relay and the fan spins up."
+          "text": "Warm the sensor — the relay clicks and the fan spins!"
         },
         {
-          "icon": "❄️",
-          "text": "When it cools down again, the fan clicks off."
+          "icon": "🛠️",
+          "text": "Fan never stops? Lower the temperature threshold in the code."
         },
         {
           "icon": "🎉",
@@ -1808,6 +1842,7 @@
     },
     "simon says game": {
       "intro": "Today you build the classic Simon memory game! 🎮",
+      "diagram": "ar15",
       "materials": [
         {
           "icon": "board",
@@ -1848,36 +1883,36 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "The Arduino lights a colour and beeps. You press the matching button — then it adds one more."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, 4 coloured LEDs, 4 buttons, a buzzer, resistors and lots of wires."
+          "icon": "➕",
+          "text": "Wire Arduino 5V to the red (+) rail and GND to the blue (−) rail."
         },
         {
-          "icon": "🔌",
-          "text": "Put the 4 lights and 4 buttons in the breadboard (LED long leg is +, with resistors)."
+          "icon": "🔴",
+          "text": "Each LED: long leg → 220 Ω → a pin (Red 2, Green 3, Yellow 4, Blue 5); short leg → the (−) rail. (See the diagram.)"
         },
         {
-          "icon": "🧷",
-          "text": "Give each button a 10k pull-down resistor so the Arduino reads it cleanly."
+          "icon": "🔘",
+          "text": "Each button: one leg → 5V, the other leg → a pin (8, 9, 10, 11) AND through a 10 kΩ resistor to GND."
         },
         {
-          "icon": "📋",
-          "text": "The code stores the growing colour pattern in a list called an array."
-        },
-        {
-          "icon": "🎲",
-          "text": "It uses random numbers so every game is different."
+          "icon": "🔊",
+          "text": "Buzzer: + leg → pin 12, − leg → GND."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "🕹️",
-          "text": "Play! Copy the pattern. Each round gets one colour longer — how far can you get?"
+          "text": "Watch the pattern, then copy it. Each round adds one more colour!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "A button does nothing? Check its pin and its 10 kΩ to GND."
         },
         {
           "icon": "🎉",
@@ -1887,6 +1922,7 @@
     },
     "line-following robot": {
       "intro": "Today you build a robot that drives itself along a line! 🤖",
+      "diagram": "ar16",
       "materials": [
         {
           "icon": "board",
@@ -1923,36 +1959,40 @@
       ],
       "steps": [
         {
-          "icon": "👀",
-          "text": "It uses 2 infrared eyes that see how much light bounces off the floor."
-        },
-        {
-          "icon": "⬛",
-          "text": "White floor bounces lots of light (no line); black tape soaks it up (line here!)."
-        },
-        {
-          "icon": "🧰",
-          "text": "Get the Arduino, an L298N motor driver, 2 IR sensors, 2 motors with wheels, a chassis and batteries."
-        },
-        {
           "icon": "🔧",
-          "text": "Build the chassis: attach the motors, the wheels and a support ball."
+          "text": "Build the chassis first: attach the motors, the wheels and the support ball."
+        },
+        {
+          "icon": "⚙️",
+          "text": "Wire the left motor to the L298N's OUT1/OUT2 and the right motor to OUT3/OUT4."
         },
         {
           "icon": "🔗",
-          "text": "Wire the 2 sensors and the motor driver to the Arduino."
+          "text": "Wire the L298N to the Arduino: ENA→5, IN1→8, IN2→9, IN3→10, IN4→11, ENB→6. (See the diagram.)"
         },
         {
-          "icon": "🧠",
-          "text": "The code checks both eyes: line on the left? Steer left. On the right? Steer right."
+          "icon": "⚫",
+          "text": "Connect the L298N GND to the Arduino GND — this shared ground is essential."
+        },
+        {
+          "icon": "🔋",
+          "text": "Connect the battery to the L298N's 12V/GND. Keep its switch OFF for now."
+        },
+        {
+          "icon": "👀",
+          "text": "Wire the 2 IR sensors: VCC→5V, GND→GND, left OUT→pin 2, right OUT→pin 3."
         },
         {
           "icon": "🛣️",
-          "text": "Make a track with black tape on a white board."
+          "text": "Make a track with black tape on a white floor."
         },
         {
           "icon": "💻",
-          "text": "Upload the code, switch on the batteries, and set it on the line!"
+          "text": "Upload the code, then switch the battery on and set the robot on the line."
+        },
+        {
+          "icon": "🛠️",
+          "text": "Motors silent? Check the shared GND and the battery switch."
         },
         {
           "icon": "🎉",
@@ -1962,6 +2002,7 @@
     },
     "mini smart city": {
       "intro": "Today you build a mini smart city — 3 systems on one Arduino! 🏙️",
+      "diagram": "ar17",
       "materials": [
         {
           "icon": "board",
@@ -2002,36 +2043,40 @@
       ],
       "steps": [
         {
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build. Lots of parts here — go slow and tick each off the diagram."
+        },
+        {
           "icon": "🚦",
-          "text": "System 1: traffic lights that cycle green, then yellow, then red on a timer."
+          "text": "Traffic LEDs (each via a 220 Ω to GND): red → 13, yellow → 12, green → 11."
         },
         {
           "icon": "💡",
-          "text": "System 2: a streetlight that turns on by itself when it gets dark, using an LDR."
+          "text": "Street-light LED → 10. Parking LEDs: free → 7, full → 6 (each via a 220 Ω to GND)."
         },
         {
-          "icon": "🅿️",
-          "text": "System 3: a smart parking bay that senses a car and shows FREE or FULL on a screen."
+          "icon": "👂",
+          "text": "HC-SR04: VCC→5V, GND→GND, Trig→9, Echo→8."
         },
         {
-          "icon": "🧰",
-          "text": "Get the Arduino, lots of LEDs and resistors, an LDR, an ultrasonic sensor and an LCD screen."
+          "icon": "🌙",
+          "text": "LDR divider (with a 10 kΩ) into A0, just like the night-light project."
         },
         {
-          "icon": "🔗",
-          "text": "Wire each part to its pins — follow the pin map carefully."
-        },
-        {
-          "icon": "⏱️",
-          "text": "The code uses millis() so all 3 systems run at once without stopping each other."
+          "icon": "🖥️",
+          "text": "Wire the LCD: RS→2, EN→3, D4→4, D5→5, D6→A1, D7→A2, plus its contrast knob. (See the diagram.)"
         },
         {
           "icon": "💻",
-          "text": "Upload the code and watch your city come alive."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
-          "icon": "🚗",
-          "text": "Put something in the parking bay — the screen flips to FULL!"
+          "icon": "🏙️",
+          "text": "Watch it all run at once: traffic cycling, street light on in the dark, parking showing FREE/FULL."
+        },
+        {
+          "icon": "🛠️",
+          "text": "LCD blank? Turn the contrast knob until the text appears."
         },
         {
           "icon": "🎉",
@@ -2041,6 +2086,7 @@
     },
     "obstacle-avoiding robot": {
       "intro": "Today you build a robot that drives around without bumping into things! 🤖",
+      "diagram": "ar18",
       "materials": [
         {
           "icon": "board",
@@ -2081,36 +2127,44 @@
       ],
       "steps": [
         {
-          "icon": "👂",
-          "text": "It uses an ultrasonic sensor to see with sound, just like a bat."
-        },
-        {
-          "icon": "🔄",
-          "text": "A servo swings the sensor left and right, like a head looking around."
-        },
-        {
-          "icon": "🧰",
-          "text": "Get the Arduino, an ultrasonic sensor, a servo, an L298N driver, 2 motors with wheels, a chassis and batteries."
-        },
-        {
           "icon": "🔧",
-          "text": "Build the chassis and mount the sensor on top of the servo."
+          "text": "Build the chassis and mount the L298N on top."
+        },
+        {
+          "icon": "⚙️",
+          "text": "Left motor → OUT1/OUT2, right motor → OUT3/OUT4."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor, the servo and the motor driver to the Arduino."
+          "text": "Wire the L298N to the Arduino: IN1→8, IN2→9, IN3→10, IN4→11, ENA→5, ENB→6. (See the diagram.)"
         },
         {
-          "icon": "🧠",
-          "text": "The code: drive forward; if something's close, stop, look left and right, then turn the clear way."
+          "icon": "⚫",
+          "text": "L298N GND → Arduino GND (shared ground is essential)."
+        },
+        {
+          "icon": "🔋",
+          "text": "Battery → L298N 12V/GND — never the Arduino's 5V pin."
+        },
+        {
+          "icon": "🔩",
+          "text": "Mount the servo and sensor. Servo: red→5V, brown→GND, signal→pin 3."
+        },
+        {
+          "icon": "👂",
+          "text": "HC-SR04: VCC→5V, GND→GND, Trig→12, Echo→13."
         },
         {
           "icon": "💻",
-          "text": "Upload the code and switch on the batteries."
+          "text": "Upload the code and switch the battery on."
         },
         {
           "icon": "🚧",
-          "text": "Put a box in its path — watch it stop, look, and go around!"
+          "text": "Put a box in its path — it stops, looks left and right, then turns away!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Acting strange? Check that ALL the grounds are joined together."
         },
         {
           "icon": "🎉",
@@ -2120,6 +2174,7 @@
     },
     "weather station": {
       "intro": "Today you build a weather station that shows temperature and humidity on a screen! 🌦️",
+      "diagram": "ar19",
       "materials": [
         {
           "icon": "board",
@@ -2148,45 +2203,46 @@
       ],
       "steps": [
         {
-          "icon": "💡",
-          "text": "A DHT11 sensor feels the heat and the water vapour in the air."
+          "icon": "🧠",
+          "text": "Keep the Arduino unplugged while you build."
         },
         {
-          "icon": "🖥️",
-          "text": "An LCD screen shows the numbers, so you don't need a computer."
-        },
-        {
-          "icon": "🔌",
-          "text": "An I2C backpack lets the screen talk to the Arduino with just 2 wires."
-        },
-        {
-          "icon": "🧰",
-          "text": "Get the Arduino, a DHT11 sensor, an I2C LCD screen, breadboard and wires."
+          "icon": "🌡️",
+          "text": "The DHT11 has 3 pins: + (VCC), out (data), − (GND)."
         },
         {
           "icon": "🔗",
-          "text": "Wire the sensor and the screen to the Arduino."
+          "text": "Wire VCC → 5V, GND → GND, data → pin 2. (See the diagram.)"
         },
         {
-          "icon": "📚",
-          "text": "The code uses libraries that read the sensor and drive the screen."
+          "icon": "🖥️",
+          "text": "The LCD's I2C backpack has 4 pins: VCC, GND, SDA, SCL."
+        },
+        {
+          "icon": "🔗",
+          "text": "Wire VCC → 5V, GND → GND, SDA → A4, SCL → A5."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👀",
-          "text": "Watch live readings like 24°C and 60% appear on your screen."
+          "text": "Watch live readings like \"24°C 60%\" appear on the screen!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Blank screen? Try the other I2C address in the code (0x27 or 0x3F)."
         },
         {
           "icon": "🎉",
-          "text": "You built your very own weather station!"
+          "text": "You built your own weather station!"
         }
       ]
     },
     "voice- / gesture-controlled robot": {
       "intro": "Today AI meets robot — you'll drive a robot with your gestures or your voice! 🧠",
+      "diagram": "ar20",
       "materials": [
         {
           "icon": "board",
@@ -2224,35 +2280,39 @@
       "steps": [
         {
           "icon": "🌐",
-          "text": "First, train a mini AI brain on Teachable Machine in the Chrome browser."
+          "text": "First, train your AI on Teachable Machine (in Chrome) with gesture or voice examples."
         },
         {
-          "icon": "✋",
-          "text": "Show it examples: a hand pointing left, right, or a stop fist — or spoken words."
+          "icon": "🔧",
+          "text": "Build the robot: Arduino, L298N, 2 motors + wheels, chassis, battery."
         },
         {
-          "icon": "🧰",
-          "text": "Build the robot: Arduino, an L298N driver, 2 motors with wheels, a chassis and batteries."
-        },
-        {
-          "icon": "🌉",
-          "text": "The AI runs in the browser. A small bridge sends a letter (like L) down the USB cable."
+          "icon": "⚙️",
+          "text": "Left motor → OUT1/OUT2, right motor → OUT3/OUT4."
         },
         {
           "icon": "🔗",
-          "text": "Wire the motor driver to the Arduino and upload the robot code."
+          "text": "Wire the L298N to the Arduino: ENA→5, IN1→8, IN2→9, ENB→6, IN3→10, IN4→11. (See the diagram.)"
+        },
+        {
+          "icon": "⚫",
+          "text": "L298N GND → Arduino GND. Battery → L298N 12V/GND."
         },
         {
           "icon": "💻",
-          "text": "Connect the browser to the Arduino so your gestures become commands."
+          "text": "Upload the robot code, then close the Serial Monitor."
+        },
+        {
+          "icon": "🌉",
+          "text": "Open your Teachable Machine page in Chrome and connect it to the Arduino over USB."
         },
         {
           "icon": "👋",
-          "text": "Point left — the robot turns left! Say stop — it stops!"
+          "text": "Point left — the robot turns left! Say \"stop\" — it stops!"
         },
         {
-          "icon": "💡",
-          "text": "You just joined a thinking AI to a doing robot."
+          "icon": "🛠️",
+          "text": "\"No port\" in Chrome? Close the Arduino Serial Monitor first — Chrome needs the port."
         },
         {
           "icon": "🎉",
@@ -2262,6 +2322,7 @@
     },
     "robot arm basics": {
       "intro": "Today you build a cardboard robot arm and steer it with knobs! 🦾",
+      "diagram": "ar21",
       "materials": [
         {
           "icon": "board",
@@ -2299,35 +2360,39 @@
       "steps": [
         {
           "icon": "✂️",
-          "text": "Cut the arm from cardboard: a base, two bones, and little gripper jaws. A grown-up does the knife cutting."
+          "text": "Build the cardboard arm: a base, two bones, and gripper jaws. A grown-up does the knife cutting."
         },
         {
           "icon": "🔩",
-          "text": "Fit 4 servos at the joints: base, shoulder, elbow and gripper."
-        },
-        {
-          "icon": "🎛️",
-          "text": "Each knob (potentiometer) gives the Arduino a number from 0 to 1023."
-        },
-        {
-          "icon": "🧮",
-          "text": "The code uses map() to turn that into a 0–180 degree angle for each servo."
-        },
-        {
-          "icon": "⚡",
-          "text": "Power the servos from their own battery, NOT the Arduino's 5V pin, so the board isn't overloaded."
+          "text": "Fit the 4 servos at the joints: base, shoulder, elbow and gripper."
         },
         {
           "icon": "🔗",
-          "text": "Wire the 4 knobs and the 4 servos to the Arduino."
+          "text": "Wire each servo's signal wire: base → 3, shoulder → 5, elbow → 6, gripper → 9. (See the diagram.)"
+        },
+        {
+          "icon": "⚡",
+          "text": "Power the servos from their OWN battery/5V — not the Arduino's 5V pin."
+        },
+        {
+          "icon": "⚫",
+          "text": "Join the battery's GND to the Arduino's GND so they share a ground."
+        },
+        {
+          "icon": "🎛️",
+          "text": "Each knob: one outer leg → 5V, the other → GND, the middle → A0, A1, A2, A3."
         },
         {
           "icon": "💻",
-          "text": "Plug in and upload the code."
+          "text": "Plug in the USB cable and upload the code."
         },
         {
           "icon": "👐",
           "text": "Turn the 4 knobs to move the arm live — lift, bend, and grab!"
+        },
+        {
+          "icon": "🛠️",
+          "text": "Servos jitter or the board resets? They're pulling too much power — use the separate 5V battery."
         },
         {
           "icon": "🎉",
