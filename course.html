@@ -86,6 +86,10 @@
   margin-right:10px;background:var(--green);color:#fff;border-radius:50%;font-size:15px;font-weight:700;vertical-align:2px}
 .kid-steps li.reading{background:#FFF1C2;border-color:var(--orange-deep)}
 .kid-note{font-size:14.5px;color:var(--text-2);margin-top:4px}
+/* Wiring diagram — shows in both modes; fixed light panel so the schematic always reads */
+.wire-diagram{margin:0 0 4px;border:2px solid var(--ink);border-radius:var(--radius);background:#FBF7F2;overflow:hidden}
+.wire-diagram figcaption{font-size:14px;font-weight:600;color:#220111;background:#FFE9B8;padding:8px 14px;border-bottom:2px solid var(--ink)}
+.wire-diagram img{display:block;width:100%;height:auto;padding:8px}
 /* Materials strip — shows in both modes so kids can see what to grab */
 .mat-strip{border:2px solid var(--ink);border-radius:var(--radius);padding:14px 16px;background:var(--cream)}
 .mat-strip h3{font-size:16px;font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:7px}
@@ -605,6 +609,10 @@ function wireLessonTools(L) {
   if (!tools || !body) return;
   const kid = kidFor(L);
   const mats = $('lesson-mats'); if (mats) mats.innerHTML = matStripHTML(kid);   // shows in both modes
+  const dg = $('lesson-diagram');                                                 // wiring diagram, both modes
+  if (dg) dg.innerHTML = (kid && kid.diagram)
+    ? `<figure class="wire-diagram"><figcaption>🔌 Wiring diagram — how to connect it</figcaption><img src="assets/wiring/${esc(kid.diagram)}.svg" alt="Wiring diagram for ${esc(L.title)}" loading="lazy"></figure>`
+    : '';
   const readLabel = '🔊 Read to me';
   tools.innerHTML =
     (twSay.supported() ? `<button type="button" class="tool-btn" id="t-read" data-idle="${readLabel}">${readLabel}</button>` : '')
@@ -675,6 +683,7 @@ async function openLesson(id) {
   $('main').innerHTML = adminBar() + `
     <div>${L.section ? `<div class="lesson-sec">${esc(L.section)}</div>` : ''}<h2 class="lt">${esc(L.title)}</h2></div>
     ${vid ? `<div class="video"><iframe src="${vid}" title="${esc(L.title)} video" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : ''}
+    <div id="lesson-diagram"></div>
     <div id="lesson-mats"></div>
     <div id="lesson-tools" class="lesson-tools no-print"></div>
     <div id="lesson-body">${L.body ? `<div class="prose">${md(L.body)}</div>` : ''}</div>
