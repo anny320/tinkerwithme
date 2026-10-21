@@ -3,8 +3,8 @@
 -- Run this in the Supabase SQL editor, after lms.sql.
 --
 -- Club    : all self-paced courses + free content + new monthly projects
--- Premium : Club + a weekly live group class
--- Pricing (KES): Club 1,500/mo · 15,000/yr   Premium 6,500/mo · 65,000/yr
+-- Premium : Club + two live group classes a month
+-- Pricing (KES): Club 1,500/mo · 15,000/yr   Premium 4,000/mo · 40,000/yr
 -- A membership is per account; a family plan simply means one account for
 -- the household (no per-child seats to manage).
 --
@@ -40,8 +40,8 @@ language sql immutable as $$
   select case
     when p_tier = 'club'    and p_cycle = 'monthly' then 1500
     when p_tier = 'club'    and p_cycle = 'annual'  then 15000
-    when p_tier = 'premium' and p_cycle = 'monthly' then 6500
-    when p_tier = 'premium' and p_cycle = 'annual'  then 65000
+    when p_tier = 'premium' and p_cycle = 'monthly' then 4000
+    when p_tier = 'premium' and p_cycle = 'annual'  then 40000
   end
 $$;
 

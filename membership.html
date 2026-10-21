@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://tinkerwith.me/membership.html">
 <title>Membership — all our courses, one plan — TinkerWith_</title>
-<meta name="description" content="Tinkerwith membership: all 17 self-paced robotics and AI courses, free projects and new monthly builds for one simple plan. Club from KES 1,500/month; Premium adds a weekly live class. One account covers the whole family.">
+<meta name="description" content="Tinkerwith membership: all 17 self-paced robotics and AI courses, free projects and new monthly builds for one simple plan. Club from KES 1,500/month; Premium adds two live classes a month. One account covers the whole family.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
 <meta property="og:url" content="https://tinkerwith.me/membership.html">
 <meta property="og:title" content="Tinkerwith membership — all our courses, one plan">
-<meta property="og:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 1,500/mo; Premium adds a weekly live class. One account for the whole family.">
+<meta property="og:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 1,500/mo; Premium adds two live classes a month. One account for the whole family.">
 <meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tinkerwith membership — all our courses, one plan">
@@ -104,8 +104,8 @@
     <div class="faq">
       <details><summary>Can I cancel any time?</summary><p>Yes. A monthly plan simply isn&rsquo;t renewed; an annual plan runs to the end of its year. No lock-in.</p></details>
       <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
-      <details><summary>What&rsquo;s the difference between Club and Premium?</summary><p>Club is everything self-paced — all courses, at your own pace. Premium adds a <strong>weekly live group class</strong> with a trainer, for kids who want the live push and a cohort.</p></details>
-      <details><summary>Does membership include the live courses or the teacher curriculums?</summary><p>Premium includes a weekly live group class. One-off live courses and the teacher curriculums are sold separately.</p></details>
+      <details><summary>What&rsquo;s the difference between Club and Premium?</summary><p>Club is everything self-paced — all courses, at your own pace. Premium adds <strong>two live group classes a month</strong> with a trainer, for kids who want the live push and a cohort.</p></details>
+      <details><summary>Does membership include the live courses or the teacher curriculums?</summary><p>Premium includes two live group classes a month. One-off live courses and the teacher curriculums are sold separately.</p></details>
     </div>
   </div>
 </section>
@@ -142,7 +142,7 @@ const $ = id => document.getElementById(id);
 const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
 // Keep in step with lms_membership_price() in supabase/membership.sql.
-const PRICES = { club: { monthly: 1500, annual: 15000 }, premium: { monthly: 6500, annual: 65000 } };
+const PRICES = { club: { monthly: 1500, annual: 15000 }, premium: { monthly: 4000, annual: 40000 } };
 const TIERS = {
   club: { name: 'Club', badge: 'Self-paced', feats: [
     'All 17 self-paced robotics &amp; AI courses',
@@ -152,7 +152,7 @@ const TIERS = {
     'Learn at your own pace, any time' ] },
   premium: { name: 'Premium', badge: 'Club + live', feats: [
     'Everything in Club',
-    '<strong>A weekly live group class</strong> with a trainer',
+    '<strong>Two live group classes a month</strong> with a trainer',
     'A cohort of other young makers',
     'Priority help on WhatsApp' ] },
 };
