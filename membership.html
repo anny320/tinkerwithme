@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://tinkerwith.me/membership.html">
+<title>Membership — all our courses, one plan — TinkerWith_</title>
+<meta name="description" content="Tinkerwith membership: all 17 self-paced robotics and AI courses, free projects and new monthly builds for one simple plan. Club from KES 1,500/month; Premium adds a weekly live class. One account covers the whole family.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TinkerWith_">
+<meta property="og:url" content="https://tinkerwith.me/membership.html">
+<meta property="og:title" content="Tinkerwith membership — all our courses, one plan">
+<meta property="og:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 1,500/mo; Premium adds a weekly live class. One account for the whole family.">
+<meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tinkerwith membership — all our courses, one plan">
+<meta name="twitter:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 1,500/mo.">
+<meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="lms.css">
+<style>
+.toggle{display:inline-flex;border:2px solid var(--ink);border-radius:var(--radius-pill);overflow:hidden;margin:1rem 0 .3rem;background:var(--white)}
+.toggle button{font:inherit;font-weight:600;font-size:14.5px;padding:9px 18px;border:0;background:transparent;cursor:pointer;color:var(--ink)}
+.toggle button.on{background:var(--ink);color:var(--white)}
+.save-pill{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--green-deep,#3a7d1e);margin-left:8px}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:1.4rem}
+@media(max-width:760px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;display:flex;flex-direction:column;gap:10px}
+.tier.premium{background:var(--orange-soft,#FFE3CF)}
+.tier .badge{align-self:flex-start;font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
+.tier.club .badge{background:var(--green,#8BD450)}
+.tier.premium .badge{background:#FFD23F}
+.tier h2{font-size:23px;font-weight:600}
+.tier .price{font-family:var(--font-mono);font-size:30px;font-weight:700;line-height:1}
+.tier .price small{font-family:var(--font-sans,inherit);font-size:14px;font-weight:400;color:var(--text-2)}
+.tier .per{font-size:13.5px;color:var(--text-2);margin-top:-4px}
+.tier ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:15px;color:var(--text-2);margin-top:4px}
+.tier li::before{content:'✓';color:var(--orange-deep,#D2691E);font-weight:700;margin-right:8px}
+.tier .cta{margin-top:auto;padding-top:8px}
+.fam{background:var(--cream);border:2px dashed var(--border-strong,#C9B8A8);border-radius:var(--radius);padding:12px 14px;font-size:14.5px;color:var(--text-2);margin-top:1.2rem}
+.join{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;margin-top:1.6rem}
+.join h2{font-size:22px;font-weight:600;margin-bottom:6px}
+.join .field-in{display:block;margin-bottom:12px}
+.join textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--ink);border-radius:var(--radius-sm);min-height:76px;margin-top:5px}
+.member{background:var(--green-soft,#DFF4C9);border:2px solid var(--ink);border-radius:var(--radius-lg);padding:1.3rem 1.5rem;margin-top:1.4rem}
+.member h2{font-size:22px;font-weight:600;margin-bottom:4px}
+.muted{color:var(--text-2);font-size:14px}
+.faq{max-width:760px;margin-top:2.4rem}
+.faq details{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
+.faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq p{margin-top:8px;color:var(--text-2);font-size:15px}
+</style>
+<script src="analytics.js"></script>
+<script src="lms.js"></script>
+<script src="price.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html"><img src="assets/mark.png" alt=""><span>Tinkerwith_</span></a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Courses</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link is-active" href="membership.html" aria-current="page">Membership</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link" href="free-for-kids.html">Free for kids</a>
+      <a class="tw-nav-link" href="schools.html">For schools</a>
+      <a class="tw-nav-link" href="teachers.html">For teachers</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail"><div class="acct" id="acct"></div></div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container">
+    <span class="tw-eyebrow-pill">Membership</span>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">All our courses, one simple plan</h1>
+    <p>One self-paced course is KES 3,000. Membership gives your child <strong>every</strong> self-paced robotics &amp; AI course, the free projects, and new builds each month &mdash; for less than the price of one. One account covers the whole family.</p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="toggle" role="group" aria-label="Billing cycle">
+      <button type="button" id="t-monthly" class="on">Monthly</button>
+      <button type="button" id="t-annual">Annual <span class="save-pill">2 months free</span></button>
+    </div>
+    <div class="tiers" id="tiers"></div>
+    <p class="fam">👨‍👩‍👧 <strong>Family plan.</strong> One membership covers every child in your household — no per-child seats to manage.</p>
+
+    <div id="slot"></div>
+
+    <div class="faq">
+      <details><summary>Can I cancel any time?</summary><p>Yes. A monthly plan simply isn&rsquo;t renewed; an annual plan runs to the end of its year. No lock-in.</p></details>
+      <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
+      <details><summary>What&rsquo;s the difference between Club and Premium?</summary><p>Club is everything self-paced — all courses, at your own pace. Premium adds a <strong>weekly live group class</strong> with a trainer, for kids who want the live push and a cohort.</p></details>
+      <details><summary>Does membership include the live courses or the teacher curriculums?</summary><p>Premium includes a weekly live group class. One-off live courses and the teacher curriculums are sold separately.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div><div class="tw-footer-brand"><img src="assets/mark-light.png" alt=""><span>Tinkerwith_</span></div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p></div>
+    <div><h4>Learn</h4><ul>
+      <li><a href="learn.html">Online courses</a></li>
+      <li><a href="membership.html">Membership</a></li>
+      <li><a href="courses.html">Courses &amp; camps</a></li>
+      <li><a href="free-for-kids.html">Free for kids</a></li>
+      <li><a href="schools.html">For schools</a></li>
+      <li><a href="teachers.html">For teachers</a></li></ul></div>
+    <div><h4>Tools</h4><ul>
+      <li><a href="picker.html">Course picker</a></li>
+      <li><a href="curriculumgenerator.html">Curriculum generator</a></li>
+      <li><a href="camp-planner.html">Camp planner</a></li></ul></div>
+    <div><h4>Company</h4><ul>
+      <li><a href="about.html">About</a></li>
+      <li><a href="mailto:tinkerwithanne@gmail.com">Contact</a></li>
+      <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li><a href="privacy.html">Privacy policy</a></li></ul></div>
+  </div>
+</footer>
+<div class="tw-footer-tail"><div class="tw-footer-tail-inner">
+  <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span><span>DIY Electronics Projects</span>
+</div></div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+const $ = id => document.getElementById(id);
+const TILL = '3022049';
+const WA = 'https://wa.me/254117784724?text=';
+// Keep in step with lms_membership_price() in supabase/membership.sql.
+const PRICES = { club: { monthly: 1500, annual: 15000 }, premium: { monthly: 6500, annual: 65000 } };
+const TIERS = {
+  club: { name: 'Club', badge: 'Self-paced', feats: [
+    'All 17 self-paced robotics &amp; AI courses',
+    'The 34 free build-along projects',
+    'New projects added every month',
+    'Quizzes, certificates &amp; the Builds Wall',
+    'Learn at your own pace, any time' ] },
+  premium: { name: 'Premium', badge: 'Club + live', feats: [
+    'Everything in Club',
+    '<strong>A weekly live group class</strong> with a trainer',
+    'A cohort of other young makers',
+    'Priority help on WhatsApp' ] },
+};
+let cycle = 'monthly', MINE = null;
+const fmt = n => 'KES ' + n.toLocaleString();
+
+function renderTiers() {
+  $('tiers').innerHTML = Object.entries(TIERS).map(([id, t]) => {
+    const per = cycle === 'annual' ? '/ year' : '/ month';
+    const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(PRICES[id].annual / 12))}/mo · 2 months free</div>` : '';
+    return `<div class="tier ${id}">
+      <span class="badge">${t.badge}</span>
+      <h2>${t.name}</h2>
+      <div class="price">${fmt(PRICES[id][cycle])} <small>${per}</small></div>${mo}
+      <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
+      <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-join-${id}">Join ${t.name} &rarr;</button></div>
+    </div>`;
+  }).join('');
+  $('tiers').querySelectorAll('[data-join]').forEach(b => b.onclick = () => openJoin(b.dataset.join));
+}
+
+function setCycle(c) {
+  cycle = c;
+  $('t-monthly').classList.toggle('on', c === 'monthly');
+  $('t-annual').classList.toggle('on', c === 'annual');
+  renderTiers();
+}
+$('t-monthly').onclick = () => setCycle('monthly');
+$('t-annual').onclick = () => setCycle('annual');
+
+function memberBanner() {
+  if (!(MINE && MINE.active)) return '';
+  const until = MINE.expires_at ? new Date(MINE.expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  return `<div class="member"><h2>You&rsquo;re a ${MINE.tier === 'premium' ? 'Premium' : 'Club'} member 🎉</h2>
+    <p>${until ? `Active until <strong>${until}</strong>. ` : ''}Head to <a href="learn.html">your courses</a> and keep building.</p></div>`;
+}
+
+async function openJoin(tier) {
+  const slot = $('slot');
+  const r = await LMS.ready;
+  if (!r.signIn) { slot.innerHTML = `<div class="join"><p class="notice">Sign-in is taking a break. Please try again later.</p></div>`; return; }
+  if (!LMS.user) {
+    slot.innerHTML = `<div class="join"><h2>Join ${TIERS[tier].name}</h2>
+      <p>Create a free account (or sign in), then pay and we&rsquo;ll switch your membership on.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to join</button></div>`;
+    $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  const amt = PRICES[tier][cycle];
+  slot.innerHTML = `<div class="join">
+    <h2>Join ${TIERS[tier].name} — ${fmt(amt)} ${cycle === 'annual' ? '/ year' : '/ month'}</h2>
+    <p class="muted" style="margin-bottom:10px">Pay by M-Pesa, then paste the message below. We switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)</p>
+    <ol>
+      <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
+      <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>
+    </ol>
+    <form id="mf">
+      <label class="field-in">M-Pesa message or code
+        <textarea name="msg" required maxlength="600" placeholder="e.g. SJK4AB12CD Confirmed. Ksh${amt.toLocaleString()}.00 paid to …"></textarea></label>
+      <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-pay-${tier}">Send payment</button>
+      <p id="mf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
+    </form></div>`;
+  slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('mf').onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, b = f.querySelector('button'), err = $('mf-err'); b.disabled = true; err.textContent = '';
+    try {
+      const res = await LMS.rpc('lms_submit_membership_payment', { p_tier: tier, p_cycle: cycle, p_message: f.msg.value, p_method: 'mpesa' });
+      LMS.track('membership_payment_sent', { tier, cycle });
+      slot.innerHTML = `<div class="member"><h2>Got it — ${res.code} 🎉</h2><p>We&rsquo;ll check your payment and switch your ${TIERS[tier].name} membership on, usually the same day. Want to hurry it along? <a href="${WA + encodeURIComponent('Hi Anne, I just paid for Tinkerwith ' + TIERS[tier].name + ' membership (' + cycle + '). Reference: ' + res.code)}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
+      slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (x) { err.textContent = x.message || 'Something went wrong.'; b.disabled = false; }
+  };
+}
+
+renderTiers();
+LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
+LMS.ready.then(async () => {
+  if (!LMS.user) return;
+  try { MINE = await LMS.rpc('lms_my_membership'); } catch (_) {}
+  const b = memberBanner(); if (b) $('slot').innerHTML = b;
+});
+</script>
+</body>
+</html>
