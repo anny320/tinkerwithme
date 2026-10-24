@@ -1,6 +1,6 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 19 Oct 2026_
+_Last updated: 24 Oct 2026_
 
 ## ▶️ Do first when we resume
 1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (now **~25 URLs**, incl. `teachers.html` + `resources.html`). Then watch **Indexing → Pages**. Sitemap + robots.txt + canonicals are already live. _Note: the "agentic OAuth" email from Google = no action needed (Sign-in-with-Google is auth only)._
@@ -45,6 +45,9 @@ _Last updated: 19 Oct 2026_
 - **Privacy policy** updated for children's *project* photos
 - **Paystack** one-time curriculum wiring (storefront button + reference auto-capture + `paystack` method)
 - **Anti-cannibalisation**: free "Robots & Smart Builds" renames + "Go deeper" upsells
+
+### Recent (Oct 24)
+- **Membership Premium corrected** (PR #102, branch `claude/membership`, **open**) — cadence fixed from "a weekly live group class" to **two live group classes a month**, and Premium repriced **KES 6,500→4,000/mo · 65,000→40,000/yr** (tracks the ~2 live hrs/mo it adds over Club). Updated in `membership.html` (PRICES, tier feature, both FAQs, meta descriptions), `supabase/membership.sql` (`lms_membership_price` + header), and the #28 note below. Rendered clean, no JS errors.
 
 ### Recent (Oct 16–19)
 - **Course certificate fix** — reading-only lessons auto-complete on Next/Finish, so finishing a course reliably unlocks the certificate (scrolls straight to it)
