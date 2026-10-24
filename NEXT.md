@@ -1,6 +1,6 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 19 Oct 2026_
+_Last updated: 24 Oct 2026_
 
 ## ▶️ Do first when we resume
 1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (now **~25 URLs**, incl. `teachers.html` + `resources.html`). Then watch **Indexing → Pages**. Sitemap + robots.txt + canonicals are already live. _Note: the "agentic OAuth" email from Google = no action needed (Sign-in-with-Google is auth only)._
@@ -21,7 +21,10 @@ _Last updated: 19 Oct 2026_
 - **Tutor certification + community** (the rest of #25): the self-paced teacher course, outcomes/skill-check reports — flagged "coming soon" on the site; build when ready.
 
 ### Revenue
-- **#28 — Membership subscription** (Club / Premium): tiers, member access gating, Paystack **Plans + webhook** (the one bit of server code — a Supabase Edge Function verifying Paystack signatures with the secret key), live-class access. Recurring revenue, biggest build. Card auto-renews; M-Pesa members pay monthly via a request.
+- **#28 — Membership (Club / Premium)** — _page + schema built; recurring billing pending Paystack._
+  - **Pricing (locked):** Club **KES 1,500/mo · 15,000/yr** (all 17 self-paced courses + free projects + new monthly builds). Premium **KES 4,000/mo · 40,000/yr** (Club + **two live group classes a month**). One account = **family plan**. Prices live in `membership.html` + `lms_membership_price()`.
+  - **Built:** `membership.html` (tiers, monthly/annual toggle, join/pay flow, member banner) + `supabase/membership.sql` (`lms_memberships`, `lms_my_membership`, `lms_member_rank`, `lms_has_membership`, `lms_submit_membership_payment`, admin `lms_grant_membership`; `lms_can_access` extended; `lms_courses.membership_tier` column). Nav/footer/sitemap link added.
+  - **To do:** (1) **run `supabase/membership.sql`** in the SQL editor; (2) **set `membership_tier='club'`** on the self-paced course rows (example UPDATE at the bottom of the file); (3) **wire teach.html payment approval** to call `lms_grant_membership` when approving a `kind='membership'` payment (until then approve by running the RPC manually); (4) **Paystack Plans + webhook** (the one server-code bit — a Supabase Edge Function verifying signatures with the secret key) for true auto-renew, once Paystack is approved. Until then members are activated the same manual-approve way as curriculums.
 - **#27 — Paystack finish**: wire **paid courses** too (not just curriculums); test with `pk_test_`, then flip to `pk_live_`. Optional later: inline on-site checkout (scaffolding in `paystack.js` + `lms.js` `CONFIG.paystackKey`).
 
 ### Standing / cleanup (do together)
@@ -42,6 +45,9 @@ _Last updated: 19 Oct 2026_
 - **Privacy policy** updated for children's *project* photos
 - **Paystack** one-time curriculum wiring (storefront button + reference auto-capture + `paystack` method)
 - **Anti-cannibalisation**: free "Robots & Smart Builds" renames + "Go deeper" upsells
+
+### Recent (Oct 24)
+- **Membership Premium corrected** (PR #102, branch `claude/membership`, **open**) — cadence fixed from "a weekly live group class" to **two live group classes a month**, and Premium repriced **KES 6,500→4,000/mo · 65,000→40,000/yr** (tracks the ~2 live hrs/mo it adds over Club). Updated in `membership.html` (PRICES, tier feature, both FAQs, meta descriptions), `supabase/membership.sql` (`lms_membership_price` + header), and the #28 note below. Rendered clean, no JS errors.
 
 ### Recent (Oct 16–19)
 - **Course certificate fix** — reading-only lessons auto-complete on Next/Finish, so finishing a course reliably unlocks the certificate (scrolls straight to it)
