@@ -25,7 +25,7 @@ _Last updated: 24 Oct 2026_
   - **⭐ OFFERING MODEL (locked 25 Oct — brainstorm + Thiel critique) — three intents: Free / Club / Premium.** **Repositioned around the monopoly:** live + local + community + kit-optional + outcomes (the un-commoditisable moat), NOT "number of courses" (the depreciating part AI is commoditising). Lead with the live Kenyan trainers, the maker cohort/Builds Wall, and "build with what you have."
     - **Free** (KES 0): the 34 build-alongs + Builds Wall + certificates. The funnel.
     - **Club** (standard KES 2,000/mo · 20,000/yr): a **monthly live group session** (Kenyan trainer) + the maker community + the **AI self-paced courses** (browser-only) + new monthly build + family plan.
-    - **Premium** (standard KES 6,500/mo · 65,000/yr): Club + a **small live cohort (max 8 + your own trainer, 2 classes/mo)** + **all 17 courses incl. the robotics lab — kit-optional** (everyday parts + free simulator; Maker Kit is an optional upsell, never a gate — fixes the thesis contradiction) + **parent progress reports** + **termly demo day + mailed certificate** + priority + early access.
+    - **Premium** (standard KES 6,500/mo · 65,000/yr): Club + a **small live cohort (max 8 + your own trainer, 2 classes/mo)** + **all 17 courses incl. the robotics lab — kit-optional** (everyday parts + free simulator; Maker Kit is an optional upsell, never a gate — fixes the thesis contradiction) + **parent progress reports** + **termly demo day + print-at-home certificate & shareable skill badges** (physical mailing dropped — unreliable in KE) + priority + early access.
     - **Capacity:** **10 trainers → multiple Premium cohorts in parallel** (grouped by age/level). Premium is a scalable growth engine, not a bottleneck; Founding 100 is easily serviceable.
     - **Early-bird = Founding 100 (scarcity, not a price war):** first **100 families** reserve-AND-pay now at **40% off locked for 12 months** (Club KES 1,200/mo, Premium KES 3,900/mo), get **lifetime founding status** + founders wall + first access. **10-day money-back** guarantee, tightened to *not-yet-consumed* (no completed course / no live session) to stop gaming. Join form tags payments `[EARLY-BIRD …]`; approve with **`lms_grant_membership_early`** (sets `early_bird` + `early_bird_until = +12mo`).
     - **Distribution baked in:** referral (WhatsApp share → both get a free month, manual for now) · schools channel card → `schools.html` (B2B2C, bypasses per-family CAC) · free→paid trigger at free-project completion (**still to build on `course.html`/free-for-kids**).
@@ -47,6 +47,9 @@ _Last updated: 24 Oct 2026_
 
 ### Standing / cleanup (do together)
 - **#22** strip `project_content` off GitHub · **#21** point the curriculum generator at Supabase (reader move) · **#23** route generator output to Supabase.
+
+### UX review (courses now online)
+- **Review the planner → inquiry UX now that the courses are live in the LMS.** The session planner (`picker.html`), camp planner (`camp-planner.html`) and the curriculum generator all previously ended in a **PDF preview / download** as the main outcome — a lot of work went into those previews. Now that the 17 courses exist online, revisit each planner's end-state so an enquirer is also routed to the matching **online course / membership**, not only the PDF: add "see this as a self-paced course" / "enquire" CTAs alongside the preview, and check the preview-PDF step still makes sense as the primary call-to-action. Audit all three flows for consistency with the new online offering.
 
 ### Nice-to-have
 - Normalise relative `og:image` paths to absolute on older pages (index, free-for-kids).
