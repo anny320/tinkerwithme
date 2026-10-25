@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Score &amp; premiere · the CapCut timeline</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">A video editor is just stacked tracks on a timeline — trim, layer and balance them.</text>
+
+<!-- lanes -->
+<g font-family="Jost, sans-serif" font-size="12.5" font-weight="700">
+<text x="150" y="98" text-anchor="end" fill="#220111">🎞️ Images</text>
+<text x="150" y="146" text-anchor="end" fill="#220111">🎵 Music</text>
+<text x="150" y="194" text-anchor="end" fill="#220111">🔊 SFX</text>
+<text x="150" y="242" text-anchor="end" fill="#220111">💬 Captions</text>
+</g>
+<g>
+<rect x="160" y="78" width="610" height="28" rx="4" fill="#efe9e2"/>
+<rect x="160" y="126" width="610" height="28" rx="4" fill="#efe9e2"/>
+<rect x="160" y="174" width="610" height="28" rx="4" fill="#efe9e2"/>
+<rect x="160" y="222" width="610" height="28" rx="4" fill="#efe9e2"/>
+</g>
+<!-- image clips -->
+<g stroke="#220111" stroke-width="1.5">
+<rect x="162" y="80" width="118" height="24" rx="3" fill="#7A3FB0"/>
+<rect x="282" y="80" width="118" height="24" rx="3" fill="#8e57bd"/>
+<rect x="402" y="80" width="118" height="24" rx="3" fill="#7A3FB0"/>
+<rect x="522" y="80" width="118" height="24" rx="3" fill="#8e57bd"/>
+<rect x="642" y="80" width="126" height="24" rx="3" fill="#7A3FB0"/>
+</g>
+<!-- music clip -->
+<rect x="162" y="128" width="606" height="24" rx="3" fill="#5E8700" stroke="#220111" stroke-width="1.5"/>
+<text x="465" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">one instrumental track (no vocals)</text>
+<!-- sfx clips -->
+<g stroke="#220111" stroke-width="1.5">
+<rect x="300" y="176" width="60" height="24" rx="3" fill="#E0641B"/>
+<rect x="560" y="176" width="60" height="24" rx="3" fill="#E0641B"/>
+</g>
+<!-- captions -->
+<g stroke="#220111" stroke-width="1.5">
+<rect x="162" y="224" width="90" height="24" rx="3" fill="#004C97"/>
+<rect x="402" y="224" width="110" height="24" rx="3" fill="#004C97"/>
+</g>
+<!-- playhead -->
+<path d="M360 72 V256" stroke="#D8322B" stroke-width="2.5"/>
+<circle cx="360" cy="72" r="5" fill="#D8322B"/>
+
+<rect x="30" y="266" width="740" height="30" rx="9" fill="#F0F7DE" stroke="#5E8700" stroke-width="2"/>
+<text x="400" y="286" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3f5c00">Add fades, balance the music under the voice, then export as an MP4.</text>
+</svg>

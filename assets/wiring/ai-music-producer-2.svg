@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="320" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Compose · Suno Custom mode</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">You control two things: the style tag and the section-tagged lyrics.</text>
+
+<!-- style tag panel -->
+<rect x="30" y="80" width="360" height="200" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="50" y="108" font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700" fill="#E0641B">🎚️ STYLE OF MUSIC</text>
+<g font-family="Jost, sans-serif" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">
+<rect x="50" y="124" width="300" height="34" rx="8" fill="#004C97"/><text x="200" y="146">genre + tempo (BPM)</text>
+<rect x="50" y="166" width="300" height="34" rx="8" fill="#5E8700"/><text x="200" y="188">instruments</text>
+<rect x="50" y="208" width="300" height="34" rx="8" fill="#7A3FB0"/><text x="200" y="230">mood</text>
+</g>
+<text x="200" y="266" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">"Afro-pop, 108 BPM, talking drums, joyful"</text>
+
+<!-- lyrics panel -->
+<rect x="410" y="80" width="360" height="200" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="430" y="108" font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700" fill="#5E8700">📝 LYRICS (section tags)</text>
+<g font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700">
+<text x="430" y="134" fill="#E0641B">[Intro]</text>
+<text x="430" y="156" fill="#004C97">[Verse 1]</text><text x="520" y="156" font-size="11" font-weight="500" fill="#9b8c84">your lines…</text>
+<text x="430" y="178" fill="#C23B3B">[Chorus]</text><text x="520" y="178" font-size="11" font-weight="500" fill="#9b8c84">the hook</text>
+<text x="430" y="200" fill="#004C97">[Verse 2]</text>
+<text x="430" y="222" fill="#7A3FB0">[Bridge]</text>
+<text x="430" y="244" fill="#C23B3B">[Chorus]</text>
+<text x="430" y="266" fill="#6E5F56">[Outro]</text>
+</g>
+
+<rect x="30" y="290" width="740" height="26" rx="8" fill="#F0F7DE" stroke="#5E8700" stroke-width="2"/>
+<text x="400" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#3f5c00">Always say "instrumental, no vocals" so the music doesn't clash with your words.</text>
+</svg>

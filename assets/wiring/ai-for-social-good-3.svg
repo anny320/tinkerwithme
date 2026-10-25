@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Prototype · the define → build → test → iterate loop</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Match the tool to the problem, build a first version, then improve it with real feedback.</text>
+
+<!-- 4 nodes in a cycle -->
+<rect x="300" y="80" width="200" height="56" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="400" y="104" text-anchor="middle" font-size="15" font-weight="700" fill="#E0641B">① Define</text>
+<text x="400" y="124" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">what does the problem need?</text>
+
+<rect x="548" y="156" width="200" height="56" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="648" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#7A3FB0">② Build</text>
+<text x="648" y="200" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">a working first version</text>
+
+<rect x="300" y="222" width="200" height="56" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="400" y="246" text-anchor="middle" font-size="15" font-weight="700" fill="#004C97">③ Test</text>
+<text x="400" y="266" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">a friend tries it</text>
+
+<rect x="52" y="156" width="200" height="56" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="152" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#5E8700">④ Iterate</text>
+<text x="152" y="200" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">one real improvement</text>
+
+<path d="M500 108 C560 112, 620 130, 648 154" stroke="#220111" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<path d="M648 212 C620 238, 540 250, 502 250" stroke="#220111" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<path d="M300 250 C230 250, 180 238, 152 214" stroke="#220111" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<path d="M152 154 C180 130, 240 112, 298 108" stroke="#5E8700" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ar)"/>
+<text x="130" y="128" font-size="11" font-weight="700" fill="#5E8700">repeat</text>
+</svg>

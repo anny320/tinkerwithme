@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Trace the spread · how a fake story travels</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">A false claim races ahead; the correction limps behind.</text>
+
+<g font-family="Jost, sans-serif" font-size="12.5" font-weight="700" text-anchor="middle">
+<rect x="30" y="80" width="175" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="117" y="100">1 Origin post</text><text x="117" y="117" font-size="10" font-weight="500" fill="#6E5F56">blurry photo + claim</text>
+<rect x="222" y="80" width="175" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="309" y="100">2 First share</text><text x="309" y="117" font-size="10" font-weight="500" fill="#6E5F56">a friend forwards it</text>
+<rect x="414" y="80" width="175" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="501" y="100">3 Meme remix</text><text x="501" y="117" font-size="10" font-weight="500" fill="#6E5F56">turned into a joke</text>
+<rect x="606" y="80" width="164" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="688" y="100">4 Influencer</text><text x="688" y="117" font-size="10" font-weight="500" fill="#6E5F56">big account reposts</text>
+
+<rect x="606" y="150" width="164" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="688" y="170">5 Algorithm</text><text x="688" y="187" font-size="10" font-weight="500" fill="#6E5F56">pushed to more feeds</text>
+<rect x="414" y="150" width="175" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="501" y="170">6 News pickup</text><text x="501" y="187" font-size="10" font-weight="500" fill="#6E5F56">a blog writes it up</text>
+<rect x="222" y="150" width="175" height="46" rx="10" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="309" y="170">7 Fact-check</text><text x="309" y="187" font-size="10" font-weight="500" fill="#6E5F56">it was a drone show</text>
+<rect x="30" y="150" width="175" height="46" rx="10" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/><text x="117" y="170" fill="#3f5c00">8 Correction</text><text x="117" y="187" font-size="10" font-weight="500" fill="#5E8700">slow &amp; quiet…</text>
+</g>
+<path d="M205 103 H218" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M397 103 H410" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M589 103 H602" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M688 126 V146" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M606 173 H593" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M414 173 H401" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M222 173 H209" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+
+<rect x="30" y="218" width="740" height="56" rx="12" fill="#FBEDEC" stroke="#C23B3B" stroke-width="2.5"/>
+<text x="400" y="244" text-anchor="middle" font-size="14" font-weight="700" fill="#C23B3B">The correction gap</text>
+<text x="400" y="264" text-anchor="middle" font-size="12.5" font-weight="600" fill="#8f2d2d">The correction travels slower and reaches far fewer people than the original lie — so spotting it early matters.</text>
+</svg>

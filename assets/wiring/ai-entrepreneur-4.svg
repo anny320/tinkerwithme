@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Pitch · the 8-slide deck</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Tell your business story in 8 light slides — the detail goes in what you say.</text>
+
+<g font-family="Jost, sans-serif">
+<rect x="30" y="80" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="52" cy="102" r="13" fill="#E0641B"/><text x="52" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+<text x="44" y="138" font-size="15" font-weight="700" fill="#220111">Title</text><text x="44" y="154" font-size="11" fill="#6E5F56">name + logo</text>
+
+<rect x="218" y="80" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="240" cy="102" r="13" fill="#E0641B"/><text x="240" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+<text x="232" y="138" font-size="15" font-weight="700" fill="#220111">Problem</text><text x="232" y="154" font-size="11" fill="#6E5F56">+ a real example</text>
+
+<rect x="406" y="80" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="428" cy="102" r="13" fill="#E0641B"/><text x="428" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+<text x="420" y="138" font-size="15" font-weight="700" fill="#220111">Solution</text><text x="420" y="154" font-size="11" fill="#6E5F56">what you do</text>
+
+<rect x="594" y="80" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="616" cy="102" r="13" fill="#7A3FB0"/><text x="616" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">4</text>
+<text x="608" y="138" font-size="15" font-weight="700" fill="#220111">Product</text><text x="608" y="154" font-size="11" fill="#6E5F56">your mockup</text>
+
+<rect x="30" y="172" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="52" cy="194" r="13" fill="#7A3FB0"/><text x="52" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">5</text>
+<text x="44" y="230" font-size="15" font-weight="700" fill="#220111">Who it's for</text><text x="44" y="246" font-size="11" fill="#6E5F56">your customer</text>
+
+<rect x="218" y="172" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="240" cy="194" r="13" fill="#004C97"/><text x="240" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">6</text>
+<text x="232" y="230" font-size="15" font-weight="700" fill="#220111">Reach them</text><text x="232" y="246" font-size="11" fill="#6E5F56">a social post</text>
+
+<rect x="406" y="172" width="176" height="80" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="428" cy="194" r="13" fill="#004C97"/><text x="428" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">7</text>
+<text x="420" y="230" font-size="15" font-weight="700" fill="#220111">Makes money</text><text x="420" y="246" font-size="11" fill="#6E5F56">price, who pays</text>
+
+<rect x="594" y="172" width="176" height="80" rx="12" fill="#fff" stroke="#5E8700" stroke-width="3"/>
+<circle cx="616" cy="194" r="13" fill="#5E8700"/><text x="616" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">8</text>
+<text x="608" y="230" font-size="15" font-weight="700" fill="#220111">The Ask</text><text x="608" y="246" font-size="11" fill="#6E5F56">what you need</text>
+</g>
+
+<text x="400" y="286" text-anchor="middle" font-family="Jost, sans-serif" font-size="12.5" font-weight="600" fill="#9b8c84">Keep bullets to ~6 words. Rehearse against ChatGPT playing a tough investor.</text>
+</svg>

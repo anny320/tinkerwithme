@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Build the app · the decision logic</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">The model predicts constantly — your code decides when to actually act.</text>
+
+<rect x="30" y="92" width="170" height="60" rx="12" fill="#5CB1D6" stroke="#220111" stroke-width="2.5"/>
+<text x="115" y="118" text-anchor="middle" font-size="13" font-weight="700" fill="#06384a">prediction</text>
+<text x="115" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#06384a">e.g. wave_right 92%</text>
+
+<path d="M200 122 H236" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+
+<rect x="250" y="84" width="230" height="76" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="365" y="112" text-anchor="middle" font-size="13.5" font-weight="700" fill="#E0641B">confidence &gt; 0.85 ?</text>
+<text x="365" y="136" text-anchor="middle" font-size="13.5" font-weight="700" fill="#7A3FB0">cooldown passed ?</text>
+<text x="365" y="152" text-anchor="middle" font-size="10.5" font-weight="600" fill="#9b8c84">both must be true</text>
+
+<path d="M480 122 H516" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+
+<rect x="530" y="84" width="240" height="36" rx="10" fill="#F0F7DE" stroke="#5E8700" stroke-width="2"/>
+<text x="650" y="107" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3f5c00">wave_right → next slide</text>
+<rect x="530" y="124" width="240" height="36" rx="10" fill="#F0F7DE" stroke="#5E8700" stroke-width="2"/>
+<text x="650" y="147" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3f5c00">wave_left → previous slide</text>
+
+<rect x="30" y="188" width="360" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="210" y="214" text-anchor="middle" font-size="13.5" font-weight="700" fill="#E0641B">Confidence threshold</text>
+<text x="210" y="238" text-anchor="middle" font-size="12" font-weight="500" fill="#6E5F56">only act when the model is really sure</text>
+<text x="210" y="258" text-anchor="middle" font-size="12" font-weight="500" fill="#6E5F56">— no jumpy mistakes</text>
+
+<rect x="410" y="188" width="360" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="590" y="214" text-anchor="middle" font-size="13.5" font-weight="700" fill="#7A3FB0">Cooldown timer</text>
+<text x="590" y="238" text-anchor="middle" font-size="12" font-weight="500" fill="#6E5F56">one wave changes one slide,</text>
+<text x="590" y="258" text-anchor="middle" font-size="12" font-weight="500" fill="#6E5F56">not ten in a row</text>
+</svg>

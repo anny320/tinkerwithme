@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Train a smart model · good data wins</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">A model learns whatever is common in your photos — so make them varied.</text>
+
+<text x="30" y="84" font-family="Space Mono, ui-monospace, monospace" font-size="12" font-weight="700" fill="#004C97">VARY EVERY CAPTURE:</text>
+<g font-family="Jost, sans-serif" text-anchor="middle">
+<rect x="30" y="94" width="140" height="70" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="100" y="128" font-size="26">🔄</text><text x="100" y="152" font-size="12.5" font-weight="700" fill="#220111">angle</text>
+<rect x="182" y="94" width="140" height="70" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="252" y="128" font-size="26">💡</text><text x="252" y="152" font-size="12.5" font-weight="700" fill="#220111">lighting</text>
+<rect x="334" y="94" width="140" height="70" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="404" y="128" font-size="26">🖼️</text><text x="404" y="152" font-size="12.5" font-weight="700" fill="#220111">background</text>
+<rect x="486" y="94" width="140" height="70" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="556" y="128" font-size="26">📏</text><text x="556" y="152" font-size="12.5" font-weight="700" fill="#220111">distance</text>
+<rect x="638" y="94" width="132" height="70" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/><text x="704" y="128" font-size="26">⚖️</text><text x="704" y="152" font-size="12.5" font-weight="700" fill="#220111">even counts</text>
+</g>
+
+<rect x="30" y="184" width="365" height="92" rx="12" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="212" y="212" text-anchor="middle" font-size="14" font-weight="700" fill="#3f5c00">Add a "background" class</text>
+<text x="212" y="234" text-anchor="middle" font-size="12" font-weight="600" fill="#5E8700">100+ empty-scene images</text>
+<text x="212" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#5E8700">so it won't false-trigger on nothing</text>
+
+<rect x="405" y="184" width="365" height="92" rx="12" fill="#FBEDEC" stroke="#C23B3B" stroke-width="2.5"/>
+<text x="587" y="212" text-anchor="middle" font-size="14" font-weight="700" fill="#C23B3B">Garbage in, garbage out</text>
+<text x="587" y="234" text-anchor="middle" font-size="12" font-weight="600" fill="#8f2d2d">one fixed angle → biased model</text>
+<text x="587" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#8f2d2d">that fails in the real world</text>
+</svg>
