@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="450" fill="#FBF7F2"/>
+<path d="M700 70 V424" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M636 86 V300" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="636" y="78" text-anchor="middle" fill="#D8322B" font-size="11.5" font-weight="700">pump +4–6V</text>
+
+<rect x="40" y="86" width="150" height="300" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="106" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="366" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- A0: soil moisture -->
+<rect x="186" y="118" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="130" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<path d="M208 125 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="100" width="150" height="48" rx="7" fill="#6B4A2A" stroke="#3a2715" stroke-width="3"/>
+<text x="505" y="120" text-anchor="middle" fill="#efe0cf" font-size="11.5" font-weight="700">SOIL MOISTURE</text>
+<text x="505" y="135" text-anchor="middle" fill="#d2b494" font-size="10" font-weight="700">AOUT · VCC · GND</text>
+<path d="M580 110 L612 110 L612 92 L700 92" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M580 138 L600 138 L600 96 L700 96" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D7: relay -> pump -->
+<rect x="186" y="198" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="210" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D7</text>
+<path d="M208 205 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="186" width="130" height="46" rx="7" fill="#7A3B2E" stroke="#431d16" stroke-width="3"/>
+<text x="495" y="206" text-anchor="middle" fill="#f3ded7" font-size="11.5" font-weight="700">RELAY</text>
+<text x="495" y="221" text-anchor="middle" fill="#d6b3a8" font-size="10" font-weight="700">switches the pump</text>
+<!-- pump -->
+<circle cx="610" cy="209" r="22" fill="#355E8C" stroke="#1d3450" stroke-width="3"/>
+<text x="610" y="213" text-anchor="middle" fill="#dbe8f5" font-size="13" font-weight="700">P</text>
+<text x="610" y="248" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">water pump</text>
+<path d="M560 200 H588" stroke="#220111" stroke-width="3" stroke-linecap="round"/>
+<path d="M610 187 V140 H636 V300 M610 187" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- battery for pump -->
+<rect x="430" y="300" width="150" height="40" rx="6" fill="#2E7D32" stroke="#17421a" stroke-width="3.5"/>
+<text x="505" y="325" text-anchor="middle" fill="#EAF7F5" font-size="12" font-weight="700">4×AA pump power</text>
+<path d="M460 300 V288 H636 V300" stroke="#D8322B" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M550 340 V360 H700 V300 M550 340" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D8 buzzer -->
+<rect x="186" y="262" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="274" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D8</text>
+<path d="M208 269 L300 269" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<circle cx="320" cy="269" r="18" fill="#444" stroke="#111" stroke-width="3"/><circle cx="320" cy="269" r="5" fill="#222"/>
+<text x="346" y="273" fill="#220111" font-size="11" font-weight="700">buzzer (too dry!)</text>
+<path d="M320 287 L320 304 L700 304" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- Arduino GND -->
+<rect x="186" y="340" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/><text x="180" y="352" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">GND</text>
+<path d="M208 347 L224 347 L224 400 L700 400" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">IoT Garden · Auto-watering</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">Dry soil (A0) triggers a relay that runs the pump; a buzzer warns when it is too dry.</text>
+</svg>
