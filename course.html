@@ -604,13 +604,18 @@ const twSay = {
     if (!vs.length) return;
     const en = vs.filter(v => /^en/i.test(v.lang));
     const pool = en.length ? en : vs;
-    const pref = ['natural', 'google', 'samantha', 'karen', 'moira', 'tessa', 'libby', 'aria', 'jenny', 'sonia', 'female', 'zira'];
-    let best = pool[0], score = -1;
+    // Warm, natural, female-sounding voices are friendliest for kids; avoid the robotic defaults.
+    const nice = ['natural', 'online', 'samantha', 'karen', 'moira', 'tessa', 'libby', 'sonia', 'aria', 'jenny', 'ava', 'allison', 'serena', 'google', 'female'];
+    const bad = ['compact', 'eloquence', 'espeak', 'robot', 'fred', 'albert', 'zarvox', 'grandma', 'grandpa'];
+    let best = pool[0], score = -5;
     pool.forEach(v => {
       const n = v.name.toLowerCase();
       let s = 0;
-      pref.forEach((p, i) => { if (n.includes(p)) s = Math.max(s, pref.length - i); });
-      if (/en-?gb/i.test(v.lang)) s += 0.5;   // UK voices tend to read our Kenyan English nicely
+      nice.forEach((p, i) => { if (n.includes(p)) s = Math.max(s, nice.length - i); });
+      if (/natural|online|neural|enhanced|premium/.test(n)) s += 3;   // Edge/Azure/iOS neural voices sound great to kids
+      if (/en-?gb/i.test(v.lang)) s += 0.5;                           // UK English reads our Kenyan English nicely
+      if (v.localService === false) s += 0.5;                         // cloud voices are usually higher quality
+      bad.forEach(p => { if (n.includes(p)) s -= 6; });
       if (s > score) { score = s; best = v; }
     });
     this.voice = best;
@@ -638,7 +643,8 @@ const twSay = {
     if (this.highlight && it.el) { it.el.classList.add('reading'); it.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     const u = new SpeechSynthesisUtterance(this.clean(it.text));
     if (this.voice) u.voice = this.voice;
-    u.rate = 0.9; u.pitch = 1.15;   // a touch slower and higher — warmer and easier for young ears
+    u.rate = this.highlight ? 0.78 : 0.85;   // slower in kid mode; gentle pace everywhere
+    u.pitch = 1.1;                            // slightly higher — warmer and easier for young ears
     u.onend = () => { if (this.on) { this.i++; this.next(); } };
     u.onerror = () => { if (this.on) { this.i++; this.next(); } };
     speechSynthesis.speak(u);
