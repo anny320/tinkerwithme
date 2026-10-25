@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://tinkerwith.me/membership.html">
 <title>Membership — build robots &amp; AI, together — TinkerWith_</title>
-<meta name="description" content="Tinkerwith membership: Kenyan kids build real robots & AI live, with everyday parts — no expensive kit. Live trainers, a maker cohort, and the courses included. Founding 100: 40% off for 12 months. One account for the whole family.">
+<meta name="description" content="Tinkerwith membership: young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers, a maker cohort, and the courses included. Founding 100: 40% off for 12 months. One account for the whole family.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
 <meta property="og:url" content="https://tinkerwith.me/membership.html">
 <meta property="og:title" content="Tinkerwith membership — build robots &amp; AI, together">
-<meta property="og:description" content="Kenyan kids build real robots & AI live, with everyday parts — no expensive kit. Live trainers + a maker cohort, courses included. Founding 100: 40% off for 12 months.">
+<meta property="og:description" content="Young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers + a maker cohort, courses included. Founding 100: 40% off for 12 months.">
 <meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tinkerwith membership — build robots &amp; AI, together">
-<meta name="twitter:description" content="Kenyan kids build real robots & AI live, with everyday parts. Founding 100: 40% off for 12 months. One account for the whole family.">
+<meta name="twitter:description" content="Young African makers build real robots & AI live, with everyday parts. Founding 100: 40% off for 12 months. One account for the whole family.">
 <meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,6 +60,23 @@
 .refer-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);padding:1.1rem 1.3rem}
 .refer-card h3{font-size:17px;font-weight:600;margin-bottom:4px}
 .refer-card p{font-size:14.5px;color:var(--text-2);margin-bottom:10px}
+.see{background:none;border:0;color:var(--blue);font:inherit;font-weight:600;font-size:13.5px;cursor:pointer;text-decoration:underline;margin-top:4px;align-self:flex-start;padding:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 16px;z-index:999;overflow:auto}
+.modal.open{display:flex}
+.modal-box{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:8px 8px 0 var(--ink);max-width:720px;width:100%;padding:1.5rem 1.6rem;margin:auto}
+.modal-box h2{font-size:23px;font-weight:600;margin-bottom:4px}
+.modal-close{float:right;background:none;border:2px solid var(--ink);border-radius:99px;width:34px;height:34px;font-size:18px;cursor:pointer;line-height:1}
+.ci-note{font-size:14.5px;color:var(--text-2);margin:6px 0 2px}
+.ci-group{margin-top:1.1rem}
+.ci-group h3{font-size:12.5px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--text-2);margin-bottom:4px}
+.ci-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border,#ececec);font-size:15px}
+.ci-badge{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:99px;padding:2px 8px;white-space:nowrap}
+.ci-badge.club{background:var(--green,#8BD450)}
+.ci-badge.premium{background:#FFD23F}
+.ci-badge.free{background:var(--cream)}
+.tt{margin-top:.5rem;display:flex;flex-direction:column;gap:6px}
+.tt-row{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;padding:7px 11px;background:var(--cream);border:1.5px solid var(--ink);border-radius:var(--radius-sm)}
+.tt-row b{font-weight:600}
 .faq{max-width:760px;margin-top:2.4rem}
 .faq details{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
 .faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
@@ -95,8 +112,8 @@
 <header class="page-head">
   <div class="tw-container">
     <span class="tw-eyebrow-pill">Membership</span>
-    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">Where Kenyan kids build real robots &amp; AI — together</h1>
-    <p>Live sessions with local trainers, a cohort of young makers, and projects built with <strong>what you already have</strong> — no expensive kit required. The courses come included; the <strong>community and the live push</strong> are what make it stick. One account covers the whole family.</p>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">Where young African makers build real robots &amp; AI — together</h1>
+    <p>Live sessions with real trainers, a cohort of young makers, and projects built with <strong>what you already have</strong> — no expensive kit required. The courses come included; the <strong>community and the live push</strong> are what make it stick. One account covers the whole family.</p>
   </div>
 </header>
 
@@ -137,6 +154,13 @@
     </div>
   </div>
 </section>
+
+<div class="modal" id="courses-modal" role="dialog" aria-modal="true" aria-label="Courses and timetable">
+  <div class="modal-box">
+    <button class="modal-close" type="button" id="cm-close" aria-label="Close">&times;</button>
+    <div id="courses-body"></div>
+  </div>
+</div>
 
 <footer class="tw-footer">
   <div class="tw-container tw-footer-grid">
@@ -183,7 +207,7 @@ const TIERS = {
     'No card, start in 2 minutes' ],
     cta: { label: 'Start free', href: 'free-for-kids.html' } },
   club: { name: 'Club', badge: 'Join the makers', feats: [
-    `A <strong>monthly live group session</strong> with a Kenyan trainer ${SOON}`,
+    `A <strong>monthly live group session</strong> with a live trainer ${SOON}`,
     'A cohort of young makers + the <strong>Builds Wall</strong>',
     `The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy ${SOON}`,
     'A new build every month',
@@ -211,6 +235,7 @@ function renderTiers() {
         <div class="per">No card needed</div>
         <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
         <div class="cta"><a class="tw-btn tw-btn-white" href="${t.cta.href}" data-ga="membership-free">${t.cta.label} &rarr;</a></div>
+        <button class="see" type="button" data-see data-ga="membership-see-free">See courses &amp; timetable</button>
       </div>`;
     }
     const per = cycle === 'annual' ? '/ year' : '/ month';
@@ -223,10 +248,69 @@ function renderTiers() {
       <div class="trial">🐦 Early-bird: <strong>40% off</strong> your first ${EARLY_MONTHS} months, then ${fmt(std)} ${per}</div>
       <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
       <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-reserve-${id}">Reserve my place &rarr;</button></div>
+      <button class="see" type="button" data-see data-ga="membership-see-${id}">See courses &amp; timetable</button>
     </div>`;
   }).join('');
   $('tiers').querySelectorAll('[data-join]').forEach(b => b.onclick = () => openJoin(b.dataset.join));
+  $('tiers').querySelectorAll('[data-see]').forEach(b => b.onclick = openCourses);
 }
+
+/* ── Courses + proposed timetable (modal) ── */
+const COURSES = [
+  { t: 'Smart Home Builder', track: 'robotics', pop: true },
+  { t: 'Self-Driving Car', track: 'robotics', pop: true },
+  { t: 'Robot Arm &amp; Claw', track: 'robotics', pop: true },
+  { t: 'Smart City', track: 'robotics' },
+  { t: 'Wearable Tech Lab', track: 'robotics' },
+  { t: 'IoT Garden Monitor', track: 'robotics' },
+  { t: 'Musical Instrument Builder', track: 'robotics' },
+  { t: 'Smart Plant Carer', track: 'robotics' },
+  { t: 'Bluetooth Control Lab', track: 'robotics' },
+  { t: 'AI Game Designer', track: 'ai', pop: true },
+  { t: 'AI Movie Studio', track: 'ai', pop: true },
+  { t: 'Computer Vision Explorer', track: 'ai', pop: true },
+  { t: 'AI Entrepreneur', track: 'ai' },
+  { t: 'Deepfake Detective &amp; AI Safety', track: 'ai' },
+  { t: 'AI Music Producer', track: 'ai' },
+  { t: 'AI for Social Good', track: 'ai' },
+  { t: 'Smart City 2.0 — AI-Powered', track: 'ai' },
+];
+const TIMETABLE = [
+  { who: 'Club — monthly group session (all members)', when: '1st Saturday · 10:00–11:00 EAT · online' },
+  { who: 'Premium cohort · Explorers (7–9)', when: 'Tuesdays · 16:00–17:00 EAT' },
+  { who: 'Premium cohort · Builders (10–12)', when: 'Wednesdays · 16:30–17:30 EAT' },
+  { who: 'Premium cohort · Makers (13–16)', when: 'Thursdays · 17:00–18:00 EAT' },
+  { who: 'Premium cohort · Weekend group', when: 'Saturdays · 11:00–12:00 EAT' },
+];
+function courseRow(c) {
+  const badge = c.track === 'ai' ? '<span class="ci-badge club">Club</span>' : '<span class="ci-badge premium">Premium</span>';
+  return `<div class="ci-row"><span>${c.pop ? '⭐ ' : ''}${c.t}</span>${badge}</div>`;
+}
+function coursesHtml() {
+  const ai = COURSES.filter(c => c.track === 'ai'), ro = COURSES.filter(c => c.track === 'robotics');
+  return `<h2>What&rsquo;s inside</h2>
+    <p class="ci-note">⭐ = most popular. <strong>Free</strong>: the 34 projects. <strong>Club</strong>: the AI courses + a monthly live session. <strong>Premium</strong>: all 17 incl. the robotics lab + small-group cohorts.</p>
+    <div class="ci-group"><h3>Free — on free-for-kids</h3>
+      <div class="ci-row"><span>34 build-along projects (10 free courses)</span><span class="ci-badge free">Free</span></div></div>
+    <div class="ci-group"><h3>AI track — in Club &amp; Premium (${ai.length})</h3>${ai.map(courseRow).join('')}</div>
+    <div class="ci-group"><h3>Robotics lab — Premium (${ro.length}) · kit-optional</h3>${ro.map(courseRow).join('')}</div>
+    <div class="ci-group"><h3>Proposed live timetable</h3>
+      <div class="tt">${TIMETABLE.map(s => `<div class="tt-row"><b>${s.who}</b><span>${s.when}</span></div>`).join('')}</div>
+      <p class="ci-note">Proposed times — we confirm your cohort&rsquo;s slot by age, level and time zone, and run several cohorts in parallel (10 trainers). Outside East Africa? We schedule you in your own time zone.</p>
+    </div>`;
+}
+function openCourses() {
+  $('courses-body').innerHTML = coursesHtml();
+  $('courses-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCourses() {
+  $('courses-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+$('cm-close').onclick = closeCourses;
+$('courses-modal').onclick = e => { if (e.target === $('courses-modal')) closeCourses(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('courses-modal').classList.contains('open')) closeCourses(); });
 
 function setCycle(c) {
   cycle = c;
