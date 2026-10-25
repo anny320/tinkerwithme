@@ -4,7 +4,7 @@
 --
 -- Club    : all self-paced courses + free content + new monthly projects
 -- Premium : Club + two live group classes a month
--- Pricing (KES): Club 1,500/mo · 15,000/yr   Premium 4,000/mo · 40,000/yr
+-- Pricing (KES): Club 2,000/mo · 20,000/yr   Premium 6,500/mo · 65,000/yr
 -- A membership is per account; a family plan simply means one account for
 -- the household (no per-child seats to manage).
 --
@@ -38,10 +38,10 @@ create trigger lms_memberships_touch before update on public.lms_memberships for
 create or replace function public.lms_membership_price(p_tier text, p_cycle text) returns int
 language sql immutable as $$
   select case
-    when p_tier = 'club'    and p_cycle = 'monthly' then 1500
-    when p_tier = 'club'    and p_cycle = 'annual'  then 15000
-    when p_tier = 'premium' and p_cycle = 'monthly' then 4000
-    when p_tier = 'premium' and p_cycle = 'annual'  then 40000
+    when p_tier = 'club'    and p_cycle = 'monthly' then 2000
+    when p_tier = 'club'    and p_cycle = 'annual'  then 20000
+    when p_tier = 'premium' and p_cycle = 'monthly' then 6500
+    when p_tier = 'premium' and p_cycle = 'annual'  then 65000
   end
 $$;
 
