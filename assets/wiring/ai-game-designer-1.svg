@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="360" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="40" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">AI Game Studio-of-One · the pipeline</text>
+<text x="40" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">One week, one playable game — AI is your creative co-pilot at every step.</text>
+
+<!-- card 1: Concept -->
+<rect x="40" y="78" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="64" cy="104" r="15" fill="#E0641B"/><text x="64" y="109" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+<text x="230" y="116" text-anchor="end" font-size="30">💡</text>
+<text x="56" y="150" font-size="17" font-weight="700" fill="#220111">Concept</text>
+<text x="56" y="170" font-size="12.5" font-weight="500" fill="#6E5F56">ChatGPT — brainstorm ideas</text>
+
+<!-- card 2: Rules -->
+<rect x="295" y="78" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="319" cy="104" r="15" fill="#E0641B"/><text x="319" y="109" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">2</text>
+<text x="485" y="116" text-anchor="end" font-size="30">📜</text>
+<text x="311" y="150" font-size="17" font-weight="700" fill="#220111">Rules</text>
+<text x="311" y="170" font-size="12.5" font-weight="500" fill="#6E5F56">ChatGPT — how it is played</text>
+
+<!-- card 3: Character art -->
+<rect x="550" y="78" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="574" cy="104" r="15" fill="#7A3FB0"/><text x="574" y="109" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">3</text>
+<text x="740" y="116" text-anchor="end" font-size="30">🎨</text>
+<text x="566" y="150" font-size="17" font-weight="700" fill="#220111">Character art</text>
+<text x="566" y="170" font-size="12.5" font-weight="500" fill="#6E5F56">Bing Image Creator</text>
+
+<!-- card 4: Build -->
+<rect x="550" y="232" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="574" cy="258" r="15" fill="#004C97"/><text x="574" y="263" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">4</text>
+<text x="740" y="270" text-anchor="end" font-size="30">🕹️</text>
+<text x="566" y="304" font-size="17" font-weight="700" fill="#220111">Build</text>
+<text x="566" y="324" font-size="12.5" font-weight="500" fill="#6E5F56">Scratch — make it playable</text>
+
+<!-- card 5: Sound -->
+<rect x="295" y="232" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="319" cy="258" r="15" fill="#5E8700"/><text x="319" y="263" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">5</text>
+<text x="485" y="270" text-anchor="end" font-size="30">🔊</text>
+<text x="311" y="304" font-size="17" font-weight="700" fill="#220111">Sound</text>
+<text x="311" y="324" font-size="12.5" font-weight="500" fill="#6E5F56">ElevenLabs — AI sound FX</text>
+
+<!-- card 6: Playtest -->
+<rect x="40" y="232" width="210" height="100" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="64" cy="258" r="15" fill="#C23B3B"/><text x="64" y="263" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">6</text>
+<text x="230" y="270" text-anchor="end" font-size="30">🎮</text>
+<text x="56" y="304" font-size="17" font-weight="700" fill="#220111">Playtest &amp; ship</text>
+<text x="56" y="324" font-size="12.5" font-weight="500" fill="#6E5F56">improve, then share it</text>
+
+<!-- arrows (snake) -->
+<path d="M250 128 H291" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M505 128 H546" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M655 178 V228" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M550 282 H509" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M295 282 H254" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+</svg>
