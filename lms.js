@@ -19,6 +19,12 @@
     // test, then pk_live_… once your Paystack account is approved. Blank = the
     // "Pay with Paystack" buttons stay hidden and nothing changes.
     paystackKey: '',
+    // Paystack Plan codes for membership auto-renew, one per tier×cycle. Paste
+    // the codes from your Paystack dashboard (and mirror them into
+    // lms_paystack_plans — see supabase/functions/paystack-webhook/README.md).
+    // Blank = the "Subscribe (auto-renew)" button stays hidden; members still
+    // join via the M-Pesa Till + manual-approve flow.
+    paystackPlans: { 'club-monthly': '', 'club-annual': '', 'premium-monthly': '', 'premium-annual': '' },
   };
 
   var LIBS = {
@@ -173,6 +179,7 @@
     youtubeEmbed: youtubeEmbed,
     track: track,
     paystackKey: CONFIG.paystackKey,
+    paystackPlans: CONFIG.paystackPlans,
     // The email we charge / record a payment against.
     get email() { return (state.me && state.me.email) || (state.user && state.user.primaryEmailAddress && state.user.primaryEmailAddress.emailAddress) || ''; },
   };

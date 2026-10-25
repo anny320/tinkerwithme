@@ -38,29 +38,36 @@
    *   email                : buyer email (defaults to LMS.email)
    *   tag                  : short label woven into the reference (e.g. a slug)
    *   metadata             : object stored on the Paystack transaction
+   *   plan                 : a Paystack Plan code — starts a subscription and
+   *                          lets the plan set the amount (for memberships)
    *   onSuccess(reference) : called with the reference after a successful charge
    *   onCancel()           : called if the buyer closes the popup
    */
   async function pay(opts) {
     if (!enabled()) throw new Error('Paystack isn’t switched on yet.');
     await load();
-    var cur = opts.currency || (window.TWPrice && TWPrice.currency) || 'KES';
-    var whole = cur === 'USD' ? opts.amountUSD : opts.amountKES;
-    if (!whole || whole <= 0) throw new Error('This item has no price set for ' + cur + '.');
     var email = opts.email || (window.LMS && LMS.email) || '';
     if (!email) throw new Error('Please sign in so we can email your receipt.');
     var ref = opts.reference || makeRef(opts.tag);
-    var pop = new window.PaystackPop();
-    pop.newTransaction({
+    var tx = {
       key: key(),
       email: email,
-      amount: Math.round(whole * 100),   // Paystack takes the smallest unit
-      currency: cur,
       reference: ref,
       metadata: opts.metadata || {},
       onSuccess: function (tx) { if (opts.onSuccess) opts.onSuccess((tx && (tx.reference || tx.trxref)) || ref, tx); },
       onCancel: function () { if (opts.onCancel) opts.onCancel(); },
-    });
+    };
+    if (opts.plan) {
+      // A subscription: the plan fixes the amount and the billing cycle.
+      tx.plan = opts.plan;
+    } else {
+      var cur = opts.currency || (window.TWPrice && TWPrice.currency) || 'KES';
+      var whole = cur === 'USD' ? opts.amountUSD : opts.amountKES;
+      if (!whole || whole <= 0) throw new Error('This item has no price set for ' + cur + '.');
+      tx.amount = Math.round(whole * 100);   // Paystack takes the smallest unit
+      tx.currency = cur;
+    }
+    new window.PaystackPop().newTransaction(tx);
     return ref;
   }
 

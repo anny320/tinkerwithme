@@ -59,6 +59,7 @@
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
 <script src="price.js"></script>
+<script src="paystack.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -201,9 +202,19 @@ async function openJoin(tier) {
     $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
   const amt = PRICES[tier][cycle];
+  // Auto-renew via Paystack is offered only once a public key + a Plan code
+  // for this tier×cycle are set (lms.js CONFIG). Otherwise it's M-Pesa + manual.
+  const planCode = (LMS.paystackPlans || {})[tier + '-' + cycle] || '';
+  const canSub = TWPaystack.enabled() && !!planCode;
+  const subBlock = canSub ? `<div class="action" style="margin:4px 0 14px">
+      <button class="tw-btn tw-btn-orange" type="button" id="b-sub" data-ga="membership-subscribe-${tier}">💳 Subscribe — ${fmt(amt)}/${cycle === 'annual' ? 'year' : 'month'}, auto-renew &rarr;</button>
+      <p class="muted" style="margin-top:8px;font-size:14px">Card or M-Pesa via Paystack. Renews automatically each ${cycle === 'annual' ? 'year' : 'month'} — cancel any time. Your membership switches on the moment payment clears.</p>
+    </div>
+    <p class="muted" style="font-size:13.5px">Prefer a one-off payment? Pay by M-Pesa Till:</p>` : '';
   slot.innerHTML = `<div class="join">
     <h2>Join ${TIERS[tier].name} — ${fmt(amt)} ${cycle === 'annual' ? '/ year' : '/ month'}</h2>
-    <p class="muted" style="margin-bottom:10px">Pay by M-Pesa, then paste the message below. We switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)</p>
+    <p class="muted" style="margin-bottom:10px">${canSub ? 'Subscribe for automatic renewal, or pay once by M-Pesa.' : 'Pay by M-Pesa, then paste the message below. We switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)'}</p>
+    ${subBlock}
     <ol>
       <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>
@@ -215,6 +226,20 @@ async function openJoin(tier) {
       <p id="mf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
     </form></div>`;
   slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (canSub && $('b-sub')) $('b-sub').onclick = async () => {
+    try {
+      await TWPaystack.pay({
+        plan: planCode, tag: tier + '-' + cycle,
+        metadata: { user_id: (LMS.user && LMS.user.id) || '', tier: tier, cycle: cycle },
+        onSuccess: function () {
+          LMS.track('membership_subscribed', { tier, cycle });
+          slot.innerHTML = `<div class="member"><h2>Payment received 🎉</h2>
+            <p>We&rsquo;re switching your ${TIERS[tier].name} membership on now — it usually takes a few seconds. Refresh <a href="learn.html">your courses</a> in a moment, or reload this page to see it active.</p></div>`;
+          slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+      });
+    } catch (x) { const err = $('mf-err'); if (err) err.textContent = x.message || 'Could not start checkout.'; }
+  };
   $('mf').onsubmit = async e => {
     e.preventDefault();
     const f = e.target, b = f.querySelector('button'), err = $('mf-err'); b.disabled = true; err.textContent = '';
