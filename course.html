@@ -125,6 +125,7 @@
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
 <script src="price.js"></script>
+<script src="paystack.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -389,9 +390,16 @@ function renderOverview() {
     const renew = C.enrolled && C.expired;
     const card = C.card_url ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" href="${esc(C.card_url)}" data-ga="lms-pay-card">Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} by card &rarr;</a>
         <br><small>On our HustleSasa shop. You&rsquo;ll come back here to paste your order number.</small></li>` : '';
+    // Paystack inline (card / M-Pesa) — shown only once a public key is set in lms.js.
+    const ps = TWPaystack.enabled() ? `<div class="action" style="margin:12px 0">
+        <button class="tw-btn tw-btn-orange" type="button" id="b-ps-course" data-ga="course-paystack">💳 Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} with Paystack — card or M-Pesa &rarr;</button>
+        <p class="muted" style="margin-top:8px;font-size:14px">Secure card or M-Pesa checkout. We unlock the course for <strong>${esc(email)}</strong> as soon as we confirm it, usually the same day.</p>
+      </div>
+      <p class="muted" style="font-size:13.5px;margin-top:14px">Or pay by M-Pesa Till:</p>` : '';
     act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
+      ${ps}
       <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${card}
       <li>Paste the M-Pesa message${C.card_url ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
@@ -402,6 +410,7 @@ function renderOverview() {
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
+  const bps = $('b-ps-course'); if (bps) bps.onclick = () => psPay('course');
   if (PAID_BY_CARD && $('pay-panel')) $('pay-panel').scrollIntoView({ block: 'center' });
   if ($('downloads')) showDownloads();
   wireCertificate();
@@ -467,14 +476,39 @@ function payForm(kind) {
   const hours = kind === 'trainer'
     ? `<label class="field-in">Hours <select name="hours">${[1, 2, 3, 4, 5].map(h => `<option value="${h}">${h} hour${h > 1 ? 's' : ''} (${trainerPrice(h)})</option>`).join('')}</select></label>` : '';
   const canCard = kind === 'trainer' ? !!TRAINER_CARD_URL : !!C.card_url;
+  const canPS = kind !== 'trainer' && TWPaystack.enabled();
   const byCard = canCard && PAID_BY_CARD && kind !== 'trainer';
-  const how = canCard ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500">I paid by
+  // Method picker shows when there's more than one way to pay.
+  const how = (canCard || canPS) ? `<div class="field-in" style="flex-direction:row;gap:16px;font-weight:500;flex-wrap:wrap">I paid by
       <label><input type="radio" name="method" value="mpesa" ${byCard ? '' : 'checked'}> M-Pesa</label>
-      <label><input type="radio" name="method" value="card" ${byCard ? 'checked' : ''}> Card (order number)</label></div>` : '';
+      ${canPS ? '<label><input type="radio" name="method" value="paystack"> Paystack reference</label>' : ''}
+      ${canCard ? `<label><input type="radio" name="method" value="card" ${byCard ? 'checked' : ''}> Card (order number)</label>` : ''}</div>` : '';
+  const hint = ['M-Pesa message, code', canPS ? 'Paystack reference' : '', canCard ? 'card order number' : ''].filter(Boolean).join(', ').replace(/,([^,]*)$/, ' or$1');
   return `<form class="payform" data-kind="${kind}" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">${hours}${how}
-    <label class="field-in">M-Pesa message, code${canCard ? ' or card order number' : ''}
+    <label class="field-in">${hint}
       <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${(kind === 'trainer' ? TRAINER_KES : C.price_kes).toLocaleString()}.00 paid to …"></textarea></label>
     <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="lms-pay-${kind}">Send payment</button></div></form>`;
+}
+
+/* Paystack inline (card / M-Pesa): charge the course price, then record the
+   returned reference as a pending payment for an admin to confirm — same
+   manual-approve flow as M-Pesa, just a smoother checkout. */
+async function psPay(kind) {
+  try {
+    await TWPaystack.pay({
+      amountKES: C.price_kes, amountUSD: C.price_usd, tag: C.slug,
+      metadata: { course: C.slug, kind: kind },
+      onSuccess: async function (ref) {
+        try {
+          const r = await LMS.rpc('lms_submit_payment', { p_course: C.id, p_message: ref, p_method: 'paystack' });
+          LMS.track('lms_payment_sent', { course: C.slug, kind: r.kind, method: 'paystack' });
+          toast(`Payment received: ${r.code}. We’ll confirm it and unlock your course.`);
+          await loadPays();
+          renderOverview();
+        } catch (err) { toast(err.message); }
+      },
+    });
+  } catch (err) { toast(err.message); }
 }
 
 async function submitPay(e) {
