@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="420" fill="#FBF7F2"/>
+<path d="M700 70 V394" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M740 70 V360" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="747" y="62" text-anchor="start" fill="#D8322B" font-size="12.5" font-weight="700">5V (+)</text>
+
+<rect x="40" y="90" width="150" height="290" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="110" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="360" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- A0 soil -->
+<rect x="186" y="124" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="136" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<path d="M208 131 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="114" width="150" height="40" rx="7" fill="#6B4A2A" stroke="#3a2715" stroke-width="3"/>
+<text x="505" y="131" text-anchor="middle" fill="#efe0cf" font-size="11" font-weight="700">SOIL MOISTURE</text>
+<text x="505" y="146" text-anchor="middle" fill="#d2b494" font-size="9.5" font-weight="700">wet = high · dry = low</text>
+<path d="M580 124 L610 124 L610 94 L740 94" stroke="#D8322B" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M580 146 L598 146 L598 98 L700 98" stroke="#3A3A3A" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- A1 LDR -->
+<rect x="186" y="186" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="198" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A1</text>
+<path d="M208 193 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="176" width="150" height="40" rx="7" fill="#d8c37a" stroke="#6b5a1e" stroke-width="3"/>
+<text x="505" y="193" text-anchor="middle" fill="#3b3209" font-size="11" font-weight="700">LDR (light)</text>
+<text x="505" y="208" text-anchor="middle" fill="#6b5a1e" font-size="9.5" font-weight="700">+ 10kΩ divider</text>
+<path d="M580 186 L620 186 L620 94 M620 186" stroke="#D8322B" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M580 208 L596 208 L596 98 L700 98" stroke="#3A3A3A" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- A2 TMP36 -->
+<rect x="186" y="248" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="260" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A2</text>
+<path d="M208 255 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="238" width="150" height="40" rx="7" fill="#444" stroke="#111" stroke-width="3"/>
+<text x="505" y="255" text-anchor="middle" fill="#eee" font-size="11" font-weight="700">TMP36 (temp)</text>
+<text x="505" y="270" text-anchor="middle" fill="#bbb" font-size="9.5" font-weight="700">°C of the air</text>
+<path d="M580 248 L630 248 L630 94 M630 248" stroke="#D8322B" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M580 270 L594 270 L594 320 L700 320" stroke="#3A3A3A" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="300" y="352" fill="#6E5F56" font-size="11" font-weight="700">three readings → the Serial Monitor: the plant's world in numbers.</text>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Sense · soil, light &amp; temperature</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">Three analog sensors on A0/A1/A2 — moisture, brightness and °C.</text>
+</svg>
