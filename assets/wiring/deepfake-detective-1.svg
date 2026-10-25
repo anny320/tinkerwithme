@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="380" fill="#FBF7F2"/>
+
+<text x="40" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">🔍 Deepfake Detective · the clue checklist</text>
+<text x="40" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Six things real photos usually get right — and AI often gets wrong.</text>
+
+<!-- row 1 -->
+<rect x="30" y="80" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="62" y="134" text-anchor="middle" font-size="32">👀</text>
+<text x="96" y="118" font-size="15.5" font-weight="700" fill="#220111">Eyes &amp; blinking</text>
+<text x="96" y="140" font-size="12" font-weight="500" fill="#6E5F56">too regular or glassy</text>
+
+<rect x="285" y="80" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="317" y="134" text-anchor="middle" font-size="32">✋</text>
+<text x="351" y="118" font-size="15.5" font-weight="700" fill="#220111">Hands &amp; fingers</text>
+<text x="351" y="140" font-size="12" font-weight="500" fill="#6E5F56">extra or bent fingers</text>
+
+<rect x="540" y="80" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="572" y="134" text-anchor="middle" font-size="32">👂</text>
+<text x="606" y="118" font-size="15.5" font-weight="700" fill="#220111">Ears &amp; hair</text>
+<text x="606" y="140" font-size="12" font-weight="500" fill="#6E5F56">melted or warped</text>
+
+<!-- row 2 -->
+<rect x="30" y="180" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="62" y="234" text-anchor="middle" font-size="32">💡</text>
+<text x="96" y="218" font-size="15.5" font-weight="700" fill="#220111">Lighting</text>
+<text x="96" y="240" font-size="12" font-weight="500" fill="#6E5F56">shadows do not match</text>
+
+<rect x="285" y="180" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="317" y="234" text-anchor="middle" font-size="32">🧑</text>
+<text x="351" y="218" font-size="15.5" font-weight="700" fill="#220111">Skin texture</text>
+<text x="351" y="240" font-size="12" font-weight="500" fill="#6E5F56">too smooth or waxy</text>
+
+<rect x="540" y="180" width="235" height="86" rx="12" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="572" y="234" text-anchor="middle" font-size="32">🔊</text>
+<text x="606" y="218" font-size="15.5" font-weight="700" fill="#220111">Audio</text>
+<text x="606" y="240" font-size="12" font-weight="500" fill="#6E5F56">lip-sync &amp; pacing off</text>
+
+<!-- footer: lateral reading -->
+<rect x="30" y="296" width="745" height="62" rx="14" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="66" y="334" text-anchor="middle" font-size="26">🧭</text>
+<text x="96" y="323" font-size="14.5" font-weight="700" fill="#3f5c00">Still unsure? Don't stare harder — read laterally.</text>
+<text x="96" y="344" font-size="12.5" font-weight="500" fill="#5E8700">Leave the image and check what trusted sources say. Reverse-image-search it.</text>
+</svg>
