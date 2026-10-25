@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="440" fill="#FBF7F2"/>
+<path d="M700 70 V414" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+
+<rect x="40" y="86" width="150" height="300" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="106" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="366" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- Traffic light housing -->
+<rect x="560" y="100" width="84" height="210" rx="14" fill="#2b2b2b" stroke="#111" stroke-width="4"/>
+<circle cx="602" cy="140" r="24" fill="#E24A3B" stroke="#111" stroke-width="3"/>
+<circle cx="602" cy="200" r="24" fill="#E8B23A" stroke="#111" stroke-width="3"/>
+<circle cx="602" cy="260" r="24" fill="#4FA94B" stroke="#111" stroke-width="3"/>
+
+<!-- D2 -> red via 220 -->
+<g font-size="12" font-weight="700">
+<rect x="186" y="132" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="144" text-anchor="end" fill="#EAF7F5">D2</text>
+<rect x="186" y="192" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="204" text-anchor="end" fill="#EAF7F5">D3</text>
+<rect x="186" y="252" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="264" text-anchor="end" fill="#EAF7F5">D4</text>
+<rect x="186" y="300" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="312" text-anchor="end" fill="#EAF7F5">D5</text>
+</g>
+<!-- red -->
+<path d="M208 139 L360 139" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<path d="M360 139 L371 146 L382 132 L393 146 L404 132 L415 146 L426 139" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+<path d="M426 139 L578 139" stroke="#220111" stroke-width="2.8" stroke-linecap="round"/>
+<!-- yellow -->
+<path d="M208 199 L360 199" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<path d="M360 199 L371 206 L382 192 L393 206 L404 192 L415 206 L426 199" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+<path d="M426 199 L578 199" stroke="#220111" stroke-width="2.8" stroke-linecap="round"/>
+<!-- green -->
+<path d="M208 259 L360 259" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<path d="M360 259 L371 266 L382 252 L393 266 L404 252 L415 266 L426 259" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+<path d="M426 259 L578 259" stroke="#220111" stroke-width="2.8" stroke-linecap="round"/>
+<text x="470" y="126" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">220Ω each</text>
+
+<!-- buzzer -->
+<path d="M208 307 L470 307" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<circle cx="492" cy="307" r="20" fill="#444" stroke="#111" stroke-width="3"/>
+<circle cx="492" cy="307" r="6" fill="#222"/>
+<text x="520" y="311" fill="#220111" font-size="11" font-weight="700">buzzer (walk)</text>
+
+<!-- housing GND -->
+<path d="M644 200 L668 200 L668 330 L700 330" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M492 327 L492 348 L700 348" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="186" y="340" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/><text x="180" y="352" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">GND</text>
+<path d="M208 347 L224 347 L224 392 L700 392" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Smart City · Traffic system</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">Three LEDs (red/amber/green) + a walk buzzer, driven in a timed sequence.</text>
+</svg>

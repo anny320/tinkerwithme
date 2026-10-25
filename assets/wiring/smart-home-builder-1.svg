@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 470" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="470" fill="#FBF7F2"/>
+<path d="M700 70 V444" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M740 70 V444" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="747" y="62" text-anchor="start" fill="#D8322B" font-size="12.5" font-weight="700">5V (+)</text>
+
+<rect x="40" y="86" width="150" height="320" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="106" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="386" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- A0: LDR voltage divider -->
+<rect x="186" y="104" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="116" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<path d="M208 111 H300" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<!-- LDR (5V -> node) -->
+<rect x="300" y="86" width="34" height="18" rx="3" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/>
+<text x="317" y="80" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">LDR</text>
+<path d="M317 86 V74 H740" stroke="#D8322B" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M317 104 V111 H300" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<!-- 10k to GND -->
+<path d="M317 111 L317 128 L328 135 L306 142 L328 149 L306 156 L328 163 L317 170 L317 186" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+<text x="344" y="150" fill="#6E5F56" font-size="10" font-weight="700">10kΩ</text>
+<path d="M317 186 H700" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+<!-- D7: relay -> room LED -->
+<rect x="186" y="186" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="198" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D7</text>
+<path d="M208 193 H440" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="440" y="170" width="130" height="48" rx="7" fill="#7A3B2E" stroke="#431d16" stroke-width="3"/>
+<text x="505" y="190" text-anchor="middle" fill="#f3ded7" font-size="11.5" font-weight="700">RELAY (IN=LOW on)</text>
+<text x="505" y="205" text-anchor="middle" fill="#d6b3a8" font-size="10" font-weight="700">switches the room light</text>
+<circle cx="600" cy="194" r="13" fill="#E8B23A" stroke="#220111" stroke-width="2.6"/>
+<text x="620" y="198" fill="#220111" font-size="11" font-weight="700">room LED</text>
+<path d="M570 194 H587" stroke="#220111" stroke-width="3" stroke-linecap="round"/>
+<path d="M613 194 L648 194 L648 178 L740 178" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D2: PIR -->
+<rect x="186" y="264" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="276" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D2</text>
+<path d="M208 271 H440" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="440" y="248" width="130" height="46" rx="7" fill="#355E8C" stroke="#1d3450" stroke-width="3"/>
+<text x="505" y="268" text-anchor="middle" fill="#dbe8f5" font-size="11.5" font-weight="700">PIR MOTION</text>
+<text x="505" y="283" text-anchor="middle" fill="#aec6de" font-size="10" font-weight="700">OUT · VCC · GND</text>
+<path d="M570 258 L648 258 L648 182" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M570 286 L636 286 L636 300 L700 300" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D8: hallway LED via 220 -->
+<rect x="186" y="320" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="332" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D8</text>
+<path d="M208 327 L360 327" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<path d="M360 327 L371 334 L382 320 L393 334 L404 320 L415 334 L426 327" stroke="#220111" stroke-width="3" fill="none" stroke-linejoin="round"/>
+<text x="393" y="314" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">220Ω</text>
+<path d="M426 327 H444" stroke="#220111" stroke-width="3" stroke-linecap="round"/>
+<circle cx="458" cy="327" r="13" fill="#E24A3B" stroke="#220111" stroke-width="2.6"/>
+<text x="480" y="331" fill="#220111" font-size="11" font-weight="700">hallway LED</text>
+<path d="M472 327 L472 345 L700 345" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- Arduino GND -->
+<rect x="186" y="360" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/><text x="180" y="372" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">GND</text>
+<path d="M208 367 L224 367 L224 420 L700 420" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Smart Home · Session 1 — Smart lighting</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">LDR senses dark · relay switches the light · PIR lights the hallway.</text>
+</svg>

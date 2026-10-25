@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="400" fill="#FBF7F2"/>
+<path d="M700 70 V374" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M636 86 V270" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="636" y="78" text-anchor="middle" fill="#D8322B" font-size="11.5" font-weight="700">pump +6V</text>
+
+<rect x="40" y="90" width="150" height="250" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="110" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="320" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- A0 soil -->
+<rect x="186" y="128" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="140" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<path d="M208 135 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="110" width="150" height="48" rx="7" fill="#6B4A2A" stroke="#3a2715" stroke-width="3"/>
+<text x="505" y="130" text-anchor="middle" fill="#efe0cf" font-size="11.5" font-weight="700">SOIL SENSOR</text>
+<text x="505" y="145" text-anchor="middle" fill="#d2b494" font-size="10" font-weight="700">read as 0–100%</text>
+<path d="M580 120 L610 120 L610 94 L700 94" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M580 148 L598 148 L598 98 L700 98" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D7 relay -> pump -->
+<rect x="186" y="200" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="212" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D7</text>
+<path d="M208 207 H430" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="430" y="188" width="130" height="46" rx="7" fill="#7A3B2E" stroke="#431d16" stroke-width="3"/>
+<text x="495" y="208" text-anchor="middle" fill="#f3ded7" font-size="11.5" font-weight="700">RELAY</text>
+<text x="495" y="223" text-anchor="middle" fill="#d6b3a8" font-size="10" font-weight="700">active-LOW = ON</text>
+<circle cx="610" cy="211" r="22" fill="#355E8C" stroke="#1d3450" stroke-width="3"/>
+<text x="610" y="215" text-anchor="middle" fill="#dbe8f5" font-size="13" font-weight="700">P</text>
+<text x="610" y="250" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">water pump</text>
+<path d="M560 202 H588" stroke="#220111" stroke-width="3" stroke-linecap="round"/>
+<path d="M610 189 V140 H636 V270 M610 189" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- battery -->
+<rect x="430" y="280" width="150" height="40" rx="6" fill="#2E7D32" stroke="#17421a" stroke-width="3.5"/>
+<text x="505" y="305" text-anchor="middle" fill="#EAF7F5" font-size="12" font-weight="700">4×AA pump power</text>
+<path d="M460 280 V268 H636 V270" stroke="#D8322B" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M550 320 V336 H700 V336" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Sense &amp; pump · the two skills</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">Read soil wetness on A0; switch the pump with a relay (D7) on its own battery.</text>
+</svg>

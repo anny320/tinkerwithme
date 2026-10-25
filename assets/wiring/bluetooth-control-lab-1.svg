@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="500" fill="#FBF7F2"/>
+<path d="M700 74 V474" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="66" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M740 74 V300" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="747" y="66" text-anchor="start" fill="#D8322B" font-size="12.5" font-weight="700">5V (+)</text>
+
+<rect x="40" y="94" width="150" height="340" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="114" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="414" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- HC-05 module -->
+<rect x="470" y="104" width="150" height="72" rx="8" fill="#2B4C9B" stroke="#152a5e" stroke-width="3"/>
+<text x="545" y="128" text-anchor="middle" fill="#DCE6FA" font-size="13" font-weight="700">HC-05</text>
+<text x="545" y="146" text-anchor="middle" fill="#AEC0E8" font-size="9.5" font-weight="700">Bluetooth = serial</text>
+<text x="545" y="160" text-anchor="middle" fill="#AEC0E8" font-size="9.5" font-weight="700">over radio</text>
+
+<!-- voltage divider: D11(TX) -> 1k -> junction -> HC-05 RXD ; junction -> 2k -> GND -->
+<rect x="186" y="118" width="22" height="14" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="130" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">D11</text>
+<text x="214" y="112" fill="#6E5F56" font-size="9.5" font-weight="700">TX</text>
+<path d="M208 125 L250 125" stroke="#2E7DE0" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M250 125 L261 132 L272 118 L283 132 L294 118 L305 132 L316 125" stroke="#220111" stroke-width="2.6" fill="none" stroke-linejoin="round"/>
+<text x="283" y="110" text-anchor="middle" fill="#6E5F56" font-size="10" font-weight="700">1kΩ</text>
+<circle cx="340" cy="125" r="3.5" fill="#220111"/>
+<path d="M316 125 L470 125" stroke="#220111" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<text x="462" y="120" text-anchor="end" fill="#DCE6FA" font-size="9" font-weight="700">RXD</text>
+<path d="M340 128 L340 150" stroke="#220111" stroke-width="2.6" fill="none"/>
+<path d="M340 150 L333 161 L347 172 L333 183 L347 194 L340 205" stroke="#220111" stroke-width="2.6" fill="none" stroke-linejoin="round"/>
+<text x="356" y="180" fill="#6E5F56" font-size="10" font-weight="700">2kΩ</text>
+<path d="M340 205 L340 222 L700 222" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="300" y="244" fill="#6E5F56" font-size="10.5" font-weight="700">divider drops 5V → ~3.3V (protects HC-05 RXD)</text>
+
+<!-- HC-05 TXD -> D10 (Arduino RX) -->
+<rect x="186" y="150" width="22" height="14" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="162" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">D10</text>
+<text x="214" y="176" fill="#6E5F56" font-size="9.5" font-weight="700">RX</text>
+<path d="M470 157 L440 157 L440 188 L220 188 L220 157 L208 157" stroke="#2E7DE0" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="462" y="152" text-anchor="end" fill="#DCE6FA" font-size="9" font-weight="700">TXD</text>
+<!-- HC-05 VCC/GND -->
+<path d="M560 176 L560 200 L740 200" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M590 176 L590 212 L700 212" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D5 LED bank -->
+<rect x="186" y="284" width="22" height="14" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="296" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">D5</text>
+<path d="M208 291 L250 291" stroke="#2E7DE0" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M250 291 L261 298 L272 284 L283 298 L294 284 L305 291" stroke="#220111" stroke-width="2.6" fill="none" stroke-linejoin="round"/>
+<text x="278" y="278" text-anchor="middle" fill="#6E5F56" font-size="9.5" font-weight="700">220Ω</text>
+<path d="M305 291 H322" stroke="#220111" stroke-width="2.6" stroke-linecap="round"/>
+<circle cx="336" cy="291" r="12" fill="#E24A3B" stroke="#220111" stroke-width="2.4"/>
+<text x="358" y="288" fill="#220111" font-size="11" font-weight="700">LEDs ×3 (D5/6/7)</text>
+<text x="358" y="302" fill="#6E5F56" font-size="9.5" font-weight="700">commands 1/0 · 2/3 · 4/5</text>
+<path d="M348 291 L348 322 L700 322" stroke="#3A3A3A" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D9 -> 330 -> transistor -> motor + flyback + battery -->
+<rect x="186" y="360" width="22" height="14" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="372" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">D9</text>
+<path d="M208 367 L250 367" stroke="#2E7DE0" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M250 367 L261 374 L272 360 L283 374 L294 360 L305 367" stroke="#220111" stroke-width="2.6" fill="none" stroke-linejoin="round"/>
+<text x="278" y="354" text-anchor="middle" fill="#6E5F56" font-size="9.5" font-weight="700">330Ω</text>
+<path d="M305 367 L366 367" stroke="#220111" stroke-width="2.6" stroke-linecap="round"/>
+<circle cx="392" cy="367" r="26" fill="#D7E6DF" stroke="#1d4a3d" stroke-width="3"/>
+<text x="392" y="410" text-anchor="middle" fill="#6E5F56" font-size="10" font-weight="700">2N2222</text>
+<path d="M378 367 L390 367 M390 352 L390 382" stroke="#1d4a3d" stroke-width="3"/>
+<path d="M390 360 L408 348 M390 374 L408 386" stroke="#1d4a3d" stroke-width="3"/>
+<!-- collector -> motor -->
+<path d="M408 348 L448 348 L448 360" stroke="#220111" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="510" cy="360" r="24" fill="#355E8C" stroke="#1d3450" stroke-width="3"/><text x="510" y="365" text-anchor="middle" fill="#dbe8f5" font-size="14" font-weight="700">M</text>
+<text x="510" y="322" text-anchor="middle" fill="#6E5F56" font-size="10.5" font-weight="700">DC motor</text>
+<path d="M486 360 L448 360" stroke="#220111" stroke-width="2.6" stroke-linecap="round"/>
+<!-- emitter -> GND -->
+<path d="M408 386 L420 386 L420 448 L700 448" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<!-- flyback diode across motor -->
+<path d="M486 338 L534 338" stroke="#6E5F56" stroke-width="2.2" fill="none"/>
+<path d="M486 338 L486 360 M534 338 L534 360" stroke="#6E5F56" stroke-width="2.2"/>
+<path d="M516 332 L516 344 M516 338 L506 333 L506 343 Z" stroke="#6E5F56" stroke-width="2" fill="#6E5F56"/>
+<text x="510" y="420" text-anchor="middle" fill="#6E5F56" font-size="9" font-weight="700">1N4007 flyback</text>
+<!-- motor+ -> battery -->
+<path d="M534 360 L585 360" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<rect x="585" y="342" width="100" height="36" rx="6" fill="#2E7D32" stroke="#17421a" stroke-width="3.5"/>
+<text x="635" y="365" text-anchor="middle" fill="#EAF7F5" font-size="10.5" font-weight="700">4×AA motor</text>
+<path d="M635 378 L635 448" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+
+<text x="300" y="474" fill="#6E5F56" font-size="10.5" font-weight="700">motor needs its own battery · share GND with the Arduino</text>
+
+<text x="40" y="40" fill="#220111" font-size="17" font-weight="700">Bluetooth Control Lab · the gadget</text>
+<text x="40" y="58" fill="#6E5F56" font-size="12" font-weight="700">HC-05 (serial over radio) + LEDs + a transistor-driven motor.</text>
+</svg>

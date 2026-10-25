@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="320" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="40" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">AI Entrepreneur · idea to pitch</text>
+<text x="40" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Build a real mini-business with AI as your design team, copywriter and coach.</text>
+
+<!-- 1 Idea & Brand -->
+<rect x="30" y="86" width="230" height="150" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="56" cy="114" r="15" fill="#E0641B"/><text x="56" y="119" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+<text x="240" y="126" text-anchor="end" font-size="30">💡</text>
+<text x="48" y="168" font-size="18" font-weight="700" fill="#220111">Idea &amp; Brand</text>
+<text x="48" y="192" font-size="12.5" font-weight="600" fill="#6E5F56">ChatGPT · Namelix · Coolors</text>
+<text x="48" y="216" font-size="12.5" font-weight="500" fill="#9b8c84">→ name, logo &amp; colours</text>
+
+<!-- 2 Product & Marketing -->
+<rect x="285" y="86" width="230" height="150" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="311" cy="114" r="15" fill="#7A3FB0"/><text x="311" y="119" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">2</text>
+<text x="495" y="126" text-anchor="end" font-size="30">📦</text>
+<text x="303" y="168" font-size="18" font-weight="700" fill="#220111">Product &amp; Market</text>
+<text x="303" y="192" font-size="12.5" font-weight="600" fill="#6E5F56">Canva Magic + ChatGPT</text>
+<text x="303" y="216" font-size="12.5" font-weight="500" fill="#9b8c84">→ mockup + social posts</text>
+
+<!-- 3 Pitch -->
+<rect x="540" y="86" width="230" height="150" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="566" cy="114" r="15" fill="#004C97"/><text x="566" y="119" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">3</text>
+<text x="750" y="126" text-anchor="end" font-size="30">🎤</text>
+<text x="558" y="168" font-size="18" font-weight="700" fill="#220111">Pitch</text>
+<text x="558" y="192" font-size="12.5" font-weight="600" fill="#6E5F56">Canva deck · AI investor</text>
+<text x="558" y="216" font-size="12.5" font-weight="500" fill="#9b8c84">→ pitch deck + live Q&amp;A</text>
+
+<path d="M260 161 H281" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M515 161 H536" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+
+<text x="40" y="286" font-family="Jost, sans-serif" font-size="13" font-weight="600" fill="#220111">You steer; AI drafts — you choose, edit and make it truly yours at every step.</text>
+<text x="40" y="306" font-family="Jost, sans-serif" font-size="13" font-weight="500" fill="#6E5F56">Take home a Brand Kit, a product mockup, social posts and a pitch deck.</text>
+</svg>

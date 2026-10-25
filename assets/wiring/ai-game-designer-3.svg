@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="340" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Build · the core game loop (Scratch)</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Three ideas power most arcade games: move, score, win.</text>
+
+<g font-family="Jost, sans-serif" font-size="14" font-weight="700" fill="#fff">
+<rect x="40" y="82" width="330" height="36" rx="8" fill="#FFBF00"/><text x="58" y="105" fill="#5c4300">when 🚩 clicked</text>
+<rect x="40" y="122" width="330" height="36" rx="8" fill="#FF8C1A"/><text x="58" y="145">set Score to 0</text>
+<rect x="40" y="162" width="330" height="36" rx="8" fill="#FFBF00"/><text x="58" y="185" fill="#5c4300">forever</text>
+<rect x="66" y="202" width="304" height="36" rx="8" fill="#4C97FF"/><text x="84" y="225">move with the arrow keys</text>
+<rect x="66" y="242" width="304" height="36" rx="8" fill="#5CB1D6"/><text x="84" y="265">if touching Collectible → Score +1 🔊</text>
+<rect x="66" y="282" width="304" height="36" rx="8" fill="#5CB1D6"/><text x="84" y="305">if Score = 10 → You Win! 🏆</text>
+</g>
+
+<g font-family="Jost, sans-serif" font-size="13" font-weight="600" fill="#6E5F56">
+<text x="400" y="225" fill="#004C97">▸ arrow keys move your sprite</text>
+<text x="400" y="265" fill="#1b7fa8">▸ touch the collectible → point + sound</text>
+<text x="400" y="305" fill="#1b7fa8">▸ reach the target → win screen</text>
+</g>
+<rect x="400" y="94" width="360" height="92" rx="12" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="420" y="122" font-family="Jost, sans-serif" font-size="14" font-weight="700" fill="#3f5c00">Upload your AI art as the sprite</text>
+<text x="420" y="146" font-family="Jost, sans-serif" font-size="12.5" font-weight="500" fill="#5E8700">and the AI background as the stage,</text>
+<text x="420" y="166" font-family="Jost, sans-serif" font-size="12.5" font-weight="500" fill="#5E8700">then wire up these blocks.</text>
+</svg>

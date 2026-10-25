@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Day 1 · why millis(), never delay()</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">A smart city runs four things at once — delay() would freeze three of them.</text>
+
+<!-- delay panel -->
+<rect x="30" y="80" width="360" height="196" rx="14" fill="#FBEDEC" stroke="#C23B3B" stroke-width="2.5"/>
+<text x="210" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#C23B3B">❌ delay(5000)</text>
+<g font-family="Jost, sans-serif" font-size="12.5" font-weight="700" text-anchor="middle">
+<rect x="54" y="124" width="140" height="34" rx="8" fill="#5E8700"/><text x="124" y="146" fill="#fff">🚦 running</text>
+<rect x="226" y="124" width="140" height="34" rx="8" fill="#cbb7b4"/><text x="296" y="146" fill="#7a5c58">🅿️ frozen</text>
+<rect x="54" y="166" width="140" height="34" rx="8" fill="#cbb7b4"/><text x="124" y="188" fill="#7a5c58">💡 frozen</text>
+<rect x="226" y="166" width="140" height="34" rx="8" fill="#cbb7b4"/><text x="296" y="188" fill="#7a5c58">🌡️ frozen</text>
+</g>
+<text x="210" y="228" text-anchor="middle" font-size="12" font-weight="600" fill="#8f2d2d">while the Arduino is "asleep"</text>
+<text x="210" y="248" text-anchor="middle" font-size="12" font-weight="600" fill="#8f2d2d">nothing else can happen</text>
+
+<!-- millis panel -->
+<rect x="410" y="80" width="360" height="196" rx="14" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="590" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#3f5c00">✓ millis() state machine</text>
+<g font-family="Jost, sans-serif" font-size="12.5" font-weight="700" text-anchor="middle">
+<rect x="434" y="124" width="140" height="34" rx="8" fill="#5E8700"/><text x="504" y="146" fill="#fff">🚦 running</text>
+<rect x="606" y="124" width="140" height="34" rx="8" fill="#5E8700"/><text x="676" y="146" fill="#fff">🅿️ running</text>
+<rect x="434" y="166" width="140" height="34" rx="8" fill="#5E8700"/><text x="504" y="188" fill="#fff">💡 running</text>
+<rect x="606" y="166" width="140" height="34" rx="8" fill="#5E8700"/><text x="676" y="188" fill="#fff">🌡️ running</text>
+</g>
+<text x="590" y="228" text-anchor="middle" font-size="12" font-weight="600" fill="#3f5c00">each subsystem checks the clock</text>
+<text x="590" y="248" text-anchor="middle" font-size="12" font-weight="600" fill="#3f5c00">itself — so all four share one loop</text>
+</svg>

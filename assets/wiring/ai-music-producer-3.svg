@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="280" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Produce · mixing in Audacity</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Stack your AI instrumental and your own voice on the timeline, then balance them.</text>
+
+<g font-family="Jost, sans-serif" font-size="12.5" font-weight="700">
+<text x="150" y="104" text-anchor="end" fill="#220111">🎵 Instrumental</text>
+<text x="150" y="160" text-anchor="end" fill="#220111">🎤 Your voice</text>
+</g>
+<rect x="160" y="84" width="610" height="36" rx="5" fill="#efe9e2"/>
+<rect x="160" y="140" width="610" height="36" rx="5" fill="#efe9e2"/>
+<!-- instrumental waveform clip -->
+<rect x="162" y="86" width="606" height="32" rx="4" fill="#5E8700" stroke="#220111" stroke-width="1.5"/>
+<path d="M172 102 q10 -12 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0" stroke="#eaf3d8" stroke-width="1.6" fill="none" opacity="0.8"/>
+<!-- voice clip with fades -->
+<rect x="300" y="142" width="300" height="32" rx="4" fill="#CF63CF" stroke="#220111" stroke-width="1.5"/>
+<path d="M300 174 L320 142 M600 174 L580 142" stroke="#fff" stroke-width="2"/>
+<text x="450" y="163" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">voice (fade in / out)</text>
+<text x="310" y="196" font-size="10.5" font-weight="600" fill="#6E5F56">↑ slide with the Time Shift tool to line it up</text>
+
+<rect x="30" y="218" width="740" height="48" rx="12" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="400" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#3f5c00">Keep the instrumental slightly quieter under the voice, add fades, export as MP3.</text>
+<text x="400" y="259" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5E8700">3 tracks like this = your EP.</text>
+</svg>

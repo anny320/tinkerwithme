@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Research · narrow it with the 5 Whys</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">You can't fix "all of Nairobi" — ask why until you reach one real, solvable spot.</text>
+
+<g text-anchor="middle" font-family="Jost, sans-serif" font-weight="700">
+<rect x="50" y="78" width="700" height="34" rx="8" fill="#B9C2C7"/><text x="400" y="100" font-size="13" fill="#2b2b2b">Water access in Nairobi</text>
+<rect x="140" y="124" width="520" height="34" rx="8" fill="#9fb0c4"/><text x="400" y="146" font-size="13" fill="#17304a">Water in Kawangware</text>
+<rect x="230" y="170" width="340" height="34" rx="8" fill="#5f87b0"/><text x="400" y="192" font-size="13" fill="#fff">Stage A dries up each morning</text>
+<rect x="300" y="216" width="200" height="34" rx="8" fill="#5E8700"/><text x="400" y="238" font-size="13" fill="#fff">the broken tap at Stage A</text>
+</g>
+<path d="M400 112 V122" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M400 158 V168" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M400 204 V214" stroke="#220111" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="470" y="120" font-size="12" font-weight="700" fill="#E0641B">why?</text>
+<text x="470" y="166" font-size="12" font-weight="700" fill="#E0641B">why?</text>
+<text x="470" y="212" font-size="12" font-weight="700" fill="#E0641B">why?</text>
+
+<rect x="30" y="262" width="740" height="30" rx="9" fill="#F0F7DE" stroke="#5E8700" stroke-width="2"/>
+<text x="400" y="282" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3f5c00">Then verify one AI claim with a real person, and map the real spots in Google My Maps.</text>
+</svg>

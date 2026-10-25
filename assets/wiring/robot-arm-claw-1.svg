@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="500" fill="#FBF7F2"/>
+<!-- common GND rail -->
+<path d="M700 70 V474" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">common GND</text>
+<!-- servo power bus -->
+<path d="M636 86 V300" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="636" y="78" text-anchor="middle" fill="#D8322B" font-size="11.5" font-weight="700">servo +5–6V</text>
+
+<!-- Arduino -->
+<rect x="40" y="84" width="150" height="316" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="104" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="380" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO UNO</text>
+
+<!-- servo signal pins D9/D10/D11 -->
+<g font-size="12" font-weight="700">
+<rect x="186" y="104" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="116" text-anchor="end" fill="#EAF7F5">D9</text>
+<rect x="186" y="150" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="162" text-anchor="end" fill="#EAF7F5">D10</text>
+<rect x="186" y="196" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="208" text-anchor="end" fill="#EAF7F5">D11</text>
+</g>
+<path d="M208 111 H470" stroke="#E79A2B" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<path d="M208 157 H470" stroke="#E79A2B" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<path d="M208 203 H470" stroke="#E79A2B" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+
+<!-- 3 servos -->
+<g>
+<rect x="470" y="92" width="120" height="44" rx="7" fill="#2b6b4f" stroke="#163a2b" stroke-width="3"/>
+<rect x="590" y="104" width="16" height="20" rx="2" fill="#1a3f30"/>
+<text x="530" y="112" text-anchor="middle" fill="#dff0e8" font-size="11.5" font-weight="700">SERVO · base</text>
+<text x="530" y="127" text-anchor="middle" fill="#a9ccbb" font-size="9.5" font-weight="700">sig · +V · GND</text>
+<rect x="470" y="138" width="120" height="44" rx="7" fill="#2b6b4f" stroke="#163a2b" stroke-width="3"/>
+<rect x="590" y="150" width="16" height="20" rx="2" fill="#1a3f30"/>
+<text x="530" y="158" text-anchor="middle" fill="#dff0e8" font-size="11.5" font-weight="700">SERVO · shoulder</text>
+<text x="530" y="173" text-anchor="middle" fill="#a9ccbb" font-size="9.5" font-weight="700">sig · +V · GND</text>
+<rect x="470" y="184" width="120" height="44" rx="7" fill="#2b6b4f" stroke="#163a2b" stroke-width="3"/>
+<rect x="590" y="196" width="16" height="20" rx="2" fill="#1a3f30"/>
+<text x="530" y="204" text-anchor="middle" fill="#dff0e8" font-size="11.5" font-weight="700">SERVO · elbow</text>
+<text x="530" y="219" text-anchor="middle" fill="#a9ccbb" font-size="9.5" font-weight="700">sig · +V · GND</text>
+</g>
+<!-- servo +V to power bus, GND to common (grouped neatly) -->
+<path d="M606 114 H636" stroke="#D8322B" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M606 160 H636" stroke="#D8322B" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M606 206 H636" stroke="#D8322B" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M606 126 L662 126 L662 300 L700 300" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M606 172 H662" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M606 218 H662" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+<!-- Battery pack + cap -->
+<rect x="470" y="330" width="150" height="40" rx="6" fill="#2E7D32" stroke="#17421a" stroke-width="3.5"/>
+<text x="545" y="355" text-anchor="middle" fill="#EAF7F5" font-size="12" font-weight="700">4×AA ≈ 5–6V</text>
+<path d="M500 330 V312 H636 V300" stroke="#D8322B" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M590 370 V392 H700 V300 M700 392" stroke="#3A3A3A" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M590 370 L590 392 L700 392" stroke="#3A3A3A" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<!-- cap symbol -->
+<path d="M648 250 H664 M656 250 V242 M656 250 V258" stroke="#6E5F56" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<path d="M648 266 H664" stroke="#6E5F56" stroke-width="2.4"/>
+<text x="672" y="262" fill="#6E5F56" font-size="10" font-weight="700">1000µF</text>
+
+<!-- Joystick -->
+<rect x="300" y="300" width="150" height="80" rx="8" fill="#5B3A82" stroke="#331f4d" stroke-width="3.2"/>
+<circle cx="375" cy="330" r="15" fill="#2b1b40" stroke="#1b1029" stroke-width="2.5"/>
+<text x="375" y="368" text-anchor="middle" fill="#EAE2F3" font-size="11" font-weight="700">JOYSTICK (×2)</text>
+<!-- VRx->A0, VRy->A1 -->
+<rect x="186" y="250" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="262" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<rect x="186" y="286" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="298" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A1</text>
+<path d="M208 257 L270 257 L270 322 L300 322" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M208 293 L252 293 L252 340 L300 340" stroke="#2E7DE0" stroke-width="3.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="300" y="316" text-anchor="end" fill="#6E5F56" font-size="9.5" font-weight="700">VRx </text>
+<text x="300" y="352" text-anchor="end" fill="#6E5F56" font-size="9.5" font-weight="700">VRy </text>
+
+<!-- Arduino 5V + GND -->
+<rect x="186" y="330" width="22" height="15" rx="2" fill="#E24A3B" stroke="#7a2018" stroke-width="2"/><text x="180" y="342" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">5V</text>
+<path d="M208 337 L230 337 L230 384 L450 384 L450 372" stroke="#D8322B" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="186" y="360" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/><text x="180" y="372" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">GND</text>
+<path d="M208 367 L222 367 L222 452 L700 452" stroke="#3A3A3A" stroke-width="3.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- title -->
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Robot Arm &amp; Claw · Session 1 — Build &amp; wire</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">Servos share an external 5–6V supply and a common ground.</text>
+</svg>

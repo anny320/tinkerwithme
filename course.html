@@ -553,7 +553,14 @@ async function loadKidData() {
   catch (_) { KID_DATA = { lessons: {} }; }
   return KID_DATA;
 }
-const kidFor = L => (KID_DATA && KID_DATA.lessons && KID_DATA.lessons[normTitle(L.title)]) || null;
+// Free courses ship structured kid content in kids_content.json (keyed by title);
+// premium courses store a simplified markdown version in the lesson's kid_body column.
+const kidFor = L => {
+  const j = KID_DATA && KID_DATA.lessons && KID_DATA.lessons[normTitle(L.title)];
+  if (j) return j;
+  const kb = ((L && L.kid_body) || '').trim();
+  return kb ? { md: kb } : null;
+};
 
 // Simple brand-styled material icons (hand-drawn SVGs, royalty-free). Outlines follow the theme via currentColor.
 function matLED(c) { return '<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M14 21a8 8 0 0116 0v5H14z" fill="' + c + '" stroke="currentColor" stroke-width="2"/><rect x="14" y="25" width="16" height="3" rx="1" fill="currentColor" opacity=".3"/><path d="M19 28v11M26 28v7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'; }
@@ -660,9 +667,14 @@ function wireLessonTools(L) {
 
   const renderBody = () => {
     if (kid && kidWanted) {
-      body.innerHTML = `${kid.intro ? `<p class="kid-intro">${esc(kid.intro)}</p>` : ''}
-        <ol class="kid-steps">${kid.steps.map(s => `<li><span class="ks-icon" aria-hidden="true">${esc(s.icon || '•')}</span><span class="ks-text">${esc(s.text)}</span></li>`).join('')}</ol>
-        <p class="kid-note">👆 Doing this with a grown-up? Tap <strong>Grown-up version</strong> for the full steps, code and tips.</p>`;
+      if (kid.md) {   // premium: simplified markdown from kid_body
+        body.innerHTML = `<div class="prose kid-prose">${md(kid.md)}</div>
+          <p class="kid-note">👆 Doing this with a grown-up? Tap <strong>Grown-up version</strong> for the full steps, code and tips.</p>`;
+      } else {        // free: structured steps from kids_content.json
+        body.innerHTML = `${kid.intro ? `<p class="kid-intro">${esc(kid.intro)}</p>` : ''}
+          <ol class="kid-steps">${kid.steps.map(s => `<li><span class="ks-icon" aria-hidden="true">${esc(s.icon || '•')}</span><span class="ks-text">${esc(s.text)}</span></li>`).join('')}</ol>
+          <p class="kid-note">👆 Doing this with a grown-up? Tap <strong>Grown-up version</strong> for the full steps, code and tips.</p>`;
+      }
     } else {
       body.innerHTML = L.body ? `<div class="prose">${md(L.body)}</div>` : '';
     }
@@ -683,7 +695,10 @@ function wireLessonTools(L) {
   const rb = $('t-read');
   if (rb) rb.onclick = () => {
     if (twSay.on) return twSay.stop();
-    if (kid && kidWanted) {
+    if (kid && kidWanted && kid.md) {
+      const text = ((body.querySelector('.prose') || body).innerText || '');
+      twSay.start(text.split(/(?<=[.!?])\s+/).map(t => ({ text: t })), rb, true);
+    } else if (kid && kidWanted) {
       const els = body.querySelectorAll('.kid-steps li');
       const items = kid.steps.map((s, i) => ({ text: s.text, el: els[i] }));
       if (kid.intro) items.unshift({ text: kid.intro, el: null });

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">🎧 AI Music Producer · anatomy of a song</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">A song has parts — and the chorus is the hook that keeps coming back.</text>
+
+<!-- arrangement bar -->
+<g font-family="Jost, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">
+<rect x="30"  y="92" width="88" height="72" rx="8" fill="#9AA0A6"/><text x="74"  y="133">Intro</text>
+<rect x="121" y="92" width="88" height="72" rx="8" fill="#004C97"/><text x="165" y="133">Verse 1</text>
+<rect x="212" y="92" width="88" height="72" rx="8" fill="#E0641B"/><text x="256" y="133">Chorus</text>
+<rect x="303" y="92" width="88" height="72" rx="8" fill="#004C97"/><text x="347" y="133">Verse 2</text>
+<rect x="394" y="92" width="88" height="72" rx="8" fill="#E0641B"/><text x="438" y="133">Chorus</text>
+<rect x="485" y="92" width="88" height="72" rx="8" fill="#7A3FB0"/><text x="529" y="133">Bridge</text>
+<rect x="576" y="92" width="88" height="72" rx="8" fill="#E0641B"/><text x="620" y="133">Chorus</text>
+<rect x="667" y="92" width="88" height="72" rx="8" fill="#9AA0A6"/><text x="711" y="133">Outro</text>
+</g>
+<text x="256" y="182" text-anchor="middle" font-size="10.5" font-weight="700" fill="#E0641B">↑ the hook, repeated ↑</text>
+<text x="438" y="182" text-anchor="middle" font-size="10.5" font-weight="700" fill="#E0641B">↑</text>
+<text x="620" y="182" text-anchor="middle" font-size="10.5" font-weight="700" fill="#E0641B">↑</text>
+
+<text x="30" y="214" font-family="Jost, sans-serif" font-size="13" font-weight="600" fill="#220111">In Suno you write these with [Verse] and [Chorus] tags — that is how you control the structure.</text>
+
+<!-- pipeline footer -->
+<text x="30" y="258" font-family="Space Mono, ui-monospace, monospace" font-size="13" font-weight="700" fill="#5E8700">YOUR STUDIO:</text>
+<text x="30" y="282" font-family="Jost, sans-serif" font-size="14" font-weight="700" fill="#220111">🎹 Compose in Suno  →  🎚️ Mix in Audacity  →  🎨 AI cover art  →  💿 Release your 3-track EP</text>
+</svg>

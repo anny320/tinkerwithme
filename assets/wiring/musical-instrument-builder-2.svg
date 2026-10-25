@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="300" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">Tempo &amp; performance · knob + record</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Turn a knob to set the speed, then record a tune into an array and play it back.</text>
+
+<!-- Panel 1: tempo knob -->
+<rect x="30" y="80" width="360" height="190" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="54" y="112" font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700" fill="#E0641B">🎛️ TEMPO KNOB</text>
+<circle cx="110" cy="176" r="34" fill="#8a6d3b" stroke="#4a3a1e" stroke-width="4"/><path d="M110 176 L110 150" stroke="#fff" stroke-width="3"/>
+<path d="M156 176 H210" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<text x="285" y="164" text-anchor="middle" font-size="13" font-weight="700" fill="#220111">map(pot, 0,1023,</text>
+<text x="285" y="184" text-anchor="middle" font-size="13" font-weight="700" fill="#220111">120, 600)</text>
+<text x="285" y="206" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6E5F56">= note length (ms)</text>
+<text x="210" y="246" text-anchor="middle" font-size="12" font-weight="600" fill="#9b8c84">left = fast · right = slow</text>
+
+<!-- Panel 2: record & replay -->
+<rect x="410" y="80" width="360" height="190" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<text x="434" y="112" font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700" fill="#5E8700">🎼 RECORD &amp; REPLAY</text>
+<g font-family="Space Mono, ui-monospace, monospace" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">
+<rect x="434" y="132" width="52" height="34" rx="6" fill="#2E7DE0"/><text x="460" y="154">262</text>
+<rect x="492" y="132" width="52" height="34" rx="6" fill="#2E7DE0"/><text x="518" y="154">330</text>
+<rect x="550" y="132" width="52" height="34" rx="6" fill="#2E7DE0"/><text x="576" y="154">392</text>
+<rect x="608" y="132" width="52" height="34" rx="6" fill="#2E7DE0"/><text x="634" y="154">523</text>
+<rect x="666" y="132" width="76" height="34" rx="6" fill="#B9C2C7"/><text x="704" y="154" fill="#220111">…</text>
+</g>
+<text x="588" y="192" text-anchor="middle" font-size="12" font-weight="600" fill="#6E5F56">an array of notes = your song</text>
+<path d="M700 200 C700 224, 470 224, 460 174" stroke="#5E8700" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#ar)"/>
+<text x="588" y="238" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5E8700">loop through it to play the tune back</text>
+
+<text x="30" y="292" font-family="Jost, sans-serif" font-size="12.5" font-weight="600" fill="#220111">Same notes, new tempo — turn the knob and the whole tune speeds up or slows down.</text>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="Jost, sans-serif">
+<rect x="0" y="0" width="800" height="340" fill="#FBF7F2"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#220111"/></marker></defs>
+
+<text x="30" y="34" font-family="Space Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#220111">🌍 AI for Social Good · research → prototype → present</text>
+<text x="30" y="56" font-family="Jost, sans-serif" font-size="14" font-weight="500" fill="#6E5F56">Solve a real problem in your community with AI as your research and build partner.</text>
+
+<!-- 1 Research -->
+<rect x="30" y="80" width="230" height="96" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="56" cy="106" r="15" fill="#E0641B"/><text x="56" y="111" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+<text x="240" y="118" text-anchor="end" font-size="28">🔎</text>
+<text x="48" y="150" font-size="17" font-weight="700" fill="#220111">Research</text>
+<text x="48" y="168" font-size="11.5" font-weight="500" fill="#6E5F56">narrow it · verify · interview · map</text>
+
+<!-- 2 Prototype -->
+<rect x="285" y="80" width="230" height="96" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="311" cy="106" r="15" fill="#7A3FB0"/><text x="311" y="111" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">2</text>
+<text x="495" y="118" text-anchor="end" font-size="28">🛠️</text>
+<text x="303" y="150" font-size="17" font-weight="700" fill="#220111">Prototype</text>
+<text x="303" y="168" font-size="11.5" font-weight="500" fill="#6E5F56">build it with a free AI tool</text>
+
+<!-- 3 Present -->
+<rect x="540" y="80" width="230" height="96" rx="14" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="566" cy="106" r="15" fill="#004C97"/><text x="566" y="111" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">3</text>
+<text x="750" y="118" text-anchor="end" font-size="28">🎤</text>
+<text x="558" y="150" font-size="17" font-weight="700" fill="#220111">Present</text>
+<text x="558" y="168" font-size="11.5" font-weight="500" fill="#6E5F56">Problem · Solution · Impact · Ask</text>
+
+<path d="M260 128 H281" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+<path d="M515 128 H536" stroke="#220111" stroke-width="3" marker-end="url(#ar)"/>
+
+<!-- track chips -->
+<text x="30" y="208" font-family="Space Mono, ui-monospace, monospace" font-size="12.5" font-weight="700" fill="#7A3FB0">PICK ONE BUILD TRACK:</text>
+<g font-family="Jost, sans-serif">
+<rect x="30"  y="216" width="180" height="48" rx="10" fill="#F3EEFA" stroke="#7A3FB0" stroke-width="2"/>
+<text x="46" y="238" font-size="13.5" font-weight="700" fill="#220111">💬 Chatbot</text><text x="46" y="256" font-size="10.5" font-weight="500" fill="#6E5F56">Google AI Studio</text>
+<rect x="222" y="216" width="180" height="48" rx="10" fill="#F3EEFA" stroke="#7A3FB0" stroke-width="2"/>
+<text x="238" y="238" font-size="13.5" font-weight="700" fill="#220111">🖼️ Classifier</text><text x="238" y="256" font-size="10.5" font-weight="500" fill="#6E5F56">Teachable Machine</text>
+<rect x="414" y="216" width="180" height="48" rx="10" fill="#F3EEFA" stroke="#7A3FB0" stroke-width="2"/>
+<text x="430" y="238" font-size="13.5" font-weight="700" fill="#220111">📊 Dashboard</text><text x="430" y="256" font-size="10.5" font-weight="500" fill="#6E5F56">Forms + Sheets</text>
+<rect x="606" y="216" width="180" height="48" rx="10" fill="#F3EEFA" stroke="#7A3FB0" stroke-width="2"/>
+<text x="622" y="238" font-size="13.5" font-weight="700" fill="#220111">📣 Campaign</text><text x="622" y="256" font-size="10.5" font-weight="500" fill="#6E5F56">Canva Magic Media</text>
+</g>
+
+<rect x="30" y="284" width="756" height="40" rx="12" fill="#F0F7DE" stroke="#5E8700" stroke-width="2.5"/>
+<text x="400" y="309" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3f5c00">Keep the human problem — and the people it affects — at the centre of every decision.</text>
+</svg>
