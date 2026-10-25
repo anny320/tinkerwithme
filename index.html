@@ -275,6 +275,13 @@
 .promo-ribbon b{color:#FFD23F;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-right:8px}
 .promo-ribbon u{text-decoration:none;color:var(--orange);font-weight:600;white-space:nowrap;margin-left:6px}
 .promo-ribbon:hover u{text-decoration:underline}
+/* Membership variant — brighter, so the Founding 100 offer pops at the top */
+.promo-ribbon.is-membership{background:linear-gradient(90deg,var(--orange),#F6A829);color:var(--ink);font-weight:600}
+.promo-ribbon.is-membership b{color:#7A2E00;background:#FFD23F;padding:2px 9px;border-radius:999px;margin-right:10px}
+.promo-ribbon.is-membership u{background:var(--ink);color:#fff;padding:4px 13px;border-radius:999px;margin-left:11px;display:inline-block;animation:promoPulse 2.4s ease-in-out infinite}
+.promo-ribbon.is-membership:hover u{text-decoration:none;background:#3a1200}
+@keyframes promoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@media(prefers-reduced-motion:reduce){.promo-ribbon.is-membership u{animation:none}}
 
 .promo{padding:3.5rem 0 0}
 .promo-card{
@@ -342,6 +349,9 @@
      through the HustleSasa store.
      ═══════════════════════════════════════════════════════════ -->
 
+<a class="promo-ribbon is-membership" href="membership.html" data-ga="promo-ribbon-membership">
+  <b>Founding 100</b>Join the first 100 families &mdash; real robots &amp; AI, live, for the whole family. 40% off for 12 months <u>Reserve your place &rarr;</u>
+</a>
 <a class="promo-ribbon" href="coloring-book.html" data-ga="promo-ribbon">
   <b>This month</b>Free robot coloring book for ages 5&ndash;8 &mdash; color it online or print it <u>Start coloring &rarr;</u>
 </a>
