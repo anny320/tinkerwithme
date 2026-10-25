@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://tinkerwith.me/membership.html">
 <title>Membership — all our courses, one plan — TinkerWith_</title>
-<meta name="description" content="Tinkerwith membership: all 17 self-paced robotics and AI courses, free projects and new monthly builds for one simple plan. Club from KES 2,000/month; Premium adds two live classes a month. One account covers the whole family.">
+<meta name="description" content="Tinkerwith membership for young makers: start free with 34 projects, join Club (KES 2,000/mo) for the AI courses + a monthly live session, or Premium (KES 6,500/mo) for the full robotics lab + a small-group live cohort. One account for the whole family.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
 <meta property="og:url" content="https://tinkerwith.me/membership.html">
 <meta property="og:title" content="Tinkerwith membership — all our courses, one plan">
-<meta property="og:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 2,000/mo; Premium adds two live classes a month. One account for the whole family.">
+<meta property="og:description" content="Start free with 34 projects, join Club for the AI courses + a monthly live session, or Premium for the full robotics lab + a live cohort. One account for the whole family.">
 <meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tinkerwith membership — all our courses, one plan">
-<meta name="twitter:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 2,000/mo.">
+<meta name="twitter:description" content="Free to start, Club for AI courses + a monthly live session, Premium for the full robotics lab + a live cohort.">
 <meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,10 +28,15 @@
 .toggle button{font:inherit;font-weight:600;font-size:14.5px;padding:9px 18px;border:0;background:transparent;cursor:pointer;color:var(--ink)}
 .toggle button.on{background:var(--ink);color:var(--white)}
 .save-pill{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--green-deep,#3a7d1e);margin-left:8px}
-.tiers{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:1.4rem}
-@media(max-width:760px){.tiers{grid-template-columns:1fr}}
-.tier{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;display:flex;flex-direction:column;gap:10px}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.4rem;align-items:stretch}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:10px}
+.tier.free{background:var(--cream)}
+.tier.free .badge{background:var(--white)}
 .tier.premium{background:var(--orange-soft,#FFE3CF)}
+.soon{display:inline-block;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--ink);color:var(--white);border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle}
+.trial{background:var(--green-soft,#DFF4C9);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:7px 10px;font-size:13px;font-weight:600;margin-top:2px}
+.launch{background:#FFF3D6;border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;font-size:14.5px;margin:.2rem 0 0;box-shadow:4px 4px 0 var(--ink)}
 .tier .badge{align-self:flex-start;font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
 .tier.club .badge{background:var(--green,#8BD450)}
 .tier.premium .badge{background:#FFD23F}
@@ -85,13 +90,14 @@
 <header class="page-head">
   <div class="tw-container">
     <span class="tw-eyebrow-pill">Membership</span>
-    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">All our courses, one simple plan</h1>
-    <p>One self-paced course is KES 3,000. Membership gives your child <strong>every</strong> self-paced robotics &amp; AI course, the free projects, and new builds each month &mdash; for less than the price of one. One account covers the whole family.</p>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">Pick the right plan for your maker</h1>
+    <p>Start <strong>free</strong> with 34 build-along projects. Step up to <strong>Club</strong> for the AI courses and a monthly live session, or go <strong>Premium</strong> for the full robotics lab and a small-group live cohort. One account covers the whole family.</p>
   </div>
 </header>
 
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
+    <p class="launch">🚀 <strong>Founding-member launch.</strong> Free projects and the AI courses are live now. The live sessions, robotics courses, progress reports and demo days are rolling out over the coming weeks — join now to lock in today&rsquo;s price and be first in line.</p>
     <div class="toggle" role="group" aria-label="Billing cycle">
       <button type="button" id="t-monthly" class="on">Monthly</button>
       <button type="button" id="t-annual">Annual <span class="save-pill">2 months free</span></button>
@@ -104,8 +110,10 @@
     <div class="faq">
       <details><summary>Can I cancel any time?</summary><p>Yes. A monthly plan simply isn&rsquo;t renewed; an annual plan runs to the end of its year. No lock-in.</p></details>
       <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
-      <details><summary>What&rsquo;s the difference between Club and Premium?</summary><p>Club is everything self-paced — all courses, at your own pace. Premium adds <strong>two live group classes a month</strong> with a trainer, for kids who want the live push and a cohort.</p></details>
-      <details><summary>Does membership include the live courses or the teacher curriculums?</summary><p>Premium includes two live group classes a month. One-off live courses and the teacher curriculums are sold separately.</p></details>
+      <details><summary>What&rsquo;s the difference between Free, Club and Premium?</summary><p><strong>Free</strong> gives you the 34 build-along projects, games and certificates — no card. <strong>Club</strong> adds the 8 AI self-paced courses (nothing to buy — they run in a browser), a new build each month and one live group session. <strong>Premium</strong> adds all 17 courses — including the 9 hands-on robotics builds — two small-group live classes a month with your own trainer (max 8 kids), parent progress reports and a termly demo day.</p></details>
+      <details><summary>Do we need to buy a kit?</summary><p>Not for Free or Club — the AI courses run entirely in a browser. The Premium robotics courses use a microcontroller and a few basic parts; you can buy our Maker Kit or source them locally (our <a href="resources.html">resources guide</a> shows how, with everyday parts).</p></details>
+      <details><summary>When does everything go live?</summary><p>The free projects and AI courses are available now. The live sessions, robotics courses, parent progress reports and demo days are rolling out over the coming weeks — <strong>founding members get them first and lock in today&rsquo;s price</strong>.</p></details>
+      <details><summary>Does membership include the one-off live courses or the teacher curriculums?</summary><p>Club includes one group session a month; Premium includes two small-cohort classes a month. One-off live courses and the teacher curriculums are sold separately.</p></details>
     </div>
   </div>
 </section>
@@ -143,30 +151,53 @@ const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
 // Keep in step with lms_membership_price() in supabase/membership.sql.
 const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
+const TRIAL = 1000;
+const SOON = '<span class="soon">soon</span>';
 const TIERS = {
-  club: { name: 'Club', badge: 'Self-paced', feats: [
-    'All 17 self-paced robotics &amp; AI courses',
-    'The 34 free build-along projects',
-    'New projects added every month',
-    'Quizzes, certificates &amp; the Builds Wall',
-    'Learn at your own pace, any time' ] },
-  premium: { name: 'Premium', badge: 'Club + live', feats: [
+  free: { name: 'Free', badge: 'Start here', feats: [
+    'The 34 build-along projects',
+    'Games &amp; printables to play or print',
+    'A certificate for every project',
+    'The Builds Wall' ],
+    cta: { label: 'Start free', href: 'free-for-kids.html' } },
+  club: { name: 'Club', badge: 'AI + live', feats: [
+    'Everything in Free',
+    `The <strong>8 AI self-paced courses</strong> &mdash; nothing to buy, they run in a browser ${SOON}`,
+    'A new build every month',
+    `<strong>1 live group session</strong> each month ${SOON}`,
+    'One account for the whole family' ] },
+  premium: { name: 'Premium', badge: 'Full lab + cohort', feats: [
     'Everything in Club',
-    '<strong>Two live group classes a month</strong> with a trainer',
-    'A cohort of other young makers',
-    'Priority help on WhatsApp' ] },
+    `<strong>All 17 courses</strong> &mdash; adds the 9 hands-on robotics builds ${SOON}`,
+    `<strong>2 small-cohort live classes</strong> a month &mdash; max 8, your own trainer ${SOON}`,
+    `A <strong>parent progress report</strong> ${SOON}`,
+    `A termly <strong>demo day</strong> + a certificate mailed home ${SOON}`,
+    'Priority help on WhatsApp &amp; early access to new builds' ] },
 };
+const ORDER = ['free', 'club', 'premium'];
 let cycle = 'monthly', MINE = null;
 const fmt = n => 'KES ' + n.toLocaleString();
 
 function renderTiers() {
-  $('tiers').innerHTML = Object.entries(TIERS).map(([id, t]) => {
+  $('tiers').innerHTML = ORDER.map(id => {
+    const t = TIERS[id];
+    if (id === 'free') {
+      return `<div class="tier free">
+        <span class="badge">${t.badge}</span>
+        <h2>${t.name}</h2>
+        <div class="price">Free <small>forever</small></div>
+        <div class="per">No card needed</div>
+        <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
+        <div class="cta"><a class="tw-btn tw-btn-white" href="${t.cta.href}" data-ga="membership-free">${t.cta.label} &rarr;</a></div>
+      </div>`;
+    }
     const per = cycle === 'annual' ? '/ year' : '/ month';
     const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(PRICES[id].annual / 12))}/mo · 2 months free</div>` : '';
+    const trial = id === 'club' ? `<div class="trial">🎟️ Try Club for 7 days — ${fmt(TRIAL)}</div>` : '';
     return `<div class="tier ${id}">
       <span class="badge">${t.badge}</span>
       <h2>${t.name}</h2>
-      <div class="price">${fmt(PRICES[id][cycle])} <small>${per}</small></div>${mo}
+      <div class="price">${fmt(PRICES[id][cycle])} <small>${per}</small></div>${mo}${trial}
       <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
       <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-join-${id}">Join ${t.name} &rarr;</button></div>
     </div>`;
@@ -203,7 +234,7 @@ async function openJoin(tier) {
   const amt = PRICES[tier][cycle];
   slot.innerHTML = `<div class="join">
     <h2>Join ${TIERS[tier].name} — ${fmt(amt)} ${cycle === 'annual' ? '/ year' : '/ month'}</h2>
-    <p class="muted" style="margin-bottom:10px">Pay by M-Pesa, then paste the message below. We switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)</p>
+    <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> the free projects, AI courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} and robotics courses roll out over the coming weeks &mdash; you&rsquo;re first in line and lock in today&rsquo;s price. Pay by M-Pesa, then paste the message below; we switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)${tier === 'club' ? ' <br><strong>Want to try first?</strong> Pay <strong>' + fmt(TRIAL) + '</strong> and write &ldquo;7-day trial&rdquo; in the message.' : ''}</p>
     <ol>
       <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>

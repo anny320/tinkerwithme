@@ -156,12 +156,19 @@ grant execute on function
   to authenticated;
 grant execute on function public.lms_my_membership(), public.lms_member_rank() to anon, authenticated;
 
--- ── After running: mark the self-paced courses that Club unlocks ──────
--- Membership unlocks the self-paced courses, not the free minis (already
--- free) or the live courses. Set the flag on the right rows, e.g.:
+-- ── After running: mark which self-paced courses each tier unlocks ────
+-- Offering model (locked 25 Oct): the split follows the "needs a kit" line.
+--   • Club unlocks the 8 AI self-paced courses (browser-only, no hardware).
+--   • Premium unlocks all 17 — i.e. Club's AI courses PLUS the 9 robotics
+--     courses (which need a microcontroller + parts).
+-- lms_can_access gates by rank, so a 'premium' course is Premium-only and a
+-- 'club' course is Club-and-above. Set the flags, e.g.:
 --
 --   update public.lms_courses set membership_tier = 'club'
---   where price_kes > 0 and slug in ( …your self-paced course slugs… );
+--   where price_kes > 0 and slug in ( …the 8 AI course slugs… );
+--   update public.lms_courses set membership_tier = 'premium'
+--   where price_kes > 0 and slug in ( …the 9 robotics course slugs… );
 --
+-- (The free minis stay membership_tier = null — they're already free.)
 -- Review `select slug, title, price_kes, membership_tier from lms_courses
--- order by price_kes;` first, then set the flag on the self-paced set.
+-- order by price_kes;` first.
