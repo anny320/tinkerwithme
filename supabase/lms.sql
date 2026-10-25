@@ -68,6 +68,8 @@ create table if not exists public.lms_lessons (
 create index if not exists lms_lessons_course on public.lms_lessons (course_id, position);
 -- Free preview: anyone can open this lesson before buying the course.
 alter table public.lms_lessons add column if not exists is_preview boolean not null default false;
+-- Simplified read-aloud "kid mode" text per lesson (premium courses; free courses use kids_content.json).
+alter table public.lms_lessons add column if not exists kid_body text not null default '';
 -- Families outside Kenya: a USD price to show, and a HustleSasa card-payment
 -- link (set its redirect to course.html?c=<slug>&paid=card).
 alter table public.lms_courses add column if not exists price_usd int check (price_usd is null or price_usd >= 0);
@@ -285,7 +287,7 @@ begin
   if not found or not lms_can_open_lesson(l.id) then raise exception 'You don''t have access to this lesson.'; end if;
   select * into p from lms_progress where user_id = lms_uid() and lesson_id = l.id;
   return json_build_object(
-    'id', l.id, 'course_id', l.course_id, 'section', l.section, 'title', l.title, 'body', l.body, 'video_url', l.video_url,
+    'id', l.id, 'course_id', l.course_id, 'section', l.section, 'title', l.title, 'body', l.body, 'kid_body', l.kid_body, 'video_url', l.video_url,
     'quiz', coalesce((select json_agg(json_build_object('q', q->>'q', 'options', q->'options') order by n)
                       from jsonb_array_elements(l.quiz) with ordinality as t(q, n)), '[]'::json),
     'done', p.completed_at is not null, 'quiz_score', p.quiz_score, 'quiz_total', p.quiz_total);
