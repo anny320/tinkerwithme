@@ -417,7 +417,7 @@ function renderOverview() {
       ${payForm('course')}</div>`;
   }
   if (!C.can_access && C.price_kes && LMS.user) act += trainerBox();
-  $('main').innerHTML = adminBar() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '');
+  $('main').innerHTML = adminBar() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '') + (finished() && !C.price_kes ? nextStep() : '');
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
@@ -820,6 +820,16 @@ function certificate() {
       <button class="tw-btn tw-btn-orange" type="button" id="cert-print">🖨 Print</button>
       <a class="tw-btn tw-btn-white" href="share.html?c=${encodeURIComponent(C.slug)}" data-ga="lms-share-build">📷 Share your build</a>
       <a class="tw-btn tw-btn-white" href="stories.html" data-ga="lms-share-story">💬 Share your story</a>
+    </div></div>`;
+}
+/* ── Free → paid conversion nudge (shown when a free course is completed) ── */
+function nextStep() {
+  return `<div class="action" style="border-left:4px solid var(--orange)" data-ga="lms-free-complete-nudge">
+    <h3>🚀 Ready for the next challenge?</h3>
+    <p>Nice work finishing this free build! The <strong>premium self-paced courses</strong> go deeper into robotics &amp; AI with bigger projects — and a <strong>membership</strong> unlocks the whole library plus live sessions with a Kenyan trainer.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <a class="tw-btn tw-btn-orange" href="membership.html" data-ga="lms-free-complete-membership">See membership &rarr;</a>
+      <a class="tw-btn tw-btn-white" href="learn.html" data-ga="lms-free-complete-browse">Browse all courses</a>
     </div></div>`;
 }
 function wireCertificate() {
