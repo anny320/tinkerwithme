@@ -119,7 +119,7 @@
 
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
-    <p class="launch">🔥 <strong>Founding 100.</strong> Be one of the first <strong>100 founding families</strong> — lifetime founding status, a place on our founders wall, first access, and <strong>40% off your first 12 months</strong>. <span id="spots"></span> Free projects &amp; AI courses are live today; live sessions and the robotics lab roll out over the coming weeks. Risk-free: <strong>full refund within 10 days</strong> if you haven&rsquo;t completed a course or joined a live session.</p>
+    <p class="launch">🔥 <strong>Founding 100.</strong> Be one of the first <strong>100 founding families</strong> — lifetime founding status, a place on our founders wall, first access, and <strong>40% off your first 12 months</strong>. <span id="spots"></span> Free projects and the self-paced robotics &amp; AI courses are available today; live sessions and the small-group cohort roll out over the coming weeks. Risk-free: <strong>full refund within 10 days</strong> if you haven&rsquo;t completed a course or joined a live session.</p>
     <div class="toggle" role="group" aria-label="Billing cycle">
       <button type="button" id="t-monthly" class="on">Monthly</button>
       <button type="button" id="t-annual">Annual <span class="save-pill">2 months free</span></button>
@@ -149,7 +149,7 @@
       <details><summary>What&rsquo;s a founding member?</summary><p>The first <strong>100 families</strong> to join. You keep <strong>lifetime founding status</strong> (a place on our founders wall, first access to everything new, and a direct line to the team) and <strong>40% off your first 12 months</strong>. When the 100 places are gone, the founding offer closes.</p></details>
       <details><summary>What if we change our mind?</summary><p>You&rsquo;re covered by a <strong>10-day money-back guarantee</strong> — a full refund within 10 days if you haven&rsquo;t completed a course or joined a live session. Monthly plans aren&rsquo;t locked in; cancel any time.</p></details>
       <details><summary>Can we invite a friend?</summary><p>Yes — <strong>refer a friend and you both get a free month</strong> once they join. Message us on WhatsApp with your friend&rsquo;s name after they sign up and we&rsquo;ll add the month to both accounts.</p></details>
-      <details><summary>When does everything go live?</summary><p>The free projects and AI courses are available now. The live sessions, robotics lab, parent progress reports and demo days are rolling out over the coming weeks — <strong>founding members get them first</strong>.</p></details>
+      <details><summary>When does everything go live?</summary><p>The free projects and all 17 self-paced courses are available now. The live sessions, small-group cohort, parent progress reports and demo days are rolling out over the coming weeks — <strong>founding members get them first</strong>.</p></details>
       <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
     </div>
   </div>
@@ -209,13 +209,13 @@ const TIERS = {
   club: { name: 'Club', badge: 'Join the makers', feats: [
     `A <strong>monthly live group session</strong> with a live trainer ${SOON}`,
     'A cohort of young makers + the <strong>Builds Wall</strong>',
-    `The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy ${SOON}`,
+    'The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy',
     'A new build every month',
     'One account for the whole family' ] },
   premium: { name: 'Premium', badge: 'The cohort', feats: [
     'Everything in Club',
     `A <strong>small live cohort</strong> — max 8 kids, your own trainer, 2 classes a month ${SOON}`,
-    `<strong>All 17 courses</strong> incl. the robotics lab — <strong>kit-optional</strong> (everyday parts + a free simulator) ${SOON}`,
+    '<strong>All 17 courses</strong> incl. the robotics lab — <strong>kit-optional</strong> (everyday parts + a free simulator)',
     `A <strong>parent progress report</strong> ${SOON}`,
     `A termly <strong>demo day</strong> + a certificate mailed home ${SOON}`,
     'Priority help &amp; early access to new builds' ] },
@@ -342,7 +342,7 @@ async function openJoin(tier) {
   const period = cycle === 'annual' ? 'year' : 'month';
   slot.innerHTML = `<div class="join">
     <h2>Reserve your ${TIERS[tier].name} place — <s style="color:var(--text-2);font-weight:400">${fmt(std)}</s> ${fmt(amt)} / ${period}</h2>
-    <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> you lock <strong>lifetime founding status</strong> and <strong>40% off your first ${EARLY_MONTHS} months</strong>, then it renews at ${fmt(std)}/${period}. The free projects, AI courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} and robotics courses roll out over the coming weeks &mdash; you&rsquo;re first in line. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session. (Card auto-renewal via Paystack is coming soon.)</p>
+    <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> you lock <strong>lifetime founding status</strong> and <strong>40% off your first ${EARLY_MONTHS} months</strong>, then it renews at ${fmt(std)}/${period}. The free projects, all 17 self-paced courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} roll out over the coming weeks &mdash; you&rsquo;re first in line. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session. (Card auto-renewal via Paystack is coming soon.)</p>
     <ol>
       <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>
