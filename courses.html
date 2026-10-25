@@ -47,7 +47,7 @@ body{font-family:var(--font-display);background:var(--bg);color:var(--text);min-
 .hero-badge{display:inline-block;background:rgba(240,123,29,0.25);color:#FFB870;font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(240,123,29,0.4)}
 .hero h1{font-size:clamp(24px,5vw,40px);font-weight:700;margin-bottom:8px}
 .hero p{font-size:15px;color:rgba(255,255,255,0.72);max-width:560px;margin:0 auto}
-.paths{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:1.6rem auto 0;text-align:left}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;max-width:940px;margin:1.6rem auto 0;text-align:left}
 .path{display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.22);border-radius:var(--radius);padding:14px 16px;color:#fff;text-decoration:none;transition:background .15s}
 .path:hover{background:rgba(255,255,255,0.14)}
 .path b{font-size:16.5px}
@@ -255,10 +255,11 @@ footer a{color:var(--orange-dark);text-decoration:none}
 
 <header class="hero">
   <span class="hero-badge">Courses</span>
-  <h1>Two ways to learn with Tinkerwith</h1>
-  <p>Learn online at your own pace, or build live with a trainer.</p>
+  <h1>Three ways to learn with Tinkerwith</h1>
+  <p>Go at your own pace, join as a member, or build live with a trainer.</p>
   <div class="paths">
-    <a class="path" href="#online"><b>💻 At your own pace</b><span>Online lessons, quizzes and a certificate. Free and paid courses.</span><i>See online courses &darr;</i></a>
+    <a class="path" href="#online"><b>💻 At your own pace</b><span>Online lessons, quizzes and a certificate. Free and premium courses.</span><i>See online courses &darr;</i></a>
+    <a class="path" href="membership.html"><b>⭐ Membership</b><span>Club or Premium: live group classes, the maker community, and the courses included.</span><i>See membership &rarr;</i></a>
     <a class="path" href="#live"><b>🧑‍🏫 Live with a trainer</b><span>Online 1:1, small group or in person, with a kit if you want one.</span><i>See live courses &darr;</i></a>
   </div>
 </header>
@@ -271,7 +272,7 @@ footer a{color:var(--orange-dark);text-decoration:none}
       <div>
         <span class="sp-eyebrow">At your own pace &middot; online</span>
         <h2>Start today, learn at your own pace</h2>
-        <p>Sign in and start a free course straight away, or pay by M-Pesa for a paid one. Paid courses include 12 months of access, and you can book a trainer for help.</p>      </div>
+        <p>Sign in and start a <strong>free build</strong> straight away &mdash; or take a <strong>premium robotics or AI course</strong>, now fully self-paced with lessons, quizzes, diagrams and a certificate. Buy a course outright (M-Pesa or card, 12 months&rsquo; access), or <strong>unlock them all with <a href="membership.html">Club or Premium membership</a></strong>.</p>      </div>
       <a class="sp-all" href="learn.html">All online courses &rarr;</a>
     </div>
     <div class="sp-grid" id="online-list"><p class="sp-loading">Loading courses&hellip;</p></div>
@@ -581,8 +582,17 @@ const TRACK_BANNERS = {
   ai: '<svg viewBox="0 0 300 104" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="28" y="24" width="128" height="52" rx="14" stroke="currentColor" stroke-width="3" fill="#84BD00" fill-opacity=".15"/><path d="M52 76l0 16 17-16z" fill="#84BD00" fill-opacity=".15" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="62" cy="50" r="4" fill="currentColor"/><circle cx="82" cy="50" r="4" fill="currentColor"/><circle cx="102" cy="50" r="4" fill="currentColor"/><path d="M226 22l5 13 13 5-13 5-5 13-5-13-13-5 13-5z" fill="#5E8700"/><circle cx="196" cy="74" r="6" stroke="currentColor" stroke-width="2.6"/><circle cx="232" cy="78" r="6" stroke="currentColor" stroke-width="2.6"/><circle cx="268" cy="66" r="6" stroke="currentColor" stroke-width="2.6"/><path d="M202 72l24 4M238 76l24-8" stroke="currentColor" stroke-width="2" opacity=".55"/></svg>',
   combo: '<svg viewBox="0 0 300 104" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="110" y="34" width="80" height="54" rx="12" stroke="currentColor" stroke-width="3" fill="#7A3FB0" fill-opacity=".14"/><path d="M150 20v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="150" cy="18" r="4" fill="#7A3FB0"/><circle cx="133" cy="56" r="7" fill="#E53935"/><circle cx="167" cy="56" r="7" fill="#84BD00"/><path d="M132 74h36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M110 50H92v22h18M190 50h18v22h-18" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M60 62l6-6 6 6-6 6zM228 44l6-6 6 6-6 6z" fill="#FF7F32"/><path d="M240 70l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill="#004C97" opacity=".85"/></svg>',
 };
+// Which live courses also exist self-paced in the LMS (filled by loadOnline).
+let LMS_PUB = new Set();
+const LIVE_TO_LMS = { 'smart-city-2-ai-powered': 'smart-city-2' };   // id differs between the catalog and the LMS
+const lmsSlug = id => LIVE_TO_LMS[id] || id;
+
 function cardHtml(course){
   const prog = course.sessions.map(s => `<li><strong>${esc(s.title)}.</strong> ${esc(s.desc)}</li>`).join('');
+  const sp = lmsSlug(course.id);
+  const spLink = LMS_PUB.has(sp)
+    ? `<a class="teach-self" href="course.html?c=${encodeURIComponent(sp)}" data-ga="courses-selfpaced-${esc(course.id)}">📱 Or take it self-paced online, at your own pace &rarr;</a>`
+    : '';
   const prereq = course.standalone
     ? `<span class="badge standalone">Standalone</span>`
     : '';
@@ -612,6 +622,7 @@ function cardHtml(course){
       <button class="btn btn-book" type="button" data-book="${esc(course.id)}" aria-expanded="false">Book this course</button>
       <a class="btn btn-pdf" href="proposals/${course.id}.pdf" target="_blank" rel="noopener">⬇ Outline PDF</a>
     </div>
+    ${spLink}
     <a class="teach-self" href="curriculum.html?c=${encodeURIComponent(course.id)}" data-ga="curriculum-${esc(course.id)}">📘 Teach it yourself: full curriculum, ${P(DATA.curriculum_price)} &rarr;</a>
     <button class="enq-toggle${ENQ.includes(course.id) ? ' on' : ''}" type="button" data-enq="${esc(course.id)}">${ENQ.includes(course.id) ? '✓ In your enquiry' : '＋ Add to enquiry'}</button>
     <div class="booking" hidden>
@@ -666,6 +677,8 @@ async function loadOnline(){
     if (!r.ok) throw new Error(r.status);
     const list = await r.json();
     if (!list.length) throw new Error('none');
+    LMS_PUB = new Set(list.map(c => c.slug));            // live cards can now link to their self-paced version
+    try { if (typeof DATA !== 'undefined' && DATA && activeFilter) render(); } catch (_) {}
     box.innerHTML = list.map(c => `
       <a class="sp-card${c.price_kes ? '' : ' sp-free'}" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="courses-online-${esc(c.slug)}">
         <img class="sp-cover" src="${esc(c.cover_url || ('assets/courses/free/' + c.slug + '.svg'))}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/courses/free/placeholder.svg'">
