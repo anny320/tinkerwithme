@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://tinkerwith.me/membership.html">
-<title>Membership — all our courses, one plan — TinkerWith_</title>
-<meta name="description" content="Tinkerwith membership: all 17 self-paced robotics and AI courses, free projects and new monthly builds for one simple plan. Club from KES 2,000/month; Premium adds two live classes a month. One account covers the whole family.">
+<title>Membership — build robots &amp; AI, together — TinkerWith_</title>
+<meta name="description" content="Tinkerwith membership: young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers, a maker cohort, and the courses included. Founding 100: 40% off for 12 months. One account for the whole family.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
 <meta property="og:url" content="https://tinkerwith.me/membership.html">
-<meta property="og:title" content="Tinkerwith membership — all our courses, one plan">
-<meta property="og:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 2,000/mo; Premium adds two live classes a month. One account for the whole family.">
+<meta property="og:title" content="Tinkerwith membership — build robots &amp; AI, together">
+<meta property="og:description" content="Young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers + a maker cohort, courses included. Founding 100: 40% off for 12 months.">
 <meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tinkerwith membership — all our courses, one plan">
-<meta name="twitter:description" content="All self-paced courses + new monthly projects for one plan. Club from KES 2,000/mo.">
+<meta name="twitter:title" content="Tinkerwith membership — build robots &amp; AI, together">
+<meta name="twitter:description" content="Young African makers build real robots & AI live, with everyday parts. Founding 100: 40% off for 12 months. One account for the whole family.">
 <meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,10 +28,15 @@
 .toggle button{font:inherit;font-weight:600;font-size:14.5px;padding:9px 18px;border:0;background:transparent;cursor:pointer;color:var(--ink)}
 .toggle button.on{background:var(--ink);color:var(--white)}
 .save-pill{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--green-deep,#3a7d1e);margin-left:8px}
-.tiers{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:1.4rem}
-@media(max-width:760px){.tiers{grid-template-columns:1fr}}
-.tier{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.5rem 1.6rem;display:flex;flex-direction:column;gap:10px}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.4rem;align-items:stretch}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:10px}
+.tier.free{background:var(--cream)}
+.tier.free .badge{background:var(--white)}
 .tier.premium{background:var(--orange-soft,#FFE3CF)}
+.soon{display:inline-block;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--ink);color:var(--white);border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle}
+.trial{background:var(--green-soft,#DFF4C9);border:2px solid var(--ink);border-radius:var(--radius-sm);padding:7px 10px;font-size:13px;font-weight:600;margin-top:2px}
+.launch{background:#FFF3D6;border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;font-size:14.5px;margin:.2rem 0 0;box-shadow:4px 4px 0 var(--ink)}
 .tier .badge{align-self:flex-start;font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
 .tier.club .badge{background:var(--green,#8BD450)}
 .tier.premium .badge{background:#FFD23F}
@@ -50,6 +55,28 @@
 .member{background:var(--green-soft,#DFF4C9);border:2px solid var(--ink);border-radius:var(--radius-lg);padding:1.3rem 1.5rem;margin-top:1.4rem}
 .member h2{font-size:22px;font-weight:600;margin-bottom:4px}
 .muted{color:var(--text-2);font-size:14px}
+.refer{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.6rem}
+@media(max-width:700px){.refer{grid-template-columns:1fr}}
+.refer-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);padding:1.1rem 1.3rem}
+.refer-card h3{font-size:17px;font-weight:600;margin-bottom:4px}
+.refer-card p{font-size:14.5px;color:var(--text-2);margin-bottom:10px}
+.see{background:none;border:0;color:var(--blue);font:inherit;font-weight:600;font-size:13.5px;cursor:pointer;text-decoration:underline;margin-top:4px;align-self:flex-start;padding:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 16px;z-index:999;overflow:auto}
+.modal.open{display:flex}
+.modal-box{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:8px 8px 0 var(--ink);max-width:720px;width:100%;padding:1.5rem 1.6rem;margin:auto}
+.modal-box h2{font-size:23px;font-weight:600;margin-bottom:4px}
+.modal-close{float:right;background:none;border:2px solid var(--ink);border-radius:99px;width:34px;height:34px;font-size:18px;cursor:pointer;line-height:1}
+.ci-note{font-size:14.5px;color:var(--text-2);margin:6px 0 2px}
+.ci-group{margin-top:1.1rem}
+.ci-group h3{font-size:12.5px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--text-2);margin-bottom:4px}
+.ci-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border,#ececec);font-size:15px}
+.ci-badge{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:99px;padding:2px 8px;white-space:nowrap}
+.ci-badge.club{background:var(--green,#8BD450)}
+.ci-badge.premium{background:#FFD23F}
+.ci-badge.free{background:var(--cream)}
+.tt{margin-top:.5rem;display:flex;flex-direction:column;gap:6px}
+.tt-row{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;padding:7px 11px;background:var(--cream);border:1.5px solid var(--ink);border-radius:var(--radius-sm)}
+.tt-row b{font-weight:600}
 .faq{max-width:760px;margin-top:2.4rem}
 .faq details{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
 .faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
@@ -59,7 +86,6 @@
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
 <script src="price.js"></script>
-<script src="paystack.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -86,13 +112,14 @@
 <header class="page-head">
   <div class="tw-container">
     <span class="tw-eyebrow-pill">Membership</span>
-    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">All our courses, one simple plan</h1>
-    <p>One self-paced course is KES 3,000. Membership gives your child <strong>every</strong> self-paced robotics &amp; AI course, the free projects, and new builds each month &mdash; for less than the price of one. One account covers the whole family.</p>
+    <h1 class="tw-h1" style="font-size:clamp(30px,4.8vw,46px)">Where young African makers build real robots &amp; AI — together</h1>
+    <p>Live sessions with real trainers, a cohort of young makers, and projects built with <strong>what you already have</strong> — no expensive kit required. The courses come included; the <strong>community and the live push</strong> are what make it stick. One account covers the whole family.</p>
   </div>
 </header>
 
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
+    <p class="launch">🔥 <strong>Founding 100.</strong> Be one of the first <strong>100 founding families</strong> — lifetime founding status, a place on our founders wall, first access, and <strong>40% off your first 12 months</strong>. <span id="spots"></span> Free projects &amp; AI courses are live today; live sessions and the robotics lab roll out over the coming weeks. Risk-free: <strong>full refund within 10 days</strong> if you haven&rsquo;t completed a course or joined a live session.</p>
     <div class="toggle" role="group" aria-label="Billing cycle">
       <button type="button" id="t-monthly" class="on">Monthly</button>
       <button type="button" id="t-annual">Annual <span class="save-pill">2 months free</span></button>
@@ -102,14 +129,38 @@
 
     <div id="slot"></div>
 
+    <div class="refer">
+      <div class="refer-card">
+        <h3>🎁 Bring a friend</h3>
+        <p>Refer a friend and you <strong>both get a free month</strong> when they join.</p>
+        <a class="tw-btn tw-btn-white tw-btn-sm" id="b-refer" href="#" target="_blank" rel="noopener" data-ga="membership-refer">Share on WhatsApp &rarr;</a>
+      </div>
+      <div class="refer-card">
+        <h3>🏫 Running a class or a school?</h3>
+        <p>We set up Tinkerwith for whole classes and schools — term programmes and holiday camps with our partner schools.</p>
+        <a class="tw-btn tw-btn-white tw-btn-sm" href="schools.html" data-ga="membership-schools">Membership for schools &rarr;</a>
+      </div>
+    </div>
+
     <div class="faq">
-      <details><summary>Can I cancel any time?</summary><p>Yes. A monthly plan simply isn&rsquo;t renewed; an annual plan runs to the end of its year. No lock-in.</p></details>
+      <details><summary>What&rsquo;s the difference between Free, Club and Premium?</summary><p>They differ by <strong>how much live time and cohort</strong> you get — the courses come included. <strong>Free</strong>: the 34 projects, the Builds Wall and certificates. <strong>Club</strong>: a monthly live group session with a Kenyan trainer, the AI self-paced courses, a new build each month and the maker community. <strong>Premium</strong>: a small live cohort (max 8 kids, your own trainer, two classes a month), all 17 courses including the robotics lab, parent progress reports and a termly demo day.</p></details>
+      <details><summary>How do the live cohorts work? Will there be a spot?</summary><p>Premium cohorts are deliberately small — <strong>max 8 kids</strong> with their own trainer — so every child is seen. We have a <strong>team of 10 trainers</strong> running <strong>several cohorts in parallel</strong>, grouped by age and level, so there&rsquo;s a spot and a time that fits. Club&rsquo;s monthly session is a larger group open to all members.</p></details>
+      <details><summary>Do we need to buy a kit?</summary><p><strong>No.</strong> The AI courses run in a browser, and the robotics courses are built to work with <strong>everyday parts you already have</strong> plus a cheap microcontroller and a free simulator — our <a href="resources.html">resources guide</a> shows how. A Maker Kit is an optional convenience if you&rsquo;d rather have everything in one box; it&rsquo;s never required.</p></details>
+      <details><summary>What&rsquo;s a founding member?</summary><p>The first <strong>100 families</strong> to join. You keep <strong>lifetime founding status</strong> (a place on our founders wall, first access to everything new, and a direct line to the team) and <strong>40% off your first 12 months</strong>. When the 100 places are gone, the founding offer closes.</p></details>
+      <details><summary>What if we change our mind?</summary><p>You&rsquo;re covered by a <strong>10-day money-back guarantee</strong> — a full refund within 10 days if you haven&rsquo;t completed a course or joined a live session. Monthly plans aren&rsquo;t locked in; cancel any time.</p></details>
+      <details><summary>Can we invite a friend?</summary><p>Yes — <strong>refer a friend and you both get a free month</strong> once they join. Message us on WhatsApp with your friend&rsquo;s name after they sign up and we&rsquo;ll add the month to both accounts.</p></details>
+      <details><summary>When does everything go live?</summary><p>The free projects and AI courses are available now. The live sessions, robotics lab, parent progress reports and demo days are rolling out over the coming weeks — <strong>founding members get them first</strong>.</p></details>
       <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
-      <details><summary>What&rsquo;s the difference between Club and Premium?</summary><p>Club is everything self-paced — all courses, at your own pace. Premium adds <strong>two live group classes a month</strong> with a trainer, for kids who want the live push and a cohort.</p></details>
-      <details><summary>Does membership include the live courses or the teacher curriculums?</summary><p>Premium includes two live group classes a month. One-off live courses and the teacher curriculums are sold separately.</p></details>
     </div>
   </div>
 </section>
+
+<div class="modal" id="courses-modal" role="dialog" aria-modal="true" aria-label="Courses and timetable">
+  <div class="modal-box">
+    <button class="modal-close" type="button" id="cm-close" aria-label="Close">&times;</button>
+    <div id="courses-body"></div>
+  </div>
+</div>
 
 <footer class="tw-footer">
   <div class="tw-container tw-footer-grid">
@@ -142,38 +193,124 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 const $ = id => document.getElementById(id);
 const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
-// Keep in step with lms_membership_price() in supabase/membership.sql.
+// Standard prices — keep in step with lms_membership_price() in supabase/membership.sql.
 const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
+// Early-bird (pre-launch): 40% off, locked for the first 12 months, then standard.
+const EARLY = { club: { monthly: 1200, annual: 12000 }, premium: { monthly: 3900, annual: 39000 } };
+const EARLY_MONTHS = 12, REFUND_DAYS = 10;
+const SOON = '<span class="soon">soon</span>';
 const TIERS = {
-  club: { name: 'Club', badge: 'Self-paced', feats: [
-    'All 17 self-paced robotics &amp; AI courses',
-    'The 34 free build-along projects',
-    'New projects added every month',
-    'Quizzes, certificates &amp; the Builds Wall',
-    'Learn at your own pace, any time' ] },
-  premium: { name: 'Premium', badge: 'Club + live', feats: [
+  free: { name: 'Free', badge: 'Taste it', feats: [
+    'The 34 build-along projects',
+    'The <strong>Builds Wall</strong> — share what you make',
+    'A certificate for every project',
+    'No card, start in 2 minutes' ],
+    cta: { label: 'Start free', href: 'free-for-kids.html' } },
+  club: { name: 'Club', badge: 'Join the makers', feats: [
+    `A <strong>monthly live group session</strong> with a live trainer ${SOON}`,
+    'A cohort of young makers + the <strong>Builds Wall</strong>',
+    `The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy ${SOON}`,
+    'A new build every month',
+    'One account for the whole family' ] },
+  premium: { name: 'Premium', badge: 'The cohort', feats: [
     'Everything in Club',
-    '<strong>Two live group classes a month</strong> with a trainer',
-    'A cohort of other young makers',
-    'Priority help on WhatsApp' ] },
+    `A <strong>small live cohort</strong> — max 8 kids, your own trainer, 2 classes a month ${SOON}`,
+    `<strong>All 17 courses</strong> incl. the robotics lab — <strong>kit-optional</strong> (everyday parts + a free simulator) ${SOON}`,
+    `A <strong>parent progress report</strong> ${SOON}`,
+    `A termly <strong>demo day</strong> + a certificate mailed home ${SOON}`,
+    'Priority help &amp; early access to new builds' ] },
 };
+const ORDER = ['free', 'club', 'premium'];
 let cycle = 'monthly', MINE = null;
 const fmt = n => 'KES ' + n.toLocaleString();
 
 function renderTiers() {
-  $('tiers').innerHTML = Object.entries(TIERS).map(([id, t]) => {
+  $('tiers').innerHTML = ORDER.map(id => {
+    const t = TIERS[id];
+    if (id === 'free') {
+      return `<div class="tier free">
+        <span class="badge">${t.badge}</span>
+        <h2>${t.name}</h2>
+        <div class="price">Free <small>forever</small></div>
+        <div class="per">No card needed</div>
+        <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
+        <div class="cta"><a class="tw-btn tw-btn-white" href="${t.cta.href}" data-ga="membership-free">${t.cta.label} &rarr;</a></div>
+        <button class="see" type="button" data-see data-ga="membership-see-free">See courses &amp; timetable</button>
+      </div>`;
+    }
     const per = cycle === 'annual' ? '/ year' : '/ month';
-    const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(PRICES[id].annual / 12))}/mo · 2 months free</div>` : '';
+    const eb = EARLY[id][cycle], std = PRICES[id][cycle];
+    const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(eb / 12))}/mo for year one</div>` : '';
     return `<div class="tier ${id}">
       <span class="badge">${t.badge}</span>
       <h2>${t.name}</h2>
-      <div class="price">${fmt(PRICES[id][cycle])} <small>${per}</small></div>${mo}
+      <div class="price"><s style="color:var(--text-2);font-size:18px;font-weight:400">${fmt(std)}</s> ${fmt(eb)} <small>${per}</small></div>${mo}
+      <div class="trial">🐦 Early-bird: <strong>40% off</strong> your first ${EARLY_MONTHS} months, then ${fmt(std)} ${per}</div>
       <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
-      <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-join-${id}">Join ${t.name} &rarr;</button></div>
+      <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-reserve-${id}">Reserve my place &rarr;</button></div>
+      <button class="see" type="button" data-see data-ga="membership-see-${id}">See courses &amp; timetable</button>
     </div>`;
   }).join('');
   $('tiers').querySelectorAll('[data-join]').forEach(b => b.onclick = () => openJoin(b.dataset.join));
+  $('tiers').querySelectorAll('[data-see]').forEach(b => b.onclick = openCourses);
 }
+
+/* ── Courses + proposed timetable (modal) ── */
+const COURSES = [
+  { t: 'Smart Home Builder', track: 'robotics', pop: true },
+  { t: 'Self-Driving Car', track: 'robotics', pop: true },
+  { t: 'Robot Arm &amp; Claw', track: 'robotics', pop: true },
+  { t: 'Smart City', track: 'robotics' },
+  { t: 'Wearable Tech Lab', track: 'robotics' },
+  { t: 'IoT Garden Monitor', track: 'robotics' },
+  { t: 'Musical Instrument Builder', track: 'robotics' },
+  { t: 'Smart Plant Carer', track: 'robotics' },
+  { t: 'Bluetooth Control Lab', track: 'robotics' },
+  { t: 'AI Game Designer', track: 'ai', pop: true },
+  { t: 'AI Movie Studio', track: 'ai', pop: true },
+  { t: 'Computer Vision Explorer', track: 'ai', pop: true },
+  { t: 'AI Entrepreneur', track: 'ai' },
+  { t: 'Deepfake Detective &amp; AI Safety', track: 'ai' },
+  { t: 'AI Music Producer', track: 'ai' },
+  { t: 'AI for Social Good', track: 'ai' },
+  { t: 'Smart City 2.0 — AI-Powered', track: 'ai' },
+];
+const TIMETABLE = [
+  { who: 'Club — monthly group session (all members)', when: '1st Saturday · 10:00–11:00 EAT · online' },
+  { who: 'Premium cohort · Explorers (7–9)', when: 'Tuesdays · 16:00–17:00 EAT' },
+  { who: 'Premium cohort · Builders (10–12)', when: 'Wednesdays · 16:30–17:30 EAT' },
+  { who: 'Premium cohort · Makers (13–16)', when: 'Thursdays · 17:00–18:00 EAT' },
+  { who: 'Premium cohort · Weekend group', when: 'Saturdays · 11:00–12:00 EAT' },
+];
+function courseRow(c) {
+  const badge = c.track === 'ai' ? '<span class="ci-badge club">Club</span>' : '<span class="ci-badge premium">Premium</span>';
+  return `<div class="ci-row"><span>${c.pop ? '⭐ ' : ''}${c.t}</span>${badge}</div>`;
+}
+function coursesHtml() {
+  const ai = COURSES.filter(c => c.track === 'ai'), ro = COURSES.filter(c => c.track === 'robotics');
+  return `<h2>What&rsquo;s inside</h2>
+    <p class="ci-note">⭐ = most popular. <strong>Free</strong>: the 34 projects. <strong>Club</strong>: the AI courses + a monthly live session. <strong>Premium</strong>: all 17 incl. the robotics lab + small-group cohorts.</p>
+    <div class="ci-group"><h3>Free — on free-for-kids</h3>
+      <div class="ci-row"><span>34 build-along projects (10 free courses)</span><span class="ci-badge free">Free</span></div></div>
+    <div class="ci-group"><h3>AI track — in Club &amp; Premium (${ai.length})</h3>${ai.map(courseRow).join('')}</div>
+    <div class="ci-group"><h3>Robotics lab — Premium (${ro.length}) · kit-optional</h3>${ro.map(courseRow).join('')}</div>
+    <div class="ci-group"><h3>Proposed live timetable</h3>
+      <div class="tt">${TIMETABLE.map(s => `<div class="tt-row"><b>${s.who}</b><span>${s.when}</span></div>`).join('')}</div>
+      <p class="ci-note">Proposed times — we confirm your cohort&rsquo;s slot by age, level and time zone, and run several cohorts in parallel (10 trainers). Outside East Africa? We schedule you in your own time zone.</p>
+    </div>`;
+}
+function openCourses() {
+  $('courses-body').innerHTML = coursesHtml();
+  $('courses-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCourses() {
+  $('courses-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+$('cm-close').onclick = closeCourses;
+$('courses-modal').onclick = e => { if (e.target === $('courses-modal')) closeCourses(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('courses-modal').classList.contains('open')) closeCourses(); });
 
 function setCycle(c) {
   cycle = c;
@@ -196,25 +333,16 @@ async function openJoin(tier) {
   const r = await LMS.ready;
   if (!r.signIn) { slot.innerHTML = `<div class="join"><p class="notice">Sign-in is taking a break. Please try again later.</p></div>`; return; }
   if (!LMS.user) {
-    slot.innerHTML = `<div class="join"><h2>Join ${TIERS[tier].name}</h2>
-      <p>Create a free account (or sign in), then pay and we&rsquo;ll switch your membership on.</p>
-      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to join</button></div>`;
+    slot.innerHTML = `<div class="join"><h2>Reserve your ${TIERS[tier].name} place</h2>
+      <p>Create a free account (or sign in) to lock your <strong>early-bird 40% off</strong>, then pay and we&rsquo;ll switch your membership on.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to reserve</button></div>`;
     $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
-  const amt = PRICES[tier][cycle];
-  // Auto-renew via Paystack is offered only once a public key + a Plan code
-  // for this tier×cycle are set (lms.js CONFIG). Otherwise it's M-Pesa + manual.
-  const planCode = (LMS.paystackPlans || {})[tier + '-' + cycle] || '';
-  const canSub = TWPaystack.enabled() && !!planCode;
-  const subBlock = canSub ? `<div class="action" style="margin:4px 0 14px">
-      <button class="tw-btn tw-btn-orange" type="button" id="b-sub" data-ga="membership-subscribe-${tier}">💳 Subscribe — ${fmt(amt)}/${cycle === 'annual' ? 'year' : 'month'}, auto-renew &rarr;</button>
-      <p class="muted" style="margin-top:8px;font-size:14px">Card or M-Pesa via Paystack. Renews automatically each ${cycle === 'annual' ? 'year' : 'month'} — cancel any time. Your membership switches on the moment payment clears.</p>
-    </div>
-    <p class="muted" style="font-size:13.5px">Prefer a one-off payment? Pay by M-Pesa Till:</p>` : '';
+  const amt = EARLY[tier][cycle], std = PRICES[tier][cycle];
+  const period = cycle === 'annual' ? 'year' : 'month';
   slot.innerHTML = `<div class="join">
-    <h2>Join ${TIERS[tier].name} — ${fmt(amt)} ${cycle === 'annual' ? '/ year' : '/ month'}</h2>
-    <p class="muted" style="margin-bottom:10px">${canSub ? 'Subscribe for automatic renewal, or pay once by M-Pesa.' : 'Pay by M-Pesa, then paste the message below. We switch your membership on once we&rsquo;ve checked it, usually the same day. (Card auto-renewal via Paystack is coming soon.)'}</p>
-    ${subBlock}
+    <h2>Reserve your ${TIERS[tier].name} place — <s style="color:var(--text-2);font-weight:400">${fmt(std)}</s> ${fmt(amt)} / ${period}</h2>
+    <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> you lock <strong>lifetime founding status</strong> and <strong>40% off your first ${EARLY_MONTHS} months</strong>, then it renews at ${fmt(std)}/${period}. The free projects, AI courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} and robotics courses roll out over the coming weeks &mdash; you&rsquo;re first in line. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session. (Card auto-renewal via Paystack is coming soon.)</p>
     <ol>
       <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>
@@ -222,31 +350,20 @@ async function openJoin(tier) {
     <form id="mf">
       <label class="field-in">M-Pesa message or code
         <textarea name="msg" required maxlength="600" placeholder="e.g. SJK4AB12CD Confirmed. Ksh${amt.toLocaleString()}.00 paid to …"></textarea></label>
-      <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-pay-${tier}">Send payment</button>
+      <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-reserve-pay-${tier}">Reserve &amp; send payment</button>
       <p id="mf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
     </form></div>`;
   slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (canSub && $('b-sub')) $('b-sub').onclick = async () => {
-    try {
-      await TWPaystack.pay({
-        plan: planCode, tag: tier + '-' + cycle,
-        metadata: { user_id: (LMS.user && LMS.user.id) || '', tier: tier, cycle: cycle },
-        onSuccess: function () {
-          LMS.track('membership_subscribed', { tier, cycle });
-          slot.innerHTML = `<div class="member"><h2>Payment received 🎉</h2>
-            <p>We&rsquo;re switching your ${TIERS[tier].name} membership on now — it usually takes a few seconds. Refresh <a href="learn.html">your courses</a> in a moment, or reload this page to see it active.</p></div>`;
-          slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        },
-      });
-    } catch (x) { const err = $('mf-err'); if (err) err.textContent = x.message || 'Could not start checkout.'; }
-  };
   $('mf').onsubmit = async e => {
     e.preventDefault();
     const f = e.target, b = f.querySelector('button'), err = $('mf-err'); b.disabled = true; err.textContent = '';
     try {
-      const res = await LMS.rpc('lms_submit_membership_payment', { p_tier: tier, p_cycle: cycle, p_message: f.msg.value, p_method: 'mpesa' });
-      LMS.track('membership_payment_sent', { tier, cycle });
-      slot.innerHTML = `<div class="member"><h2>Got it — ${res.code} 🎉</h2><p>We&rsquo;ll check your payment and switch your ${TIERS[tier].name} membership on, usually the same day. Want to hurry it along? <a href="${WA + encodeURIComponent('Hi Anne, I just paid for Tinkerwith ' + TIERS[tier].name + ' membership (' + cycle + '). Reference: ' + res.code)}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
+      // Tag the payment as early-bird so it's granted at the founding rate and
+      // flagged for renewal (see supabase/membership-earlybird.sql).
+      const msg = `[EARLY-BIRD · 40% off ${EARLY_MONTHS}mo · paid ${fmt(amt)}] ` + f.msg.value;
+      const res = await LMS.rpc('lms_submit_membership_payment', { p_tier: tier, p_cycle: cycle, p_message: msg, p_method: 'mpesa' });
+      LMS.track('membership_earlybird_reserved', { tier, cycle });
+      slot.innerHTML = `<div class="member"><h2>Reserved — ${res.code} 🎉</h2><p>You&rsquo;re a founding member. We&rsquo;ll confirm your payment and switch your ${TIERS[tier].name} membership on (usually the same day), with <strong>40% off locked for ${EARLY_MONTHS} months</strong> and a <strong>${REFUND_DAYS}-day money-back guarantee</strong>. Want to hurry it along? <a href="${WA + encodeURIComponent('Hi Anne, I just reserved Tinkerwith ' + TIERS[tier].name + ' early-bird (' + cycle + '). Reference: ' + res.code)}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
       slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (x) { err.textContent = x.message || 'Something went wrong.'; b.disabled = false; }
   };
@@ -254,7 +371,22 @@ async function openJoin(tier) {
 
 renderTiers();
 LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
+
+// Referral: a prefilled WhatsApp share (you both get a free month).
+(function () {
+  const a = $('b-refer'); if (!a) return;
+  const msg = 'Check out Tinkerwith — Kenyan kids build real robots & AI, live and with everyday parts. Join and we each get a free month: https://tinkerwith.me/membership.html';
+  a.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+})();
+
 LMS.ready.then(async () => {
+  // Founding-100 scarcity counter (shows only once the RPC is live).
+  try {
+    const s = await LMS.rpc('lms_founding_spots');
+    if (s && typeof s.left === 'number') {
+      $('spots').textContent = s.left > 0 ? `Only ${s.left} of ${s.cap} places left. ` : 'All founding places are taken. ';
+    }
+  } catch (_) {}
   if (!LMS.user) return;
   try { MINE = await LMS.rpc('lms_my_membership'); } catch (_) {}
   const b = memberBanner(); if (b) $('slot').innerHTML = b;
