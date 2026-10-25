@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="Space Mono, ui-monospace, monospace">
+<rect x="0" y="0" width="800" height="440" fill="#FBF7F2"/>
+<path d="M700 70 V414" stroke="#3A3A3A" stroke-width="5" stroke-linecap="round"/>
+<text x="693" y="62" text-anchor="end" fill="#6E5F56" font-size="12.5" font-weight="700">GND (−)</text>
+<path d="M740 70 V414" stroke="#D8322B" stroke-width="5" stroke-linecap="round"/>
+<text x="747" y="62" text-anchor="start" fill="#D8322B" font-size="12.5" font-weight="700">5V (+)</text>
+
+<rect x="40" y="90" width="150" height="290" rx="12" fill="#0E7C86" stroke="#09434A" stroke-width="4"/>
+<rect x="20" y="110" width="24" height="40" rx="3" fill="#C3C7CB" stroke="#5a5f63" stroke-width="2"/>
+<text x="115" y="360" text-anchor="middle" fill="#EAF7F5" font-size="14" font-weight="700">ARDUINO NANO</text>
+
+<!-- D6 -> 470 -> NeoPixel DIN -->
+<rect x="186" y="118" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="130" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D6</text>
+<path d="M208 125 L300 125" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<path d="M300 125 L311 132 L322 118 L333 132 L344 118 L355 132 L366 125" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round"/>
+<text x="333" y="112" text-anchor="middle" fill="#6E5F56" font-size="10" font-weight="700">470Ω</text>
+<path d="M366 125 L404 125 L404 150" stroke="#220111" stroke-width="2.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="404" y="146" text-anchor="middle" fill="#6E5F56" font-size="9.5" font-weight="700">DIN</text>
+
+<!-- NeoPixel strip (8 LEDs) -->
+<rect x="398" y="150" width="268" height="40" rx="6" fill="#1b1b1b" stroke="#000" stroke-width="3"/>
+<g stroke="#000" stroke-width="1.5">
+<circle cx="416" cy="170" r="9" fill="#E24A3B"/><circle cx="447" cy="170" r="9" fill="#E8853A"/>
+<circle cx="478" cy="170" r="9" fill="#E8B23A"/><circle cx="509" cy="170" r="9" fill="#4FA94B"/>
+<circle cx="540" cy="170" r="9" fill="#2E8BD0"/><circle cx="571" cy="170" r="9" fill="#3A5AD0"/>
+<circle cx="602" cy="170" r="9" fill="#7A3FB0"/><circle cx="633" cy="170" r="9" fill="#C83F8F"/>
+</g>
+<text x="532" y="140" text-anchor="middle" fill="#6E5F56" font-size="11" font-weight="700">NeoPixel strip (8 WS2812B)</text>
+<!-- strip 5V + GND -->
+<path d="M666 160 L684 160 L684 92 L740 92" stroke="#D8322B" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M666 180 L674 180 L674 96 L700 96" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<!-- 1000uF cap across 5V/GND -->
+<path d="M712 250 H728 M720 250 V242 M720 250 V258" stroke="#6E5F56" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<path d="M712 266 H728" stroke="#6E5F56" stroke-width="2.4"/>
+<text x="720" y="284" text-anchor="middle" fill="#6E5F56" font-size="9.5" font-weight="700">1000µF</text>
+
+<!-- A0 sound sensor -->
+<rect x="186" y="200" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="212" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">A0</text>
+<path d="M208 207 H420" stroke="#2E7DE0" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="420" y="222" width="150" height="46" rx="7" fill="#5B3A82" stroke="#331f4d" stroke-width="3"/>
+<text x="495" y="242" text-anchor="middle" fill="#EAE2F3" font-size="11.5" font-weight="700">SOUND SENSOR</text>
+<text x="495" y="257" text-anchor="middle" fill="#C9B7E0" font-size="10" font-weight="700">AO · VCC · GND</text>
+<path d="M420 236 L420 207" stroke="#2E7DE0" stroke-width="3.4" fill="none"/>
+<path d="M570 232 L600 232 L600 100 L740 100" stroke="#D8322B" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M570 258 L588 258 L588 320 L700 320" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<!-- D2 mode button -->
+<rect x="186" y="262" width="22" height="15" rx="2" fill="#E8B23A" stroke="#7A5A12" stroke-width="2"/><text x="180" y="274" text-anchor="end" fill="#EAF7F5" font-size="12" font-weight="700">D2</text>
+<path d="M208 269 L320 269" stroke="#004C97" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+<rect x="320" y="254" width="30" height="30" rx="4" fill="#fff" stroke="#220111" stroke-width="3"/>
+<circle cx="335" cy="269" r="7" fill="#E8B23A" stroke="#220111" stroke-width="2.4"/>
+<text x="360" y="266" fill="#220111" font-size="11" font-weight="700">mode button</text>
+<text x="360" y="281" fill="#6E5F56" font-size="9.5" font-weight="700">other leg → GND</text>
+<path d="M350 277 L350 300 L700 300" stroke="#3A3A3A" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<rect x="186" y="330" width="22" height="15" rx="2" fill="#9AA0A6" stroke="#4a4f54" stroke-width="2"/><text x="180" y="342" text-anchor="end" fill="#EAF7F5" font-size="11" font-weight="700">GND</text>
+<path d="M208 337 L224 337 L224 392 L700 392" stroke="#3A3A3A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="40" y="38" fill="#220111" font-size="17" font-weight="700">Wearable · Build &amp; light up</text>
+<text x="40" y="56" fill="#6E5F56" font-size="12" font-weight="700">A NeoPixel strip (data on D6 via 470Ω), a sound sensor and a mode button.</text>
+</svg>
