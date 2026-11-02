@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Plan a full-day robotics, electronics or AI holiday camp — timings, activities, materials and a printable run sheet for schools and camp organisers.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Internal staff camp planner — full workflow + AI custom themes. The public planner is at /camp-planner-outsiders.html.">
 <link rel="canonical" href="https://tinkerwith.me/camp-planner.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
@@ -94,11 +95,31 @@ textarea{resize:vertical;min-height:70px}
 .hint{font-size:11px;color:var(--text-3);margin-top:4px}
 footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
 footer a{color:var(--orange);text-decoration:none}
+/* ── LOGIN GATE (staff only) ── */
+#login-gate{position:fixed;inset:0;background:var(--brown);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#login-gate.hidden{display:none}
+#login-gate .login-box{background:var(--surface);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.35)}
+#login-gate .login-logo{font-size:15px;font-weight:700;color:var(--brown);margin-bottom:1.5rem}
+#login-gate h2{font-size:20px;font-weight:700;margin-bottom:6px}
+#login-gate p{font-size:13px;color:var(--text-3);margin-bottom:1.5rem;line-height:1.5}
+#login-gate .login-submit{width:100%;padding:13px;border-radius:var(--radius-pill);border:none;background:var(--orange);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s}
+#login-gate .login-submit:hover{filter:brightness(1.08)}
 </style>
 <script src="analytics.js"></script>
 <script src="site-data.js"></script>
+<script src="lms.js"></script>
 </head>
 <body>
+
+<!-- LOGIN GATE — this is the internal staff tool; the public planner is camp-planner-outsiders.html -->
+<div id="login-gate">
+  <div class="login-box">
+    <div class="login-logo">TinkerWithMe</div>
+    <h2>Camp Planner — Staff</h2>
+    <p id="gate-msg">Checking your sign-in&hellip;</p>
+    <button class="login-submit" id="gate-btn" type="button" hidden>Sign in</button>
+  </div>
+</div>
 
 <header class="hero">
   <div class="hero-badge">Free for educators</div>
@@ -608,6 +629,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (_) { /* picker stays hidden if the catalogue can't load */ }
   refreshProjectPicker();   // default theme is Arduino → show its projects
 });
+</script>
+
+<script>
+// Staff gate — mirrors admin.html. Only signed-in lms_admins see the planner;
+// the overlay covers the page until that check passes. The public planner
+// (camp-planner-outsiders.html) has no gate.
+(function(){
+  var esc = (window.LMS && LMS.esc) || function(s){ return String(s == null ? '' : s); };
+  function gate(msg, btnText, onClick){
+    document.getElementById('gate-msg').innerHTML = msg;
+    var b = document.getElementById('gate-btn');
+    b.hidden = !btnText;
+    if (btnText){ b.textContent = btnText; b.onclick = onClick; }
+  }
+  async function logout(){
+    try { if (LMS.state.clerk) await LMS.state.clerk.signOut(); } catch (_) {}
+    location.reload();
+  }
+  if (!window.LMS || !LMS.ready){
+    return gate('Sign-in isn’t available right now. Please try again later.', 'Reload', function(){ location.reload(); });
+  }
+  LMS.ready.then(function(r){
+    if (!r.ok || !r.signIn) return gate('Sign-in isn’t working right now. Please try again later.', 'Try again', function(){ location.reload(); });
+    if (!LMS.user) return gate('Sign in with your Tinkerwith staff account.', 'Sign in', LMS.signIn);
+    if (!LMS.isAdmin) return gate('You’re signed in as <strong>' + esc(LMS.user.primaryEmailAddress && LMS.user.primaryEmailAddress.emailAddress || '') + '</strong>, which isn’t a staff account.', 'Sign out', logout);
+    document.getElementById('login-gate').classList.add('hidden');
+  });
+})();
 </script>
 
 </body>
