@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Plan a full-day Arduino robotics or AI holiday camp instantly in your browser — groups, staffing, timetable, materials and a printable run sheet. No sign-up, no waiting, save as PDF.">
+<link rel="canonical" href="https://tinkerwith.me/camp-planner-outsiders.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TinkerWith_">
+<meta property="og:url" content="https://tinkerwith.me/camp-planner-outsiders.html">
+<meta property="og:title" content="Instant Camp Planner — TinkerWithMe">
+<meta property="og:description" content="Plan a full-day Arduino robotics or AI holiday camp instantly in your browser — groups, staffing, timetable, materials and a printable run sheet.">
+<meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Instant Camp Planner — TinkerWithMe">
+<meta name="twitter:description" content="Plan a full-day Arduino robotics or AI holiday camp instantly in your browser — groups, staffing, timetable, materials and a printable run sheet.">
+<meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
+<title>Instant Camp Planner — TinkerWithMe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F07B1D;--orange-dark:#C45C00;--orange-light:#FEF0E0;
+  --brown:#2A1A0E;--green:#4CAF2A;--green-light:#EBF7E3;--green-dark:#1A5C08;
+  --blue:#1A6BBF;--blue-light:#E3EEFB;--blue-dark:#0A3566;
+  --bg:#FAFAF7;--surface:#fff;--border:rgba(42,26,14,0.12);--border-strong:rgba(42,26,14,0.24);
+  --text:#2A1A0E;--text-2:#6B4C30;--text-3:#B08060;
+  --radius:12px;--radius-sm:8px;--radius-pill:99px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.hero{background:var(--brown);padding:2.5rem 1.5rem 2rem;text-align:center;color:#fff}
+.hero h1{font-size:clamp(22px,5vw,38px);font-weight:700;margin-bottom:8px}
+.hero p{font-size:15px;color:rgba(255,255,255,0.70);max-width:520px;margin:0 auto}
+.hero-badge{display:inline-block;background:rgba(240,123,29,0.25);color:#FFB870;font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:1rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid rgba(240,123,29,0.4)}
+.container{max-width:860px;margin:0 auto;padding:2rem 1rem 4rem}
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:12px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.form-group:last-child{margin-bottom:0}
+label{font-size:12px;font-weight:600;color:var(--text-2)}
+input,select,textarea{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#fff;outline:none}
+textarea{resize:vertical;min-height:70px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.two-col{grid-template-columns:1fr}}
+.toggle-row{display:grid;gap:10px}
+.toggle-row.two{grid-template-columns:1fr 1fr}
+.toggle-btn{padding:14px;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:14px;font-family:inherit;transition:all 0.15s;border:2px solid var(--border);background:var(--surface);color:var(--text-2);text-align:center}
+.toggle-btn.active-orange{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark)}
+.toggle-btn .tb-title{display:block;font-size:14px;font-weight:700}
+.toggle-btn .tb-sub{display:block;font-size:11px;font-weight:500;margin-top:3px;color:var(--text-3);line-height:1.3}
+.toggle-btn.active-orange .tb-sub{color:var(--orange-dark);opacity:0.85}
+.dur-row{display:flex;gap:8px;flex-wrap:wrap}
+.dur-btn{padding:8px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-weight:500;font-size:13px;font-family:inherit;transition:all 0.15s;color:var(--text-2)}
+.dur-btn.active-orange{border-color:var(--orange);background:var(--orange);color:#fff}
+.band-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px}
+.band-row .form-group{margin-bottom:0}
+.icon-btn{padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:16px;line-height:1;color:var(--text-2);font-family:inherit}
+.icon-btn:hover{border-color:var(--orange);color:var(--orange-dark)}
+.add-band{margin-top:6px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;padding:4px 0}
+.tally{background:var(--orange-light);color:var(--orange-dark);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+@media(max-width:560px){.proj-grid{grid-template-columns:1fr}}
+.proj-item{display:flex;gap:9px;align-items:flex-start;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);padding:9px 11px;cursor:pointer;background:var(--bg);transition:border-color .15s,background .15s}
+.proj-item:hover{border-color:var(--orange)}
+.proj-item.checked{border-color:var(--orange);background:var(--orange-light)}
+.proj-item input{width:auto;margin-top:2px;flex:0 0 auto}
+.proj-item .p-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.proj-item .p-meta{font-size:11px;color:var(--text-3);margin-top:2px}
+.proj-tools{display:flex;gap:14px;margin:2px 0 10px}
+.proj-tools button{background:none;border:none;color:var(--blue);font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;padding:0}
+.level-tag{display:inline-block;background:var(--blue-light);color:var(--blue-dark);border-radius:var(--radius-pill);font-size:10px;font-weight:700;padding:1px 7px;margin-left:5px}
+.gen-btn{display:block;width:100%;padding:16px;border-radius:var(--radius);border:none;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.15s;margin-top:1.25rem;background:var(--blue);color:#fff;font-family:inherit}
+.gen-btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.gen-btn:disabled{opacity:0.4;cursor:not-allowed}
+.loading{display:none;text-align:center;padding:2rem}
+.spinner{width:40px;height:40px;border:4px solid var(--orange-light);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.success-box{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-top:1rem;text-align:center}
+.success-box h3{font-size:16px;margin-bottom:0.5rem}
+.success-box p{font-size:13px;color:var(--text-2)}
+.dl-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
+.btn-dl{padding:10px 22px;border-radius:var(--radius-pill);font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;text-decoration:none;border:none;display:inline-block}
+.btn-preview{background:var(--blue-light);color:var(--blue-dark);border:1.5px solid var(--blue)}
+.btn-download{background:var(--green);color:#fff}
+.pdf-frame{width:100%;height:520px;border:1px solid var(--border);border-radius:var(--radius);margin-top:1.25rem;display:none}
+.error-msg{background:#FCEBEB;color:#A32D2D;padding:1rem;border-radius:var(--radius-sm);margin-top:1rem;display:none;font-size:13px}
+.hint{font-size:11px;color:var(--text-3);margin-top:4px}
+footer{text-align:center;padding:2rem 1rem 1.5rem;font-size:12px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
+footer a{color:var(--orange);text-decoration:none}
+</style>
+<script src="analytics.js"></script>
+<script src="site-data.js"></script>
+<script src="forms.js"></script>
+<!-- Client-side PDF generation (one-click download, no server needed). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-badge">Free · instant · no sign-up needed</div>
+  <h1>Instant Camp Planner</h1>
+  <p>Planning an Arduino robotics or AI holiday camp for a big, mixed-age group?
+     Pick a theme, tell us the age bands, and get the whole day — groups, staffing,
+     timetable, materials and full project instructions — built right here in your
+     browser. Nothing to wait for; save it as a PDF.</p>
+</header>
+
+<div class="container">
+
+  <!-- ABOUT YOU -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user"></i> About You</div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="req-name">Full name *</label>
+        <input type="text" id="req-name" placeholder="e.g. Jane Smith" required>
+      </div>
+      <div class="form-group">
+        <label for="req-email">Email address *</label>
+        <input type="email" id="req-email" placeholder="your@email.com" required>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="req-org">School / Organization</label>
+        <input type="text" id="req-org" placeholder="e.g. Sunrise Academy, Nairobi">
+      </div>
+      <div class="form-group">
+        <label for="req-country">Country</label>
+        <input type="text" id="req-country" placeholder="e.g. Kenya">
+      </div>
+    </div>
+  </div>
+
+  <!-- THEME -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-bulb"></i> Camp Theme</div>
+    <div class="toggle-row two">
+      <button class="toggle-btn active-orange" data-track="arduino" data-theme-preset="Arduino Robotics &amp; Electronics" onclick="setThemePreset(this)">
+        <span class="tb-title">⚙️ Arduino &amp; Robotics</span>
+        <span class="tb-sub">Hands-on hardware — circuits, sensors &amp; robots (kit needed)</span>
+      </button>
+      <button class="toggle-btn" data-track="ai" data-theme-preset="AI Skills for Kids" onclick="setThemePreset(this)">
+        <span class="tb-title">🤖 AI &amp; Machine Learning</span>
+        <span class="tb-sub">Software only — on a laptop, no hardware needed</span>
+      </button>
+    </div>
+    <p class="hint">Both themes are built from our ready-made project library, so your
+      plan is ready instantly. Need a bespoke theme (space, game design, green energy)?
+      Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a> and we'll design one.</p>
+  </div>
+
+  <!-- PROJECT PICKER -->
+  <div class="card" id="proj-card">
+    <div class="card-title"><i class="ti ti-checklist"></i> Choose Specific <span id="proj-track-label">Arduino</span> Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <p class="hint" style="margin-bottom:10px">Leave everything unticked and we'll auto-pick the best-fitting projects for each age band. Or tick the exact projects you want — each band gets the best fit for its age from your selection.</p>
+    <div class="proj-tools">
+      <button type="button" onclick="selectAllProjects(true)">Select all</button>
+      <button type="button" onclick="selectAllProjects(false)">Clear</button>
+      <span class="hint" id="proj-count" style="margin-left:auto"></span>
+    </div>
+    <div class="proj-grid" id="proj-grid"></div>
+  </div>
+
+  <!-- AGE BANDS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users-group"></i> Age Bands &amp; Numbers</div>
+    <p class="hint" style="margin-bottom:12px">Add a row per age band with how many children are in it. We'll split each band into small groups automatically. (No number? We'll assume one full group.)</p>
+    <div id="bands"></div>
+    <button class="add-band" onclick="addBand()">＋ Add another age band</button>
+    <div class="tally" id="tally">Total: 0 children</div>
+  </div>
+
+  <!-- DAY DETAILS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar"></i> Day Details</div>
+    <div class="two-col">
+      <div class="form-group">
+        <label for="camp-date">Camp date</label>
+        <input type="text" id="camp-date" placeholder="e.g. Saturday 15 August 2026">
+      </div>
+      <div class="form-group">
+        <label for="venue">Venue (optional)</label>
+        <input type="text" id="venue" placeholder="e.g. Sunrise Academy Hall">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Max children per group</label>
+      <div class="two-col">
+        <input type="number" id="max-group" value="10" min="4" max="20">
+        <div></div>
+      </div>
+      <p class="hint">Smaller groups mean more hands-on time per child (and more facilitators needed).</p>
+    </div>
+    <div class="form-group">
+      <label>Duration</label>
+      <div class="dur-row">
+        <button class="dur-btn active-orange" data-dur="full" onclick="setDuration('full')">Full day</button>
+        <button class="dur-btn" data-dur="240" onclick="setDuration('240')">4 hours</button>
+        <button class="dur-btn" data-dur="180" onclick="setDuration('180')">3 hours</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPECIAL REQUIREMENTS -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-message-2"></i> Special Requirements <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <div class="form-group">
+      <label for="brief">Anything the planner should focus on?</label>
+      <textarea id="brief" rows="3" placeholder="e.g. Focus on Teachable Machine. Kids are complete beginners."></textarea>
+    </div>
+    <p class="hint">We use these notes to steer which projects are picked for each band.</p>
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="submit()">
+    <i class="ti ti-wand"></i> Plan My Camp
+  </button>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p id="loading-msg" style="color:var(--text-2);font-size:14px">Building your camp plan…</p>
+    <p id="loading-sub" style="color:var(--text-3);font-size:12px;margin-top:4px"></p>
+  </div>
+
+  <div class="success-box" id="success-box">
+    <div id="ready-area">
+      <h3 style="color:var(--green-dark)">✅ Your camp plan is ready!</h3>
+      <div class="dl-row">
+        <a id="btn-download" class="btn-dl btn-download" style="cursor:pointer">⬇ Download PDF</a>
+        <a id="btn-preview" class="btn-dl btn-preview" style="cursor:pointer">🖨 Open &amp; print</a>
+      </div>
+      <p class="hint" id="dl-note" style="margin-top:10px">One-click download gives you a PDF file. “Open &amp; print” opens it in a new tab for the crispest print / Save-as-PDF.</p>
+      <iframe id="pdf-frame" class="pdf-frame" title="Camp plan preview"></iframe>
+      <iframe id="print-frame" style="display:none" title="Print"></iframe>
+    </div>
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+</div>
+
+<footer>
+  <p>Questions? Email <a href="mailto:tinkerwithanne@gmail.com">tinkerwithanne@gmail.com</a></p>
+  <p style="margin-top:6px"><a href="curriculumgenerator.html">← Single-session Curriculum Generator</a> · <a href="picker.html">Course Picker</a> · <a href="courses.html">💎 Premium Courses</a></p>
+</footer>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────────────────────
+// Lead logging only — this page needs NO GitHub token and NO dispatch proxy.
+// The whole plan is assembled in the browser from the pre-generated project
+// content (project_content/*.json), exactly like curriculumgenerator.html.
+const GOOGLE_FORM_ID = '1FAIpQLSdk2owabXMyT77go8Md4GDziEyG6ICxJ9fEPHmM_lZM4Q_wLQ';
+const GF = {
+  name:    'entry.2112029396',
+  email:   'entry.1021403262',
+  org:     'entry.959896618',
+  country: 'entry.710652329',
+  role:    'entry.531199886',
+};
+const CONTENT_BASE = 'project_content/';
+// ───────────────────────────────────────────────────────────────────────────────
+
+let currentTheme     = 'Arduino Robotics & Electronics';
+let currentTrack     = 'arduino';
+let selectedDuration = 'full';
+let CATALOGUE        = null;   // { arduino:{projects:[…]}, ai:{…} } from courses.json
+let pickerTrack      = null;
+let lastDocHtml      = '';   // full standalone document (print route)
+let lastInnerHtml    = '';   // header + body only (for html2pdf download)
+let lastFilename     = 'TinkerWithMe_Camp';
+
+// ─── Age-band rows ───────────────────────────────────────────────────────────
+function bandRowHtml(age, count){
+  return `
+    <div class="band-row">
+      <div class="form-group">
+        <label>Age band</label>
+        <input type="text" class="band-age" value="${age}" placeholder="e.g. 7-9" oninput="updateTally()">
+      </div>
+      <div class="form-group">
+        <label>Number of children</label>
+        <input type="number" class="band-count" value="${count}" min="1" oninput="updateTally()">
+      </div>
+      <button class="icon-btn" title="Remove band" onclick="this.closest('.band-row').remove();updateTally()">✕</button>
+    </div>`;
+}
+function addBand(age='', count=''){
+  document.getElementById('bands').insertAdjacentHTML('beforeend', bandRowHtml(age, count));
+  updateTally();
+}
+function updateTally(){
+  let total = 0;
+  document.querySelectorAll('.band-count').forEach(i => { total += parseInt(i.value,10) || 0; });
+  const bands = document.querySelectorAll('.band-row').length;
+  document.getElementById('tally').textContent =
+    `Total: ${total} ${total===1?'child':'children'} across ${bands} age band${bands===1?'':'s'}`;
+}
+
+// ─── Theme toggle ─────────────────────────────────────────────────────────────
+function setThemePreset(btn){
+  currentTheme = btn.dataset.themePreset.replace('&amp;','&');
+  currentTrack = btn.dataset.track;
+  document.querySelectorAll('[data-theme-preset]').forEach(b => {
+    b.className = 'toggle-btn' + (b === btn ? ' active-orange' : '');
+  });
+  refreshProjectPicker();
+}
+
+// ─── Project picker ───────────────────────────────────────────────────────────
+function renderProjects(track){
+  const grid = document.getElementById('proj-grid');
+  const projects = (CATALOGUE && CATALOGUE[track] && CATALOGUE[track].projects) || [];
+  grid.innerHTML = projects.map(p => `
+    <label class="proj-item" data-id="${p.id}">
+      <input type="checkbox" class="proj-check" value="${p.id}" onchange="onProjToggle(this)">
+      <span>
+        <span class="p-title">${escapeHtml(p.title)}${p.level ? `<span class="level-tag">L${p.level}</span>` : ''}</span>
+        <span class="p-meta">${escapeHtml(p.diff)} · ${escapeHtml(p.age)} · ~${p.time} min</span>
+      </span>
+    </label>`).join('');
+  updateProjCount();
+}
+function onProjToggle(cb){
+  cb.closest('.proj-item').classList.toggle('checked', cb.checked);
+  updateProjCount();
+}
+function selectAllProjects(state){
+  document.querySelectorAll('.proj-check').forEach(cb => {
+    cb.checked = state;
+    cb.closest('.proj-item').classList.toggle('checked', state);
+  });
+  updateProjCount();
+}
+function updateProjCount(){
+  const n = document.querySelectorAll('.proj-check:checked').length;
+  document.getElementById('proj-count').textContent =
+    n ? `${n} selected — only these will be used` : "None selected — we'll auto-pick";
+}
+function refreshProjectPicker(){
+  const card = document.getElementById('proj-card');
+  if (!CATALOGUE || !CATALOGUE[currentTrack]){ card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  const label = document.getElementById('proj-track-label');
+  if (label) label.textContent = currentTrack === 'ai' ? 'AI' : 'Arduino';
+  if (currentTrack !== pickerTrack){   // track changed — re-render (IDs differ per track)
+    pickerTrack = currentTrack;
+    renderProjects(currentTrack);
+  }
+}
+function collectProjectIds(){
+  return [...document.querySelectorAll('.proj-check:checked')].map(cb => cb.value);
+}
+
+function setDuration(d){
+  selectedDuration = d;
+  document.querySelectorAll('.dur-btn').forEach(b => {
+    b.className = 'dur-btn' + (b.dataset.dur === d ? ' active-orange' : '');
+  });
+}
+
+// ─── Plan maths (ports generate_camp_plan.py) ─────────────────────────────────
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function ageRange(label){
+  const m = /(\d+)\s*[-–]\s*(\d+)/.exec(label);
+  return m ? [parseInt(m[1],10), parseInt(m[2],10)] : [0,99];
+}
+function rangeOverlap(a,b){ return Math.max(0, Math.min(a[1],b[1]) - Math.max(a[0],b[0]) + 1); }
+
+// Read the band rows into {label,count,assumed}. A row with a range but no
+// head-count assumes one max-size group (mirrors the parse_age_bands fix).
+function collectBands(maxGroup){
+  const bands = [];
+  for (const r of document.querySelectorAll('.band-row')){
+    const raw = r.querySelector('.band-age').value.trim().replace(/\s+/g,'');
+    if (!raw || !/\d+\s*[-–]\s*\d+/.test(raw)) continue;
+    const label = raw.replace(/\s*[-–]\s*/, '-') + ' yrs';
+    let count = parseInt(r.querySelector('.band-count').value, 10);
+    let assumed = false;
+    if (!count || count <= 0){ count = maxGroup; assumed = true; }
+    bands.push({ label, count, assumed });
+  }
+  return bands;
+}
+function splitIntoGroups(bands, maxGroupSize){
+  const groups = [];
+  for (const band of bands){
+    const nGroups = Math.max(1, Math.ceil(band.count / maxGroupSize));
+    const base = Math.floor(band.count / nGroups), extra = band.count % nGroups;
+    for (let i=0;i<nGroups;i++){
+      groups.push({
+        band: band.label,
+        name: `${band.label} · Group ${String.fromCharCode(65+i)}`,
+        size: base + (i < extra ? 1 : 0),
+      });
+    }
+  }
+  return groups;
+}
+function planStaffing(groups, targetRatio=10){
+  const totalChildren = groups.reduce((s,g)=>s+g.size,0);
+  const nGroups = groups.length;
+  const leadFacilitators = nGroups;
+  const floatingHelpers = Math.max(1, Math.ceil(nGroups/3));
+  const coordinators = 1, firstAiders = 1;
+  const totalAdults = leadFacilitators + floatingHelpers + coordinators + firstAiders;
+  const ratio = totalAdults ? Math.round(totalChildren/totalAdults*10)/10 : 0;
+  return { totalChildren, nGroups, leadFacilitators, floatingHelpers, coordinators, firstAiders, totalAdults, ratio, targetRatio };
+}
+function buildMasterTimetable(isFullDay, durationMins){
+  if (isFullDay){
+    return [
+      ['08:30 – 09:00', 'Arrival, registration &amp; name badges'],
+      ['09:00 – 09:20', 'Opening assembly — welcome, safety brief, split into groups (all bands together)'],
+      ['09:20 – 10:45', '<strong>Project Block 1</strong> — each group in its own space'],
+      ['10:45 – 11:05', "Morning break &amp; snack (staggered so the space doesn't crowd)"],
+      ['11:05 – 12:30', '<strong>Project Block 2</strong> — build continues / next activity'],
+      ['12:30 – 13:15', 'Lunch &amp; free play (supervised, outdoors if possible)'],
+      ['13:15 – 14:30', '<strong>Project Block 3</strong> — finish builds, test &amp; debug'],
+      ['14:30 – 14:50', 'Showcase prep — groups tidy kits and rehearse a 60-second demo'],
+      ['14:50 – 15:20', 'Showcase &amp; demos — every group presents to the whole camp'],
+      ['15:20 – 15:30', 'Closing circle, certificates &amp; departure'],
+    ];
+  }
+  const body = Math.max(30, durationMins - 40);
+  return [
+    ['First 15 min', 'Welcome, safety brief &amp; split into groups'],
+    [`Next ${body} min`, '<strong>Project Block</strong> — age-band groups work in parallel'],
+    ['Last 25 min', 'Showcase, tidy-up &amp; closing circle'],
+  ];
+}
+
+// Pick up to n age-appropriate projects for a band, scored like the Python.
+function assignCatalogueProjects(bandLabel, trackProjects, n, brief, selectedIds){
+  let projects = trackProjects;
+  if (selectedIds && selectedIds.length){
+    const chosen = projects.filter(p => selectedIds.includes(p.id));
+    if (chosen.length) projects = chosen;
+  }
+  const bandRng = ageRange(bandLabel);
+  const keywords = (String(brief).toLowerCase().match(/[a-z]{4,}/g) || []);
+  const score = p => {
+    let s = rangeOverlap(bandRng, ageRange(p.age)) * 10;
+    const text = (p.title + ' ' + (p.desc || '')).toLowerCase();
+    if (keywords.length && keywords.some(k => text.includes(k))) s += 1000;
+    return s;
+  };
+  // Stable sort (modern JS) keeps catalogue order for ties, matching Python.
+  return projects.map((p,i)=>[p,i]).sort((a,b)=>score(b[0])-score(a[0]) || a[1]-b[1]).map(x=>x[0]).slice(0,n);
+}
+// Resolve hand-picked IDs across BOTH tracks, in the order chosen.
+function resolveSelectedProjects(selectedIds){
+  const byId = {};
+  for (const tk of ['arduino','ai']){
+    for (const p of ((CATALOGUE && CATALOGUE[tk] && CATALOGUE[tk].projects) || [])){
+      if (!(p.id in byId)) byId[p.id] = p;
+    }
+  }
+  return selectedIds.map(id => byId[id]).filter(Boolean);
+}
+function planBandProjects(trackProjects, bands, isFullDay, brief, selectedIds){
+  const n = isFullDay ? 3 : 2;
+  return bands.map(b => [b, assignCatalogueProjects(b.label, trackProjects, n, brief, selectedIds)]);
+}
+function dedupeTopics(plan){
+  const order = [], bandsFor = {}, numOf = {};
+  for (const [b, picks] of plan){
+    for (const p of picks){
+      if (!(p.id in bandsFor)){ order.push(p); bandsFor[p.id] = []; }
+      bandsFor[p.id].push(b);
+    }
+  }
+  order.forEach((p,i)=>{ numOf[p.id] = i+1; });
+  return { order, numOf, bandsFor };
+}
+function bandsLabel(bands){ return bands.map(b => `${b.label} (${b.count})`).join(', '); }
+
+// ─── Report HTML sections (port of the WeasyPrint builders) ───────────────────
+function execSummary(theme, bands, staff, durationLabel, campDate, venue){
+  const bandSummary = bands.map(b => `${b.label} (${b.count})`).join(', ');
+  const intro =
+    `<p>This is the full plan for a <strong>${escapeHtml(theme)}</strong> camp of ` +
+    `<strong>${staff.totalChildren} children</strong>` +
+    `${campDate ? ' on ' + escapeHtml(campDate) : ''}` +
+    `${venue ? ' at ' + escapeHtml(venue) : ''}. The intake is split into age bands — ` +
+    `${bandSummary} — and each band into small groups, so every child works at the right ` +
+    `level and gets plenty of hands-on time. The schedule, staffing, topic index and full ` +
+    `lesson content follow below.</p>\n`;
+  const lengthStat = durationLabel.split('(')[0].trim().replace(/\b\w/g, c => c.toUpperCase());
+  const stats = [
+    [staff.totalChildren, 'Children'], [bands.length, 'Age bands'], [staff.nGroups, 'Groups'],
+    [staff.totalAdults, 'Adults'], [`1:${staff.ratio}`, 'Ratio'], [lengthStat, 'Length'],
+  ];
+  const statHtml = stats.map(([n,l]) => `<span class="stat"><span class="n">${n}</span><span class="l">${l}</span></span>`).join('');
+  const outcomes = [
+    'Every child builds and tests real projects pitched at their age and level.',
+    'Children work in small teams — sharing roles, debugging together and helping one another.',
+    'Each group presents what they made at the end-of-day showcase, building confidence and communication.',
+  ].map(o => `<li>${o}</li>`).join('');
+  return `<div class="exec-summary">\n<h2>Executive Summary</h2>\n${intro}` +
+         `<div class="stats">${statHtml}</div>\n<h3>Learning outcomes</h3>\n<ul>${outcomes}</ul>\n</div>\n`;
+}
+function timetableTable(rows){
+  const body = rows.map(([t,a]) => `<tr><td>${t}</td><td>${a}</td></tr>`).join('');
+  return `<h2>Master Day Timetable</h2>\n<p>The whole camp runs on one clock. Groups start and stop ` +
+         `together so breaks, lunch and the showcase stay in sync.</p>\n` +
+         `<table><thead><tr><th>Time</th><th>Activity</th></tr></thead><tbody>${body}</tbody></table>\n`;
+}
+function groupsTable(groups){
+  const rows = groups.map(g => `<tr><td>${g.band}</td><td>${g.name}</td><td>${g.size} children</td></tr>`).join('');
+  return `<h2>Groups at a Glance</h2>\n<p>Each group stays together all day with its own lead ` +
+         `facilitator, so no child is ever in a group larger than the target size.</p>\n` +
+         `<table><thead><tr><th>Age band</th><th>Group</th><th>Size</th></tr></thead><tbody>${rows}</tbody></table>\n`;
+}
+function staffingTable(staff){
+  const rows =
+    `<tr><td>Lead facilitators (one per group)</td><td>${staff.leadFacilitators}</td></tr>` +
+    `<tr><td>Floating helpers</td><td>${staff.floatingHelpers}</td></tr>` +
+    `<tr><td>Camp coordinator</td><td>${staff.coordinators}</td></tr>` +
+    `<tr><td>First-aider</td><td>${staff.firstAiders}</td></tr>` +
+    `<tr><td><strong>Total adults</strong></td><td><strong>${staff.totalAdults}</strong></td></tr>`;
+  return `<h2>Staffing &amp; Ratios</h2>\n<p>With <strong>${staff.totalChildren} children</strong> in ` +
+         `<strong>${staff.nGroups} groups</strong>, this plan needs <strong>${staff.totalAdults} adults</strong> ` +
+         `on the day — an overall ratio of about <strong>1 adult to ${staff.ratio} children</strong> ` +
+         `(target 1:${staff.targetRatio} or better).</p>\n` +
+         `<table><thead><tr><th>Role</th><th>People</th></tr></thead><tbody>${rows}</tbody></table>\n`;
+}
+function topicIndex(plan){
+  const { numOf } = dedupeTopics(plan);
+  let rows = '';
+  for (const [b, picks] of plan){
+    const items = picks.map(p => `${numOf[p.id]}. ${escapeHtml(p.title)} <em>(${escapeHtml(p.diff)} · ~${p.time} min)</em>`);
+    rows += `<tr><td><strong>${b.label}</strong><br><span style="color:#B08060;font-size:11px">${b.count} children</span></td>` +
+            `<td>${items.join('<br>') || '—'}</td></tr>`;
+  }
+  return `<h2>Topics in This Plan</h2>\n<p>Each band's topics are listed by number below. A topic run by ` +
+         `more than one band appears once in the programme (with its bands noted), so its instructions are ` +
+         `never repeated — the same number just shows up for each band that runs it.</p>\n` +
+         `<table><thead><tr><th>Age band</th><th>Topics (by number)</th></tr></thead><tbody>${rows}</tbody></table>\n`;
+}
+const SAFETY_HTML =
+  '<h2>Safety, Logistics &amp; Contingencies</h2>\n<ul>' +
+  '<li><strong>Space:</strong> one table per group with room to move; keep walkways clear and power leads taped down.</li>' +
+  '<li><strong>Movement:</strong> groups start and stop together on the master timetable — stagger the break and lunch queues so the space never crowds.</li>' +
+  '<li><strong>First aid &amp; allergies:</strong> collect allergy info at registration; the first-aider holds the kit and the contact list all day.</li>' +
+  '<li><strong>Wet weather:</strong> move outdoor free-play to the hall; keep one indoor back-up game ready.</li>' +
+  "<li><strong>Early finishers:</strong> use each project's extension challenges (listed in the project pages below).</li>" +
+  '<li><strong>Equipment failure:</strong> keep one spare kit per band; a failed build becomes a debugging lesson, not a lost hour.</li>' +
+  '</ul>\n';
+const STAFF_CHECKLIST_HTML =
+  '<h2>Staff Briefing Checklist</h2>\n<ul>' +
+  '<li>Every facilitator knows their group, their band, and their room.</li>' +
+  '<li>Kits counted and laid out per group before doors open.</li>' +
+  '<li>Registration desk has the sign-in sheet, badges, and allergy list.</li>' +
+  '<li>Timekeeper owns the master timetable and calls transitions out loud.</li>' +
+  '<li>Floating helpers know which groups they cover during breaks.</li>' +
+  '<li>Showcase space and closing certificates ready before the last block.</li>' +
+  '</ul>\n';
+
+// Fetch cached content for each unique topic and build the lesson cards.
+async function programmeFromCache(plan, groups, brief){
+  const { order, numOf, bandsFor } = dedupeTopics(plan);
+  const contents = {};
+  for (const p of order){
+    const res = await fetch(CONTENT_BASE + p.id + '.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Couldn't load content for "${p.title}". Please try again.`);
+    contents[p.id] = (await res.json()).content_html || '';
+  }
+  let body = '<h2>Lesson Topics</h2>\n<p>Each topic below is a self-contained card with its materials, ' +
+    'step-by-step instructions and full code/build steps. Where a topic is run by more than one age band, ' +
+    'it is shown <strong>once</strong> and the bands that run it are listed on the card — the instructions ' +
+    'are the same for each, so there is no need to repeat them.</p>\n';
+  for (const p of order){
+    const bands = bandsFor[p.id];
+    const bandSet = new Set(bands.map(b => b.label));
+    const nGroups = groups.filter(g => bandSet.has(g.band)).length;
+    body += '<section class="project">\n' +
+      `<div class="project-head"><span class="num">${numOf[p.id]}</span>` +
+      `<span class="title">${escapeHtml(p.title)}</span>` +
+      `<span class="meta">${escapeHtml(p.diff)} · ~${p.time} min · Bands: ${bandsLabel(bands)} · ${nGroups} group(s)</span></div>\n` +
+      `<div class="project-body">${contents[p.id]}</div>\n</section>\n`;
+  }
+  body += '<h2>Materials — Scaling</h2>\n<p>Each topic\'s materials list above is <strong>per group</strong>. ' +
+    'Multiply it by the number of groups that run the topic (shown on each card) to get the totals to prepare. ' +
+    'Shared kit (laptops, power strips, extension leads) can rotate between groups rather than be bought per group.</p>\n';
+  body += SAFETY_HTML + STAFF_CHECKLIST_HTML;
+  if (brief){
+    body += `<h2>Organiser Notes</h2>\n<p>Projects were chosen to fit your notes where possible: <em>${escapeHtml(brief)}</em></p>\n`;
+  }
+  return body;
+}
+
+// ─── Standalone branded document (mirrors pdf_template / curriculum DOC_CSS) ───
+const DOC_CSS = `
+  @page { size: A4; margin: 18mm 16mm;
+    @bottom-center { content: "TinkerWithMe · Nairobi, Kenya · tinkerwithanne@gmail.com"; font-size: 9pt; color: #B08060; }
+    @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 9pt; color: #B08060; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; line-height: 1.6; color: #2A1A0E; background: white; padding: 24px; }
+  @media print { body { background: white; padding: 0; } a { color: #F07B1D; text-decoration: none; } }
+  header { position: relative; border-bottom: 2.5px solid #F07B1D; padding-bottom: 1rem; margin-bottom: 2rem; }
+  .header-brand { font-size: 18px; font-weight: 700; color: #2A1A0E; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+  .header-title { font-size: 13px; color: #6B4C30; margin-bottom: 0.25rem; }
+  .header-subtitle { font-size: 11px; color: #B08060; }
+  .header-prepared { margin-top: 0.6rem; font-size: 12px; color: #2A1A0E; }
+  .session-badge { display: inline-block; background: #FEF0E0; color: #C45C00; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .header-meta { font-size: 11px; color: #6B4C30; text-align: right; line-height: 1.7; position: absolute; right: 0; top: 0; }
+  h1 { font-size: 28px; font-weight: 700; margin: 1.5rem 0 0.5rem; color: #2A1A0E; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+  h2 { font-size: 18px; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #2A1A0E; border-bottom: 1px solid #eee; padding-bottom: 0.35rem; }
+  h3 { font-size: 14px; font-weight: 700; margin: 1rem 0 0.5rem; color: #2A1A0E; }
+  p { margin-bottom: 0.75rem; line-height: 1.75; }
+  ul, ol { margin: 0.75rem 0 0.75rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 12px; }
+  th { background: #FAFAF7; padding: 0.5rem; text-align: left; font-weight: 700; border-bottom: 2px solid #B08060; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #B08060; }
+  td { padding: 0.5rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  strong { font-weight: 600; color: #2A1A0E; }
+  em { font-style: italic; color: #6B4C30; }
+  pre { background: #F5F0EB; border-left: 3px solid #F07B1D; padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 10px; line-height: 1.55; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  code { font-family: 'Courier New', Courier, monospace; font-size: 10px; background: #F5F0EB; padding: 0 3px; border-radius: 2px; }
+  pre code { background: none; padding: 0; }
+  .exec-summary { background: #FAFAF7; border: 1px solid #eee; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0.75rem 0; }
+  .stat { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 72px; }
+  .stat .n { display: block; font-size: 18px; font-weight: 700; color: #C45C00; }
+  .stat .l { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #B08060; }
+  .project { border: 1px solid #eee; border-radius: 10px; padding: 0.5rem 1rem 1rem; margin: 1rem 0; page-break-inside: avoid; }
+  .project-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; border-bottom: 1px solid #eee; padding: 0.5rem 0; margin-bottom: 0.5rem; }
+  .project-head .num { background: #F07B1D; color: #fff; font-weight: 700; border-radius: 99px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+  .project-head .title { font-size: 16px; font-weight: 700; }
+  .project-head .meta { font-size: 11px; color: #B08060; }
+`;
+function buildHeaderHtml(o){
+  const currentDate = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  const prepared = o.userName ? `Prepared for <strong>${escapeHtml(o.userName)}</strong>` : 'Camp plan';
+  return `<header>` +
+    `<div class="header-meta">tinkerwithanne@gmail.com<br>Nairobi, Kenya<br>${currentDate}</div>` +
+    `<div class="header-brand">TinkerWithMe</div>` +
+    `<div class="header-title">${escapeHtml(o.theme)} · Full-Day Camp</div>` +
+    `<div class="header-subtitle">${o.subtitle}</div>` +
+    `<div class="header-prepared">${prepared}<span class="session-badge">Full-day camp</span></div>` +
+    `</header>`;
+}
+function buildCampDoc(o){
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">` +
+    `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
+    buildHeaderHtml(o) + `<main>${o.body}</main></body></html>`;
+}
+
+// ─── Submit → build in the browser ────────────────────────────────────────────
+async function submit(){
+  const name    = document.getElementById('req-name').value.trim();
+  const email   = document.getElementById('req-email').value.trim();
+  const org     = document.getElementById('req-org').value.trim();
+  const country = document.getElementById('req-country').value.trim();
+  const campDate = document.getElementById('camp-date').value.trim();
+  const venue    = document.getElementById('venue').value.trim();
+  const brief    = document.getElementById('brief').value.trim();
+  const maxGroup = parseInt(document.getElementById('max-group').value, 10) || 10;
+
+  if (!name)  { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  const bands = collectBands(maxGroup);
+  if (!bands.length) { alert('Please add at least one age band (e.g. 7-9).'); return; }
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('success-box').style.display = 'none';
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('gen-btn').disabled = true;
+  const setStep = (msg, sub) => {
+    document.getElementById('loading-msg').textContent = msg;
+    document.getElementById('loading-sub').textContent = sub || '';
+  };
+
+  try {
+    if (!CATALOGUE) {
+      setStep('Loading the project library…');
+      const res = await fetch('courses.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('Could not load the project library. Please refresh and try again.');
+      CATALOGUE = await res.json();
+    }
+    setStep('Building your camp plan…');
+
+    const isFullDay    = selectedDuration === 'full';
+    const durationMins = isFullDay ? 330 : parseInt(selectedDuration, 10);
+    const durationLabel = isFullDay ? 'full day (approx. 08:30–15:30)' : `${durationMins} minutes`;
+
+    const groups = splitIntoGroups(bands, maxGroup);
+    const staff  = planStaffing(groups);
+    const timetableRows = buildMasterTimetable(isFullDay, durationMins);
+
+    // Plan the band → topics mapping. Hand-picked projects (which may span both
+    // tracks) are given to every band; otherwise auto-pick per track.
+    const selectedIds = collectProjectIds();
+    const selectedProjects = selectedIds.length ? resolveSelectedProjects(selectedIds) : [];
+    let plan;
+    if (selectedProjects.length){
+      plan = bands.map(b => [b, selectedProjects.slice()]);
+    } else {
+      const trackProjects = (CATALOGUE[currentTrack] && CATALOGUE[currentTrack].projects) || [];
+      plan = planBandProjects(trackProjects, bands, isFullDay, brief, selectedIds);
+    }
+
+    const programme = await programmeFromCache(plan, groups, brief);
+    const body =
+      execSummary(currentTheme, bands, staff, durationLabel, campDate, venue) +
+      timetableTable(timetableRows) +
+      groupsTable(groups) +
+      staffingTable(staff) +
+      topicIndex(plan) +
+      programme;
+
+    const slug = (currentTheme.replace(/[^\w]+/g, '_').replace(/^_+|_+$/g, '')) || 'Camp';
+    const docOpts = {
+      theme: currentTheme,
+      subtitle: `${staff.totalChildren} children · ${staff.nGroups} groups · ${durationLabel}`,
+      userName: name,
+      body,
+      title: `TinkerWithMe_Camp_${slug}`,
+    };
+    lastFilename = `TinkerWithMe_Camp_${slug}`;
+    lastDocHtml = buildCampDoc(docOpts);
+    lastInnerHtml = buildHeaderHtml(docOpts) + `<main>${body}</main>`;
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
+    showBuiltDoc(lastDocHtml);
+    logLead(name, email, org, country, 'camp-organizer');
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-msg').textContent = '❌ ' + err.message;
+    document.getElementById('error-msg').style.display = 'block';
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
+function showBuiltDoc(fullHtml){
+  const frame = document.getElementById('pdf-frame');
+  frame.style.display = 'block';
+  frame.removeAttribute('src');
+  frame.srcdoc = fullHtml;
+  document.getElementById('success-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Save as PDF (print the assembled document; its <title> is the filename) ──
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function renderDocWindow(autoPrint){
+  const w = window.open('', '_blank');
+  if (!w) return null;
+  w.document.open(); w.document.write(lastDocHtml); w.document.close();
+  if (autoPrint){
+    const go = () => { try { w.focus(); w.print(); } catch (_) {} };
+    if (w.document.readyState === 'complete') setTimeout(go, 350);
+    else w.addEventListener('load', () => setTimeout(go, 350));
+  }
+  return w;
+}
+function openInTab(){ renderDocWindow(false); }
+
+// One-click download of a real .pdf file, generated in the browser with
+// html2pdf.js (html2canvas + jsPDF). No server, no token. If the library
+// didn't load, fall back to the print route so the button always works.
+async function downloadPdf(){
+  if (!window.html2pdf){ savePdf(); return; }
+  const btn = document.getElementById('btn-download');
+  const label = btn.textContent;
+  btn.textContent = '⏳ Building PDF…';
+  btn.style.pointerEvents = 'none';
+
+  // html2pdf renders a live DOM element, so stage the document off-screen at
+  // A4 content width. The @page rules in DOC_CSS are ignored by html2canvas;
+  // jsPDF owns pagination, and pagebreak.avoid keeps cards/rows intact.
+  const holder = document.createElement('div');
+  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:794px;background:#fff;' +
+    "font-family:'Inter','Segoe UI',sans-serif;line-height:1.6;color:#2A1A0E;padding:24px;";
+  holder.innerHTML = `<style>${DOC_CSS}</style>` + lastInnerHtml;
+  document.body.appendChild(holder);
+
+  const opt = {
+    margin: [10, 10, 14, 10],
+    filename: lastFilename + '.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'], avoid: ['.project', 'tr', '.stat'] },
+  };
+  try {
+    await html2pdf().set(opt).from(holder).save();
+  } catch (err) {
+    const box = document.getElementById('error-msg');
+    box.innerHTML = "<strong>Couldn't build the PDF automatically.</strong><br>" +
+      'Use “Open &amp; print”, then choose “Save as PDF”.';
+    box.style.display = 'block';
+  } finally {
+    holder.remove();
+    btn.textContent = label;
+    btn.style.pointerEvents = '';
+  }
+}
+function savePdf(){
+  if (renderDocWindow(true)) return;
+  if (isIOS()){
+    const box = document.getElementById('error-msg');
+    box.innerHTML = '<strong>Please allow pop-ups for this site</strong><br>' +
+      'Your camp plan opens in a new tab, then use Share → Print → Save to Files.';
+    box.style.display = 'block';
+    return;
+  }
+  const pf = document.getElementById('print-frame');
+  pf.onload = () => { try { pf.contentWindow.focus(); pf.contentWindow.print(); } catch (_) { openInTab(); } };
+  pf.srcdoc = lastDocHtml;
+}
+
+// ─── Lead logging (fire-and-forget; never blocks the user) ────────────────────
+function fetchWithTimeout(url, opts, ms = 6000){
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(tid));
+}
+function logLead(name, email, org, country, role){
+  if (window.twSubmitForm){
+    window.twSubmitForm('lead', { name, email, org, country, role }, { timeout: 6000 }).catch(() => {});
+    return;
+  }
+  if (!GOOGLE_FORM_ID || GOOGLE_FORM_ID === 'YOUR_GOOGLE_FORM_ID') return;
+  fetchWithTimeout(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
+    method: 'POST', mode: 'no-cors',
+    body: new URLSearchParams({
+      [GF.name]: name, [GF.email]: email, [GF.org]: org, [GF.country]: country, [GF.role]: role,
+    }),
+  }, 6000).catch(() => {});
+}
+document.getElementById('btn-download').onclick = (e) => { e.preventDefault(); downloadPdf(); };
+document.getElementById('btn-preview').onclick = (e) => { e.preventDefault(); openInTab(); };
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+(async function init(){
+  addBand('7-9', '');
+  addBand('10-12', '');
+  try {
+    const res = await fetch('courses.json', { cache: 'no-store' });
+    if (res.ok) CATALOGUE = await res.json();
+  } catch (_) { /* picker stays usable once CATALOGUE loads on submit */ }
+  refreshProjectPicker();
+})();
+</script>
+</body>
+</html>
