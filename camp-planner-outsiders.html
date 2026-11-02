@@ -95,6 +95,8 @@ footer a{color:var(--orange);text-decoration:none}
 <script src="analytics.js"></script>
 <script src="site-data.js"></script>
 <script src="forms.js"></script>
+<!-- Client-side PDF generation (one-click download, no server needed). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -228,9 +230,10 @@ footer a{color:var(--orange);text-decoration:none}
     <div id="ready-area">
       <h3 style="color:var(--green-dark)">✅ Your camp plan is ready!</h3>
       <div class="dl-row">
-        <a id="btn-preview" class="btn-dl btn-preview" style="cursor:pointer">👁 Open in new tab</a>
-        <a id="btn-download" class="btn-dl btn-download" style="cursor:pointer">⬇ Save as PDF</a>
+        <a id="btn-download" class="btn-dl btn-download" style="cursor:pointer">⬇ Download PDF</a>
+        <a id="btn-preview" class="btn-dl btn-preview" style="cursor:pointer">🖨 Open &amp; print</a>
       </div>
+      <p class="hint" id="dl-note" style="margin-top:10px">One-click download gives you a PDF file. “Open &amp; print” opens it in a new tab for the crispest print / Save-as-PDF.</p>
       <iframe id="pdf-frame" class="pdf-frame" title="Camp plan preview"></iframe>
       <iframe id="print-frame" style="display:none" title="Print"></iframe>
     </div>
@@ -266,7 +269,9 @@ let currentTrack     = 'arduino';
 let selectedDuration = 'full';
 let CATALOGUE        = null;   // { arduino:{projects:[…]}, ai:{…} } from courses.json
 let pickerTrack      = null;
-let lastDocHtml      = '';
+let lastDocHtml      = '';   // full standalone document (print route)
+let lastInnerHtml    = '';   // header + body only (for html2pdf download)
+let lastFilename     = 'TinkerWithMe_Camp';
 
 // ─── Age-band rows ───────────────────────────────────────────────────────────
 function bandRowHtml(age, count){
@@ -631,18 +636,21 @@ const DOC_CSS = `
   .project-head .title { font-size: 16px; font-weight: 700; }
   .project-head .meta { font-size: 11px; color: #B08060; }
 `;
-function buildCampDoc(o){
+function buildHeaderHtml(o){
   const currentDate = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
   const prepared = o.userName ? `Prepared for <strong>${escapeHtml(o.userName)}</strong>` : 'Camp plan';
-  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">` +
-    `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
-    `<header>` +
+  return `<header>` +
     `<div class="header-meta">tinkerwithanne@gmail.com<br>Nairobi, Kenya<br>${currentDate}</div>` +
     `<div class="header-brand">TinkerWithMe</div>` +
     `<div class="header-title">${escapeHtml(o.theme)} · Full-Day Camp</div>` +
     `<div class="header-subtitle">${o.subtitle}</div>` +
     `<div class="header-prepared">${prepared}<span class="session-badge">Full-day camp</span></div>` +
-    `</header><main>${o.body}</main></body></html>`;
+    `</header>`;
+}
+function buildCampDoc(o){
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">` +
+    `<title>${escapeHtml(o.title)}</title><style>${DOC_CSS}</style></head><body>` +
+    buildHeaderHtml(o) + `<main>${o.body}</main></body></html>`;
 }
 
 // ─── Submit → build in the browser ────────────────────────────────────────────
@@ -710,13 +718,16 @@ async function submit(){
       programme;
 
     const slug = (currentTheme.replace(/[^\w]+/g, '_').replace(/^_+|_+$/g, '')) || 'Camp';
-    lastDocHtml = buildCampDoc({
+    const docOpts = {
       theme: currentTheme,
       subtitle: `${staff.totalChildren} children · ${staff.nGroups} groups · ${durationLabel}`,
       userName: name,
       body,
       title: `TinkerWithMe_Camp_${slug}`,
-    });
+    };
+    lastFilename = `TinkerWithMe_Camp_${slug}`;
+    lastDocHtml = buildCampDoc(docOpts);
+    lastInnerHtml = buildHeaderHtml(docOpts) + `<main>${body}</main>`;
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('success-box').style.display = 'block';
@@ -755,6 +766,47 @@ function renderDocWindow(autoPrint){
   return w;
 }
 function openInTab(){ renderDocWindow(false); }
+
+// One-click download of a real .pdf file, generated in the browser with
+// html2pdf.js (html2canvas + jsPDF). No server, no token. If the library
+// didn't load, fall back to the print route so the button always works.
+async function downloadPdf(){
+  if (!window.html2pdf){ savePdf(); return; }
+  const btn = document.getElementById('btn-download');
+  const label = btn.textContent;
+  btn.textContent = '⏳ Building PDF…';
+  btn.style.pointerEvents = 'none';
+
+  // html2pdf renders a live DOM element, so stage the document off-screen at
+  // A4 content width. The @page rules in DOC_CSS are ignored by html2canvas;
+  // jsPDF owns pagination, and pagebreak.avoid keeps cards/rows intact.
+  const holder = document.createElement('div');
+  holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:794px;background:#fff;' +
+    "font-family:'Inter','Segoe UI',sans-serif;line-height:1.6;color:#2A1A0E;padding:24px;";
+  holder.innerHTML = `<style>${DOC_CSS}</style>` + lastInnerHtml;
+  document.body.appendChild(holder);
+
+  const opt = {
+    margin: [10, 10, 14, 10],
+    filename: lastFilename + '.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'], avoid: ['.project', 'tr', '.stat'] },
+  };
+  try {
+    await html2pdf().set(opt).from(holder).save();
+  } catch (err) {
+    const box = document.getElementById('error-msg');
+    box.innerHTML = "<strong>Couldn't build the PDF automatically.</strong><br>" +
+      'Use “Open &amp; print”, then choose “Save as PDF”.';
+    box.style.display = 'block';
+  } finally {
+    holder.remove();
+    btn.textContent = label;
+    btn.style.pointerEvents = '';
+  }
+}
 function savePdf(){
   if (renderDocWindow(true)) return;
   if (isIOS()){
@@ -788,8 +840,8 @@ function logLead(name, email, org, country, role){
     }),
   }, 6000).catch(() => {});
 }
+document.getElementById('btn-download').onclick = (e) => { e.preventDefault(); downloadPdf(); };
 document.getElementById('btn-preview').onclick = (e) => { e.preventDefault(); openInTab(); };
-document.getElementById('btn-download').onclick = (e) => { e.preventDefault(); savePdf(); };
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (async function init(){
