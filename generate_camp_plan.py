@@ -43,11 +43,14 @@ except Exception:  # pragma: no cover - only if catalogue import fails
 
 # ─── Deterministic planning (pure, unit-testable — no AI, no PDF) ────────────
 
-def parse_age_bands(raw):
+def parse_age_bands(raw, default_count=None):
     """Parse "7-9:20,10-12:19,13-15:12" into a list of band dicts.
 
     Also accepts newlines and " children"/"kids" suffixes so it copes with a
-    request pasted straight from an email. Raises ValueError on bad input.
+    request pasted straight from an email. A band given as a bare range with no
+    head-count (e.g. "7-18") is accepted when `default_count` is set: it takes
+    that count and is flagged with "assumed_count" so the caller can say so.
+    Raises ValueError on bad input.
     """
     bands = []
     # Normalise separators: commas, semicolons and newlines all split entries.
@@ -55,16 +58,30 @@ def parse_age_bands(raw):
         chunk = chunk.strip()
         if not chunk:
             continue
-        m = re.match(r"^\s*([0-9]{1,2}\s*[-–]\s*[0-9]{1,2})\s*(?:yrs|years)?\s*[:=]\s*(\d+)", chunk)
+        # The ":count" is optional so a bare range ("7-18") is still read.
+        m = re.match(
+            r"^\s*([0-9]{1,2}\s*[-–]\s*[0-9]{1,2})\s*(?:yrs|years)?"
+            r"(?:\s*[:=]\s*(\d+))?",
+            chunk,
+        )
         if not m:
             raise ValueError(
                 f"Couldn't read age band {chunk!r}. Use e.g. '7-9:20,10-12:19'."
             )
         label = re.sub(r"\s*[-–]\s*", "-", m.group(1)) + " yrs"
-        count = int(m.group(2))
+        assumed = m.group(2) is None
+        if assumed:
+            if default_count is None:
+                raise ValueError(
+                    f"Age band {chunk!r} has no head-count. Use e.g. "
+                    f"'{m.group(1)}:20' (band:children)."
+                )
+            count = default_count
+        else:
+            count = int(m.group(2))
         if count <= 0:
             raise ValueError(f"Band {label} has a non-positive head-count.")
-        bands.append({"label": label, "count": count})
+        bands.append({"label": label, "count": count, "assumed_count": assumed})
     if not bands:
         raise ValueError("No age bands provided.")
     return bands
@@ -653,10 +670,17 @@ def generate_camp_plan_pdf(theme, age_bands_raw, camp_date="", duration="full",
     """
     selected_ids = [pid for pid in re.split(r"[\s,]+", project_ids.strip()) if pid]
     try:
-        bands = parse_age_bands(age_bands_raw)
+        # A bare range with no head-count (e.g. "7-18") falls back to one
+        # max-size group rather than failing the whole run.
+        bands = parse_age_bands(age_bands_raw, default_count=max_group_size)
     except ValueError as e:
         print(f"❌ Error: {e}", file=sys.stderr)
         return None
+
+    assumed = [b["label"] for b in bands if b.get("assumed_count")]
+    if assumed:
+        print(f"ℹ️  No head-count given for {', '.join(assumed)} — assuming "
+              f"{max_group_size} (one group each). Add e.g. '7-18:30' to set it.")
 
     is_full_day = str(duration).lower() in ("full", "full day", "fullday")
     duration_mins = 330 if is_full_day else int(duration)

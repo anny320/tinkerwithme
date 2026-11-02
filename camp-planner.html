@@ -50,6 +50,9 @@ textarea{resize:vertical;min-height:70px}
 .toggle-row.two{grid-template-columns:1fr 1fr}
 .toggle-btn{padding:14px;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:14px;font-family:inherit;transition:all 0.15s;border:2px solid var(--border);background:var(--surface);color:var(--text-2);text-align:center}
 .toggle-btn.active-orange{border-color:var(--orange);background:var(--orange-light);color:var(--orange-dark)}
+.toggle-btn .tb-title{display:block;font-size:14px;font-weight:700}
+.toggle-btn .tb-sub{display:block;font-size:11px;font-weight:500;margin-top:3px;color:var(--text-3);line-height:1.3}
+.toggle-btn.active-orange .tb-sub{color:var(--orange-dark);opacity:0.85}
 .dur-row{display:flex;gap:8px;flex-wrap:wrap}
 .dur-btn{padding:8px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg);cursor:pointer;font-weight:500;font-size:13px;font-family:inherit;transition:all 0.15s;color:var(--text-2)}
 .dur-btn.active-orange{border-color:var(--orange);background:var(--orange);color:#fff}
@@ -136,8 +139,14 @@ footer a{color:var(--orange);text-decoration:none}
   <div class="card">
     <div class="card-title"><i class="ti ti-bulb"></i> Camp Theme</div>
     <div class="toggle-row two">
-      <button class="toggle-btn active-orange" data-theme-preset="Arduino Robotics &amp; Electronics" onclick="setThemePreset(this)">⚙️ Arduino Robotics</button>
-      <button class="toggle-btn" data-theme-preset="AI Skills for Kids" onclick="setThemePreset(this)">🤖 AI Skills</button>
+      <button class="toggle-btn active-orange" data-theme-preset="Arduino Robotics &amp; Electronics" onclick="setThemePreset(this)">
+        <span class="tb-title">⚙️ Arduino &amp; Robotics</span>
+        <span class="tb-sub">Hands-on hardware — circuits, sensors &amp; robots (kit needed)</span>
+      </button>
+      <button class="toggle-btn" data-theme-preset="AI Skills for Kids" onclick="setThemePreset(this)">
+        <span class="tb-title">🤖 AI &amp; Machine Learning</span>
+        <span class="tb-sub">Software only — on a laptop, no hardware needed</span>
+      </button>
     </div>
     <div class="form-group" style="margin-top:12px">
       <label for="theme-custom">Or type a custom theme (anything — not limited to our courses)</label>
@@ -148,7 +157,7 @@ footer a{color:var(--orange);text-decoration:none}
 
   <!-- PROJECT PICKER (catalogue themes only) -->
   <div class="card" id="proj-card" style="display:none">
-    <div class="card-title"><i class="ti ti-checklist"></i> Choose Specific Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <div class="card-title"><i class="ti ti-checklist"></i> Choose Specific <span id="proj-track-label">Arduino</span> Projects <span class="hint" style="display:inline;text-transform:none;letter-spacing:0">(optional)</span></div>
     <p class="hint" style="margin-bottom:10px">Leave everything unticked and we'll auto-pick the best-fitting projects for each age band. Or tick the exact projects you want — each band gets the best fit for its age from your selection.</p>
     <div class="proj-tools">
       <button type="button" onclick="selectAllProjects(true)">Select all</button>
@@ -376,6 +385,8 @@ function refreshProjectPicker(){
     return;
   }
   card.style.display = 'block';
+  const label = document.getElementById('proj-track-label');
+  if (label) label.textContent = track === 'ai' ? 'AI' : 'Arduino';
   if (track !== pickerTrack){   // track changed — re-render (IDs differ per track)
     pickerTrack = track;
     renderProjects(track);
