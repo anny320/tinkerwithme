@@ -137,7 +137,7 @@ html.tw-locked{overflow:hidden}
   // SHA-256 of the password. Only the hash lives here, never the password itself.
   // To change it: open DevTools on this page, run  await twSha256("new password"),
   // and paste the result below.
-  const PASSWORD_SHA256 = "8515c7b97c39bdad32dbd88c3267b98213abd24ca8ae086b3f6732936fe8c710";
+  const PASSWORD_SHA256 = "6909364273e1640fac4eba627abc8647951bdeed2d6c28693d01b425e5786847";
   const KEY = "tw_unlocked";
   window.twSha256 = async function(s){
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
