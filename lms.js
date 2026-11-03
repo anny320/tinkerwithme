@@ -18,7 +18,7 @@
     // Paystack public key for card / M-Pesa checkout. Paste your pk_test_… to
     // test, then pk_live_… once your Paystack account is approved. Blank = the
     // "Pay with Paystack" buttons stay hidden and nothing changes.
-    paystackKey: '',
+    paystackKey: 'pk_live_d889ec476760326f5e3a6abc05f61e0c9e4bca51',
     // Paystack Plan codes for membership auto-renew, one per tier×cycle. Paste
     // the codes from your Paystack dashboard (and mirror them into
     // lms_paystack_plans — see supabase/functions/paystack-webhook/README.md).
