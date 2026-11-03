@@ -85,7 +85,12 @@ Deno.serve(async (req) => {
   const meta = asObject(data.metadata);
 
   const email = str(customer.email) || str(data.email);
-  const planCode = str(planObj.plan_code) || str(subPlan.plan_code) || str(data.plan) || str(sub.plan);
+  // Only treat `plan` as a plan code when it's actually a string — Paystack sends
+  // an empty `plan` OBJECT on one-time charges, and str({}) would be "[object Object]"
+  // (truthy), which would misroute a course charge into the membership path.
+  const planCode = str(planObj.plan_code) || str(subPlan.plan_code)
+    || (typeof data.plan === "string" ? data.plan : "")
+    || (typeof sub.plan === "string" ? sub.plan : "");
   const subscriptionCode = str(data.subscription_code) || str(sub.subscription_code);
   const customerCode = str(customer.customer_code);
   const reference = str(data.reference) || str(sub.reference);
