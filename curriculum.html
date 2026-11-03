@@ -36,6 +36,7 @@
 
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="paystack.js"></script>
 <script src="price.js"></script>
 </head>
 <body>
@@ -252,15 +253,21 @@ async function renderBuy() {
   // Paystack storefront: a per-course product URL if set, else the store itself.
   const PS_URL = (c && c.paystack_url) || (DATA.storefront || '');
   const psDefault = PAID_BY_PS && PS_URL;
+  const psOn = window.TWPaystack && TWPaystack.enabled();
   box.innerHTML = head + `
     ${PAID_BY_CARD ? '<p style="margin-top:10px"><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
     ${PAID_BY_PS ? '<p style="margin-top:10px"><strong>Thanks for paying with Paystack!</strong> Paste your payment reference below and tap <strong>Send</strong>.</p>' : ''}
     ${payStatus()}
-    ${PS_URL ? `<div class="action" style="margin:12px 0">
+    ${psOn ? `<div class="action" style="margin:12px 0">
+      <button class="tw-btn tw-btn-orange" type="button" id="b-ps-cur" data-ga="curriculum-paystack">💳 Pay ${price()} with Paystack — card or M-Pesa &rarr;</button>
+      <p class="muted" style="margin-top:8px;font-size:14px">Secure card or M-Pesa checkout — your download unlocks automatically.</p>
+    </div>`
+    : PS_URL ? `<div class="action" style="margin:12px 0">
       <a class="tw-btn tw-btn-orange" id="b-paystack" href="${esc(PS_URL)}" target="_blank" rel="noopener" data-ga="curriculum-paystack">💳 Pay ${price()} with Paystack — card or M-Pesa &rarr;</a>
       <p class="muted" style="margin-top:8px;font-size:14px">Opens our secure Paystack store. After paying, come back and paste your <strong>payment reference</strong> below — we unlock your download for <strong>${esc(email)}</strong>, usually the same day.</p>
     </div>
     <p class="muted" style="font-size:13.5px;margin-top:14px">Or pay by M-Pesa Till:</p>` : ''}
+    ${psOn ? `<details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-size:13.5px">Paid by M-Pesa Till, or already paid another way? Enter it here</summary><div style="margin-top:10px">` : ''}
     <ol style="margin-top:8px">
       <li>Pay <strong>KES ${P.price.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${CURRICULUM_CARD_URL ? `<li><strong>Outside Kenya?</strong> <a class="tw-btn tw-btn-white tw-btn-sm" id="b-card" href="${CURRICULUM_CARD_URL}">Pay US$${P.price_usd} by card &rarr;</a></li>` : ''}
@@ -274,7 +281,28 @@ async function renderBuy() {
       <label class="field-in">Payment reference, or M-Pesa message / code
         <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="Paystack reference, or: SJK4AB12CD Confirmed. Ksh${P.price.toLocaleString()}.00 paid to …"></textarea></label>
       <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="curriculum-pay">Send payment</button></div>
-    </form>`;
+    </form>${psOn ? '</div></details>' : ''}`;
+  const psc = $('b-ps-cur');
+  if (psc) psc.onclick = () => {
+    try {
+      TWPaystack.pay({
+        amountKES: P.price, amountUSD: P.price_usd, tag: c.id,
+        metadata: { curriculum: c.id, kind: 'curriculum', user_id: (LMS.user && LMS.user.id) || '' },
+        onSuccess: async function (ref) {
+          toast('Payment received — unlocking your download…');
+          try { await LMS.rpc('lms_submit_curriculum_payment', { p_premium: c.id, p_message: ref, p_method: 'paystack' }); } catch (e) {}
+          LMS.track('curriculum_payment_sent', { course: c.id, method: 'paystack' });
+          for (let i = 0; i < 6; i++) {
+            await new Promise(r => setTimeout(r, 2500));
+            try { MINE = await LMS.rpc('lms_my_curriculum', { p_premium: c.id }); } catch (e) {}
+            if (MINE && MINE.has_access) { toast('Unlocked! 🎉'); return renderBuy(); }
+          }
+          toast(`Payment received (${ref}). Your download will unlock shortly — refresh in a minute.`);
+          renderBuy();
+        },
+      });
+    } catch (err) { toast(err.message); }
+  };
   const card = $('b-card');
   if (card) card.onclick = () => { try { localStorage.setItem('tw_curriculum_pending', c.id); } catch (_) {} };
   const ps = $('b-paystack');
