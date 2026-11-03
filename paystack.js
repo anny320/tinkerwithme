@@ -33,8 +33,9 @@
   }
 
   /* pay(opts):
-   *   amountKES, amountUSD : price in each currency (whole units)
-   *   currency             : 'KES' | 'USD' (defaults to the current TWPrice choice)
+   *   amountKES            : price in KES (whole units) — charges are always in KES
+   *                          (Kenyan Paystack accounts settle in KES; USD is display-only)
+   *   amountUSD            : ignored for charging; kept for callers that still pass it
    *   email                : buyer email (defaults to LMS.email)
    *   tag                  : short label woven into the reference (e.g. a slug)
    *   metadata             : object stored on the Paystack transaction
@@ -61,11 +62,13 @@
       // A subscription: the plan fixes the amount and the billing cycle.
       tx.plan = opts.plan;
     } else {
-      var cur = opts.currency || (window.TWPrice && TWPrice.currency) || 'KES';
-      var whole = cur === 'USD' ? opts.amountUSD : opts.amountKES;
-      if (!whole || whole <= 0) throw new Error('This item has no price set for ' + cur + '.');
-      tx.amount = Math.round(whole * 100);   // Paystack takes the smallest unit
-      tx.currency = cur;
+      // Paystack (Kenya) settles in KES only — the on-site USD toggle is for
+      // display, so always charge the KES amount. Overseas cards still work;
+      // the buyer's own bank converts from KES at their FX rate.
+      var whole = opts.amountKES;
+      if (!whole || whole <= 0) throw new Error('This item has no KES price set.');
+      tx.amount = Math.round(whole * 100);   // Paystack takes the smallest unit (KES cents)
+      tx.currency = 'KES';
     }
     new window.PaystackPop().newTransaction(tx);
     return ref;
