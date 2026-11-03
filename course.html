@@ -508,15 +508,22 @@ async function psPay(kind) {
   try {
     await TWPaystack.pay({
       amountKES: C.price_kes, amountUSD: C.price_usd, tag: C.slug,
-      metadata: { course: C.slug, kind: kind },
+      metadata: { course: C.slug, kind: kind, user_id: (LMS.user && LMS.user.id) || '' },
       onSuccess: async function (ref) {
-        try {
-          const r = await LMS.rpc('lms_submit_payment', { p_course: C.id, p_message: ref, p_method: 'paystack' });
-          LMS.track('lms_payment_sent', { course: C.slug, kind: r.kind, method: 'paystack' });
-          toast(`Payment received: ${r.code}. We’ll confirm it and unlock your course.`);
-          await loadPays();
-          renderOverview();
-        } catch (err) { toast(err.message); }
+        toast('Payment received — unlocking your course…');
+        // Fallback record; the webhook also logs + approves this payment, so a
+        // duplicate "already sent" here is expected and harmless.
+        try { await LMS.rpc('lms_submit_payment', { p_course: C.id, p_message: ref, p_method: 'paystack' }); } catch (e) {}
+        LMS.track('lms_payment_sent', { course: C.slug, method: 'paystack' });
+        // The webhook grants access server-side within seconds — poll, then open.
+        for (let i = 0; i < 6; i++) {
+          await new Promise(r => setTimeout(r, 2500));
+          try { C = await LMS.rpc('lms_course', { p_slug: slug }); } catch (e) {}
+          if (C && C.can_access) { toast('You’re in! 🎉'); location.hash = C.lessons.length ? '#l=' + C.lessons[0].id : ''; return renderOverview(); }
+        }
+        toast(`Payment received (${ref}). Your course will open shortly — refresh in a minute if it doesn’t.`);
+        try { await loadPays(); } catch (e) {}
+        renderOverview();
       },
     });
   } catch (err) { toast(err.message); }

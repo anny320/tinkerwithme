@@ -91,14 +91,37 @@ Deno.serve(async (req) => {
   const reference = str(data.reference) || str(sub.reference);
   const nextPay = str(data.next_payment_date) || str(sub.next_payment_date);
 
-  // A charge.success with no plan is a one-time payment (course/curriculum) —
-  // handled by the manual-approve flow, not here.
-  if (EXTEND.has(event) && !planCode && !str(meta.tier)) return new Response("ignored (no plan)", { status: 200 });
-
   // Amount is in the smallest unit; only trust it for KES.
   const currency = str(data.currency) || str(sub.currency);
   const amountMinor = Number(data.amount ?? sub.amount ?? 0);
   const amountKes = currency === "KES" && amountMinor > 0 ? Math.round(amountMinor / 100) : null;
+
+  // One-time COURSE purchase: a charge.success with no plan but a metadata.course
+  // (set by the inline popup in course.html). Auto-grant access via its own RPC.
+  const courseSlug = str(meta.course);
+  if (event === "charge.success" && !planCode && !str(meta.tier) && courseSlug && str(meta.kind) !== "trainer") {
+    const cres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_course`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
+      body: JSON.stringify({
+        p_user_id: str(meta.user_id),
+        p_email: email,
+        p_course: courseSlug,
+        p_reference: reference,
+        p_amount_kes: amountKes,
+      }),
+    });
+    if (!cres.ok) {
+      const detail = await cres.text().catch(() => "");
+      console.error("course rpc failed", cres.status, detail);
+      return new Response("rpc failed", { status: 502 });
+    }
+    return new Response("ok", { status: 200 });
+  }
+
+  // Any other charge.success with no plan (e.g. a trainer hour) stays on the
+  // manual-approve flow.
+  if (EXTEND.has(event) && !planCode && !str(meta.tier)) return new Response("ignored (no plan)", { status: 200 });
 
   const payload = {
     p_user_id: str(meta.user_id),
