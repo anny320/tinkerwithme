@@ -208,6 +208,12 @@ const WA = 'https://wa.me/254117784724?text=';
 const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
 // Early-bird (pre-launch): 40% off, locked for the first 12 months, then standard.
 const EARLY = { club: { monthly: 1200, annual: 12000 }, premium: { monthly: 3900, annual: 39000 } };
+// Standard-price Paystack checkout links. The Founding-100 early-bird reserve flow
+// above stays the main offer; these are the "pay standard price now" option.
+const PAYSTACK_PAY = {
+  club:    { monthly: 'https://paystack.shop/pay/bdqbv8d1rz', annual: 'https://paystack.shop/pay/jkub3twifu' },
+  premium: { monthly: '', annual: '' },
+};
 const EARLY_MONTHS = 12, REFUND_DAYS = 10;
 const SOON = '<span class="soon">soon</span>';
 const TIERS = {
@@ -352,6 +358,7 @@ async function openJoin(tier) {
   }
   const amt = EARLY[tier][cycle], std = PRICES[tier][cycle];
   const period = cycle === 'annual' ? 'year' : 'month';
+  const psUrl = (PAYSTACK_PAY[tier] || {})[cycle] || '';
   slot.innerHTML = `<div class="join">
     <h2>Reserve your ${TIERS[tier].name} place — <s style="color:var(--text-2);font-weight:400">${fmt(std)}</s> ${fmt(amt)} / ${period}</h2>
     <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> you lock <strong>lifetime founding status</strong> and <strong>40% off your first ${EARLY_MONTHS} months</strong>, then it renews at ${fmt(std)}/${period}. The free projects, AI courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} and robotics courses begin as soon as the first founding members join &mdash; you&rsquo;re first in line. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session. (Card auto-renewal via Paystack is coming soon.)</p>
@@ -364,7 +371,7 @@ async function openJoin(tier) {
         <textarea name="msg" required maxlength="600" placeholder="e.g. SJK4AB12CD Confirmed. Ksh${amt.toLocaleString()}.00 paid to …"></textarea></label>
       <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-reserve-pay-${tier}">Reserve &amp; send payment</button>
       <p id="mf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
-    </form></div>`;
+    </form>${psUrl ? `<p class="muted" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:13.5px">Not a founding member, or prefer to pay now by card? <a href="${psUrl}" target="_blank" rel="noopener" data-ga="membership-paystack-${tier}-${cycle}">Subscribe at the standard ${fmt(std)}/${period} via Paystack &rarr;</a></p>` : ''}</div>`;
   slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
   $('mf').onsubmit = async e => {
     e.preventDefault();
