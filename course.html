@@ -260,6 +260,14 @@ const coursePrice = () => TWPrice.fmtWas(C.price_kes, C.price_usd, C.regular_kes
 const canOpen = l => C.can_access || (l && l.preview);   // free preview lessons are open to everyone
 const trainerPrice = h => TWPrice.fmt(h * TRAINER_KES, h * TRAINER_USD);
 const TILL = '3022049';
+// Hosted Paystack product checkout pages (one-time course purchase), keyed by LMS slug.
+// Add each course's paystack.com/buy/<slug> link here as its product is created.
+const PAYSTACK_BUY = {
+  'smart-home-builder': 'https://paystack.com/buy/tw-smart-home-builder',
+  'self-driving-car':   'https://paystack.com/buy/tw-self-driving-car',
+  'smart-city':         'https://paystack.com/buy/tw-smart-city',
+  'robot-arm-claw':     'https://paystack.com/buy/tw-robot-arm-claw',
+};
 let PAYS = [];              // my M-Pesa payments for this course, from lms_my_payments()
 const day = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 let C = null;          // the course, from lms_course()
@@ -407,10 +415,16 @@ function renderOverview() {
         <p class="muted" style="margin-top:8px;font-size:14px">Secure card or M-Pesa checkout. We unlock the course for <strong>${esc(email)}</strong> as soon as we confirm it, usually the same day.</p>
       </div>
       <p class="muted" style="font-size:13.5px;margin-top:14px">Or pay by M-Pesa Till:</p>` : '';
+    const buyUrl = PAYSTACK_BUY[C.slug] || '';
+    const psbuy = buyUrl ? `<div class="action" style="margin:12px 0">
+        <a class="tw-btn tw-btn-orange" href="${esc(buyUrl)}" target="_blank" rel="noopener" data-ga="course-paystack-buy">💳 Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} with Paystack — card or M-Pesa &rarr;</a>
+        <p class="muted" style="margin-top:8px;font-size:14px">Secure checkout. Use the email on your Tinkerwith account so we can unlock the course for <strong>${esc(email)}</strong> — usually the same day.</p>
+      </div>
+      <p class="muted" style="font-size:13.5px;margin-top:14px">Or pay by M-Pesa Till:</p>` : '';
     act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
-      ${ps}
+      ${psbuy}${ps}
       <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${card}
       <li>Paste the M-Pesa message${C.card_url ? ' (or card order number)' : ''} below and tap <strong>Send</strong>. We check it and unlock the course for <strong>${esc(email)}</strong>, usually the same day.</li></ol>
