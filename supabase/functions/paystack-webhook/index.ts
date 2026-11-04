@@ -124,6 +124,29 @@ Deno.serve(async (req) => {
     return new Response("ok", { status: 200 });
   }
 
+  // One-time CURRICULUM purchase (the KES 1,500 teacher PDF): a no-plan
+  // charge.success with a metadata.curriculum (set by the popup in curriculum.html).
+  const curriculumId = str(meta.curriculum);
+  if (event === "charge.success" && !planCode && !str(meta.tier) && curriculumId) {
+    const rres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_curriculum`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
+      body: JSON.stringify({
+        p_user_id: str(meta.user_id),
+        p_email: email,
+        p_premium: curriculumId,
+        p_reference: reference,
+        p_amount_kes: amountKes,
+      }),
+    });
+    if (!rres.ok) {
+      const detail = await rres.text().catch(() => "");
+      console.error("curriculum rpc failed", rres.status, detail);
+      return new Response("rpc failed", { status: 502 });
+    }
+    return new Response("ok", { status: 200 });
+  }
+
   // Any other charge.success with no plan (e.g. a trainer hour) stays on the
   // manual-approve flow.
   if (EXTEND.has(event) && !planCode && !str(meta.tier)) return new Response("ignored (no plan)", { status: 200 });
