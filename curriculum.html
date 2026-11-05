@@ -287,6 +287,7 @@ async function renderBuy() {
     try {
       TWPaystack.pay({
         amountKES: P.price, amountUSD: P.price_usd, tag: c.id,
+        label: `${c.title} — teacher curriculum`,
         metadata: { curriculum: c.id, kind: 'curriculum', user_id: (LMS.user && LMS.user.id) || '' },
         onSuccess: async function (ref) {
           toast('Payment received — unlocking your download…');
