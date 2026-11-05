@@ -38,6 +38,8 @@
    *   amountUSD            : ignored for charging; kept for callers that still pass it
    *   email                : buyer email (defaults to LMS.email)
    *   tag                  : short label woven into the reference (e.g. a slug)
+   *   label                : human product name shown on the Paystack receipt &
+   *                          dashboard (added as a metadata custom_field "Item")
    *   metadata             : object stored on the Paystack transaction
    *   plan                 : a Paystack Plan code — starts a subscription and
    *                          lets the plan set the amount (for memberships)
@@ -50,11 +52,18 @@
     var email = opts.email || (window.LMS && LMS.email) || '';
     if (!email) throw new Error('Please sign in so we can email your receipt.');
     var ref = opts.reference || makeRef(opts.tag);
+    // A readable product name on the Paystack receipt/dashboard, via a custom_field.
+    var meta = opts.metadata || {};
+    if (opts.label) {
+      var cf = Array.isArray(meta.custom_fields) ? meta.custom_fields.slice() : [];
+      cf.push({ display_name: 'Item', variable_name: 'item', value: String(opts.label).slice(0, 120) });
+      meta = Object.assign({}, meta, { custom_fields: cf });
+    }
     var tx = {
       key: key(),
       email: email,
       reference: ref,
-      metadata: opts.metadata || {},
+      metadata: meta,
       onSuccess: function (tx) { if (opts.onSuccess) opts.onSuccess((tx && (tx.reference || tx.trxref)) || ref, tx); },
       onCancel: function () { if (opts.onCancel) opts.onCancel(); },
     };
