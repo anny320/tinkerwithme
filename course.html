@@ -509,6 +509,7 @@ async function psPay(kind) {
   try {
     await TWPaystack.pay({
       amountKES: C.price_kes, amountUSD: C.price_usd, tag: C.slug,
+      label: `${C.title} — self-paced course`,
       metadata: { course: C.slug, kind: kind, user_id: (LMS.user && LMS.user.id) || '' },
       onSuccess: async function (ref) {
         toast('Payment received — unlocking your course…');
