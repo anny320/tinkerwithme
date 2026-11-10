@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://tinkerwith.me/membership.html">
 <title>Membership — build robots &amp; AI, together — TinkerWith_</title>
-<meta name="description" content="Tinkerwith membership: young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers, a maker cohort, and the courses included. Founding 100: 40% off for 12 months. One account for the whole family.">
+<meta name="description" content="Tinkerwith membership: young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers, a maker cohort, and the courses included. One account for the whole family.">
 <meta name="theme-color" content="#FF7F32">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TinkerWith_">
 <meta property="og:url" content="https://tinkerwith.me/membership.html">
 <meta property="og:title" content="Tinkerwith membership — build robots &amp; AI, together">
-<meta property="og:description" content="Young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers + a maker cohort, courses included. Founding 100: 40% off for 12 months.">
+<meta property="og:description" content="Young African makers build real robots & AI live, with everyday parts — no expensive kit. Live trainers + a maker cohort, courses included.">
 <meta property="og:image" content="https://tinkerwith.me/assets/logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tinkerwith membership — build robots &amp; AI, together">
-<meta name="twitter:description" content="Young African makers build real robots & AI live, with everyday parts. Founding 100: 40% off for 12 months. One account for the whole family.">
+<meta name="twitter:description" content="Young African makers build real robots & AI live, with everyday parts. One account for the whole family.">
 <meta name="twitter:image" content="https://tinkerwith.me/assets/logo.jpg">
 <link rel="icon" href="assets/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,6 +85,7 @@
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="paystack.js"></script>
 <script src="price.js"></script>
 </head>
 <body>
@@ -130,7 +131,7 @@
 
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
-    <p class="launch">🔥 <strong>Founding 100.</strong> Be one of the first <strong>100 founding families</strong> — lifetime founding status, a place on our founders wall, first access, and <strong>40% off your first 12 months</strong>. <span id="spots"></span> Free projects &amp; AI courses are live today; live sessions and the robotics lab begin as soon as the founding cohort fills. Risk-free: <strong>full refund within 10 days</strong> if you haven&rsquo;t completed a course or joined a live session.</p>
+    <p class="launch">✨ Free projects &amp; AI courses are live today; live sessions and the robotics lab are rolling out now. Pay by <strong>card (auto-renews)</strong> or <strong>M-Pesa</strong>. Risk-free: <strong>full refund within 10 days</strong> if you haven&rsquo;t completed a course or joined a live session.</p>
     <div class="toggle" role="group" aria-label="Billing cycle">
       <button type="button" id="t-monthly" class="on">Monthly</button>
       <button type="button" id="t-annual">Annual <span class="save-pill">2 months free</span></button>
@@ -157,11 +158,10 @@
       <details><summary>What&rsquo;s the difference between Free, Club and Premium?</summary><p>They differ by <strong>how much live time and cohort</strong> you get — the courses come included. <strong>Free</strong>: the 34 projects, the Builds Wall and certificates. <strong>Club</strong>: a monthly live group session with a Kenyan trainer, the AI self-paced courses, a new build each month and the maker community. <strong>Premium</strong>: a small live cohort (max 8 kids, your own trainer, two classes a month), all 17 courses including the robotics lab, parent progress reports and a termly demo day.</p></details>
       <details><summary>How do the live cohorts work? Will there be a spot?</summary><p>Premium cohorts are deliberately small — <strong>max 8 kids</strong> with their own trainer — so every child is seen. We have a <strong>team of 10 trainers</strong> running <strong>several cohorts in parallel</strong>, grouped by age and level, so there&rsquo;s a spot and a time that fits. Club&rsquo;s monthly session is a larger group open to all members.</p></details>
       <details><summary>Do we need to buy a kit?</summary><p><strong>No.</strong> The AI courses run in a browser, and the robotics courses are built to work with <strong>everyday parts you already have</strong> plus a cheap microcontroller and a free simulator — our <a href="resources.html">resources guide</a> shows how. A Maker Kit is an optional convenience if you&rsquo;d rather have everything in one box; it&rsquo;s never required.</p></details>
-      <details><summary>What&rsquo;s a founding member?</summary><p>The first <strong>100 families</strong> to join. You keep <strong>lifetime founding status</strong> (a place on our founders wall, first access to everything new, and a direct line to the team) and <strong>40% off your first 12 months</strong>. When the 100 places are gone, the founding offer closes.</p></details>
       <details><summary>What if we change our mind?</summary><p>You&rsquo;re covered by a <strong>10-day money-back guarantee</strong> — a full refund within 10 days if you haven&rsquo;t completed a course or joined a live session. Monthly plans aren&rsquo;t locked in; cancel any time.</p></details>
       <details><summary>Can we invite a friend?</summary><p>Yes — <strong>refer a friend and you both get a free month</strong> once they join. Message us on WhatsApp with your friend&rsquo;s name after they sign up and we&rsquo;ll add the month to both accounts.</p></details>
-      <details><summary>When does everything go live?</summary><p>The free projects and self-paced AI courses are available now. The live sessions, robotics lab, parent progress reports and demo days start as soon as the founding cohort fills — <strong>founding members get them first</strong>.</p></details>
-      <details><summary>How do I pay?</summary><p>By M-Pesa (Till 3022049 — the prompt shows Wakara Technologies Limited). Card auto-renewal via Paystack is coming soon; for now we activate your membership once we&rsquo;ve checked your payment, usually the same day.</p></details>
+      <details><summary>When does everything go live?</summary><p>The free projects and self-paced AI courses are available now. The live sessions, robotics lab, parent progress reports and demo days are rolling out — new members get them as each cohort opens.</p></details>
+      <details><summary>How do I pay?</summary><p>By <strong>card</strong> (Visa/Mastercard via Paystack) — your membership switches on straight away and <strong>auto-renews</strong>, cancel any time. Or by <strong>M-Pesa</strong> (Till 3022049 — the prompt shows Wakara Technologies Limited), which we activate once we&rsquo;ve checked your payment, usually the same day.</p></details>
     </div>
   </div>
 </section>
@@ -206,15 +206,12 @@ const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
 // Standard prices — keep in step with lms_membership_price() in supabase/membership.sql.
 const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
-// Early-bird (pre-launch): 40% off, locked for the first 12 months, then standard.
-const EARLY = { club: { monthly: 1200, annual: 12000 }, premium: { monthly: 3900, annual: 39000 } };
-// Standard-price Paystack checkout links. The Founding-100 early-bird reserve flow
-// above stays the main offer; these are the "pay standard price now" option.
-const PAYSTACK_PAY = {
-  club:    { monthly: 'https://paystack.shop/pay/tw-club-monthly', annual: 'https://paystack.shop/pay/tw-club-annual' },
-  premium: { monthly: 'https://paystack.shop/pay/tw-premium-monthly', annual: 'https://paystack.shop/pay/tw-premium-annual' },
-};
-const EARLY_MONTHS = 12, REFUND_DAYS = 10;
+const REFUND_DAYS = 10;
+// Paystack Plan code for a tier+cycle, from lms.js CONFIG.paystackPlans (a mirror of
+// the lms_paystack_plans table). Blank until the owner seeds the 4 codes, in which
+// case the card option is hidden and members join by M-Pesa.
+const planCode = id => ((window.LMS && LMS.paystackPlans) || {})[id + '-' + cycle] || '';
+const canCard  = id => !!(window.TWPaystack && TWPaystack.enabled() && planCode(id));
 const SOON = '<span class="soon">soon</span>';
 const TIERS = {
   free: { name: 'Free', badge: 'Taste it', feats: [
@@ -257,19 +254,22 @@ function renderTiers() {
       </div>`;
     }
     const per = cycle === 'annual' ? '/ year' : '/ month';
-    const eb = EARLY[id][cycle], std = PRICES[id][cycle];
-    const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(eb / 12))}/mo for year one</div>` : '';
+    const std = PRICES[id][cycle];
+    const mo = cycle === 'annual' ? `<div class="per">that&rsquo;s ${fmt(Math.round(std / 12))}/mo, billed yearly</div>` : '';
+    const card = canCard(id);
     return `<div class="tier ${id}">
       <span class="badge">${t.badge}</span>
       <h2>${t.name}</h2>
-      <div class="price"><s style="color:var(--text-2);font-size:18px;font-weight:400">${fmt(std)}</s> ${fmt(eb)} <small>${per}</small></div>${mo}
-      <div class="trial">🐦 Early-bird: <strong>40% off</strong> your first ${EARLY_MONTHS} months, then ${fmt(std)} ${per}</div>
+      <div class="price">${fmt(std)} <small>${per}</small></div>${mo}
       <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
-      <div class="cta"><button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-reserve-${id}">Reserve my place &rarr;</button></div>
+      <div class="cta">
+        <button class="tw-btn ${id === 'premium' ? 'tw-btn-orange' : 'tw-btn-ink'}" type="button" data-join="${id}" data-ga="membership-join-${id}">Join ${t.name} &rarr;</button>
+        ${card ? `<button class="see" type="button" data-mpesa="${id}" data-ga="membership-mpesa-${id}" style="margin-top:6px">or pay by M-Pesa</button>` : ''}</div>
       <button class="see" type="button" data-see data-ga="membership-see-${id}">See courses &amp; timetable</button>
     </div>`;
   }).join('');
   $('tiers').querySelectorAll('[data-join]').forEach(b => b.onclick = () => openJoin(b.dataset.join));
+  $('tiers').querySelectorAll('[data-mpesa]').forEach(b => b.onclick = () => openMpesa(b.dataset.mpesa));
   $('tiers').querySelectorAll('[data-see]').forEach(b => b.onclick = openCourses);
 }
 
@@ -346,22 +346,70 @@ function memberBanner() {
     <p>${until ? `Active until <strong>${until}</strong>. ` : ''}Head to <a href="learn.html">your courses</a> and keep building.</p></div>`;
 }
 
+// Join by card — opens the Paystack popup on the tier's Plan. The subscription
+// carries our user_id in metadata, so the webhook binds it to this account and
+// switches the membership on automatically (then auto-renews). Falls back to
+// M-Pesa if the plan code isn't set or Paystack isn't switched on.
 async function openJoin(tier) {
+  const code = planCode(tier);
+  if (!(window.TWPaystack && TWPaystack.enabled() && code)) return openMpesa(tier);
   const slot = $('slot');
   const r = await LMS.ready;
   if (!r.signIn) { slot.innerHTML = `<div class="join"><p class="notice">Sign-in is taking a break. Please try again later.</p></div>`; return; }
   if (!LMS.user) {
-    slot.innerHTML = `<div class="join"><h2>Reserve your ${TIERS[tier].name} place</h2>
-      <p>Create a free account (or sign in) to lock your <strong>early-bird 40% off</strong>, then pay and we&rsquo;ll switch your membership on.</p>
-      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to reserve</button></div>`;
+    slot.innerHTML = `<div class="join"><h2>Join ${TIERS[tier].name}</h2>
+      <p>Create a free account (or sign in) first, then pay by card and we&rsquo;ll switch your membership on straight away.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to join</button></div>`;
     $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
-  const amt = EARLY[tier][cycle], std = PRICES[tier][cycle];
+  try {
+    await TWPaystack.pay({
+      plan: code,
+      tag: tier + '-' + cycle,
+      label: `${TIERS[tier].name} membership — ${cycle}`,
+      metadata: { tier, cycle, user_id: (LMS.user && LMS.user.id) || '' },
+      onSuccess: () => pollMembership(tier),
+    });
+  } catch (x) {
+    // Popup couldn't open — fall back to the M-Pesa flow.
+    openMpesa(tier);
+  }
+}
+
+// After a successful card payment, wait for the webhook to switch the membership
+// on, then show the member banner.
+async function pollMembership(tier) {
+  const slot = $('slot');
+  slot.innerHTML = `<div class="join"><h2>Payment received 🎉</h2><p class="muted">Switching on your ${TIERS[tier].name} membership…</p></div>`;
+  slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  for (let i = 0; i < 12; i++) {
+    try { MINE = await LMS.rpc('lms_my_membership'); } catch (_) {}
+    if (MINE && MINE.active) { LMS.track('membership_subscribed', { tier, cycle }); slot.innerHTML = memberBanner() || ''; return; }
+    await new Promise(res => setTimeout(res, 1500));
+  }
+  slot.innerHTML = `<div class="member"><h2>Payment received — thank you! 🎉</h2>
+    <p>Your ${TIERS[tier].name} membership switches on within a minute or two of payment. Refresh this page, or <a href="learn.html">head to your courses</a>. If it doesn&rsquo;t appear, <a href="${WA + encodeURIComponent('Hi Anne, I just subscribed to Tinkerwith ' + TIERS[tier].name + ' (' + cycle + ') by card but my membership has not switched on yet.')}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
+}
+
+// Join by M-Pesa — the manual-approve fallback, at the standard price.
+async function openMpesa(tier) {
+  const slot = $('slot');
+  const r = await LMS.ready;
+  if (!r.signIn) { slot.innerHTML = `<div class="join"><p class="notice">Sign-in is taking a break. Please try again later.</p></div>`; return; }
+  if (!LMS.user) {
+    slot.innerHTML = `<div class="join"><h2>Join ${TIERS[tier].name} by M-Pesa</h2>
+      <p>Create a free account (or sign in) first, then pay and we&rsquo;ll switch your membership on.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to continue</button></div>`;
+    $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  const amt = PRICES[tier][cycle];
   const period = cycle === 'annual' ? 'year' : 'month';
-  const psUrl = (PAYSTACK_PAY[tier] || {})[cycle] || '';
+  const code = planCode(tier);
+  const cardNote = (window.TWPaystack && TWPaystack.enabled() && code)
+    ? ` Prefer card with auto-renewal? <a href="#" id="b-card" data-ga="membership-card-from-mpesa-${tier}">Pay by card instead &rarr;</a>` : '';
   slot.innerHTML = `<div class="join">
-    <h2>Reserve your ${TIERS[tier].name} place — <s style="color:var(--text-2);font-weight:400">${fmt(std)}</s> ${fmt(amt)} / ${period}</h2>
-    <p class="muted" style="margin-bottom:10px"><strong>Founding member:</strong> you lock <strong>lifetime founding status</strong> and <strong>40% off your first ${EARLY_MONTHS} months</strong>, then it renews at ${fmt(std)}/${period}. The free projects, AI courses and monthly builds are live now; the live sessions${tier === 'premium' ? ', small-group cohort, progress reports and demo day' : ''} and robotics courses begin as soon as the first founding members join &mdash; you&rsquo;re first in line. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session. (Card auto-renewal via Paystack is coming soon.)</p>
+    <h2>Join ${TIERS[tier].name} by M-Pesa — ${fmt(amt)} / ${period}</h2>
+    <p class="muted" style="margin-bottom:10px">Pay by M-Pesa and we&rsquo;ll switch your ${TIERS[tier].name} membership on once we&rsquo;ve checked your payment, usually the same day. <strong>Risk-free:</strong> full refund within <strong>${REFUND_DAYS} days</strong> if you haven&rsquo;t completed a course or joined a live session.${cardNote}</p>
     <ol>
       <li>Pay <strong>${fmt(amt)}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till <strong>${TILL}</strong>.<br><small class="muted">The prompt shows <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       <li>Paste your M-Pesa message below and tap <strong>Send</strong>.</li>
@@ -369,20 +417,18 @@ async function openJoin(tier) {
     <form id="mf">
       <label class="field-in">M-Pesa message or code
         <textarea name="msg" required maxlength="600" placeholder="e.g. SJK4AB12CD Confirmed. Ksh${amt.toLocaleString()}.00 paid to …"></textarea></label>
-      <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-reserve-pay-${tier}">Reserve &amp; send payment</button>
+      <button class="tw-btn tw-btn-orange" type="submit" data-ga="membership-mpesa-pay-${tier}">Send payment</button>
       <p id="mf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
-    </form>${psUrl ? `<p class="muted" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:13.5px">Not a founding member, or prefer to pay now by card? <a href="${psUrl}" target="_blank" rel="noopener" data-ga="membership-paystack-${tier}-${cycle}">Subscribe at the standard ${fmt(std)}/${period} via Paystack &rarr;</a></p>` : ''}</div>`;
+    </form></div>`;
   slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const card = $('b-card'); if (card) card.onclick = e => { e.preventDefault(); openJoin(tier); };
   $('mf').onsubmit = async e => {
     e.preventDefault();
     const f = e.target, b = f.querySelector('button'), err = $('mf-err'); b.disabled = true; err.textContent = '';
     try {
-      // Tag the payment as early-bird so it's granted at the founding rate and
-      // flagged for renewal (see supabase/membership-earlybird.sql).
-      const msg = `[EARLY-BIRD · 40% off ${EARLY_MONTHS}mo · paid ${fmt(amt)}] ` + f.msg.value;
-      const res = await LMS.rpc('lms_submit_membership_payment', { p_tier: tier, p_cycle: cycle, p_message: msg, p_method: 'mpesa' });
-      LMS.track('membership_earlybird_reserved', { tier, cycle });
-      slot.innerHTML = `<div class="member"><h2>Reserved — ${res.code} 🎉</h2><p>You&rsquo;re a founding member. We&rsquo;ll confirm your payment and switch your ${TIERS[tier].name} membership on (usually the same day), with <strong>40% off locked for ${EARLY_MONTHS} months</strong> and a <strong>${REFUND_DAYS}-day money-back guarantee</strong>. Want to hurry it along? <a href="${WA + encodeURIComponent('Hi Anne, I just reserved Tinkerwith ' + TIERS[tier].name + ' early-bird (' + cycle + '). Reference: ' + res.code)}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
+      const res = await LMS.rpc('lms_submit_membership_payment', { p_tier: tier, p_cycle: cycle, p_message: f.msg.value, p_method: 'mpesa' });
+      LMS.track('membership_mpesa_submitted', { tier, cycle });
+      slot.innerHTML = `<div class="member"><h2>Payment sent — ${res.code} 🎉</h2><p>Thanks! We&rsquo;ll confirm your payment and switch your ${TIERS[tier].name} membership on (usually the same day), with a <strong>${REFUND_DAYS}-day money-back guarantee</strong>. Want to hurry it along? <a href="${WA + encodeURIComponent('Hi Anne, I just paid for Tinkerwith ' + TIERS[tier].name + ' (' + cycle + ') by M-Pesa. Reference: ' + res.code)}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p></div>`;
       slot.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (x) { err.textContent = x.message || 'Something went wrong.'; b.disabled = false; }
   };
@@ -399,13 +445,6 @@ LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
 })();
 
 LMS.ready.then(async () => {
-  // Founding-100 scarcity counter (shows only once the RPC is live).
-  try {
-    const s = await LMS.rpc('lms_founding_spots');
-    if (s && typeof s.left === 'number') {
-      $('spots').textContent = s.left > 0 ? `Only ${s.left} of ${s.cap} places left. ` : 'All founding places are taken. ';
-    }
-  } catch (_) {}
   if (!LMS.user) return;
   try { MINE = await LMS.rpc('lms_my_membership'); } catch (_) {}
   const b = memberBanner(); if (b) $('slot').innerHTML = b;
