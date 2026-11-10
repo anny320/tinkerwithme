@@ -119,7 +119,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -218,11 +218,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums', 'timetable'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
   payCount(); leadCount(); buildsCount(); studentCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -830,6 +830,79 @@ async function students() {
       else { const [uid, cid] = b.dataset.unenrol.split('|'); must(await db().from('lms_enrollments').delete().eq('user_id', uid).eq('course_id', cid)); }
       toast('Removed'); students();
     } catch (err) { toast(err.message); }
+  };
+}
+
+/* ── Timetable: the weekly live sessions members see (learn.html + membership.html) ── */
+const TT_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+async function timetable(editId) {
+  $('view').innerHTML = '<p class="loading">Loading timetable…</p>';
+  const rows = must(await db().from('lms_timetable').select('*').order('weekday').order('start_time'));
+  const editing = editId ? rows.find(r => r.id === editId) : null;
+  const e = editing || { cohort: '', tier: 'all', weekday: 6, start_time: '', end_time: '', join_url: '', note: '' };
+  const dayOpts = TT_DAYS.map((d, i) => `<option value="${i}" ${i === e.weekday ? 'selected' : ''}>${d}</option>`).join('');
+  const tierOpts = [['all', 'All members'], ['club', 'Club+'], ['premium', 'Premium only']]
+    .map(([v, l]) => `<option value="${v}" ${v === e.tier ? 'selected' : ''}>${l}</option>`).join('');
+  const tierLbl = t => t === 'all' ? 'All members' : t === 'club' ? 'Club+' : 'Premium only';
+  const when = r => `${TT_DAYS[r.weekday]} · ${r.start_time}${r.end_time ? '–' + r.end_time : ''} EAT`;
+  $('view').innerHTML = `
+    <div class="panel box"><h2>${editing ? 'Edit session' : 'Add a weekly session'}</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Recurring every week. <b>Who sees it</b>: <b>All members</b> &amp; <b>Club+</b> = Club and Premium; <b>Premium only</b> = Premium. The join link is shown only to those members. Times are <b>EAT</b>.</p>
+      <form id="ttf">
+        <label class="field-in">Cohort / session name <input name="cohort" required maxlength="80" value="${esc(e.cohort)}" placeholder="e.g. Builders (10–12)"></label>
+        <div class="grid2">
+          <label class="field-in">Who sees it <select name="tier">${tierOpts}</select></label>
+          <label class="field-in">Day <select name="weekday">${dayOpts}</select></label>
+        </div>
+        <div class="grid2">
+          <label class="field-in">Start (EAT) <input name="start_time" type="time" required value="${esc(e.start_time)}"></label>
+          <label class="field-in">End (EAT) <input name="end_time" type="time" value="${esc(e.end_time || '')}"></label>
+        </div>
+        <label class="field-in">Join link (Zoom / Meet) <input name="join_url" type="url" value="${esc(e.join_url || '')}" placeholder="https://meet.google.com/…"></label>
+        <label class="field-in">Project image <input name="image_url" value="${esc(e.image_url || '')}" placeholder="assets/robot.jpg or https://…"><small class="muted" style="display:block;margin-top:4px;font-size:13px">A photo or picture of what they’re building that week. Shows on the timetable (and the public teaser). Paste a link, or a site path like <code>assets/robot.jpg</code>.</small></label>
+        <label class="field-in">Note (optional) <input name="note" maxlength="140" value="${esc(e.note || '')}" placeholder="e.g. bring your build"></label>
+        <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">${editing ? 'Save changes' : 'Add session'}</button>
+          ${editing ? '<button class="tw-btn tw-btn-white" type="button" data-cancel>Cancel</button>' : ''}</div>
+        <p id="ttf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
+      </form></div>
+    <div class="panel box"><h2>Weekly sessions (${rows.length})</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">These show on the learn page and the membership page. Turn one <b>Off</b> to hide it without deleting.</p>
+      <div class="rows">${rows.map(r => `<div class="row">
+        ${r.image_url ? `<img src="${esc(r.image_url)}" alt="" style="width:42px;height:42px;object-fit:cover;border:2px solid var(--ink);border-radius:8px;flex:none">` : ''}
+        <div class="grow"><strong>${esc(r.cohort)}</strong>
+          <small>${esc(tierLbl(r.tier))} · ${esc(when(r))}${r.join_url ? ' · link set' : ' · no link'}${r.image_url ? ' · image set' : ''}${r.note ? ' · ' + esc(r.note) : ''}</small></div>
+        <span class="pill ${r.active ? 'on' : 'off'}">${r.active ? 'On' : 'Off'}</span>
+        <button class="ib" type="button" data-toggle="${r.id}" data-on="${r.active ? 1 : ''}">${r.active ? 'Turn off' : 'Turn on'}</button>
+        <button class="ib" type="button" data-edit="${r.id}">Edit</button>
+        <button class="ib danger" type="button" data-del="${r.id}">Delete</button></div>`).join('') || '<p class="muted">No sessions yet. Add your first above.</p>'}</div></div>`;
+  $('ttf').onsubmit = async ev => {
+    ev.preventDefault();
+    const f = ev.target, btn = f.querySelector('button'), err = $('ttf-err'); btn.disabled = true; err.textContent = '';
+    const payload = {
+      cohort: f.cohort.value.trim(), tier: f.tier.value, weekday: +f.weekday.value,
+      start_time: f.start_time.value, end_time: f.end_time.value || null,
+      join_url: f.join_url.value.trim() || null, image_url: f.image_url.value.trim() || null,
+      note: f.note.value.trim() || null,
+      updated_at: new Date().toISOString(),
+    };
+    try {
+      if (editing) must(await db().from('lms_timetable').update(payload).eq('id', editing.id).select('id').single());
+      else must(await db().from('lms_timetable').insert(payload).select('id').single());
+      toast(editing ? 'Saved ✓' : 'Added ✓'); timetable();
+    } catch (x) { err.textContent = x.message || 'Could not save.'; btn.disabled = false; }
+  };
+  $('view').onclick = async ev => {
+    if (ev.target.closest('[data-cancel]')) return timetable();
+    const ed = ev.target.closest('[data-edit]'), t = ev.target.closest('[data-toggle]'), d = ev.target.closest('[data-del]');
+    if (ed) return timetable(ed.dataset.edit);
+    if (t) {
+      try { must(await db().from('lms_timetable').update({ active: !t.dataset.on, updated_at: new Date().toISOString() }).eq('id', t.dataset.toggle).select('id').single()); timetable(editId); }
+      catch (x) { toast(x.message); }
+    } else if (d) {
+      if (!confirm('Delete this session for good?')) return;
+      try { must(await db().from('lms_timetable').delete().eq('id', d.dataset.del)); toast('Deleted'); timetable(editId); }
+      catch (x) { toast(x.message); }
+    }
   };
 }
 </script>

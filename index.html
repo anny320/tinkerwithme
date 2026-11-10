@@ -592,6 +592,7 @@
     </div>
     <p style="margin-top:1.2rem"><a class="tw-btn tw-btn-orange" href="membership.html" data-ga="home-membership">See membership <span aria-hidden="true">&rarr;</span></a></p>
     <p style="margin-top:.7rem;font-size:14.5px;color:var(--text-2)">Pay by card (auto-renews) or M-Pesa. Risk-free: full refund within 10 days if you haven&rsquo;t completed a course or joined a live session.</p>
+    <div id="tt-public" style="margin-top:1.6rem"></div>
   </div>
 </section>
 
@@ -912,6 +913,14 @@ function renderLive(){
 fetch('premium_courses.json').then(r => r.json()).then(d => { LIVE = d; renderLive(); }).catch(() => {});
 document.addEventListener('tw:currency', () => { renderLive(); loadHomeOnline(); });
 
+</script>
+<script src="timetable.js"></script>
+<script>
+  // Public teaser: the weekly live-session rhythm (no join links — members get those).
+  if (window.TWTimetable) TWTimetable.mountPublic(document.getElementById('tt-public'), {
+    title: 'Live sessions, every week',
+    cta: 'Members get the join links. <a href="membership.html" data-ga="home-timetable-see-plans">See plans &rarr;</a>',
+  });
 </script>
 </body>
 </html>
