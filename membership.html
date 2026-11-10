@@ -86,6 +86,7 @@
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
 <script src="paystack.js"></script>
+<script src="timetable.js"></script>
 <script src="price.js"></script>
 </head>
 <body>
@@ -140,6 +141,8 @@
     <p class="fam">👨‍👩‍👧 <strong>Family plan.</strong> One membership covers every child in your household — no per-child seats to manage.</p>
 
     <div id="slot"></div>
+
+    <div id="tt-member" style="margin-top:1.8rem"></div>
 
     <div class="refer">
       <div class="refer-card">
@@ -212,7 +215,6 @@ const REFUND_DAYS = 10;
 // case the card option is hidden and members join by M-Pesa.
 const planCode = id => ((window.LMS && LMS.paystackPlans) || {})[id + '-' + cycle] || '';
 const canCard  = id => !!(window.TWPaystack && TWPaystack.enabled() && planCode(id));
-const SOON = '<span class="soon">soon</span>';
 const TIERS = {
   free: { name: 'Free', badge: 'Taste it', feats: [
     'The 34 build-along projects',
@@ -221,17 +223,17 @@ const TIERS = {
     'No card, start in 2 minutes' ],
     cta: { label: 'Start free', href: 'free-for-kids.html' } },
   club: { name: 'Club', badge: 'Join the makers', feats: [
-    `A <strong>monthly live group session</strong> with a live trainer ${SOON}`,
+    `A <strong>monthly live group session</strong> with a live trainer`,
     'A cohort of young makers + the <strong>Builds Wall</strong>',
-    `The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy ${SOON}`,
+    `The <strong>AI self-paced courses</strong> — built in a browser, nothing to buy`,
     'A new build every month',
     'One account for the whole family' ] },
   premium: { name: 'Premium', badge: 'The cohort', feats: [
     'Everything in Club',
-    `A <strong>small live cohort</strong> — max 8 kids, your own trainer, 2 classes a month ${SOON}`,
-    `<strong>All 17 courses</strong> incl. the robotics lab — <strong>no kit to buy</strong> (everyday parts + a free simulator; a Maker Kit is an optional extra, never included) ${SOON}`,
-    `A <strong>parent progress report</strong> ${SOON}`,
-    `A termly <strong>demo day</strong> ${SOON}`,
+    `A <strong>small live cohort</strong> — max 8 kids, your own trainer, 2 classes a month`,
+    `<strong>All 17 courses</strong> incl. the robotics lab — <strong>no kit to buy</strong> (everyday parts + a free simulator; a Maker Kit is an optional extra, never included)`,
+    `A <strong>parent progress report</strong>`,
+    `A termly <strong>demo day</strong>`,
     'A <strong>print-at-home certificate</strong> and shareable skill badges for every course',
     'Priority help &amp; early access to new builds' ] },
 };
@@ -435,6 +437,7 @@ async function openMpesa(tier) {
 }
 
 renderTiers();
+TWTimetable.mount($('tt-member'));
 LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
 
 // Referral: a prefilled WhatsApp share (you both get a free month).

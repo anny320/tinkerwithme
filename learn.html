@@ -25,6 +25,7 @@
 </style>
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="timetable.js"></script>
 <script src="price.js"></script>
 </head>
 <body>
@@ -77,6 +78,8 @@
 <section class="tw-section tw-section-tight">
   <div class="tw-container">
     <div id="status"></div>
+
+    <div id="tt-box" style="margin-bottom:2.75rem"></div>
 
     <div class="signin-box" id="signin-box" hidden>
       <div>
@@ -159,6 +162,7 @@ const cover = c => c.cover_url ? `style="background-image:url('${esc(c.cover_url
 const pct = (d, n) => n ? Math.round(d / n * 100) : 0;
 
 LMS.mountAccount($('acct'));
+TWTimetable.mount($('tt-box'));
 LMS.ready.then(async r => {
   if (!r.ok) { $('all').innerHTML = `<div class="notice err">${esc(r.error)}</div>`; return; }
   if (!r.signIn) $('status').innerHTML = `<div class="notice" style="margin-bottom:2rem"><h3>Sign-in is taking a break</h3>You can still look around the courses. Please try again later.</div>`;
