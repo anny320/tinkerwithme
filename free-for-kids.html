@@ -65,6 +65,10 @@
 #buildalong-grid .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border:2px solid var(--ink);border-radius:8px;margin-bottom:4px}
 
 /* ── Big course cards (unified free-courses block) ── */
+.fc-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.3rem}
+.fc-chip{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border:2px solid var(--ink);border-radius:999px;background:var(--white);color:var(--ink);cursor:pointer;transition:transform .12s ease,background .12s ease,color .12s ease}
+.fc-chip:hover{transform:translateY(-1px)}
+.fc-chip.on{background:var(--ink);color:var(--white)}
 .fc-courses{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
 @media(max-width:1080px){.fc-courses{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.fc-courses{grid-template-columns:1fr}}
@@ -205,6 +209,7 @@
         <h2>Free online courses</h2>
         <p>34 hands-on build-along projects across 10 free courses &mdash; step-by-step guides, wiring diagrams and a certificate. A grown-up signs up free (no card), then you learn at your own pace, on screen or building along at home.</p>
       </div>
+      <div class="fc-filters" id="fc-filters" role="tablist" aria-label="Filter free projects by track"></div>
       <div class="fc-courses" id="free-courses-grid"><p class="loading">Loading free courses&hellip;</p></div>
     </div>
 
@@ -300,17 +305,37 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     const r = await fetch(url, { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
     if (r.ok) curated = await r.json();
   } catch (e) { /* show the classics regardless */ }
-  const all = curated.concat(CLASSICS);
+  // Tag each free course with a track so parents can filter AI vs Robotics.
+  const TRACKS = { 'ai-skills-for-kids':'ai','what-is-ai':'ai','robotics-101':'arduino',
+    'first-circuits-lights':'arduino','sound-sensors-signals':'arduino','machines-movement':'arduino',
+    'robots-smart-builds':'arduino','ai-creator-studio':'ai','how-ai-really-works':'ai','ai-and-your-future':'ai' };
+  const trackOf = c => TRACKS[c.slug] || (/(^|[^a-z])ai([^a-z]|$)|chatbot|artificial|creator-studio/i.test(c.slug) ? 'ai' : 'arduino');
+  const all = curated.concat(CLASSICS).map(c => ({ ...c, track: trackOf(c) }));
   const grid = document.getElementById('free-courses-grid');
   if (!grid) return;
-  grid.innerHTML = all.map(c =>
+  const card = c =>
     '<a class="fc-course" href="course.html?c=' + encodeURIComponent(c.slug) + '" data-ga="free-for-kids-course-' + esc(c.slug) + '">' +
     '<img class="fc-cover" src="' + esc(c.cover_url || PLACEHOLDER) + '" alt="" loading="lazy">' +
     '<div class="fc-course-body">' +
     (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
     '<h3>' + esc(c.title) + '</h3><p>' + esc(c.summary || '') + '</p>' +
-    '<span class="go">Start course &rarr;</span></div></a>'
-  ).join('');
+    '<span class="go">Start course &rarr;</span></div></a>';
+  let active = 'all';
+  const draw = () => {
+    const list = active === 'all' ? all : all.filter(c => c.track === active);
+    grid.innerHTML = list.map(card).join('') || '<p class="loading">More ' + (active === 'ai' ? 'AI' : 'robotics') + ' projects coming soon.</p>';
+    document.querySelectorAll('#fc-filters [data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === active));
+  };
+  const FILTERS = [['all','All'],['ai','AI'],['arduino','Robotics']];
+  const fbar = document.getElementById('fc-filters');
+  if (fbar) {
+    fbar.innerHTML = FILTERS.map(([f,l]) => '<button class="fc-chip" type="button" role="tab" data-f="' + f + '" data-ga="free-filter-' + f + '">' + l + '</button>').join('');
+    fbar.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { active = b.dataset.f; draw(); });
+  }
+  const h = (location.hash || '').replace('#','').toLowerCase();
+  if (h === 'ai' || h === 'robotics' || h === 'arduino') active = (h === 'robotics') ? 'arduino' : h;
+  draw();
+  if (active !== 'all') { const sec = document.getElementById('courses'); if (sec) sec.scrollIntoView({ behavior:'smooth', block:'start' }); }
   if (typeof gtag === 'function') gtag('event', 'free_courses_shown', { count: all.length });
 })();
 // Live build count for the Builds Wall call-to-action.
