@@ -140,6 +140,8 @@
     <div class="tiers" id="tiers"></div>
     <p class="fam">👨‍👩‍👧 <strong>Family plan.</strong> One membership covers every child in your household — no per-child seats to manage.</p>
 
+    <div id="passes"></div>
+
     <div id="slot"></div>
 
     <div id="tt-member" style="margin-top:1.8rem"></div>
@@ -209,6 +211,9 @@ const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
 // Standard prices — keep in step with lms_membership_price() in supabase/membership.sql.
 const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
+// Pay-once passes (no subscription, no auto-renew) — mirror lms_pass_price() in
+// supabase/passes-and-combos.sql. KES; charged one-time via the Paystack popup.
+const PASS = { club: { 3: 5700, 6: 11000 }, premium: { 3: 18500, 6: 36000 } };
 const REFUND_DAYS = 10;
 // Paystack Plan code for a tier+cycle, from lms.js CONFIG.paystackPlans (a mirror of
 // the lms_paystack_plans table). Blank until the owner seeds the 4 codes, in which
@@ -436,7 +441,51 @@ async function openMpesa(tier) {
   };
 }
 
+// Pay-once pass — a one-time Paystack charge that grants N months of membership
+// with no subscription and no auto-renew.
+async function openPass(tier, months) {
+  const amt = (PASS[tier] || {})[months]; if (!amt) return;
+  if (!(window.TWPaystack && TWPaystack.enabled())) return;
+  const slot = $('slot');
+  const r = await LMS.ready;
+  if (!r.signIn) { slot.innerHTML = `<div class="join"><p class="notice">Sign-in is taking a break. Please try again later.</p></div>`; return; }
+  if (!LMS.user) {
+    slot.innerHTML = `<div class="join"><h2>Get a ${TIERS[tier].name} ${months}-month pass</h2>
+      <p>Create a free account (or sign in) first, then pay once by card and we&rsquo;ll switch your membership on straight away.</p>
+      <button class="tw-btn tw-btn-orange" type="button" id="b-signin" style="margin-top:10px">Sign in to continue</button></div>`;
+    $('b-signin').onclick = LMS.signIn; slot.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  try {
+    await TWPaystack.pay({
+      amountKES: amt,
+      tag: tier + '-' + months + 'm-pass',
+      label: `${TIERS[tier].name} — ${months}-month pass`,
+      metadata: { kind: 'pass', tier, months, user_id: (LMS.user && LMS.user.id) || '' },
+      onSuccess: () => pollMembership(tier),
+    });
+  } catch (_) {
+    slot.innerHTML = `<div class="join"><p class="notice">Couldn&rsquo;t open checkout. Please try again.</p></div>`;
+  }
+}
+
+// The pay-once pass panel (card only; independent of the monthly/annual toggle).
+function renderPasses() {
+  const box = $('passes'); if (!box) return;
+  if (!(window.TWPaystack && TWPaystack.enabled())) { box.innerHTML = ''; return; }
+  const opt = (tier, months) => `<button class="tw-btn tw-btn-white" type="button" data-pass="${tier}:${months}" data-ga="membership-pass-${tier}-${months}m" style="justify-content:space-between;width:100%">
+      <span>${TIERS[tier].name} · ${months} months</span><strong>${fmt(PASS[tier][months])}</strong></button>`;
+  box.innerHTML = `<div class="join" style="margin-top:1.4rem">
+    <h2>Prefer to pay once? Get a pass</h2>
+    <p class="muted" style="margin-bottom:10px">One payment, <strong>no subscription</strong> and no card saved — perfect if you don&rsquo;t want a recurring charge. Your membership runs for the months you buy, then simply stops. Same club, same courses.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:flex;flex-direction:column;gap:8px">${opt('club', 3)}${opt('club', 6)}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${opt('premium', 3)}${opt('premium', 6)}</div>
+    </div></div>`;
+  box.querySelectorAll('[data-pass]').forEach(b => b.onclick = () => { const [t, m] = b.dataset.pass.split(':'); openPass(t, +m); });
+}
+
 renderTiers();
+renderPasses();
 TWTimetable.mount($('tt-member'));
 LMS.mountAccount && $('acct') && LMS.mountAccount($('acct'));
 

@@ -407,10 +407,19 @@ function renderOverview() {
         <button class="tw-btn tw-btn-orange" type="button" id="b-ps-course" data-ga="course-paystack">💳 Pay ${TWPrice.fmt(C.price_kes, C.price_usd)} with Paystack — card or M-Pesa &rarr;</button>
         <p class="muted" style="margin-top:8px;font-size:14px">Secure card or M-Pesa checkout — your course unlocks automatically.</p>
       </div>` : '';
+    // Combo: this course + 1 live trainer hour, 20% off the pair (card checkout).
+    const comboKES = Math.round((C.price_kes + TRAINER_KES) * 0.8);
+    const comboUSD = C.price_usd ? Math.round((C.price_usd + TRAINER_USD) * 0.8) : null;
+    const combo = (psOn && !renew) ? `<div class="action" style="margin:12px 0;background:#fff">
+        <h3 style="font-size:17px">Add a live trainer hour — save 20%</h3>
+        <p class="muted" style="font-size:14px;margin-bottom:8px">Get this course <strong>plus a 1-hour live session</strong> with a Tinkerwith trainer — <strong>${TWPrice.fmt(comboKES, comboUSD)}</strong> together <s>${TWPrice.fmt(C.price_kes + TRAINER_KES, (C.price_usd || 0) + TRAINER_USD)}</s>. Your course unlocks now; we book the live hour on WhatsApp.</p>
+        <button class="tw-btn tw-btn-ink" type="button" id="b-ps-combo" data-ga="course-combo">💳 Get course + live hour — ${TWPrice.fmt(comboKES, comboUSD)} &rarr;</button>
+      </div>` : '';
     act = previewBox() + `<div class="action" id="pay-panel"><h3>${renew ? 'Renew' : 'Get'} this course — ${coursePrice()}</h3>${offerNote()}${renew ? '' : bundleNote()}
       <p>${renew ? `Your access ended on ${day(C.expires_at)}. Your progress is saved, so renewing picks up where you left off.` : 'Self-paced, with 12 months of access.'}</p>      ${PAID_BY_CARD ? '<p><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
       ${payStatus(p => p.kind !== 'trainer')}
       ${ps}
+      ${combo}
       ${psOn ? `<details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-size:13.5px">Paid by M-Pesa Till, or already paid another way? Enter it here</summary><div style="margin-top:10px">` : ''}
       <ol><li>Pay <strong>KES ${C.price_kes.toLocaleString()}</strong> with <strong>Lipa na M-Pesa → Buy Goods</strong>, Till number <strong>${TILL}</strong>.<br><small class="muted">The M-Pesa prompt will show <strong>Wakara Technologies Limited</strong>, the company behind Tinkerwith.</small></li>
       ${card}
@@ -423,6 +432,7 @@ function renderOverview() {
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
   const bps = $('b-ps-course'); if (bps) bps.onclick = () => psPay('course');
+  const bcb = $('b-ps-combo'); if (bcb) bcb.onclick = psCombo;
   if (PAID_BY_CARD && $('pay-panel')) $('pay-panel').scrollIntoView({ block: 'center' });
   if ($('downloads')) showDownloads();
   wireCertificate();
@@ -529,6 +539,39 @@ async function psPay(kind) {
       },
     });
   } catch (err) { toast(err.message); }
+}
+
+/* Combo: course + 1 live trainer hour, 20% off. The webhook unlocks the course
+   and logs the live hour for the admin to arrange; we then nudge to WhatsApp. */
+async function psCombo() {
+  const kes = Math.round((C.price_kes + TRAINER_KES) * 0.8);
+  const usd = C.price_usd ? Math.round((C.price_usd + TRAINER_USD) * 0.8) : null;
+  try {
+    await TWPaystack.pay({
+      amountKES: kes, amountUSD: usd, tag: C.slug + '-combo',
+      label: `${C.title} — course + 1 live trainer hour`,
+      metadata: { course: C.slug, kind: 'combo', user_id: (LMS.user && LMS.user.id) || '' },
+      onSuccess: async function (ref) {
+        toast('Payment received — unlocking your course…');
+        LMS.track('lms_combo_sent', { course: C.slug, method: 'paystack' });
+        for (let i = 0; i < 6; i++) {
+          await new Promise(r => setTimeout(r, 2500));
+          try { C = await LMS.rpc('lms_course', { p_slug: slug }); } catch (e) {}
+          if (C && C.can_access) break;
+        }
+        comboSuccess(ref);
+      },
+    });
+  } catch (err) { toast(err.message); }
+}
+
+function comboSuccess(ref) {
+  const msg = `Hi Anne, I just bought the "${C.title}" course + 1 live trainer hour (ref ${ref}). I'd like to book my live session. Preferred day and time: `;
+  const start = C && C.lessons && C.lessons.length ? '#l=' + C.lessons[0].id : '#';
+  $('main').innerHTML = `<div class="action"><h3>You&rsquo;re in! 🎉</h3>
+    <p>Your course is unlocked, and you&rsquo;ve got <strong>1 live trainer hour</strong> included. Let&rsquo;s book it:</p>
+    <p style="margin-top:10px"><a class="tw-btn tw-btn-orange" href="${WA + encodeURIComponent(msg)}" target="_blank" rel="noopener" data-ga="combo-book">Book my live hour on WhatsApp &rarr;</a></p>
+    <p style="margin-top:10px"><a class="tw-btn tw-btn-white" href="${start}">Start the course &rarr;</a></p></div>`;
 }
 
 async function submitPay(e) {
