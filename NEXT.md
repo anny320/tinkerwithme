@@ -1,11 +1,35 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 24 Oct 2026_
+_Last updated: 10 Nov 2026_
 
 ## ▶️ Do first when we resume
 1. **⭐ Submit sitemap to Google Search Console** (owner action — needs your Google login). At search.google.com/search-console, select the **tinkerwith.me** property (add it as a **Domain** property + DNS TXT verify if it isn't there), then **Indexing → Sitemaps** → submit `sitemap.xml` (now **~25 URLs**, incl. `teachers.html` + `resources.html`). Then watch **Indexing → Pages**. Sitemap + robots.txt + canonicals are already live. _Note: the "agentic OAuth" email from Google = no action needed (Sign-in-with-Google is auth only)._
 2. **Verify the teacher waitlist end-to-end** (owner): on the live teachers page submit a test signup, then confirm it shows in **teach.html → Leads** tagged `teacher-waitlist`.
 3. **✅ Paystack is APPROVED (25 Oct).** Recurring billing + live payments are now unblocked — see the Revenue section (#27/#28). Immediate: (a) create the 17 storefront products on `paystack.shop/tinkerwith-store` using the delivered **cover images**, **descriptions** (Word doc) and **After-Purchase** settings (Word doc), optionally adding each product URL into `premium_courses.json` as `paystack_url`; (b) decide the membership recurring-billing path (Paystack **Plans + webhook Edge Function** vs manual-approve for now) — Claude to scope the Edge Function.
+
+## 🧲 Homepage conversion optimisation (CRO) — concepts + scorecard
+_Added 10 Nov 2026. Goal: rebuild the homepage to cut selection fatigue (34 courses) and lift sales + platform usage._
+
+**Prototypes (private Claude artifacts — open/share from Claude Code):**
+- **Homepage concept ("Concept C")** — slider hero → "what kids built" showcase → **"Life at the camp" gallery** → 30-second age+interest **course router** (one free recommendation + premium upsell) → premium tracks (Robotics vs AI) → membership **"club"** band (Club KES 2,000/mo · Premium KES 6,500/mo, card-or-M-Pesa, 10-day refund) → email capture → quiet teacher/school door. Uses **real Fireside-camp photos with faces blurred**.
+- **Content-editor concepts** — a single-page "Homepage content editor" and a multi-page "Site content editor": swap images / add a gallery / edit regions behind the existing **Clerk + `lms_admins` + Supabase** admin gate; each region tagged **SEO-in-HTML** vs **loaded-live**.
+
+**Scorecard (LIFT + Cialdini + 5-second test) — overall ≈ 3.6/5.** Strong value prop + risk-reducers; under-converting on **urgency, authority, and a single clear CTA**.
+- LIFT: Value prop 4.5 · Relevance 3.5 · Clarity 3.5 · **Urgency 2.5 (weakest)** · Anxiety/risk 4 · Distraction 3.
+- Cialdini: reciprocity ✅ · social proof ✅ (thin on numbers) · commitment ✅ · liking ✅ · **authority ⚠ underused** · **scarcity ⚠ near-zero since Founding-100 removed (PR #130)**.
+
+**Prioritised optimisations (by sales impact):**
+1. **Ethical urgency** (biggest gap after PR #130): "Premium cohorts **max 8** — limited spots", next cohort / live-session start date, term/holiday timing. Real scarcity, not fake timers.
+2. **One dominant CTA per screen:** hero leads with **"Start a free project"**; membership CTA **"See membership" → "Join the Club"**.
+3. **Authority / trust strip:** live **Kenyan trainers**, team of 10, **6 partner-school** logos, a **safeguarding** line — near the CTAs.
+4. **Social proof with numbers + stars:** "Join **170+ families**", ★★★★★, families in _N_ countries, 2–3 **consented** parent quotes.
+5. **Pricing clarity / anchoring:** Free → Club → Premium comparison so **Club is the easy default**; annual "2 months free"; value-stack beside price.
+6. **Cut distraction:** slow / simplify the auto-rotating hero slider (carousels test poorly); keep the spine **free → club**.
+7. **Lead with the wedge:** **"no expensive kit — everyday parts"** at headline level (unique, local, objection-killing).
+
+**Governance / caveats:** camp photos must keep **faces blurred** before publish (no reliable auto-blur yet); testimonials need **written consent** (`testimonials.json` is currently unconsented); static site (GitHub Pages) → keep **SEO-critical copy in HTML**, load images/gallery/prices live.
+
+**Status (10 Nov):** tackling the most urgent now — (1) ethical urgency + (2) single dominant CTA on the concept — then wire Concept C into `index.html` (keep the existing footer/nav) + add a `site_content` table and a "Homepage/Site content" tab in `admin.html`.
 
 ## 🗂️ Backlog (priority order)
 
