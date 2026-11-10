@@ -24,7 +24,12 @@
     // lms_paystack_plans — see supabase/functions/paystack-webhook/README.md).
     // Blank = the "Subscribe (auto-renew)" button stays hidden; members still
     // join via the M-Pesa Till + manual-approve flow.
-    paystackPlans: { 'club-monthly': '', 'club-annual': '', 'premium-monthly': '', 'premium-annual': '' },
+    paystackPlans: {
+      'club-monthly':    'PLN_r32egzu3l2bwviq',
+      'club-annual':     'PLN_3zbpols9scxudmi',
+      'premium-monthly': 'PLN_36x3agiudh4odym',
+      'premium-annual':  'PLN_7ert47e63xv2isc',
+    },
   };
 
   var LIBS = {
