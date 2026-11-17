@@ -38,10 +38,10 @@ create trigger lms_memberships_touch before update on public.lms_memberships for
 create or replace function public.lms_membership_price(p_tier text, p_cycle text) returns int
 language sql immutable as $$
   select case
-    when p_tier = 'club'    and p_cycle = 'monthly' then 2000
-    when p_tier = 'club'    and p_cycle = 'annual'  then 20000
-    when p_tier = 'premium' and p_cycle = 'monthly' then 6500
-    when p_tier = 'premium' and p_cycle = 'annual'  then 65000
+    when p_tier = 'club'    and p_cycle = 'monthly' then 3000
+    when p_tier = 'club'    and p_cycle = 'annual'  then 30000
+    when p_tier = 'premium' and p_cycle = 'monthly' then 9500
+    when p_tier = 'premium' and p_cycle = 'annual'  then 95000
   end
 $$;
 
