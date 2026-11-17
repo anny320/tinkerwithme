@@ -38,7 +38,7 @@
   background:rgba(255,255,255,.30);border-radius:var(--radius-lg);
   padding:14px;box-shadow:var(--shadow-lg);
 }
-.hero-visual img{border-radius:var(--radius);width:100%;height:auto;display:block}
+.hero-visual img,.hero-visual video{border-radius:var(--radius);width:100%;height:auto;display:block}
 @media(max-width:900px){
   .hero{padding:3rem 0 3.5rem}
   .hero-grid{grid-template-columns:1fr;gap:2.25rem}
@@ -407,7 +407,11 @@
         <li>🏫 6 partner schools in Nairobi</li>      </ul>
     </div>
     <div class="hero-visual">
-      <img src="assets/hero.svg" alt="A circuit board wired up to a small two-wheeled robot" width="800" height="620">
+      <video autoplay muted loop playsinline preload="metadata" poster="assets/robot-build-poster.jpg" width="960" height="540" aria-label="A young maker building a robotic car">
+        <source src="assets/robot-build.webm" type="video/webm">
+        <source src="assets/robot-build.mp4" type="video/mp4">
+        <img src="assets/robot-build-poster.jpg" alt="A young maker building a robotic car">
+      </video>
     </div>
   </div>
 </header>
