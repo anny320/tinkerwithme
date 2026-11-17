@@ -724,7 +724,7 @@ async function payments() {
   const done = list.filter(p => !p.pending && !isAuto(p));
   const auto = list.filter(p => !p.pending && isAuto(p));
   const when = d => new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : p.kind === 'bundle' ? 'Bundle (unlocks every course in it)' : 'New enrolment';
+  const what = p => p.kind === 'trainer' ? `Trainer, ${p.hours} hr${p.hours > 1 ? 's' : ''}` : p.kind === 'renewal' ? 'Renewal' : p.kind === 'curriculum' ? 'Curriculum (download)' : p.kind === 'bundle' ? 'Bundle (unlocks every course in it)' : p.kind === 'combo' ? '⭐ Course + live hour — arrange the live session' : p.kind === 'pass' ? 'Membership pass (no auto-renew)' : 'New enrolment';
   const amount = p => p.method === 'paystack' ? `💳 Paystack · verify the reference in your Paystack dashboard (expected KES ${p.expected_kes.toLocaleString()} or US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)})`
     : p.method === 'card' ? `💳 Card · check HustleSasa (US$${p.expected_usd ?? TWPrice.usdFor(p.expected_kes)} or KES ${p.expected_kes.toLocaleString()})`
     : p.amount_kes == null ? `<span class="pay-warn">amount not found, expected KES ${p.expected_kes.toLocaleString()}</span>`

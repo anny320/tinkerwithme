@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
   // One-time COURSE purchase: a charge.success with no plan but a metadata.course
   // (set by the inline popup in course.html). Auto-grant access via its own RPC.
   const courseSlug = str(meta.course);
-  if (event === "charge.success" && !planCode && !str(meta.tier) && courseSlug && str(meta.kind) !== "trainer") {
+  if (event === "charge.success" && !planCode && !str(meta.tier) && courseSlug && str(meta.kind) !== "trainer" && str(meta.kind) !== "combo") {
     const cres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_course`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
@@ -142,6 +142,51 @@ Deno.serve(async (req) => {
     if (!rres.ok) {
       const detail = await rres.text().catch(() => "");
       console.error("curriculum rpc failed", rres.status, detail);
+      return new Response("rpc failed", { status: 502 });
+    }
+    return new Response("ok", { status: 200 });
+  }
+
+  // COMBO: a premium course + 1 live trainer hour (set by course.html). The
+  // course unlocks automatically; the live hour is logged for the admin to arrange.
+  if (event === "charge.success" && !planCode && !str(meta.tier) && str(meta.kind) === "combo" && courseSlug) {
+    const xres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_combo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
+      body: JSON.stringify({
+        p_user_id: str(meta.user_id),
+        p_email: email,
+        p_course: courseSlug,
+        p_reference: reference,
+        p_amount_kes: amountKes,
+      }),
+    });
+    if (!xres.ok) {
+      const detail = await xres.text().catch(() => "");
+      console.error("combo rpc failed", xres.status, detail);
+      return new Response("rpc failed", { status: 502 });
+    }
+    return new Response("ok", { status: 200 });
+  }
+
+  // PASS: pay once for N months of membership (set by membership.html). A one-time
+  // charge (no plan) whose metadata carries the tier and the number of months.
+  if (event === "charge.success" && !planCode && str(meta.kind) === "pass" && str(meta.tier)) {
+    const pres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_pass`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
+      body: JSON.stringify({
+        p_user_id: str(meta.user_id),
+        p_email: email,
+        p_tier: str(meta.tier),
+        p_months: Number(str(meta.months)) || 0,
+        p_reference: reference,
+        p_amount_kes: amountKes,
+      }),
+    });
+    if (!pres.ok) {
+      const detail = await pres.text().catch(() => "");
+      console.error("pass rpc failed", pres.status, detail);
       return new Response("rpc failed", { status: 502 });
     }
     return new Response("ok", { status: 200 });
