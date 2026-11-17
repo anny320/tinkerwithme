@@ -30,8 +30,8 @@ alter table public.lms_memberships add constraint lms_memberships_cycle_check
 create or replace function public.lms_pass_price(p_tier text, p_months int) returns int
 language sql immutable as $$
   select case lower(p_tier)
-    when 'club'    then case p_months when 3 then 5700  when 6 then 11000 end
-    when 'premium' then case p_months when 3 then 18500 when 6 then 36000 end
+    when 'club'    then case p_months when 3 then 8500  when 6 then 16500 end
+    when 'premium' then case p_months when 3 then 27000 when 6 then 52000 end
   end
 $$;
 grant execute on function public.lms_pass_price(text, int) to anon, authenticated;

@@ -210,10 +210,10 @@ const $ = id => document.getElementById(id);
 const TILL = '3022049';
 const WA = 'https://wa.me/254117784724?text=';
 // Standard prices — keep in step with lms_membership_price() in supabase/membership.sql.
-const PRICES = { club: { monthly: 2000, annual: 20000 }, premium: { monthly: 6500, annual: 65000 } };
+const PRICES = { club: { monthly: 3000, annual: 30000 }, premium: { monthly: 9500, annual: 95000 } };
 // Pay-once passes (no subscription, no auto-renew) — mirror lms_pass_price() in
 // supabase/passes-and-combos.sql. KES; charged one-time via the Paystack popup.
-const PASS = { club: { 3: 5700, 6: 11000 }, premium: { 3: 18500, 6: 36000 } };
+const PASS = { club: { 3: 8500, 6: 16500 }, premium: { 3: 27000, 6: 52000 } };
 const REFUND_DAYS = 10;
 // Paystack Plan code for a tier+cycle, from lms.js CONFIG.paystackPlans (a mirror of
 // the lms_paystack_plans table). Blank until the owner seeds the 4 codes, in which
