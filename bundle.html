@@ -36,6 +36,7 @@
 
 <script src="analytics.js"></script>
 <script src="lms.js"></script>
+<script src="paystack.js"></script>
 <script src="price.js"></script>
 </head>
 <body>
@@ -214,7 +215,13 @@ async function renderBuy() {
     return;
   }
   const email = (LMS.state.me && LMS.state.me.email) || '';
-  box.innerHTML = head + `
+  const psOn = window.TWPaystack && TWPaystack.enabled();
+  const ps = psOn ? `<div style="margin-top:12px">
+      <button class="tw-btn tw-btn-orange" type="button" id="b-ps-bundle" data-ga="bundle-paystack">💳 Pay ${TWPrice.fmt(B.price_kes, B.price_usd)} with Paystack — card or M-Pesa &rarr;</button>
+      <p class="muted" style="margin-top:8px;font-size:14px">Secure card or M-Pesa checkout — all ${B.courses.length} courses unlock automatically.</p>
+    </div>` : '';
+  box.innerHTML = head + ps + `
+    ${psOn ? `<details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-size:13.5px">Paid by M-Pesa Till, or already paid another way? Enter it here</summary><div style="margin-top:10px">` : ''}
     ${PAID_BY_CARD ? '<p style="margin-top:10px"><strong>Thanks for paying by card!</strong> Paste your HustleSasa order number below and tap <strong>Send</strong>.</p>' : ''}
     ${payStatus()}
     <ol>
@@ -229,7 +236,8 @@ async function renderBuy() {
       <label class="field-in">M-Pesa message or code${B.card_url ? ', or card order number' : ''}
         <textarea name="msg" required maxlength="600" style="min-height:76px" placeholder="SJK4AB12CD Confirmed. Ksh${B.price_kes.toLocaleString()}.00 paid to …"></textarea></label>
       <div><button class="tw-btn tw-btn-orange" type="submit" data-ga="bundle-pay">Send payment</button></div>
-    </form>`;
+    </form>${psOn ? '</div></details>' : ''}`;
+  const bps = $('b-ps-bundle'); if (bps) bps.onclick = psPayBundle;
   const card = $('b-card');
   if (card) card.onclick = () => { try { localStorage.setItem('tw_bundle_pending', B.slug); } catch (_) {} };
   $('pf').onsubmit = async e => {
@@ -242,6 +250,29 @@ async function renderBuy() {
       await load();
     } catch (err) { toast(err.message); b.disabled = false; }
   };
+}
+
+/* Paystack inline (card / M-Pesa) for the whole bundle. The webhook grants every
+   course in the bundle server-side on a successful charge; we poll, then show. */
+async function psPayBundle() {
+  try {
+    await TWPaystack.pay({
+      amountKES: B.price_kes, amountUSD: B.price_usd, tag: B.slug + '-bundle',
+      label: `${B.title} — bundle`,
+      metadata: { bundle: B.slug, kind: 'bundle', user_id: (LMS.user && LMS.user.id) || '' },
+      onSuccess: async function (ref) {
+        toast('Payment received — unlocking your courses…');
+        LMS.track('bundle_payment_sent', { bundle: B.slug, method: 'paystack' });
+        for (let i = 0; i < 6; i++) {
+          await new Promise(r => setTimeout(r, 2500));
+          try { B = await LMS.rpc('lms_bundle', { p_slug: B.slug }); } catch (e) {}
+          if (B && B.has_access) { toast('You’re in! 🎉'); return view(); }
+        }
+        toast(`Payment received (${ref}). Your courses will open shortly — refresh in a minute if they don’t.`);
+        await load();
+      },
+    });
+  } catch (err) { toast(err.message); }
 }
 
 async function load() {

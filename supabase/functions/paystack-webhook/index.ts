@@ -147,6 +147,29 @@ Deno.serve(async (req) => {
     return new Response("ok", { status: 200 });
   }
 
+  // One-time BUNDLE purchase (set by the inline popup in bundle.html). Unlocks
+  // every course in the bundle via its own RPC.
+  const bundleSlug = str(meta.bundle);
+  if (event === "charge.success" && !planCode && !str(meta.tier) && bundleSlug) {
+    const bres = await fetch(`${SB_URL}/rest/v1/rpc/lms_apply_paystack_bundle`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` },
+      body: JSON.stringify({
+        p_user_id: str(meta.user_id),
+        p_email: email,
+        p_bundle: bundleSlug,
+        p_reference: reference,
+        p_amount_kes: amountKes,
+      }),
+    });
+    if (!bres.ok) {
+      const detail = await bres.text().catch(() => "");
+      console.error("bundle rpc failed", bres.status, detail);
+      return new Response("rpc failed", { status: 502 });
+    }
+    return new Response("ok", { status: 200 });
+  }
+
   // COMBO: a premium course + 1 live trainer hour (set by course.html). The
   // course unlocks automatically; the live hour is logged for the admin to arrange.
   if (event === "charge.success" && !planCode && !str(meta.tier) && str(meta.kind) === "combo" && courseSlug) {
