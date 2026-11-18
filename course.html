@@ -23,6 +23,9 @@
 .crumb{font-size:14px;margin-bottom:6px}
 .crumb a{color:rgba(255,255,255,.86)}
 .page-head .tags{margin-top:12px}
+.course-vid{float:right;width:min(240px,40%);margin:0 0 1rem 1.3rem}
+.course-vid video{width:100%;border-radius:var(--radius);border:2px solid var(--ink);display:block;box-shadow:4px 4px 0 var(--ink)}
+@media(max-width:560px){.course-vid{float:none;width:100%;max-width:300px;margin:0 auto 1.2rem}}
 .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:1.75rem;align-items:start}
 @media(max-width:900px){.layout{grid-template-columns:1fr}}
 .outline{padding:1rem;position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:auto}
@@ -259,6 +262,23 @@ const PAID_BY_CARD = new URLSearchParams(location.search).get('paid') === 'card'
 const coursePrice = () => TWPrice.fmtWas(C.price_kes, C.price_usd, C.regular_kes, C.regular_usd);   // HTML
 const canOpen = l => C.can_access || (l && l.preview);   // free preview lessons are open to everyone
 const trainerPrice = h => TWPrice.fmt(h * TRAINER_KES, h * TRAINER_USD);
+
+// Short AI-generated brand clips on select course overviews (muted autoplay loop,
+// files in assets/). Several AI courses share the same clip.
+const COURSE_VIDEOS = {
+  'self-driving-car': 'course-self-driving-car',
+  'smart-city': 'course-smart-city',
+  'ai-game-designer': 'course-ai', 'ai-movie-studio': 'course-ai', 'ai-entrepreneur': 'course-ai',
+  'deepfake-detective': 'course-ai', 'ai-music-producer': 'course-ai', 'computer-vision-explorer': 'course-ai',
+  'ai-for-social-good': 'course-ai', 'smart-city-2-ai-powered': 'course-ai',
+};
+function courseVideo() {
+  const v = COURSE_VIDEOS[C && C.slug]; if (!v) return '';
+  return `<div class="course-vid">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/${v}-poster.jpg" aria-label="${esc(C.title)} — a young maker at work">
+      <source src="assets/${v}.webm" type="video/webm"><source src="assets/${v}.mp4" type="video/mp4">
+    </video></div>`;
+}
 const TILL = '3022049';
 let PAYS = [];              // my M-Pesa payments for this course, from lms_my_payments()
 const day = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -427,7 +447,7 @@ function renderOverview() {
       ${payForm('course')}${psOn ? '</div></details>' : ''}</div>`;
   }
   if (!C.can_access && C.price_kes && LMS.user) act += trainerBox();
-  $('main').innerHTML = adminBar() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '');
+  $('main').innerHTML = adminBar() + courseVideo() + (C.description ? `<div class="prose">${md(C.description)}</div>` : '') + act + (finished() ? certificate() : '');
   const b1 = $('b-signin'); if (b1) b1.onclick = LMS.signIn;
   const b2 = $('b-enrol'); if (b2) b2.onclick = enrol;
   document.querySelectorAll('.payform').forEach(f => { f.onsubmit = submitPay; });
