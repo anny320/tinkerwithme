@@ -18,6 +18,10 @@
 <link rel="stylesheet" href="lms.css">
 <style>
 .mine-card .cover{aspect-ratio:auto;height:96px;font-size:36px}
+.ccard .cover{position:relative;overflow:hidden}
+.ccard .cover .cover-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44%;max-width:86px;opacity:.26;pointer-events:none}
+.ccard .cover .cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mine-card .cover .cover-mark{max-width:52px}
 .signin-box{display:flex;gap:1.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--ink);color:#fff;
   border-radius:var(--radius-lg);padding:1.5rem 1.8rem;margin-bottom:2.5rem}
 .signin-box h2{font-size:21px;font-weight:600;margin-bottom:4px}
@@ -161,7 +165,14 @@
 const $ = id => document.getElementById(id);
 const { esc } = LMS;
 const price = c => c.price_kes ? `<span class="tag paid">${TWPrice.fmtCourse(c)}</span>` : '<span class="tag free">Free</span>';
-const cover = c => c.cover_url ? `style="background-image:url('${esc(c.cover_url)}')"` : '';
+const COVER_BG = ['var(--blue-soft)', 'var(--green-soft)', 'var(--orange-soft)', '#FFF3CC'];
+const coverBg = c => { let s = (c.slug || c.title || ''), h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return COVER_BG[h % COVER_BG.length]; };
+// Colored tile + faded brand mark behind; real cover sits on top and, if it
+// 404s, removes itself to reveal the branded placeholder (no robot/broken img).
+const coverHTML = c => `<div class="cover" style="background:${coverBg(c)}">`
+  + `<img class="cover-mark" src="assets/mark.png" alt="" aria-hidden="true">`
+  + (c.cover_url ? `<img class="cover-img" src="${esc(c.cover_url)}" alt="" loading="lazy" onerror="this.remove()">` : '')
+  + `</div>`;
 const pct = (d, n) => n ? Math.round(d / n * 100) : 0;
 
 LMS.mountAccount($('acct'));
@@ -214,7 +225,7 @@ LMS.ready.then(async r => {
       $('mine-box').hidden = false;
       $('mine').innerHTML = mine.length ? mine.map(c => `
         <a class="ccard mine-card" href="course.html?c=${encodeURIComponent(c.slug)}">
-          <div class="cover" ${cover(c)}>${c.cover_url ? '' : '📘'}</div>
+          ${coverHTML(c)}
           <div class="cbody"><h3>${esc(c.title)}</h3>
             <div class="progress-line"><div class="bar"><i style="width:${pct(c.done, c.lessons)}%"></i></div>${c.done}/${c.lessons}</div>
             <span class="foot">${c.expired ? '⏳ Access ended — renew' : c.done && c.done === c.lessons ? '🎓 Finished — see certificate' : c.done ? 'Continue' : 'Start'} &rarr;</span>
@@ -228,7 +239,7 @@ LMS.ready.then(async r => {
   if (error) { $('all').innerHTML = `<div class="notice err">The courses couldn’t load. Please refresh the page.</div>`; return; }
   $('all').innerHTML = data.length ? data.map(c => `
     <a class="ccard" href="course.html?c=${encodeURIComponent(c.slug)}" data-ga="learn-course-${esc(c.slug)}">
-      <div class="cover" ${cover(c)}>${c.cover_url ? '' : '🤖'}</div>
+      ${coverHTML(c)}
       <div class="cbody">
         <div class="tags">${price(c)}${c.age_range ? `<span class="tag">Ages ${esc(c.age_range)}</span>` : ''}</div>
         <h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p>
