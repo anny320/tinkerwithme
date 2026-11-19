@@ -69,12 +69,12 @@
 .fc-chip{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border:2px solid var(--ink);border-radius:999px;background:var(--white);color:var(--ink);cursor:pointer;transition:transform .12s ease,background .12s ease,color .12s ease}
 .fc-chip:hover{transform:translateY(-1px)}
 .fc-chip.on{background:var(--ink);color:var(--white)}
-.fc-courses{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-@media(max-width:1080px){.fc-courses{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.fc-courses{grid-template-columns:1fr}}
+.fc-courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:1.5rem}
 .fc-course{display:flex;flex-direction:column;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:6px 6px 0 var(--ink);overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .12s ease,box-shadow .12s ease}
 .fc-course:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
-.fc-course .fc-cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--ink);display:block;background:var(--cream)}
+.fc-course .fc-cover{position:relative;width:100%;aspect-ratio:16/9;border-bottom:2px solid var(--ink);display:block;overflow:hidden;background:var(--cream)}
+.fc-course .fc-cover .fc-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34%;max-width:72px;opacity:.24;pointer-events:none}
+.fc-course .fc-cover .fc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .fc-course .fc-course-body{padding:1.1rem 1.25rem 1.3rem;display:flex;flex-direction:column;gap:9px;flex:1}
 .fc-course h3{font-size:21px;font-weight:600;line-height:1.15}
 .fc-course p{font-size:15px;color:var(--text-2);flex:1}
@@ -292,6 +292,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 (async () => {
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const PLACEHOLDER = 'assets/courses/free/placeholder.svg';
+  const COVER_BG = ['var(--blue-soft)', 'var(--green-soft)', 'var(--orange-soft)', '#FFF3CC'];
+  const coverBg = c => { let s = (c.slug || c.title || ''), h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return COVER_BG[h % COVER_BG.length]; };
   // Older free courses kept in the same block (branded covers, no Supabase needed).
   const CLASSICS = [
     { slug:'ai-skills-for-kids', title:'AI Skills for Kids', age_range:'7–9', cover_url:'assets/courses/free/ai-skills-for-kids.svg', summary:'How AI works, how it learns, and how to use it kindly and safely.' },
@@ -315,7 +317,10 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   if (!grid) return;
   const card = c =>
     '<a class="fc-course" href="course.html?c=' + encodeURIComponent(c.slug) + '" data-ga="free-for-kids-course-' + esc(c.slug) + '">' +
-    '<img class="fc-cover" src="' + esc(c.cover_url || PLACEHOLDER) + '" alt="" loading="lazy">' +
+    '<div class="fc-cover" style="background:' + coverBg(c) + '">' +
+      '<img class="fc-mark" src="assets/mark.png" alt="" aria-hidden="true">' +
+      (c.cover_url ? '<img class="fc-img" src="' + esc(c.cover_url) + '" alt="" loading="lazy" onerror="this.remove()">' : '') +
+    '</div>' +
     '<div class="fc-course-body">' +
     (c.age_range ? '<span class="tag age">Ages ' + esc(c.age_range) + '</span>' : '') +
     '<h3>' + esc(c.title) + '</h3><p>' + esc(c.summary || '') + '</p>' +
