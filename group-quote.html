@@ -150,7 +150,7 @@
 
         <div class="gq-card">
           <h2>4 · Session length</h2>
-          <p class="hint">Per-child price shown — pick the format that suits your day.</p>
+          <p class="hint">Per-child price shown — a one-off session, or an 8-week after-school club (per term).</p>
           <div class="opts" id="dur"></div>
         </div>
 
@@ -238,8 +238,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var fmt = function(n){ return 'KES ' + Math.round(n).toLocaleString(); };
   var WA = 'https://wa.me/254117784724';
 
-  var RATES = { '3h':4500, '4h':6000, 'full':9000 };
-  var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day' };
+  var RATES = { '3h':4500, '4h':6000, 'full':9000, 'term':10000 };
+  var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day', 'term':'8-week club (per term)' };
 
   var state = { aud:'school', track:'both', age:'8-10', dur:null };
   var last = null;
@@ -255,7 +255,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   pills($('aud'), [{v:'school',l:'School'},{v:'hotel',l:'Hotel / resort'},{v:'camp',l:'Holiday camp'},{v:'company',l:'Company day'}], 'aud');
   pills($('track'), [{v:'robotics',l:'Robotics',s:'Arduino & builds'},{v:'ai',l:'AI',s:'no kit needed'},{v:'both',l:'Both'}], 'track');
   pills($('age'), [{v:'5-7',l:'5–7'},{v:'8-10',l:'8–10'},{v:'11-13',l:'11–13'},{v:'14-16',l:'14–16'}], 'age');
-  pills($('dur'), [{v:'3h',l:'3 hours',s:'KES 4,500/child'},{v:'4h',l:'4 hours',s:'KES 6,000/child'},{v:'full',l:'Full day',s:'KES 9,000/child'}], 'dur');
+  pills($('dur'), [{v:'3h',l:'3 hours',s:'KES 4,500/child'},{v:'4h',l:'4 hours',s:'KES 6,000/child'},{v:'full',l:'Full day',s:'KES 9,000/child'},{v:'term',l:'8-week club',s:'KES 10,000/child · term'}], 'dur');
 
   ['kids','loc','discount','kits'].forEach(function(id){ $(id).addEventListener('input', render); $(id).addEventListener('change', render); });
 
@@ -266,6 +266,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     if(state.dur==='3h') return [['Welcome & spark','What we’re making today (20 min)'],[b,'Guided hands-on build (1h 50m)'],['Showcase','Show what you built + photos (30 min)']];
     if(state.dur==='4h') return [['Welcome & spark','Intro + how it works (25 min)'],[b,'Guided build (1h 45m)'],['Test & improve','Make it better (1h)'],['Showcase & certificates','Present + certificates (30 min)']];
     if(state.dur==='full') return [['Welcome & spark','Intro + teams (30 min)'],[b+' — part 1','Build the core (1h 45m)'],['Break','Snack & play (45 min)'],[b+' — part 2','Finish & test (1h 45m)'],['Showcase & certificates','Demo day + certificates (45 min)']];
+    if(state.dur==='term') return [['Weeks 1–2 · Spark & basics','How it works + first mini-build (2 sessions)'],['Weeks 3–5 · '+b,'Guided weekly builds, one skill at a time (3 sessions)'],['Weeks 6–7 · Team project','Learners design & build their own (2 sessions)'],['Week 8 · Showcase & certificates','Demo day for parents + certificates (1 session)']];
     return null;
   }
   function renderOutline(){
@@ -290,24 +291,31 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var kitsOn = $('kits').checked;
     var total = kitsOn ? afterDisc * 1.3 : afterDisc;
     var outside = $('loc').value === 'outside';
+    var isTerm = dur === 'term';
+    var ratio = isTerm ? 15 : 5;
+    var unit = isTerm ? '/child · term' : '/child';
 
     var h = '';
-    h += '<div class="qline muted"><span>'+DUR_LABEL[dur]+'</span><span>'+fmt(rate)+'/child</span></div>';
+    h += '<div class="qline muted"><span>'+DUR_LABEL[dur]+'</span><span>'+fmt(rate)+unit+'</span></div>';
     h += '<div class="qline"><span>'+kids+' learner'+(kids===1?'':'s')+'</span><span>'+fmt(base)+'</span></div>';
-    var trainers = Math.min(10, Math.ceil(kids/5));
-    h += '<div class="qline muted" style="font-size:13px"><span>Trainers on the day</span><span>'+trainers+' (1 per ~5)</span></div>';
+    var trainers = Math.min(10, Math.ceil(kids/ratio));
+    h += '<div class="qline muted" style="font-size:13px"><span>'+(isTerm?'Trainers per session':'Trainers on the day')+'</span><span>'+trainers+' (1 per ~'+ratio+')</span></div>';
     if(discountOn) h += '<div class="qline disc"><span>Group discount (&minus;10%)</span><span>&minus;'+fmt(base-afterDisc)+'</span></div>';
     else if($('discount').checked && kids<=20) h += '<div class="qline muted" style="font-size:12.5px"><span>Discount needs 20+ learners</span><span>&mdash;</span></div>';
     if(kitsOn) h += '<div class="qline"><span>Kits supplied (+30%)</span><span>+'+fmt(total-afterDisc)+'</span></div>';
     h += '<div class="qtotal"><span class="lbl">Indicative total</span><span class="amt">'+fmt(total)+'</span></div>';
-    h += '<div class="qnote">About '+fmt(total/kids)+' per child. Final quote confirmed by Anne.</div>';
-    if(kids > 50) h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
+    h += '<div class="qnote">About '+fmt(total/kids)+' per child'+(isTerm?' per term':'')+'. Final quote confirmed by Anne.</div>';
+    if(isTerm){
+      if(kids > 50) h += '<div class="qnote warn">👥 Over 50 learners — we’ll split into parallel club groups so every child gets hands-on time.</div>';
+    } else if(kids > 50){
+      h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
+    }
     if(outside) h += '<div class="qnote warn">📍 Outside Nairobi: travel (transport &amp; accommodation) is quoted separately — we’ll confirm it with you.</div>';
     h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Request this quote on WhatsApp</a>';
     h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Proforma invoice</button>';
     body.innerHTML = h;
     $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
-    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers };
+    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers, ratio:ratio, isTerm:isTerm };
     $('q-pf').addEventListener('click', function(){ buildProforma(last); });
   }
 
@@ -326,13 +334,17 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var billTo=[ $('c-name').value, $('c-email').value, $('c-phone').value ].filter(Boolean).map(esc).join('<br>');
 
     var rows='';
-    rows+='<tr><td>'+esc(trackLabel())+' group session — '+DUR_LABEL[d.dur]+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
+    var descDur = d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions' : DUR_LABEL[d.dur];
+    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
     if(d.discountOn) rows+='<tr><td>Group discount (10% off, 20+ learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(d.base-d.afterDisc)+'</td></tr>';
     if(d.kitsOn) rows+='<tr><td>Electronics kits supplied (30%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(d.total-d.afterDisc)+'</td></tr>';
 
     var notes=[];
-    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+' on the day (1 per ~5 learners).');
-    if(d.kids>50) notes.push('Over our 50-learner single-session capacity — delivered across '+Math.ceil(d.kids/50)+' days/sessions.');
+    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isTerm?' per session (1 per ~'+d.ratio+' learners), across 8 weekly sessions.':' on the day (1 per ~'+d.ratio+' learners).'));
+    if(d.kids>50){
+      if(d.isTerm) notes.push('Over 50 learners — delivered as parallel club groups.');
+      else notes.push('Over our 50-learner single-session capacity — delivered across '+Math.ceil(d.kids/50)+' days/sessions.');
+    }
     if(d.outside) notes.push('Location is outside Nairobi: transport & accommodation are quoted separately and added on confirmation.');
     notes.push('Prices in KES, inclusive. This is a proforma (quotation), not a tax invoice.');
 
