@@ -1,1 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Robotics 101</title><rect width="800" height="450" fill="#FFE9B8"/><defs><pattern id="d" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#220111" opacity="0.08"/></pattern></defs><rect width="800" height="450" fill="url(#d)"/><rect x="44" y="60" width="420" height="330" rx="20" fill="#fff" stroke="#220111" stroke-width="3"/><rect x="44" y="60" width="12" height="330" rx="6" fill="#F07B1D"/><text x="80" y="120" text-anchor="start" font-family="'Space Mono',ui-monospace,monospace" font-weight="700" font-size="13" fill="#F07B1D">Free build-along</text><text x="80" y="175" text-anchor="start" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="38" fill="#220111">Robotics 101</text><text x="80" y="225" text-anchor="start" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="16" fill="#6E5F56">Wire up Arduino traffic lights</text><rect x="80" y="330" width="200" height="34" rx="17" fill="#220111"/><text x="180" y="352" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#fff">Free · 6 lessons</text><rect x="530" y="155" width="140" height="150" rx="12" fill="#220111" stroke="#220111" stroke-width="0"/><circle cx="600" cy="185" r="20" fill="#D64545" stroke="#fff" stroke-width="2.5"/><circle cx="600" cy="185" r="26" fill="none" stroke="#D64545" stroke-width="2" opacity="0.4"/><circle cx="600" cy="230" r="20" fill="#FFD23F" stroke="#fff" stroke-width="2.5"/><circle cx="600" cy="230" r="26" fill="none" stroke="#FFD23F" stroke-width="2" opacity="0.4"/><circle cx="600" cy="275" r="20" fill="#5E8700" stroke="#fff" stroke-width="2.5"/><circle cx="600" cy="275" r="26" fill="none" stroke="#5E8700" stroke-width="2" opacity="0.4"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Arduino board wired to LEDs that run a traffic light</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Wire up Arduino traffic lights</text>
+<g>
+  <rect x="60" y="165" width="170" height="130" rx="12" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <rect x="78" y="150" width="60" height="18" rx="4" fill="#3A3A3A" stroke="#220111" stroke-width="2"/>
+  <g fill="#FFD23F" stroke="#220111" stroke-width="1.5">
+    <rect x="80" y="180" width="9" height="9"/><rect x="94" y="180" width="9" height="9"/><rect x="108" y="180" width="9" height="9"/><rect x="122" y="180" width="9" height="9"/><rect x="136" y="180" width="9" height="9"/><rect x="150" y="180" width="9" height="9"/>
+  </g>
+  <rect x="150" y="215" width="55" height="40" rx="5" fill="#220111"/>
+  <text x="145" y="285" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="13" fill="#fff">UNO</text>
+  <text x="145" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">Arduino board</text>
+</g>
+<path d="M230 205 q40 0 55 20" fill="none" stroke="#C0392B" stroke-width="3"/>
+<path d="M230 230 q40 10 55 30" fill="none" stroke="#E0A800" stroke-width="3"/>
+<path d="M230 255 q40 20 55 40" fill="none" stroke="#5E8700" stroke-width="3"/>
+<g>
+  <rect x="300" y="165" width="150" height="150" rx="10" fill="#F7F3F0" stroke="#220111" stroke-width="2.5"/>
+  <g stroke="#D9CFC8" stroke-width="1"><line x1="315" y1="180" x2="435" y2="180"/><line x1="315" y1="300" x2="435" y2="300"/></g>
+  <circle cx="340" cy="210" r="13" fill="#E4572E" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="375" cy="240" r="13" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="410" cy="270" r="13" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+  <g stroke="#220111" stroke-width="2"><line x1="336" y1="222" x2="336" y2="236"/><line x1="344" y1="222" x2="344" y2="236"/><line x1="371" y1="252" x2="371" y2="266"/><line x1="379" y1="252" x2="379" y2="266"/><line x1="406" y1="282" x2="406" y2="296"/><line x1="414" y1="282" x2="414" y2="296"/></g>
+  <text x="375" y="340" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">Breadboard + LEDs</text>
+</g>
+<line x1="470" y1="235" x2="545" y2="235" stroke="#220111" stroke-width="3"/>
+<path d="M535 229 L545 235 L535 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g>
+  <rect x="588" y="158" width="74" height="170" rx="16" fill="#220111" stroke="#220111" stroke-width="2.5"/>
+  <line x1="625" y1="328" x2="625" y2="360" stroke="#220111" stroke-width="6"/>
+  <circle cx="625" cy="192" r="20" fill="#E4572E" stroke="#fff" stroke-width="2"/>
+  <circle cx="625" cy="243" r="20" fill="#FFD23F" stroke="#fff" stroke-width="2"/>
+  <circle cx="625" cy="294" r="20" fill="#84BD00" stroke="#fff" stroke-width="2"/>
+  <text x="625" y="388" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">It lights up!</text>
+</g>
+<text x="300" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Connect, code, and watch your lights change.</text>
+</svg>
