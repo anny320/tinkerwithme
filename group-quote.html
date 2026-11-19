@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://tinkerwith.me/group-quote.html">
+<title>Group Session Builder — TinkerWith_</title>
+<meta name="description" content="Build a robotics or AI session for your school, camp, hotel or group and get an instant indicative quote. Pick a track, duration and group size — kits and group discounts included.">
+<meta name="theme-color" content="#FF7F32">
+<meta property="og:title" content="Plan a group robotics &amp; AI session — Tinkerwith">
+<meta property="og:description" content="Pick a track, duration and group size and get an instant quote for schools, camps, hotels and groups.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+  .gq-hero{text-align:center;padding-top:1rem}
+  .gq-hero .tw-eyebrow-pill{background:var(--ink);color:#fff}
+  .gq-hero h1{font-size:clamp(30px,5.5vw,46px);font-weight:700;margin:.4rem 0}
+  .gq-hero p{max-width:60ch;margin:0 auto;color:var(--text-2);font-size:17px}
+
+  .gq-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:1.6rem;align-items:start;margin-top:1.5rem}
+  @media(max-width:860px){.gq-grid{grid-template-columns:1fr}}
+
+  .gq-card{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:1.3rem 1.4rem;margin-bottom:1.2rem}
+  .gq-card h2{font-size:17px;font-weight:700;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+  .gq-card .hint{font-size:13px;color:var(--text-2);margin:0 0 12px}
+  .opts{display:flex;gap:9px;flex-wrap:wrap}
+  .dur-lbl{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin:0 0 8px}
+  .dur-sep{height:1px;background:var(--cream-dim);margin:16px 0}
+  .opt{position:relative;cursor:pointer;font:inherit;font-weight:600;font-size:14.5px;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:9px 16px;background:var(--white);color:var(--ink);transition:transform .1s,box-shadow .1s}
+  .opt.feat{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+  .opt .badge{display:block;font-family:var(--font-mono);font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);opacity:.75;margin-bottom:1px}
+  .opt.sel .badge{color:#fff;opacity:.9}
+  .opt small{display:block;font-weight:400;font-size:12px;color:var(--text-2)}
+  .opt.sel{background:var(--orange);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+  .opt.sel small{color:rgba(255,255,255,.85)}
+  .opt:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+  .fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  @media(max-width:520px){.fieldrow{grid-template-columns:1fr}}
+  label.fl{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+  label.fl input,label.fl select{font:inherit;font-weight:400;padding:10px 12px;border:1.5px solid var(--ink);border-radius:var(--radius-sm);background:var(--cream);color:var(--ink)}
+  label.fl input:focus,label.fl select:focus{outline:3px solid var(--blue);outline-offset:1px}
+  .chk{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14.5px;cursor:pointer}
+  .chk input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--orange)}
+  .chk b{font-weight:700}
+  .chk span{color:var(--text-2);font-size:13px;display:block}
+
+  /* Quote panel */
+  .quote{position:sticky;top:16px;background:var(--ink);color:#fff;border-radius:var(--radius-lg);padding:1.4rem 1.5rem;box-shadow:6px 6px 0 rgba(0,0,0,.25)}
+  .quote h2{font-size:14px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--on-ink);margin:0 0 12px}
+  .qline{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+  .qline.muted{color:var(--on-ink)}
+  .qline.disc{color:#B6D85A}
+  .qtotal{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
+  .qtotal .lbl{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--on-ink)}
+  .qtotal .amt{font-size:34px;font-weight:700;line-height:1}
+  .qnote{font-size:12.5px;color:var(--on-ink);margin-top:10px;line-height:1.4}
+  .qnote.warn{background:rgba(255,210,63,.16);border:1.5px solid var(--yellow);color:#fff;border-radius:10px;padding:9px 11px}
+  .qcta{display:block;width:100%;text-align:center;margin-top:16px;font:inherit;font-weight:700;font-size:16px;cursor:pointer;background:var(--orange);color:#fff;border:2.5px solid #fff;border-radius:var(--radius-pill);padding:13px;text-decoration:none}
+  .qcta.wa{background:#25D366}
+  .qempty{color:var(--on-ink);font-size:14px}
+
+  /* Outline */
+  .outline{display:grid;gap:8px;margin-top:4px}
+  .ostep{display:flex;gap:11px;align-items:flex-start;font-size:14px}
+  .ostep .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center;border:2px solid var(--ink)}
+  .ostep b{font-weight:700}
+  .ostep span{color:var(--text-2)}
+
+  /* Proforma invoice */
+  #pf-wrap{display:none}
+  .pf-actions{max-width:720px;margin:0 auto 12px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .pf-actions .btn{cursor:pointer;font:inherit;font-weight:600;font-size:14px;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:10px 16px;background:var(--white);color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+  #proforma{max-width:720px;margin:0 auto;background:#fff;border:2px solid var(--ink);border-radius:var(--radius);padding:30px 32px;color:#220111}
+  #proforma .pf-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--ink);padding-bottom:14px;gap:16px}
+  #proforma .pf-top img{height:54px;width:auto}
+  #proforma .pf-doc{text-align:right}
+  #proforma .pf-doc .t{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--text-2)}
+  #proforma .pf-doc h3{font-size:24px;font-weight:700;margin:2px 0 0}
+  #proforma .pf-meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;font-size:13.5px;margin-top:14px}
+  #proforma .pf-parties{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px;font-size:13.5px}
+  #proforma .pf-parties h4{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin:0 0 5px}
+  #proforma table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+  #proforma th,#proforma td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--cream-dim)}
+  #proforma th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;color:var(--text-2)}
+  #proforma td.n,#proforma th.n{text-align:right;font-variant-numeric:tabular-nums}
+  #proforma .pf-total{display:flex;justify-content:space-between;font-size:19px;font-weight:700;border-top:2.5px solid var(--ink);margin-top:2px;padding-top:11px}
+  #proforma .pf-valid{background:var(--yellow);border:2px solid var(--ink);border-radius:9px;padding:9px 13px;font-weight:700;font-size:14px;margin-top:16px}
+  #proforma .pf-note{font-size:12.5px;color:var(--text-2);margin-top:14px;line-height:1.55}
+  #proforma .pf-pay{border-top:1px solid var(--cream-dim);margin-top:14px;padding-top:12px;font-size:13px}
+  #proforma .pf-pay b{font-weight:700}
+  @media print{
+    nav,footer,.tw-footer-tail,.page-head,#tw-social,.pf-actions{display:none!important}
+    .tw-section:not(#pf-wrap){display:none!important}
+    body{background:#fff}
+    #pf-wrap{display:block!important}
+    #proforma{border:none;border-radius:0;margin:0;max-width:none;padding:0}
+    @page{margin:14mm}
+  }
+</style>
+<script src="analytics.js"></script>
+</head>
+<body>
+<nav class="tw-nav" id="nav">
+  <div class="tw-nav-inner">
+    <a class="tw-brand" href="index.html"><img src="assets/mark.png" alt=""><span>Tinkerwith_</span></a>
+    <input class="tw-nav-toggle" type="checkbox" id="nav-toggle" aria-hidden="true" tabindex="-1">
+    <label class="tw-nav-burger" for="nav-toggle" role="button" tabindex="0" aria-label="Toggle navigation">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </label>
+    <div class="tw-nav-links">
+      <a class="tw-nav-link" href="courses.html">Book a live class or camp</a>
+      <a class="tw-nav-link" href="learn.html">Learn online</a>
+      <a class="tw-nav-link" href="picker.html">Plan a session</a>
+      <a class="tw-nav-link is-active" href="schools.html" aria-current="page">For schools</a>
+      <a class="tw-nav-link" href="about.html">About</a>
+    </div>
+    <div class="tw-nav-tail"><a class="tw-nav-meta" href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="tw-container gq-hero">
+    <span class="tw-eyebrow-pill">For schools, camps, hotels &amp; groups</span>
+    <h1 class="tw-h1">Build a group session &amp; get a quote</h1>
+    <p>Pick a track, how long and how many learners — we'll assemble a session outline and an instant indicative price. Planning for one child instead? <a href="picker.html">Use the family planner &rarr;</a></p>
+  </div>
+</header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <div class="gq-grid">
+      <!-- LEFT: builder -->
+      <div>
+        <div class="gq-card">
+          <h2>1 · Who's it for?</h2>
+          <p class="hint">This just tailors the wording — pricing is the same.</p>
+          <div class="opts" id="aud"></div>
+        </div>
+
+        <div class="gq-card">
+          <h2>2 · Track</h2>
+          <p class="hint">What should the learners build?</p>
+          <div class="opts" id="track"></div>
+        </div>
+
+        <div class="gq-card">
+          <h2>3 · Age group</h2>
+          <div class="opts" id="age"></div>
+        </div>
+
+        <div class="gq-card">
+          <h2>4 · Format</h2>
+          <p class="hint">Per-child price shown.</p>
+          <div class="dur-lbl">One-off session</div>
+          <div class="opts" id="dur-day" style="margin-top:14px"></div>
+          <p class="hint" style="margin:10px 0 0">Most groups pick the 4-hour — the best balance of build time, a proper showcase and budget.</p>
+          <div class="dur-sep"></div>
+          <div class="dur-lbl">Ongoing after-school club</div>
+          <div class="opts" id="dur-term"></div>
+          <p class="hint" style="margin:10px 0 0">8 weekly sessions, 1 hour each, over a term.</p>
+        </div>
+
+        <div class="gq-card">
+          <h2>5 · Group &amp; location</h2>
+          <div class="fieldrow">
+            <label class="fl">Number of learners
+              <input type="number" id="kids" min="1" max="500" placeholder="e.g. 25" inputmode="numeric"></label>
+            <label class="fl">Location
+              <select id="loc"><option value="nairobi">In Nairobi</option><option value="outside">Outside Nairobi</option></select></label>
+          </div>
+          <label class="chk"><input type="checkbox" id="discount"><span><b>Request a group discount</b><span>10% off per child for groups of more than 20.</span></span></label>
+          <label class="chk"><input type="checkbox" id="kits"><span><b>Include kits</b><span>We supply the electronics kits (adds 30%). AI-only sessions need no kits.</span></span></label>
+        </div>
+
+        <div class="gq-card">
+          <h2>6 · Your details</h2>
+          <div class="fieldrow">
+            <label class="fl">Your name <input type="text" id="c-name" placeholder="Name"></label>
+            <label class="fl">Organisation <input type="text" id="c-org" placeholder="School / hotel / company"></label>
+            <label class="fl">Email <input type="email" id="c-email" placeholder="you@example.com"></label>
+            <label class="fl">Phone / WhatsApp <input type="tel" id="c-phone" placeholder="07xx xxx xxx"></label>
+          </div>
+        </div>
+
+        <div class="gq-card" id="outline-card">
+          <h2>Your session outline</h2>
+          <p class="hint" id="outline-hint">Pick a track and length to see the plan.</p>
+          <div class="outline" id="outline"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: quote -->
+      <div>
+        <div class="quote" id="quote">
+          <h2>Indicative quote</h2>
+          <div id="q-body"><p class="qempty">Choose a session length and number of learners to see your price.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tw-section tw-section-tight" id="pf-wrap">
+  <div class="tw-container">
+    <div class="pf-actions">
+      <button class="btn" type="button" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
+    <div id="proforma"></div>
+  </div>
+</section>
+
+<footer class="tw-footer">
+  <div class="tw-container tw-footer-grid">
+    <div><div class="tw-footer-brand"><img src="assets/mark-light.png" alt=""><span>Tinkerwith_</span></div>
+      <p style="max-width:30ch">DIY electronics, robotics &amp; AI eLearning for young minds, ages 5–16.</p></div>
+    <div><h4>Learn</h4><ul>
+      <li><a href="picker.html">Plan a session</a></li>
+      <li><a href="courses.html">Book a live class or camp</a></li>
+      <li><a href="schools.html">For schools</a></li>
+      <li><a href="membership.html">Membership</a></li>
+    </ul></div>
+    <div><h4>Tools</h4><ul>
+      <li><a href="group-quote.html">Group quote builder</a></li>
+      <li><a href="makerbreaker.html">MakerBreaker</a></li>
+      <li><a href="picker.html">Course picker</a></li>
+    </ul></div>
+    <div><h4>Company</h4><ul>
+      <li><a href="about.html">About</a></li>
+      <li><a href="https://wa.me/254117784724" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li><a href="privacy.html">Privacy policy</a></li>
+    </ul></div>
+  </div>
+</footer>
+<div class="tw-footer-tail"><div class="tw-footer-tail-inner">
+  <span>&copy; <span id="yr">2026</span> Tinkerwith_ eLearning</span><span>DIY Electronics Projects</span>
+</div></div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var fmt = function(n){ return 'KES ' + Math.round(n).toLocaleString(); };
+  var WA = 'https://wa.me/254117784724';
+
+  var RATES = { '3h':4500, '4h':6000, 'full':9000, 'term':10000 };
+  var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day', 'term':'8-week club (per term)' };
+
+  var state = { aud:'school', track:'both', age:'8-10', dur:null };
+  var last = null;
+
+  // option sets
+  function pills(el, items, key){
+    el.innerHTML = items.map(function(o){
+      return '<button type="button" class="opt'+(state[key]===o.v?' sel':'')+'" data-v="'+o.v+'">'+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</button>';
+    }).join('');
+    el.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; state[key]=b.dataset.v;
+      [].forEach.call(el.children, function(c){ c.classList.toggle('sel', c.dataset.v===state[key]); }); render(); });
+  }
+  pills($('aud'), [{v:'school',l:'School'},{v:'hotel',l:'Hotel / resort'},{v:'camp',l:'Holiday camp'},{v:'company',l:'Company day'}], 'aud');
+  pills($('track'), [{v:'robotics',l:'Robotics',s:'Arduino & builds'},{v:'ai',l:'AI',s:'no kit needed'},{v:'both',l:'Both'}], 'track');
+  pills($('age'), [{v:'5-7',l:'5–7'},{v:'8-10',l:'8–10'},{v:'11-13',l:'11–13'},{v:'14-16',l:'14–16'}], 'age');
+  function durHtml(items){ return items.map(function(o){ return '<button type="button" class="opt'+(o.feat?' feat':'')+(state.dur===o.v?' sel':'')+'" data-v="'+o.v+'">'+(o.badge?'<span class="badge">'+esc(o.badge)+'</span>':'')+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</button>'; }).join(''); }
+  function syncDur(){ ['dur-day','dur-term'].forEach(function(id){ [].forEach.call($(id).children, function(c){ c.classList.toggle('sel', c.dataset.v===state.dur); }); }); }
+  $('dur-day').innerHTML = durHtml([{v:'3h',l:'3 hours',s:'KES 4,500/child'},{v:'4h',l:'4 hours',s:'KES 6,000/child',feat:true,badge:'Popular'},{v:'full',l:'Full day',s:'KES 9,000/child'}]);
+  $('dur-term').innerHTML = durHtml([{v:'term',l:'8-week club',s:'KES 10,000/child · term'}]);
+  ['dur-day','dur-term'].forEach(function(id){ $(id).addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; state.dur=b.dataset.v; syncDur(); render(); }); });
+
+  ['kids','loc','discount','kits'].forEach(function(id){ $(id).addEventListener('input', render); $(id).addEventListener('change', render); });
+
+  // ---- session outline (templated by duration + track) ----
+  function buildLabel(){ return state.track==='ai' ? 'AI build (browser tools, no kit)' : state.track==='robotics' ? 'Arduino build (circuits + code)' : 'Build (robotics + AI mix)'; }
+  function outlineSteps(){
+    var b = buildLabel();
+    if(state.dur==='3h') return [['Welcome & spark','What we’re making today (20 min)'],[b,'Guided hands-on build (1h 50m)'],['Showcase','Show what you built + photos (30 min)']];
+    if(state.dur==='4h') return [['Welcome & spark','Intro + how it works (25 min)'],[b,'Guided build (1h 45m)'],['Test & improve','Make it better (1h)'],['Showcase & certificates','Present + certificates (30 min)']];
+    if(state.dur==='full') return [['Welcome & spark','Intro + teams (30 min)'],[b+' — part 1','Build the core (1h 45m)'],['Break','Snack & play (45 min)'],[b+' — part 2','Finish & test (1h 45m)'],['Showcase & certificates','Demo day + certificates (45 min)']];
+    if(state.dur==='term') return [['Weeks 1–2 · Spark & basics','How it works + first mini-build (2 sessions)'],['Weeks 3–5 · '+b,'Guided weekly builds, one skill at a time (3 sessions)'],['Weeks 6–7 · Team project','Learners design & build their own (2 sessions)'],['Week 8 · Showcase & certificates','Demo day for parents + certificates (1 session)']];
+    return null;
+  }
+  function renderOutline(){
+    var steps = outlineSteps();
+    if(!steps){ $('outline').innerHTML=''; $('outline-hint').style.display='block'; return; }
+    $('outline-hint').style.display='none';
+    $('outline').innerHTML = steps.map(function(s,i){ return '<div class="ostep"><span class="n">'+(i+1)+'</span><div><b>'+esc(s[0])+'</b> <span>'+esc(s[1])+'</span></div></div>'; }).join('');
+  }
+
+  // ---- quote ----
+  function render(){
+    renderOutline();
+    var kids = parseInt($('kids').value,10) || 0;
+    var dur = state.dur;
+    var body = $('q-body');
+    if(!dur || kids<1){ body.innerHTML = '<p class="qempty">Choose a session length and number of learners to see your price.</p>'; return; }
+    var rate = RATES[dur];
+    var discountOn = $('discount').checked && kids > 20;
+    var perChild = discountOn ? rate*0.9 : rate;
+    var base = rate * kids;
+    var afterDisc = perChild * kids;
+    var kitsOn = $('kits').checked;
+    var total = kitsOn ? afterDisc * 1.3 : afterDisc;
+    var outside = $('loc').value === 'outside';
+    var isTerm = dur === 'term';
+    var ratio = isTerm ? 15 : 5;
+    var unit = isTerm ? '/child · term' : '/child';
+
+    var h = '';
+    h += '<div class="qline muted"><span>'+DUR_LABEL[dur]+'</span><span>'+fmt(rate)+unit+'</span></div>';
+    h += '<div class="qline"><span>'+kids+' learner'+(kids===1?'':'s')+'</span><span>'+fmt(base)+'</span></div>';
+    var trainers = Math.min(10, Math.ceil(kids/ratio));
+    h += '<div class="qline muted" style="font-size:13px"><span>'+(isTerm?'Trainers per session':'Trainers on the day')+'</span><span>'+trainers+' (1 per ~'+ratio+')</span></div>';
+    if(discountOn) h += '<div class="qline disc"><span>Group discount (&minus;10%)</span><span>&minus;'+fmt(base-afterDisc)+'</span></div>';
+    else if($('discount').checked && kids<=20) h += '<div class="qline muted" style="font-size:12.5px"><span>Discount needs 20+ learners</span><span>&mdash;</span></div>';
+    if(kitsOn) h += '<div class="qline"><span>Kits supplied (+30%)</span><span>+'+fmt(total-afterDisc)+'</span></div>';
+    h += '<div class="qtotal"><span class="lbl">Indicative total</span><span class="amt">'+fmt(total)+'</span></div>';
+    h += '<div class="qnote">About '+fmt(total/kids)+' per child'+(isTerm?' per term':'')+'. Final quote confirmed by Anne.</div>';
+    if(isTerm){
+      if(kids > 50) h += '<div class="qnote warn">👥 Over 50 learners — we’ll split into parallel club groups so every child gets hands-on time.</div>';
+    } else if(kids > 50){
+      h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
+    }
+    if(outside) h += '<div class="qnote warn">📍 Outside Nairobi: travel (transport &amp; accommodation) is quoted separately — we’ll confirm it with you.</div>';
+    h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Request this quote on WhatsApp</a>';
+    h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Proforma invoice</button>';
+    body.innerHTML = h;
+    $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
+    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers, ratio:ratio, isTerm:isTerm };
+    $('q-pf').addEventListener('click', function(){ buildProforma(last); });
+  }
+
+  function trackLabel(){ return state.track==='ai' ? 'AI' : state.track==='robotics' ? 'Robotics' : 'Robotics & AI'; }
+  function audLabel(){ return {school:'School',hotel:'Hotel / resort',camp:'Holiday camp',company:'Company day'}[state.aud] || 'Group'; }
+
+  function buildProforma(d){
+    if(!d){ return; }
+    var now=new Date();
+    var monthEnd=new Date(now.getFullYear(), now.getMonth()+1, 0);
+    var no='TW-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+    var dOpt={day:'numeric',month:'short',year:'numeric'};
+    var dateStr=now.toLocaleDateString('en-GB',dOpt);
+    var validStr=monthEnd.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    var billName=$('c-org').value||$('c-name').value||'—';
+    var billTo=[ $('c-name').value, $('c-email').value, $('c-phone').value ].filter(Boolean).map(esc).join('<br>');
+
+    var rows='';
+    var descDur = d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each' : DUR_LABEL[d.dur];
+    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
+    if(d.discountOn) rows+='<tr><td>Group discount (10% off, 20+ learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(d.base-d.afterDisc)+'</td></tr>';
+    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied (30%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(d.total-d.afterDisc)+'</td></tr>';
+
+    var notes=[];
+    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isTerm?' per session (1 per ~'+d.ratio+' learners), across 8 weekly sessions.':' on the day (1 per ~'+d.ratio+' learners).'));
+    if(d.kids>50){
+      if(d.isTerm) notes.push('Over 50 learners — delivered as parallel club groups.');
+      else notes.push('Over our 50-learner single-session capacity — delivered across '+Math.ceil(d.kids/50)+' days/sessions.');
+    }
+    if(d.outside) notes.push('Location is outside Nairobi: transport & accommodation are quoted separately and added on confirmation.');
+    notes.push('Prices in KES, inclusive. This is a proforma (quotation), not a tax invoice.');
+
+    $('proforma').innerHTML =
+      '<div class="pf-top"><img src="assets/logo.jpg" alt="Tinkerwith">'
+      + '<div class="pf-doc"><div class="t">Proforma invoice</div><h3>Quotation</h3></div></div>'
+      + '<div class="pf-meta"><div><b>No.</b> '+no+'</div><div><b>Date:</b> '+dateStr+'</div>'
+      + '<div><b>Audience:</b> '+esc(audLabel())+'</div><div><b>Learners:</b> '+d.kids+'</div></div>'
+      + '<div class="pf-parties"><div><h4>From</h4><b>Wakara Technologies Limited</b><br>Tinkerwith_ · tinkerwith.me<br>tinkerwithanne@gmail.com<br>WhatsApp +254 117 784 724</div>'
+      + '<div><h4>Prepared for</h4><b>'+esc(billName)+'</b>'+(billTo?'<br>'+billTo:'')+'</div></div>'
+      + '<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Unit (KES)</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div class="pf-total"><span>Total</span><span>'+fmt(d.total)+'</span></div>'
+      + '<div class="pf-valid">Valid until '+validStr+'</div>'
+      + '<div class="pf-pay"><b>Payment:</b> M-Pesa Till <b>3022049</b> (Wakara Technologies) · bank transfer or card — details on request.</div>'
+      + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>';
+    $('pf-wrap').style.display='block';
+    $('pf-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function waLink(total, kids, perChild, kitsOn, discountOn, outside){
+    var L = [];
+    L.push('Hi Anne, I’d like a quote for a Tinkerwith group session.');
+    L.push('');
+    L.push('Audience: '+state.aud);
+    L.push('Track: '+state.track);
+    L.push('Ages: '+state.age);
+    L.push('Length: '+DUR_LABEL[state.dur]);
+    L.push('Learners: '+kids);
+    L.push('Location: '+($('loc').value==='outside'?'Outside Nairobi':'Nairobi'));
+    if(discountOn) L.push('Group discount: yes (10%)');
+    if(kitsOn) L.push('Kits: yes (+30%)');
+    L.push('Indicative total: '+fmt(total)+' ('+fmt(total/kids)+'/child)');
+    if(outside) L.push('(Travel to be added — outside Nairobi)');
+    var c=[]; if($('c-name').value) c.push('Name: '+$('c-name').value); if($('c-org').value) c.push('Org: '+$('c-org').value); if($('c-email').value) c.push('Email: '+$('c-email').value); if($('c-phone').value) c.push('Phone: '+$('c-phone').value);
+    if(c.length){ L.push(''); L.push(c.join('\n')); }
+    return WA + '?text=' + encodeURIComponent(L.join('\n'));
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
