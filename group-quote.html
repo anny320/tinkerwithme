@@ -65,6 +65,37 @@
   .ostep .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center;border:2px solid var(--ink)}
   .ostep b{font-weight:700}
   .ostep span{color:var(--text-2)}
+
+  /* Proforma invoice */
+  #pf-wrap{display:none}
+  .pf-actions{max-width:720px;margin:0 auto 12px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .pf-actions .btn{cursor:pointer;font:inherit;font-weight:600;font-size:14px;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:10px 16px;background:var(--white);color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+  #proforma{max-width:720px;margin:0 auto;background:#fff;border:2px solid var(--ink);border-radius:var(--radius);padding:30px 32px;color:#220111}
+  #proforma .pf-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--ink);padding-bottom:14px;gap:16px}
+  #proforma .pf-top img{height:54px;width:auto}
+  #proforma .pf-doc{text-align:right}
+  #proforma .pf-doc .t{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--text-2)}
+  #proforma .pf-doc h3{font-size:24px;font-weight:700;margin:2px 0 0}
+  #proforma .pf-meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;font-size:13.5px;margin-top:14px}
+  #proforma .pf-parties{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px;font-size:13.5px}
+  #proforma .pf-parties h4{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin:0 0 5px}
+  #proforma table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+  #proforma th,#proforma td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--cream-dim)}
+  #proforma th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;color:var(--text-2)}
+  #proforma td.n,#proforma th.n{text-align:right;font-variant-numeric:tabular-nums}
+  #proforma .pf-total{display:flex;justify-content:space-between;font-size:19px;font-weight:700;border-top:2.5px solid var(--ink);margin-top:2px;padding-top:11px}
+  #proforma .pf-valid{background:var(--yellow);border:2px solid var(--ink);border-radius:9px;padding:9px 13px;font-weight:700;font-size:14px;margin-top:16px}
+  #proforma .pf-note{font-size:12.5px;color:var(--text-2);margin-top:14px;line-height:1.55}
+  #proforma .pf-pay{border-top:1px solid var(--cream-dim);margin-top:14px;padding-top:12px;font-size:13px}
+  #proforma .pf-pay b{font-weight:700}
+  @media print{
+    nav,footer,.tw-footer-tail,.page-head,#tw-social,.pf-actions{display:none!important}
+    .tw-section:not(#pf-wrap){display:none!important}
+    body{background:#fff}
+    #pf-wrap{display:block!important}
+    #proforma{border:none;border-radius:0;margin:0;max-width:none;padding:0}
+    @page{margin:14mm}
+  }
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -163,6 +194,15 @@
   </div>
 </section>
 
+<section class="tw-section tw-section-tight" id="pf-wrap">
+  <div class="tw-container">
+    <div class="pf-actions">
+      <button class="btn" type="button" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
+    <div id="proforma"></div>
+  </div>
+</section>
+
 <footer class="tw-footer">
   <div class="tw-container tw-footer-grid">
     <div><div class="tw-footer-brand"><img src="assets/mark-light.png" alt=""><span>Tinkerwith_</span></div>
@@ -202,6 +242,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day' };
 
   var state = { aud:'school', track:'both', age:'8-10', dur:null };
+  var last = null;
 
   // option sets
   function pills(el, items, key){
@@ -263,8 +304,52 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     if(kids > 50) h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
     if(outside) h += '<div class="qnote warn">📍 Outside Nairobi: travel (transport &amp; accommodation) is quoted separately — we’ll confirm it with you.</div>';
     h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Request this quote on WhatsApp</a>';
+    h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Proforma invoice</button>';
     body.innerHTML = h;
     $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
+    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers };
+    $('q-pf').addEventListener('click', function(){ buildProforma(last); });
+  }
+
+  function trackLabel(){ return state.track==='ai' ? 'AI' : state.track==='robotics' ? 'Robotics' : 'Robotics & AI'; }
+  function audLabel(){ return {school:'School',hotel:'Hotel / resort',camp:'Holiday camp',company:'Company day'}[state.aud] || 'Group'; }
+
+  function buildProforma(d){
+    if(!d){ return; }
+    var now=new Date();
+    var monthEnd=new Date(now.getFullYear(), now.getMonth()+1, 0);
+    var no='TW-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+    var dOpt={day:'numeric',month:'short',year:'numeric'};
+    var dateStr=now.toLocaleDateString('en-GB',dOpt);
+    var validStr=monthEnd.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    var billName=$('c-org').value||$('c-name').value||'—';
+    var billTo=[ $('c-name').value, $('c-email').value, $('c-phone').value ].filter(Boolean).map(esc).join('<br>');
+
+    var rows='';
+    rows+='<tr><td>'+esc(trackLabel())+' group session — '+DUR_LABEL[d.dur]+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
+    if(d.discountOn) rows+='<tr><td>Group discount (10% off, 20+ learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(d.base-d.afterDisc)+'</td></tr>';
+    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied (30%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(d.total-d.afterDisc)+'</td></tr>';
+
+    var notes=[];
+    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+' on the day (1 per ~5 learners).');
+    if(d.kids>50) notes.push('Over our 50-learner single-session capacity — delivered across '+Math.ceil(d.kids/50)+' days/sessions.');
+    if(d.outside) notes.push('Location is outside Nairobi: transport & accommodation are quoted separately and added on confirmation.');
+    notes.push('Prices in KES, inclusive. This is a proforma (quotation), not a tax invoice.');
+
+    $('proforma').innerHTML =
+      '<div class="pf-top"><img src="assets/logo.jpg" alt="Tinkerwith">'
+      + '<div class="pf-doc"><div class="t">Proforma invoice</div><h3>Quotation</h3></div></div>'
+      + '<div class="pf-meta"><div><b>No.</b> '+no+'</div><div><b>Date:</b> '+dateStr+'</div>'
+      + '<div><b>Audience:</b> '+esc(audLabel())+'</div><div><b>Learners:</b> '+d.kids+'</div></div>'
+      + '<div class="pf-parties"><div><h4>From</h4><b>Wakara Technologies Limited</b><br>Tinkerwith_ · tinkerwith.me<br>WhatsApp +254 117 784 724</div>'
+      + '<div><h4>Prepared for</h4><b>'+esc(billName)+'</b>'+(billTo?'<br>'+billTo:'')+'</div></div>'
+      + '<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Unit (KES)</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div class="pf-total"><span>Total</span><span>'+fmt(d.total)+'</span></div>'
+      + '<div class="pf-valid">Valid until '+validStr+'</div>'
+      + '<div class="pf-pay"><b>Payment:</b> M-Pesa Till <b>3022049</b> (Wakara Technologies) · bank transfer or card — details on request.</div>'
+      + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>';
+    $('pf-wrap').style.display='block';
+    $('pf-wrap').scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function waLink(total, kids, perChild, kitsOn, discountOn, outside){
