@@ -458,15 +458,69 @@ Brian Kamau,,11,Grade 6"></textarea>
   $('r-preview').addEventListener('click', previewRoster);
   $('r-file').addEventListener('change', function(e){ var f=e.target.files[0]; if(!f) return; var fr=new FileReader(); fr.onload=function(){ $('r-text').value=fr.result; previewRoster(); }; fr.readAsText(f); });
 
-  // ---- Data load: sample now; real dashboard when signed in. ----
-  // To go live, replace the SAMPLE line below with:
-  //   await window.LMS.ready;
-  //   var orgId = params.get('org_id') || null;           // or resolve slug -> id
-  //   var data = await window.LMS.rpc('lms_org_dashboard', { p_org: orgId });
-  //   render(data);
-  // For embedded/no-login views, fetch from a token-scoped Edge Function instead.
-  try { render(SAMPLE); }
-  catch(e){ $('app').innerHTML = '<p class="cap">Could not load the dashboard. '+esc(e.message)+'</p>'; }
+  // ---- Data load ----
+  function gate(html){ $('app').innerHTML = '<div style="max-width:540px;margin:9vh auto;text-align:center">'+html+'</div>'; }
+
+  var MY_ORGS = [];
+  function switcher(currentId){
+    if(!MY_ORGS || MY_ORGS.length<2) return;
+    var sel = document.querySelector('.actions');
+    if(!sel || document.getElementById('org-switch')) return;
+    var s = document.createElement('select');
+    s.id='org-switch';
+    s.style.cssText='font:inherit;font-weight:600;border:2px solid var(--ink);border-radius:99px;padding:8px 12px;background:var(--white)';
+    s.innerHTML = MY_ORGS.map(function(o){ return '<option value="'+esc(o.id)+'"'+(o.id===currentId?' selected':'')+'>'+esc(o.name)+'</option>'; }).join('');
+    s.addEventListener('change', function(){ loadOrg(s.value); });
+    sel.insertBefore(s, sel.firstChild);
+  }
+
+  function loadOrg(orgId){
+    gate('<p class="cap">Loading…</p>');
+    return window.LMS.rpc('lms_org_dashboard', { p_org: orgId||null }).then(function(data){
+      ORG_ID = (data.org && data.org.id) || orgId || null;
+      render(data);
+      switcher(ORG_ID);
+    });
+  }
+
+  function loadDashboard(){
+    // Teaser (embed), explicit demo, or LMS not present → the sample mockup.
+    if (params.get('embed')==='1' || params.get('demo')==='1' || !window.LMS) { try{ render(SAMPLE); }catch(e){} return; }
+    gate('<p class="cap">Loading your dashboard…</p>');
+    window.LMS.ready.then(function(r){
+      if (!r || !r.ok) { render(SAMPLE); return; }
+      if (!window.LMS.user) {
+        gate('<h2 style="font-size:23px;font-weight:700">School dashboard</h2>'
+          + '<p class="cap" style="margin:10px 0 18px">Sign in with your teacher account to see your class.</p>'
+          + '<button class="btn primary" id="si">Sign in</button>');
+        var si=$('si'); if(si) si.onclick=window.LMS.signIn;
+        return;
+      }
+      (async function(){
+        // real courses for the roster importer
+        try { var cc = await window.LMS.db.from('lms_courses').select('id,title').eq('is_published',true).order('title');
+              ROSTER_COURSES = (cc.data||[]).map(function(c){ return {id:c.id,title:c.title}; }); } catch(e){}
+        try { MY_ORGS = (await window.LMS.rpc('lms_my_orgs')) || []; } catch(e){ MY_ORGS = []; }
+        // resolve which org to show
+        var orgId = params.get('org_id') || null;
+        var slug = params.get('org');
+        if (!orgId && slug) {
+          var m = MY_ORGS.filter(function(o){ return o.slug===slug; })[0];
+          if (m) orgId = m.id;
+          else if (window.LMS.isAdmin) {
+            try { var q = await window.LMS.db.from('lms_orgs').select('id').eq('slug',slug).maybeSingle(); if(q.data) orgId=q.data.id; } catch(e){}
+          }
+        }
+        try { await loadOrg(orgId); }
+        catch (e) {
+          gate('<h2 style="font-size:23px;font-weight:700">No dashboard yet</h2>'
+            + '<p class="cap" style="margin:10px 0">'+esc(e.message)+'</p>'
+            + '<p class="cap">If you’re a teacher, ask us to add you to your school. Otherwise head to <a href="learn.html">your courses</a>.</p>');
+        }
+      })();
+    }).catch(function(){ render(SAMPLE); });
+  }
+  loadDashboard();
 })();
 </script>
 </body>

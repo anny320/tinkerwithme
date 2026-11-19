@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MakerBreaker Safety Guide — TinkerWith_</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FF7F32;--orange-deep:#E0641B;--green:#84BD00;--green-deep:#5E8700;
+    --blue:#004C97;--yellow:#FFD23F;--ink:#220111;--cream:#F7F3F0;--cream-dim:#EDE6E0;
+    --text-2:#5A4A50;--warn:#C9630F;--warn-soft:#FFE9D6;--danger:#B00020;--danger-soft:#FBE0E0;
+    --font:'Jost','Century Gothic',-apple-system,'Segoe UI',sans-serif;--mono:'Space Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--cream);line-height:1.5}
+  .sheet{max-width:820px;margin:0 auto;background:#fff;padding:34px 40px 40px}
+  h1,h2,h3{margin:0;line-height:1.12}
+  .brand{font-family:var(--mono);font-weight:700;font-size:14px}.brand b{color:var(--orange)}
+  .top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;border-bottom:3px solid var(--ink);padding-bottom:14px}
+  .top .logo{height:118px;width:auto;display:block}
+  .top .tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-2)}
+  h1{font-size:30px;font-weight:700;margin:16px 0 4px}
+  .lede{color:var(--text-2);font-size:14.5px;max-width:62ch}
+  h2{font-size:15px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--orange-deep);margin:22px 0 10px}
+  .check{display:grid;gap:7px;padding:0;margin:0;list-style:none;font-size:14.5px}
+  .check li{display:flex;gap:9px;align-items:flex-start}
+  .check li::before{content:"";flex:none;width:16px;height:16px;border:2px solid var(--ink);border-radius:4px;margin-top:2px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .box{border:2px solid var(--ink);border-radius:12px;padding:13px 15px}
+  .box h3{font-size:15px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .box ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--text-2);display:grid;gap:4px}
+  .box.yes{background:#F0F7DE;border-color:var(--green-deep)}.box.yes h3{color:var(--green-deep)}
+  .box.no{background:var(--danger-soft);border-color:var(--danger)}.box.no h3{color:var(--danger)}
+  ol.steps{margin:0;padding-left:20px;font-size:14.5px;display:grid;gap:7px}
+  ol.steps b{font-weight:700}
+  .warn{background:var(--warn-soft);border:2px solid var(--warn);border-radius:12px;padding:13px 15px;margin-top:14px;font-size:13.5px}
+  .warn b{color:var(--warn)}
+  .signoff{border:2px dashed var(--ink);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13.5px}
+  .signoff .line{display:inline-block;border-bottom:1.5px solid var(--ink);min-width:190px;margin:0 6px}
+  .foot{margin-top:20px;border-top:2px solid var(--cream-dim);padding-top:10px;font-size:11.5px;color:var(--text-2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  @page{size:A4;margin:14mm}
+  @media print{body{background:#fff}.sheet{padding:0;max-width:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <img class="logo" src="assets/logo.jpg" alt="Tinkerwith — DIY Electronics Projects">
+    <span class="tag">MakerBreaker · Safety Guide</span>
+  </div>
+
+  <h1>Taking electronics apart — safely</h1>
+  <p class="lede">MakerBreaker is all about curiosity: opening up old gadgets to see how they work and harvesting useful parts. It's great fun and completely safe when you follow a few simple rules. Please read this with a grown-up before the session.</p>
+
+  <h2>Before you start — the checklist</h2>
+  <ul class="check">
+    <li>Work with a grown-up nearby, at a clear, well-lit table.</li>
+    <li>Unplug the device. If it ran on the wall, leave it unplugged for the whole session.</li>
+    <li>Take out any batteries and set them aside.</li>
+    <li>Wear eye protection — safety glasses, or even sunglasses — and tie back long hair.</li>
+    <li>Have a small box or bag ready for the parts you harvest, and one for rubbish.</li>
+  </ul>
+
+  <h2>What to bring — and what to leave at home</h2>
+  <div class="cols">
+    <div class="box yes">
+      <h3>✅ Great to bring</h3>
+      <ul>
+        <li>Old radios, toys, remotes, computer mice &amp; keyboards</li>
+        <li>Toy cars, small fans, headphones, wired phones</li>
+        <li>Calculators, alarm clocks, game controllers</li>
+        <li>Anything small that ran on batteries or USB</li>
+      </ul>
+    </div>
+    <div class="box no">
+      <h3>⛔ Never bring / never open</h3>
+      <ul>
+        <li>Microwaves — they store a dangerous charge</li>
+        <li>TVs &amp; computer monitors (especially old tube ones)</li>
+        <li>Anything with a big heavy block inside (capacitor)</li>
+        <li>Fluorescent / energy-saver bulbs (contain mercury)</li>
+        <li>Swollen or damaged batteries, vapes</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>The safe way to take something apart</h2>
+  <ol class="steps">
+    <li><b>Make it safe.</b> Unplugged? Batteries out? Good.</li>
+    <li><b>Find the screws.</b> Look under stickers, rubber feet and battery covers. Use the right screwdriver — don't force it.</li>
+    <li><b>Open gently.</b> Ease the case apart. If it won't budge, look for another screw rather than pulling hard.</li>
+    <li><b>Explore &amp; harvest.</b> Spot the motors, speakers, LEDs, wires, switches and gears. Snip wires with the grown-up's help.</li>
+    <li><b>Sort &amp; tidy.</b> Keepers in your parts box, sharp bits and rubbish away safely. Wash your hands afterwards.</li>
+  </ol>
+
+  <div class="warn">
+    <b>⚡ Battery rule:</b> never bend, squeeze, poke or heat a battery — especially the flat, pouch-shaped lithium ones in phones and power banks. If a battery is puffy, hot or leaking, don't touch it: tell a grown-up and recycle it at a proper drop-off.
+  </div>
+
+  <h2>If something goes wrong</h2>
+  <ul class="check">
+    <li>Small cut or scrape → clean it and use a plaster. Tell your grown-up.</li>
+    <li>A battery gets hot, smokes or smells → move away and let an adult handle it outdoors.</li>
+    <li>Not sure if something is safe to open → don't. Ask first. When in doubt, leave it out.</li>
+  </ul>
+
+  <div class="signoff">
+    <b>Grown-up sign-off.</b> I've read this guide and will supervise the teardown.<br>
+    Name <span class="line"></span> &nbsp; Signature <span class="line"></span> &nbsp; Date <span class="line" style="min-width:120px"></span>
+  </div>
+
+  <div class="foot">
+    <span>© Tinkerwith_ eLearning · MakerBreaker</span>
+    <span>Questions? WhatsApp +254 117 784 724 · tinkerwith.me</span>
+  </div>
+</div>
+</body>
+</html>
