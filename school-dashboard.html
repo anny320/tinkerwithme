@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://tinkerwith.me/school-dashboard.html">
+<title>School Dashboard — TinkerWith_</title>
+<meta name="description" content="A school's live Tinkerwith dashboard: seats used, active learners, lesson completion, quiz averages and learners who need a nudge.">
+<meta name="theme-color" content="#FF7F32">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brand.css">
+<style>
+  /* Layout: a scanned ops dashboard — topbar, seats strip, KPI tiles, learner table, course bars. Summary before detail. */
+  :root{
+    --warn:#C9630F; --warn-soft:#FFE9D6;   /* "needs a nudge" — amber, separate from the orange accent */
+    --ok:#5E8700;  --ok-soft:#F0F7DE;
+    --card-sh:5px 5px 0 var(--ink);
+  }
+  *{box-sizing:border-box}
+  body{background:var(--cream);color:var(--text);margin:0;font-family:var(--font-display);-webkit-font-smoothing:antialiased}
+  .dash{max-width:1120px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left,0px)) 72px}
+  h1,h2,h3{margin:0;line-height:1.1}
+  .mono{font-family:var(--font-mono)}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* Topbar */
+  .top{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{font-family:var(--font-mono);font-weight:700;font-size:15px;letter-spacing:.02em;color:var(--ink);text-decoration:none}
+  .brand b{color:var(--orange)}
+  .top .who{min-width:0}
+  .top h1{font-size:clamp(23px,4.5vw,32px);font-weight:700}
+  .sub{color:var(--text-2);font-size:14px;margin-top:5px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+  .pill{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1.5px solid var(--ink);border-radius:99px;padding:3px 10px;background:var(--white)}
+  .pill.tier{background:var(--blue);color:#fff;border-color:var(--ink)}
+  .sample{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+  .actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+  .btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13.5px;border:2px solid var(--ink);border-radius:99px;padding:9px 15px;background:var(--white);color:var(--ink);display:inline-flex;align-items:center;gap:7px;box-shadow:2px 2px 0 var(--ink)}
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+  .btn.primary{background:var(--orange);color:#fff}
+  .btn:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+  /* Seats strip */
+  .seats{background:var(--ink);color:#fff;border-radius:var(--radius);padding:15px 18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+  .seats .big{font-size:30px;font-weight:700;line-height:1}
+  .seats .lbl{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--on-ink)}
+  .gauge{flex:1;min-width:180px;height:14px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
+  .gauge i{display:block;height:100%;background:var(--green);border-radius:99px}
+  .seats .free{font-size:14px;color:var(--on-ink)}
+  .seats .free b{color:#fff}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+  @media(max-width:860px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:460px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);box-shadow:var(--card-sh);padding:13px 14px}
+  .kpi .v{font-size:28px;font-weight:700;line-height:1}
+  .kpi .k{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-2);margin-top:6px}
+  .kpi.alert{background:var(--warn-soft);border-color:var(--warn)}
+  .kpi.alert .v{color:var(--warn)}
+  .kpi.good .v{color:var(--ok)}
+
+  /* Section card */
+  .sec{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:var(--card-sh);padding:18px;margin-bottom:18px}
+  .sec h2{font-size:18px;font-weight:700;margin-bottom:3px}
+  .sec .cap{color:var(--text-2);font-size:13px;margin-bottom:14px}
+
+  /* Learner table */
+  .tw{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1.5px solid var(--cream-dim)}
+  th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);font-weight:700}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+  tbody tr:hover{background:var(--cream)}
+  .name{font-weight:600}
+  .chip{font-family:var(--font-mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:99px;padding:3px 9px;border:1.5px solid}
+  .chip.act{background:var(--ok-soft);color:var(--ok-deep,#4a6b00);border-color:var(--ok)}
+  .chip.stk{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+  .chip.idle{background:var(--cream-dim);color:var(--text-2);border-color:var(--border-strong)}
+
+  /* Course bars */
+  .courses{display:grid;gap:14px}
+  .crow{display:grid;grid-template-columns:1fr;gap:6px}
+  .crow .ct{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .crow .ct b{font-weight:600;font-size:14.5px}
+  .crow .ct span{font-family:var(--font-mono);font-size:12px;color:var(--text-2)}
+  .track{height:12px;background:var(--cream-dim);border-radius:99px;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+
+  /* Share & embed (portability extra) */
+  details.share{background:var(--white);border:2px dashed var(--ink);border-radius:var(--radius);padding:0 18px}
+  details.share[open]{padding-bottom:18px}
+  details.share>summary{cursor:pointer;list-style:none;font-weight:600;font-size:15px;padding:15px 0;display:flex;align-items:center;gap:9px}
+  details.share>summary::-webkit-details-marker{display:none}
+  details.share>summary::after{content:"+";margin-left:auto;font-family:var(--font-mono);font-size:18px}
+  details.share[open]>summary::after{content:"\2013"}
+  .pblock{margin-top:8px}
+  .pblock h3{font-size:13px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--text-2);margin-bottom:7px}
+  .codebox{display:flex;gap:8px;align-items:stretch}
+  .codebox code{flex:1;min-width:0;overflow-x:auto;white-space:pre;background:var(--ink);color:#fff;border-radius:var(--radius-sm);padding:11px 13px;font-family:var(--font-mono);font-size:12.5px}
+  .copy{flex:none}
+  .hint{font-size:12.5px;color:var(--text-2);margin-top:8px}
+  .foot{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:26px}
+
+  /* Embedded mode trims the wordmark/footer chrome */
+  body.embed .brand,body.embed .foot{display:none}
+  body.embed .dash{padding-top:16px}
+
+  /* Print / Save-as-PDF — the termly report view */
+  @media print{
+    @page{margin:14mm}
+    body{background:#fff}
+    .actions,details.share,.btn,.sample{display:none!important}
+    .seats{background:#fff!important;color:#000;border:1.5px solid #000}
+    .seats .lbl,.seats .free{color:#333}.seats .free b{color:#000}
+    .kpi,.sec{box-shadow:none;border-color:#000;break-inside:avoid}
+    .gauge{border:1px solid #000}.gauge i{background:#000}
+    .track i{background:#555}
+    .printonly{display:block!important}
+    a[href]:after{content:""}
+  }
+  .printonly{display:none}
+</style>
+</head>
+<body>
+<div class="dash" id="app" aria-live="polite">
+  <p class="cap">Loading…</p>
+</div>
+
+<script src="lms.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var params = new URLSearchParams(location.search);
+  if (params.get('embed') === '1') document.body.classList.add('embed');
+
+  // ---- Sample data (shape = lms_org_dashboard JSON). Swap for the real RPC below. ----
+  var SAMPLE = {
+    sample: true,
+    org:{ name:'Riverside Junior Academy', kind:'school', tier:'facilitated',
+          seats_purchased:30, seats_used:24, seats_free:6, kits_included:true,
+          term_start:'2026-09-02', term_end:'2026-12-04' },
+    summary:{ learners:24, active_7d:17, active_30d:22, lessons_completed:186, avg_quiz_pct:78, stuck:3 },
+    learners:[
+      { name:'Amani Otieno',    last_active:daysAgo(1),  lessons_done:14, courses_done:2, avg_quiz_pct:88, stuck:false },
+      { name:'Brian Kamau',     last_active:daysAgo(0),  lessons_done:19, courses_done:3, avg_quiz_pct:91, stuck:false },
+      { name:'Chelsea Wanjiru', last_active:daysAgo(2),  lessons_done:11, courses_done:1, avg_quiz_pct:74, stuck:false },
+      { name:'David Mwangi',    last_active:daysAgo(18), lessons_done:0,  courses_done:0, avg_quiz_pct:null, stuck:true },
+      { name:'Esther Achieng',  last_active:daysAgo(3),  lessons_done:13, courses_done:2, avg_quiz_pct:82, stuck:false },
+      { name:'Faraji Njoroge',  last_active:daysAgo(1),  lessons_done:16, courses_done:2, avg_quiz_pct:69, stuck:false },
+      { name:'Grace Adhiambo',  last_active:daysAgo(22), lessons_done:0,  courses_done:0, avg_quiz_pct:null, stuck:true },
+      { name:'Hassan Ali',      last_active:daysAgo(5),  lessons_done:9,  courses_done:1, avg_quiz_pct:77, stuck:false },
+      { name:'Imani Kiptoo',    last_active:daysAgo(0),  lessons_done:21, courses_done:3, avg_quiz_pct:85, stuck:false },
+      { name:'Joy Nasimiyu',    last_active:daysAgo(16), lessons_done:1,  courses_done:0, avg_quiz_pct:60, stuck:true },
+      { name:'Kevin Omondi',    last_active:daysAgo(4),  lessons_done:12, courses_done:1, avg_quiz_pct:79, stuck:false },
+      { name:'Lydia Chepkoech', last_active:daysAgo(2),  lessons_done:15, courses_done:2, avg_quiz_pct:90, stuck:false }
+    ],
+    courses:[
+      { title:'What is AI?',            enrolled:24, completed_lessons:72, avg_quiz_pct:84, lessons_total:6 },
+      { title:'Robotics 101',          enrolled:20, completed_lessons:48, avg_quiz_pct:76, lessons_total:6 },
+      { title:'AI Movie Studio',       enrolled:14, completed_lessons:34, avg_quiz_pct:81, lessons_total:4 },
+      { title:'Self-Driving Car',      enrolled:11, completed_lessons:22, avg_quiz_pct:70, lessons_total:5 },
+      { title:'AI Comic Studio',       enrolled:9,  completed_lessons:10, avg_quiz_pct:null, lessons_total:4 }
+    ]
+  };
+
+  function daysAgo(n){ var d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function rel(iso){
+    if(!iso) return '—';
+    var ms=Date.now()-new Date(iso).getTime(), d=Math.floor(ms/864e5);
+    if(d<=0) return 'today'; if(d===1) return 'yesterday'; if(d<14) return d+' days ago';
+    if(d<60) return Math.floor(d/7)+' wks ago'; return Math.floor(d/30)+' mths ago';
+  }
+  function pct(v){ return v==null?'—':v+'%'; }
+  function status(l){
+    if(l.stuck) return '<span class="chip stk">Needs a nudge</span>';
+    var d=Math.floor((Date.now()-new Date(l.last_active).getTime())/864e5);
+    return d<=7 ? '<span class="chip act">Active</span>' : '<span class="chip idle">Quiet</span>';
+  }
+
+  function render(data){
+    var o=data.org, s=data.summary;
+    var sampleTag = data.sample ? '<span class="pill sample">Sample data · not yet connected</span>' : '';
+    var seatPct = o.seats_purchased ? Math.round(100*o.seats_used/o.seats_purchased) : 0;
+
+    var html = ''
+    + '<div class="top">'
+    +   '<div class="who">'
+    +     '<a class="brand" href="https://tinkerwith.me">Tinkerwith<b>_</b></a>'
+    +     '<h1>'+esc(o.name)+'</h1>'
+    +     '<div class="sub">'
+    +       '<span class="pill tier">'+esc(o.tier)+'</span>'
+    +       '<span>'+esc(cap(o.kind))+(o.kits_included?' · kits included':'')+'</span>'
+    +       (o.term_start?'<span>Term: '+fmt(o.term_start)+' – '+fmt(o.term_end)+'</span>':'')
+    +       sampleTag
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="actions">'
+    +     '<button class="btn" id="csv">⬇ Export CSV</button>'
+    +     '<button class="btn primary" id="pdf">🖨 Termly report (PDF)</button>'
+    +   '</div>'
+    + '</div>'
+
+    + '<div class="seats">'
+    +   '<div><div class="big num">'+o.seats_used+'<span style="font-size:17px;color:var(--on-ink)">/'+o.seats_purchased+'</span></div><div class="lbl">Seats claimed</div></div>'
+    +   '<div class="gauge" role="img" aria-label="'+seatPct+'% of seats claimed"><i style="width:'+seatPct+'%"></i></div>'
+    +   '<div class="free"><b>'+o.seats_free+'</b> seats free</div>'
+    + '</div>'
+
+    + '<div class="kpis">'
+    +   kpi(s.learners,'Learners','')
+    +   kpi(s.active_7d,'Active this week','good')
+    +   kpi(s.active_30d,'Active (30 days)','')
+    +   kpi(s.lessons_completed,'Lessons done','')
+    +   kpi(pct(s.avg_quiz_pct),'Avg quiz','good')
+    +   kpi(s.stuck,'Need a nudge', s.stuck>0?'alert':'')
+    + '</div>'
+
+    + '<div class="sec">'
+    +   '<h2>Learners</h2><p class="cap">Who’s moving, and who needs a nudge. '
+    +     '<span class="printonly">Generated '+fmt(new Date().toISOString())+'.</span></p>'
+    +   '<div class="tw"><table><thead><tr>'
+    +     '<th>Learner</th><th>Status</th><th>Last active</th><th class="n">Lessons</th><th class="n">Courses</th><th class="n">Avg quiz</th>'
+    +   '</tr></thead><tbody>'
+    +   data.learners.map(function(l){ return '<tr>'
+    +     '<td class="name">'+esc(l.name)+'</td>'
+    +     '<td>'+status(l)+'</td>'
+    +     '<td>'+rel(l.last_active)+'</td>'
+    +     '<td class="n">'+l.lessons_done+'</td>'
+    +     '<td class="n">'+l.courses_done+'</td>'
+    +     '<td class="n">'+pct(l.avg_quiz_pct)+'</td>'
+    +   '</tr>'; }).join('')
+    +   '</tbody></table></div>'
+    + '</div>'
+
+    + '<div class="sec">'
+    +   '<h2>Courses</h2><p class="cap">Completion and quiz average across the class.</p>'
+    +   '<div class="courses">'
+    +   data.courses.map(function(c){
+          var total = (c.lessons_total||0)*(c.enrolled||0);
+          var cp = total ? Math.min(100, Math.round(100*c.completed_lessons/total)) : 0;
+          return '<div class="crow">'
+    +       '<div class="ct"><b>'+esc(c.title)+'</b><span>'+c.enrolled+' enrolled · '+cp+'% done · quiz '+pct(c.avg_quiz_pct)+'</span></div>'
+    +       '<div class="track" role="img" aria-label="'+cp+'% complete"><i style="width:'+cp+'%"></i></div>'
+    +     '</div>'; }).join('')
+    +   '</div>'
+    + '</div>'
+
+    + '<details class="share">'
+    +   '<summary>🔗 Share &amp; embed <span style="font-weight:400;color:var(--text-2);font-size:13px">(portability — optional)</span></summary>'
+    +   '<p class="hint">Your dashboard lives here on Tinkerwith. These are just for schools that prefer to see the numbers inside their own website or portal.</p>'
+    +   '<div class="pblock"><h3>Embed in your site</h3><div class="codebox">'
+    +     '<code id="emb"></code><button class="btn copy" data-copy="emb">Copy</button></div>'
+    +     '<p class="hint">Paste into any page. Shows this dashboard, no Tinkerwith login needed. (Requires a school access token — we issue one per school.)</p></div>'
+    +   '<div class="pblock"><h3>Share a link</h3><div class="codebox">'
+    +     '<code id="lnk"></code><button class="btn copy" data-copy="lnk">Copy</button></div></div>'
+    + '</details>'
+
+    + '<p class="foot">A Tinkerwith_ school dashboard · utilization updates as learners work.</p>';
+
+    $('app').innerHTML = html;
+
+    // portability snippets
+    var base = 'https://tinkerwith.me/school-dashboard.html?org='+encodeURIComponent(slug(o.name))+'&token=SCHOOL_TOKEN';
+    $('emb').textContent = '<iframe src="'+base+'&embed=1"\n  width="100%" height="900" style="border:0"\n  title="'+esc(o.name)+' — Tinkerwith"></iframe>';
+    $('lnk').textContent = base;
+
+    // wire actions
+    $('csv').addEventListener('click', function(){ exportCSV(data); });
+    $('pdf').addEventListener('click', function(){ window.print(); });
+    [].forEach.call(document.querySelectorAll('.copy'), function(b){
+      b.addEventListener('click', function(){ copyText($(b.getAttribute('data-copy')).textContent, b); });
+    });
+  }
+
+  function kpi(v,k,cls){ return '<div class="kpi '+(cls||'')+'"><div class="v num">'+v+'</div><div class="k">'+k+'</div></div>'; }
+  function cap(s){ return String(s||'').charAt(0).toUpperCase()+String(s||'').slice(1); }
+  function fmt(iso){ try{ return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return iso; } }
+  function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+  function exportCSV(data){
+    var rows=[['Learner','Status','Last active (ISO)','Lessons done','Courses done','Avg quiz %']];
+    data.learners.forEach(function(l){
+      rows.push([l.name, l.stuck?'Needs a nudge':'Active', l.last_active||'', l.lessons_done, l.courses_done, l.avg_quiz_pct==null?'':l.avg_quiz_pct]);
+    });
+    var csv = rows.map(function(r){ return r.map(function(c){
+      c=String(c); return /[",\n]/.test(c) ? '"'+c.replace(/"/g,'""')+'"' : c;
+    }).join(','); }).join('\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=slug(data.org.name)+'-learners.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },0);
+  }
+
+  function copyText(t, btn){
+    var done=function(){ var o=btn.textContent; btn.textContent='Copied ✓'; setTimeout(function(){btn.textContent=o;},1200); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done).catch(function(){ selectFallback(t); });
+    } else selectFallback(t);
+  }
+  function selectFallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){} ta.remove();
+  }
+
+  // ---- Data load: sample now; real dashboard when signed in. ----
+  // To go live, replace the SAMPLE line below with:
+  //   await window.LMS.ready;
+  //   var orgId = params.get('org_id') || null;           // or resolve slug -> id
+  //   var data = await window.LMS.rpc('lms_org_dashboard', { p_org: orgId });
+  //   render(data);
+  // For embedded/no-login views, fetch from a token-scoped Edge Function instead.
+  try { render(SAMPLE); }
+  catch(e){ $('app').innerHTML = '<p class="cap">Could not load the dashboard. '+esc(e.message)+'</p>'; }
+})();
+</script>
+</body>
+</html>
