@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A smart home with lights, climate and security</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">A home that senses &amp; responds</text>
+<!-- house -->
+<g>
+  <path d="M250 210 l150 -78 150 78 z" fill="#FFD23F" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="285" y="210" width="230" height="140" rx="10" fill="#F7F3F0" stroke="#220111" stroke-width="2.5"/>
+  <rect x="378" y="285" width="44" height="65" rx="4" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+</g>
+<!-- lights -->
+<g>
+  <circle cx="330" cy="255" r="22" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+  <path d="M330 242 a10 10 0 0 1 6 18 h-12 a10 10 0 0 1 6 -18z" fill="#FFD23F" stroke="#220111" stroke-width="2"/>
+  <line x1="326" y1="263" x2="334" y2="263" stroke="#220111" stroke-width="2"/>
+  <text x="330" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="12.5" fill="#220111">Lights</text>
+</g>
+<!-- climate (fan) -->
+<g>
+  <circle cx="470" cy="255" r="22" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+  <g transform="translate(470 252)" fill="#84BD00" stroke="#220111" stroke-width="1.8">
+    <path d="M0 0 q-14 -8 -2 -16 q8 6 2 16z"/><path d="M0 0 q8 -14 16 -2 q-6 8 -16 2z"/><path d="M0 0 q14 8 2 16 q-8 -6 -2 -16z"/><path d="M0 0 q-8 14 -16 2 q6 -8 16 -2z"/>
+    <circle r="3" fill="#220111" stroke="none"/>
+  </g>
+  <text x="470" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="12.5" fill="#220111">Climate</text>
+</g>
+<!-- security badges on right -->
+<g>
+  <rect x="560" y="150" width="180" height="170" rx="16" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <path d="M650 180 l30 11 v24 c0 22 -16 36 -30 43 c-14 -7 -30 -21 -30 -43 v-24z" fill="#fff" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="638" y="222" width="24" height="20" rx="3" fill="#004C97" stroke="#220111" stroke-width="2"/>
+  <path d="M643 222 v-6 a7 7 0 0 1 14 0 v6" fill="none" stroke="#220111" stroke-width="2"/>
+  <text x="650" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Security</text>
+</g>
+<text x="400" y="408" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Wire three systems, then make the house think for itself.</text>
+</svg>

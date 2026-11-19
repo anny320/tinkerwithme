@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A camera feeds an AI model that recognises what it sees</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Teach a computer to see</text>
+<!-- camera -->
+<g>
+  <rect x="70" y="180" width="150" height="110" rx="14" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <rect x="110" y="165" width="50" height="20" rx="5" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="145" cy="235" r="32" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="145" cy="235" r="16" fill="#7FB3E0" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="195" cy="200" r="6" fill="#FFD23F" stroke="#220111" stroke-width="2"/>
+  <text x="145" y="315" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">Camera sees</text>
+</g>
+<line x1="228" y1="235" x2="300" y2="235" stroke="#220111" stroke-width="3"/><path d="M291 229 L300 235 L291 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- model -->
+<g>
+  <rect x="312" y="175" width="150" height="120" rx="18" fill="#F7F3F0" stroke="#220111" stroke-width="2.5"/>
+  <g stroke="#7FB3E0" stroke-width="1.4"><line x1="345" y1="205" x2="400" y2="235"/><line x1="345" y1="265" x2="400" y2="235"/><line x1="345" y1="235" x2="400" y2="235"/><line x1="400" y1="235" x2="430" y2="210"/><line x1="400" y1="235" x2="430" y2="260"/></g>
+  <g fill="#FF7F32" stroke="#220111" stroke-width="2.2"><circle cx="345" cy="205" r="8"/><circle cx="345" cy="235" r="8"/><circle cx="345" cy="265" r="8"/><circle cx="400" cy="235" r="9"/></g>
+  <g fill="#84BD00" stroke="#220111" stroke-width="2.2"><circle cx="430" cy="210" r="8"/><circle cx="430" cy="260" r="8"/></g>
+  <text x="387" y="320" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">A model decides</text>
+</g>
+<line x1="470" y1="235" x2="542" y2="235" stroke="#220111" stroke-width="3"/><path d="M533 229 L542 235 L533 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- detection result -->
+<g>
+  <rect x="556" y="160" width="180" height="150" rx="12" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="646" cy="235" r="40" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <path d="M632 222 L624 210 L636 216 Z" fill="#FFD23F" stroke="#220111" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M660 222 L668 210 L656 216 Z" fill="#FFD23F" stroke="#220111" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="636" cy="233" r="4" fill="#220111"/><circle cx="656" cy="233" r="4" fill="#220111"/>
+  <path d="M638 248 q8 6 16 0" stroke="#220111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <rect x="600" y="188" width="92" height="94" rx="6" fill="none" stroke="#5E8700" stroke-width="3"/>
+  <rect x="600" y="172" width="70" height="18" rx="4" fill="#5E8700"/>
+  <text x="635" y="186" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="12" fill="#fff">cat 98%</text>
+</g>
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Train a model to spot and label what the camera sees.</text>
+</svg>

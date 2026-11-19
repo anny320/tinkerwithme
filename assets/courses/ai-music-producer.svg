@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Produce a music track and cover art with AI</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Produce your own track</text>
+<!-- headphones -->
+<g transform="translate(180 230)">
+  <path d="M-62 10 a62 62 0 0 1 124 0" fill="none" stroke="#220111" stroke-width="6" stroke-linecap="round"/>
+  <rect x="-74" y="6" width="28" height="56" rx="12" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+  <rect x="46" y="6" width="28" height="56" rx="12" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+  <text x="0" y="110" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Your sound</text>
+</g>
+<!-- waveform -->
+<g transform="translate(300 230)" stroke="#004C97" stroke-width="7" stroke-linecap="round">
+  <line x1="0" y1="-20" x2="0" y2="20"/><line x1="18" y1="-40" x2="18" y2="40"/><line x1="36" y1="-14" x2="36" y2="14"/><line x1="54" y1="-52" x2="54" y2="52"/><line x1="72" y1="-26" x2="72" y2="26"/><line x1="90" y1="-44" x2="90" y2="44"/><line x1="108" y1="-16" x2="108" y2="16"/><line x1="126" y1="-34" x2="126" y2="34"/>
+</g>
+<!-- cover art + note -->
+<g>
+  <rect x="470" y="150" width="170" height="170" rx="16" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="555" cy="235" r="56" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="555" cy="235" r="14" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <g fill="#004C97" stroke="#220111" stroke-width="2.2"><circle cx="585" cy="212" r="11"/><rect x="593" y="178" width="4.5" height="38"/><path d="M593 178 q20 4 20 20 q-9 -11 -20 -9z" stroke-linejoin="round"/></g>
+  <text x="555" y="345" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Cover art</text>
+</g>
+<text x="300" y="402" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Make beats, melodies and cover art — and release a real EP.</text>
+</svg>

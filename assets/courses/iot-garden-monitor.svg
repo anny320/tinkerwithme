@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Sensors keep a seedling alive and report its data</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Keep a real seedling alive</text>
+<!-- pot + plant -->
+<g>
+  <path d="M170 275 h120 l-14 70 h-92 z" fill="#FF7F32" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="162" y="262" width="136" height="20" rx="5" fill="#E0641B" stroke="#220111" stroke-width="2.5"/>
+  <path d="M230 262 v-70" stroke="#5E8700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M230 215 q-34 -6 -40 -34 q34 0 40 34z" fill="#84BD00" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M230 200 q34 -6 40 -34 q-34 0 -40 34z" fill="#84BD00" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/>
+</g>
+<!-- sensor probe -->
+<line x1="300" y1="250" x2="270" y2="320" stroke="#220111" stroke-width="4" stroke-linecap="round"/>
+<rect x="298" y="225" width="36" height="30" rx="5" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+<!-- data arrow + readout -->
+<line x1="350" y1="235" x2="430" y2="235" stroke="#220111" stroke-width="3"/>
+<path d="M420 229 L430 235 L420 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g>
+  <rect x="445" y="165" width="250" height="150" rx="16" fill="#F7F3F0" stroke="#220111" stroke-width="2.5"/>
+  <text x="470" y="210" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="16" fill="#220111">Soil moisture</text>
+  <text x="675" y="210" text-anchor="end" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="18" fill="#E4572E">28%</text>
+  <rect x="470" y="222" width="205" height="14" rx="7" fill="#E2EBF5" stroke="#220111" stroke-width="2"/><rect x="470" y="222" width="60" height="14" rx="7" fill="#E4572E"/>
+  <text x="470" y="270" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#5E8700">💧 Pump ON — watering…</text>
+</g>
+<text x="400" y="400" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Sense dry soil, then automate the watering.</text>
+</svg>

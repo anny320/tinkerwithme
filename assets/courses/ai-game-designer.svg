@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Design and build a playable game with AI tools</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Design &amp; build your own game</text>
+<!-- game screen -->
+<g>
+  <rect x="120" y="110" width="400" height="230" rx="16" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <rect x="120" y="290" width="400" height="50" rx="0" fill="#84BD00"/>
+  <rect x="120" y="290" width="400" height="50" fill="none" stroke="#220111" stroke-width="2.5"/>
+  <!-- character -->
+  <g transform="translate(200 250)"><rect x="-20" y="-20" width="40" height="40" rx="9" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/><circle cx="-7" cy="-4" r="5" fill="#fff" stroke="#220111" stroke-width="1.8"/><circle cx="9" cy="-4" r="5" fill="#fff" stroke="#220111" stroke-width="1.8"/><circle cx="-7" cy="-3" r="2" fill="#220111"/><circle cx="9" cy="-3" r="2" fill="#220111"/></g>
+  <!-- coin -->
+  <circle cx="330" cy="200" r="16" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/><text x="330" y="206" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="16" fill="#220111">★</text>
+  <!-- block -->
+  <rect x="400" y="230" width="40" height="40" rx="6" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <!-- AI sparkle -->
+  <g transform="translate(470 150)"><path d="M0 -20 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z" fill="#FFD23F" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/><text x="0" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="12" fill="#220111">AI art</text></g>
+</g>
+<!-- controller -->
+<g transform="translate(615 240)">
+  <rect x="-70" y="-34" width="140" height="78" rx="30" fill="#220111"/>
+  <circle cx="-38" cy="-4" r="7" fill="#FFD23F"/><line x1="-52" y1="-4" x2="-24" y2="-4" stroke="#fff" stroke-width="4" stroke-linecap="round"/><line x1="-38" y1="-18" x2="-38" y2="10" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="34" cy="-14" r="8" fill="#E4572E"/><circle cx="52" cy="4" r="8" fill="#84BD00"/>
+  <text x="0" y="66" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Play it!</text>
+</g>
+<text x="310" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Use AI for art and ideas, then build a game you can play.</text>
+</svg>

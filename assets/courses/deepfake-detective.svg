@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Spot real versus fake images and stay safe online</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Spot the fakes</text>
+<!-- real -->
+<g>
+  <rect x="90" y="140" width="180" height="180" rx="16" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="180" cy="220" r="48" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="163" cy="212" r="6" fill="#220111"/><circle cx="197" cy="212" r="6" fill="#220111"/>
+  <path d="M162 240 q18 16 36 0" stroke="#220111" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="240" cy="160" r="20" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+  <path d="M231 160 l6 7 12 -14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="180" y="305" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#5E8700">Real</text>
+</g>
+<!-- fake -->
+<g>
+  <rect x="440" y="140" width="180" height="180" rx="16" fill="#FBE0E0" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="530" cy="220" r="48" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="513" cy="212" r="6" fill="#220111"/><circle cx="549" cy="210" r="8" fill="#220111"/>
+  <path d="M512 244 q18 -12 36 2" stroke="#220111" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <g stroke="#E4572E" stroke-width="2.5" opacity="0.8"><line x1="498" y1="200" x2="562" y2="204"/><line x1="500" y1="236" x2="560" y2="232"/></g>
+  <circle cx="590" cy="160" r="20" fill="#E4572E" stroke="#220111" stroke-width="2.5"/>
+  <path d="M582 152 l16 16 M598 152 l-16 16" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <text x="530" y="305" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#E4572E">Fake</text>
+</g>
+<!-- magnifier between -->
+<g transform="translate(355 225)">
+  <circle r="34" fill="rgba(255,255,255,0.5)" stroke="#004C97" stroke-width="5"/>
+  <line x1="24" y1="24" x2="48" y2="48" stroke="#004C97" stroke-width="8" stroke-linecap="round"/>
+</g>
+<text x="400" y="400" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Train your eye, trace misinformation, and write your AI safety code.</text>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Control an Arduino gadget wirelessly from a phone</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Control it from your phone</text>
+<!-- phone -->
+<g>
+  <rect x="120" y="150" width="140" height="210" rx="22" fill="#220111"/>
+  <rect x="132" y="172" width="116" height="150" rx="6" fill="#E2EBF5"/>
+  <circle cx="190" cy="342" r="9" fill="#F7F3F0"/>
+  <rect x="150" y="190" width="80" height="30" rx="8" fill="#FF7F32" stroke="#fff" stroke-width="1.5"/>
+  <text x="190" y="211" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#fff">ON</text>
+  <rect x="150" y="230" width="80" height="30" rx="8" fill="#004C97" stroke="#fff" stroke-width="1.5"/>
+  <text x="190" y="251" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#fff">GO</text>
+  <text x="190" y="295" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="12" fill="#220111">your app</text>
+</g>
+<!-- bluetooth waves -->
+<g stroke="#004C97" stroke-width="3" fill="none" stroke-linecap="round"><path d="M290 230 q22 25 0 50"/><path d="M312 215 q36 40 0 80"/><path d="M334 200 q50 55 0 110"/></g>
+<!-- BT glyph -->
+<g transform="translate(400 255)">
+  <circle r="28" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <path d="M0 -15 l10 8 -10 8 0 -32 10 8 -10 8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<!-- gadget (car) -->
+<g>
+  <rect x="470" y="235" width="150" height="50" rx="12" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+  <rect x="500" y="212" width="80" height="26" rx="6" fill="#B6D85A" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="505" cy="292" r="20" fill="#220111"/><circle cx="505" cy="292" r="7" fill="#fff"/>
+  <circle cx="585" cy="292" r="20" fill="#220111"/><circle cx="585" cy="292" r="7" fill="#fff"/>
+  <text x="545" y="340" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Your gadget</text>
+</g>
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Pair over Bluetooth, then build the app that drives it.</text>
+</svg>
