@@ -75,6 +75,24 @@ create table if not exists public.lms_redemptions (
   primary key (code_id, user_id)
 );
 
+-- Roster metadata captured at import (kids may have no profile email of their own).
+alter table public.lms_org_members add column if not exists email text;
+alter table public.lms_org_members add column if not exists age   int;
+alter table public.lms_org_members add column if not exists grade text;
+
+-- A rostered learner who hasn't claimed a seat yet: a code is issued and their
+-- details wait here until they redeem it (then copied onto their member row).
+create table if not exists public.lms_org_pending (
+  org_id     uuid not null references public.lms_orgs(id) on delete cascade,
+  code       text not null,
+  name       text,
+  email      text,
+  age        int,
+  grade      text,
+  created_at timestamptz not null default now(),
+  primary key (org_id, code)
+);
+
 -- keep updated_at fresh
 drop trigger if exists lms_orgs_touch on public.lms_orgs;
 create trigger lms_orgs_touch before update on public.lms_orgs
@@ -87,6 +105,7 @@ alter table public.lms_orgs          enable row level security;
 alter table public.lms_org_members   enable row level security;
 alter table public.lms_redeem_codes  enable row level security;
 alter table public.lms_redemptions   enable row level security;
+alter table public.lms_org_pending   enable row level security;
 
 -- staff of an org = owner/teacher member, or a site admin
 create or replace function public.lms_is_org_staff(p_org uuid)
@@ -126,6 +145,13 @@ create policy "admin all" on public.lms_redemptions for all to authenticated
   using (lms_is_admin()) with check (lms_is_admin());
 drop policy if exists "staff read redemptions" on public.lms_redemptions;
 create policy "staff read redemptions" on public.lms_redemptions for select to authenticated
+  using (lms_is_org_staff(org_id));
+
+drop policy if exists "admin all" on public.lms_org_pending;
+create policy "admin all" on public.lms_org_pending for all to authenticated
+  using (lms_is_admin()) with check (lms_is_admin());
+drop policy if exists "staff read pending" on public.lms_org_pending;
+create policy "staff read pending" on public.lms_org_pending for select to authenticated
   using (lms_is_org_staff(org_id));
 
 -- ---------------------------------------------------------------------------
@@ -240,6 +266,14 @@ begin
   insert into lms_redemptions (code_id, user_id, org_id) values (rc.id, uid, rc.org_id);
   update lms_redeem_codes set used_count = used_count + 1 where id = rc.id;
 
+  -- if this code was issued for a rostered learner, copy their details across
+  update lms_org_members m
+    set display_name = coalesce(p.name, m.display_name),
+        email = coalesce(p.email, m.email), age = coalesce(p.age, m.age), grade = coalesce(p.grade, m.grade)
+    from lms_org_pending p
+    where p.org_id = rc.org_id and p.code = rc.code and m.org_id = rc.org_id and m.user_id = uid;
+  delete from lms_org_pending where org_id = rc.org_id and code = rc.code;
+
   foreach cid in array rc.grant_courses loop
     perform lms_grant_access(uid, cid);
   end loop;
@@ -285,6 +319,76 @@ end;
 $$;
 
 -- ---------------------------------------------------------------------------
+-- Bulk roster import (org staff) — a teacher uploads a CSV as a JSON array of
+-- rows: [{name, email, age, grade}, ...]. For each row:
+--   • email matches an existing account → add/update member + grant courses
+--   • otherwise                         → issue a one-use seat code to hand out,
+--                                          holding name/age/grade until redeemed
+-- Returns a per-row result array so the UI can show added vs codes-issued.
+-- ---------------------------------------------------------------------------
+create or replace function public.lms_org_import_roster(
+  p_org uuid, p_rows jsonb, p_courses uuid[] default '{}'
+) returns json language plpgsql security definer set search_path = public as $$
+declare rec jsonb; uid text; em text; nm text; ag int; gr text; cd text;
+        used int; cap int; cid uuid; out jsonb := '[]'::jsonb;
+begin
+  if not lms_is_org_staff(p_org) then raise exception 'Not a teacher for this organization.'; end if;
+  select seats_purchased into cap from lms_orgs where id = p_org;
+  used := (select count(*) from lms_org_members where org_id = p_org and role = 'learner')
+        + (select count(*) from lms_org_pending where org_id = p_org);
+
+  for rec in select * from jsonb_array_elements(coalesce(p_rows, '[]'::jsonb)) loop
+    nm := nullif(btrim(rec->>'name'), '');
+    em := nullif(lower(btrim(rec->>'email')), '');
+    begin ag := nullif(btrim(rec->>'age'), '')::int; exception when others then ag := null; end;
+    gr := nullif(btrim(rec->>'grade'), '');
+
+    if nm is null and em is null then
+      out := out || jsonb_build_object('row', rec, 'status', 'skipped', 'reason', 'no name or email');
+      continue;
+    end if;
+
+    uid := null;
+    if em is not null then select user_id into uid from lms_profiles where lower(email) = em; end if;
+
+    if uid is not null then
+      -- existing account → link + grant
+      if not exists (select 1 from lms_org_members where org_id = p_org and user_id = uid) then
+        if cap is not null and used >= cap then
+          out := out || jsonb_build_object('name', coalesce(nm, em), 'status', 'skipped', 'reason', 'no seats left');
+          continue;
+        end if;
+        insert into lms_org_members (org_id, user_id, role, display_name, email, age, grade)
+          values (p_org, uid, 'learner', nm, em, ag, gr);
+        used := used + 1;
+      else
+        update lms_org_members set display_name = coalesce(nm, display_name),
+          email = coalesce(em, email), age = coalesce(ag, age), grade = coalesce(gr, grade)
+          where org_id = p_org and user_id = uid;
+      end if;
+      foreach cid in array coalesce(p_courses, '{}') loop perform lms_grant_access(uid, cid); end loop;
+      out := out || jsonb_build_object('name', coalesce(nm, em), 'status', 'added');
+    else
+      -- no account → issue a seat code to hand out
+      if cap is not null and used >= cap then
+        out := out || jsonb_build_object('name', coalesce(nm, em), 'status', 'skipped', 'reason', 'no seats left');
+        continue;
+      end if;
+      cd := lms_gen_code();
+      insert into lms_redeem_codes (code, org_id, grant_courses, max_uses, created_by)
+        values (cd, p_org, coalesce(p_courses, '{}'), 1, lms_uid());
+      insert into lms_org_pending (org_id, code, name, email, age, grade)
+        values (p_org, cd, nm, em, ag, gr);
+      used := used + 1;
+      out := out || jsonb_build_object('name', coalesce(nm, em), 'status', 'code', 'code', cd);
+    end if;
+  end loop;
+
+  return out::json;
+end;
+$$;
+
+-- ---------------------------------------------------------------------------
 -- Which orgs am I staff of? (routes a teacher to their dashboard)
 -- ---------------------------------------------------------------------------
 create or replace function public.lms_my_orgs()
@@ -318,6 +422,7 @@ begin
     'org', json_build_object('id', org.id, 'name', org.name, 'kind', org.kind, 'tier', org.tier,
       'seats_purchased', org.seats_purchased, 'seats_used', lms_org_seats_used(oid),
       'seats_free', org.seats_purchased - lms_org_seats_used(oid),
+      'seats_pending', (select count(*) from lms_org_pending where org_id = oid),
       'kits_included', org.kits_included, 'term_start', org.term_start, 'term_end', org.term_end),
 
     -- headline numbers
@@ -430,17 +535,19 @@ end;
 $$;
 
 -- ---------------------------------------------------------------------------
--- Grants — provisioning is service_role only; teacher/learner RPCs to authenticated
+-- Grants. Admin RPCs self-check lms_is_admin() and are callable by signed-in
+-- admins from admin.html (like lms_admin_enroll). lms_gen_code is internal only.
 -- ---------------------------------------------------------------------------
-revoke all on function public.lms_admin_upsert_org(text,text,text,text,int,boolean,date,date,text,text,text) from public, anon, authenticated;
-revoke all on function public.lms_admin_set_org_staff(uuid,text,text) from public, anon, authenticated;
 revoke all on function public.lms_gen_code() from public, anon, authenticated;
 
+grant execute on function public.lms_admin_upsert_org(text,text,text,text,int,boolean,date,date,text,text,text) to authenticated;
+grant execute on function public.lms_admin_set_org_staff(uuid,text,text) to authenticated;
 grant execute on function public.lms_is_org_staff(uuid)               to authenticated;
 grant execute on function public.lms_org_seats_used(uuid)             to authenticated;
 grant execute on function public.lms_org_create_code(uuid,uuid[],int,int) to authenticated;
 grant execute on function public.lms_redeem_code(text)                to authenticated;
 grant execute on function public.lms_org_add_member(uuid,text,uuid[]) to authenticated;
+grant execute on function public.lms_org_import_roster(uuid,jsonb,uuid[]) to authenticated;
 grant execute on function public.lms_org_remove_member(uuid,text)     to authenticated;
 grant execute on function public.lms_my_orgs()                        to authenticated;
 grant execute on function public.lms_org_dashboard(uuid)              to authenticated;

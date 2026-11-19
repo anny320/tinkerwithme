@@ -107,8 +107,26 @@
   .foot{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:26px}
 
   /* Embedded mode trims the wordmark/footer chrome */
-  body.embed .brand,body.embed .foot{display:none}
+  body.embed .brand,body.embed .foot,body.embed .actions{display:none}
   body.embed .dash{padding-top:16px}
+
+  /* Add-learners modal */
+  .modal{position:fixed;inset:0;background:rgba(34,1,17,.55);display:none;align-items:flex-start;justify-content:center;padding:28px 16px;overflow:auto;z-index:50}
+  .modal.open{display:flex}
+  .sheet{background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:7px 7px 0 var(--ink);max-width:640px;width:100%;padding:22px}
+  .sheet h2{font-size:21px;font-weight:700;margin:0}
+  .sheet .x{float:right;cursor:pointer;border:2px solid var(--ink);background:var(--white);border-radius:99px;width:32px;height:32px;font-weight:700;line-height:1}
+  .sheet .hint{font-size:13px;color:var(--text-2);margin:8px 0}
+  .sheet textarea{width:100%;min-height:92px;font-family:var(--font-mono);font-size:12.5px;border:1.5px solid var(--ink);border-radius:var(--radius-sm);padding:10px;margin-top:4px}
+  .sheet .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .courses-pick{max-height:120px;overflow:auto;border:1.5px solid var(--cream-dim);border-radius:10px;padding:8px;font-size:13px;margin-top:8px}
+  .courses-pick label{display:block;font-weight:400}
+  .ptable{width:100%;font-size:13px;border-collapse:collapse;margin-top:12px}
+  .ptable th,.ptable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--cream-dim)}
+  .ptable th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;color:var(--text-2)}
+  .rres{margin-top:12px;font-size:13.5px;max-height:220px;overflow:auto}
+  .rres .code{font-family:var(--font-mono);font-weight:700;background:var(--cream);border:1.5px solid var(--ink);border-radius:6px;padding:1px 6px}
+  .rnote{font-size:12.5px;color:var(--warn);background:var(--warn-soft);border:1.5px solid var(--warn);border-radius:8px;padding:8px 11px;margin-top:12px}
 
   /* Print / Save-as-PDF — the termly report view */
   @media print{
@@ -129,6 +147,28 @@
 <body>
 <div class="dash" id="app" aria-live="polite">
   <p class="cap">Loading…</p>
+</div>
+
+<div class="modal" id="roster-modal" role="dialog" aria-modal="true" aria-label="Add learners">
+  <div class="sheet">
+    <button class="x" id="r-close" aria-label="Close">✕</button>
+    <h2>Add learners</h2>
+    <p class="hint">Upload or paste a class list. Columns: <b>name, email, age, grade</b> — name or email is enough. Learners who already have a Tinkerwith account are linked straight away; everyone else gets a one-use seat code to hand out.</p>
+    <div class="row">
+      <button class="btn" id="r-template">⬇ CSV template</button>
+      <label class="btn" style="cursor:pointer">📄 Choose CSV file<input type="file" id="r-file" accept=".csv,text/csv" hidden></label>
+    </div>
+    <p class="hint">…or paste rows (keep the header line):</p>
+    <textarea id="r-text" spellcheck="false" placeholder="name,email,age,grade
+Amani Otieno,amani@example.com,10,Grade 5
+Brian Kamau,,11,Grade 6"></textarea>
+    <div id="r-courses-wrap" style="display:none">
+      <p class="hint">Unlock these courses for them:</p>
+      <div class="courses-pick" id="r-courses"></div>
+    </div>
+    <div class="row"><button class="btn primary" id="r-preview">Preview list</button></div>
+    <div id="r-out"></div>
+  </div>
 </div>
 
 <script src="lms.js"></script>
@@ -202,6 +242,7 @@
     +     '</div>'
     +   '</div>'
     +   '<div class="actions">'
+    +     '<button class="btn" id="roster">＋ Add learners</button>'
     +     '<button class="btn" id="csv">⬇ Export CSV</button>'
     +     '<button class="btn primary" id="pdf">🖨 Termly report (PDF)</button>'
     +   '</div>'
@@ -274,6 +315,7 @@
     // wire actions
     $('csv').addEventListener('click', function(){ exportCSV(data); });
     $('pdf').addEventListener('click', function(){ window.print(); });
+    $('roster').addEventListener('click', openRoster);
     [].forEach.call(document.querySelectorAll('.copy'), function(b){
       b.addEventListener('click', function(){ copyText($(b.getAttribute('data-copy')).textContent, b); });
     });
@@ -310,6 +352,111 @@
     var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select();
     try{ document.execCommand('copy'); }catch(e){} ta.remove();
   }
+
+  // ---- Add learners (CSV roster) ----
+  var ORG_ID = params.get('org_id') || null;   // set when wired to a real org
+  var ROSTER_COURSES = [];                      // [{id,title}] when live
+
+  function openRoster(){
+    var wrap=$('r-courses-wrap'), box=$('r-courses');
+    var list = ROSTER_COURSES.length ? ROSTER_COURSES : (SAMPLE.courses||[]).map(function(c){ return {id:'',title:c.title}; });
+    if(list.length){
+      wrap.style.display='block';
+      box.innerHTML = list.map(function(c){ return '<label><input type="checkbox" class="rc" data-id="'+esc(c.id)+'"> '+esc(c.title)+'</label>'; }).join('');
+    }
+    $('r-out').innerHTML=''; $('roster-modal').classList.add('open');
+  }
+  function closeRoster(){ $('roster-modal').classList.remove('open'); }
+
+  function parseCSV(text){
+    var rows=[], field='', row=[], inq=false, c, i;
+    text=String(text||'').replace(/\r\n?/g,'\n');
+    for(i=0;i<text.length;i++){ c=text[i];
+      if(inq){ if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inq=false; } else field+=c; }
+      else { if(c==='"') inq=true; else if(c===','){ row.push(field); field=''; }
+             else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; } else field+=c; }
+    }
+    if(field!==''||row.length){ row.push(field); rows.push(row); }
+    rows=rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+    if(!rows.length) return [];
+    var head=rows[0].map(function(h){ return h.trim().toLowerCase(); });
+    var known=['name','email','age','grade','class','full name','fullname'];
+    var hasHeader=head.some(function(h){ return known.indexOf(h)>=0; });
+    var cols=hasHeader?head:['name','email','age','grade'];
+    var start=hasHeader?1:0, out=[];
+    for(i=start;i<rows.length;i++){ var r=rows[i], o={};
+      cols.forEach(function(col,idx){
+        var key = (col==='full name'||col==='fullname') ? 'name' : (col==='class' ? 'grade' : col);
+        o[key]=(r[idx]||'').trim();
+      });
+      out.push({ name:o.name||'', email:o.email||'', age:o.age||'', grade:o.grade||'' });
+    }
+    return out;
+  }
+
+  function previewRoster(){
+    var rows=parseCSV($('r-text').value).filter(function(r){ return r.name||r.email; });
+    if(!rows.length){ $('r-out').innerHTML='<p class="hint">No rows found. Add at least a name or an email.</p>'; return; }
+    var html='<table class="ptable"><thead><tr><th>Name</th><th>Email</th><th>Age</th><th>Grade</th></tr></thead><tbody>'
+      + rows.slice(0,50).map(function(r){ return '<tr><td>'+esc(r.name||'—')+'</td><td>'+esc(r.email||'—')+'</td><td>'+esc(r.age||'—')+'</td><td>'+esc(r.grade||'—')+'</td></tr>'; }).join('')
+      + '</tbody></table>'
+      + (rows.length>50?'<p class="hint">Showing first 50 of '+rows.length+'.</p>':'')
+      + '<div class="row"><button class="btn primary" id="r-import">Import '+rows.length+' learner'+(rows.length===1?'':'s')+'</button></div>';
+    $('r-out').innerHTML=html;
+    $('r-import').addEventListener('click', function(){ importRoster(rows); });
+  }
+
+  function importRoster(rows){
+    var courses=[].map.call(document.querySelectorAll('.rc:checked'), function(c){ return c.getAttribute('data-id'); }).filter(Boolean);
+    if(window.LMS && ORG_ID){
+      $('r-out').innerHTML='<p class="hint">Importing…</p>';
+      window.LMS.ready.then(function(){ return window.LMS.rpc('lms_org_import_roster', { p_org:ORG_ID, p_rows:rows, p_courses:courses }); })
+        .then(function(res){ showImportResult(res, false); })
+        .catch(function(e){ $('r-out').innerHTML='<p class="rnote">Import failed: '+esc(e.message)+'</p>'; });
+    } else {
+      var res=rows.map(function(r){
+        var email=(r.email||'').trim();
+        return (email && /@/.test(email)) ? { name:r.name||email, status:'added' }
+                                          : { name:r.name||email||'—', status:'code', code:demoCode() };
+      });
+      showImportResult(res, true);
+    }
+  }
+  function demoCode(){ var a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s=''; for(var i=0;i<8;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; }
+
+  function showImportResult(res, demo){
+    res=res||[];
+    var added=res.filter(function(r){ return r.status==='added'; }).length;
+    var codes=res.filter(function(r){ return r.status==='code'; });
+    var skipped=res.filter(function(r){ return r.status==='skipped'; });
+    var html='<div class="rres"><p><b>'+added+'</b> linked to existing accounts'
+      + (codes.length?(' · <b>'+codes.length+'</b> seat code'+(codes.length===1?'':'s')+' to hand out'):'')
+      + (skipped.length?(' · '+skipped.length+' skipped (no seats)'):'')+'</p>';
+    if(codes.length){
+      html+='<table class="ptable"><thead><tr><th>Learner</th><th>Seat code</th></tr></thead><tbody>'
+        + codes.map(function(r){ return '<tr><td>'+esc(r.name)+'</td><td><span class="code">'+esc(r.code)+'</span></td></tr>'; }).join('')
+        + '</tbody></table><div class="row"><button class="btn" id="r-copycodes">Copy all codes</button></div>';
+    }
+    if(demo) html+='<div class="rnote">Demo preview — nothing saved. On your live site this writes to the school roster and issues real seat codes.</div>';
+    html+='</div>';
+    $('r-out').innerHTML=html;
+    var cc=$('r-copycodes');
+    if(cc) cc.addEventListener('click', function(){ copyText(codes.map(function(r){ return r.name+': '+r.code; }).join('\n'), cc); });
+  }
+
+  function rosterTemplate(){
+    var csv='name,email,age,grade\nAmani Otieno,amani@example.com,10,Grade 5\nBrian Kamau,,11,Grade 6\n';
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='tinkerwith-class-template.csv';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },0);
+  }
+
+  // wire the static modal controls (present at load)
+  $('r-close').addEventListener('click', closeRoster);
+  $('roster-modal').addEventListener('click', function(e){ if(e.target===this) closeRoster(); });
+  $('r-template').addEventListener('click', rosterTemplate);
+  $('r-preview').addEventListener('click', previewRoster);
+  $('r-file').addEventListener('change', function(e){ var f=e.target.files[0]; if(!f) return; var fr=new FileReader(); fr.onload=function(){ $('r-text').value=fr.result; previewRoster(); }; fr.readAsText(f); });
 
   // ---- Data load: sample now; real dashboard when signed in. ----
   // To go live, replace the SAMPLE line below with:
