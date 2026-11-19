@@ -79,6 +79,9 @@
   <div class="tw-container">
     <div id="status"></div>
 
+    <div id="teacher-box" hidden style="margin-bottom:1.25rem"></div>
+    <div id="redeem-box" hidden style="margin-bottom:1.75rem"></div>
+
     <div id="tt-box" style="margin-bottom:2.75rem"></div>
 
     <div class="signin-box" id="signin-box" hidden>
@@ -169,6 +172,43 @@ LMS.ready.then(async r => {
   else if (!LMS.user) { $('signin-box').hidden = false; $('b-signin').onclick = LMS.signIn; }
   else {
     $('admin-link').hidden = !LMS.isAdmin;
+
+    // Class code → redeem a seat + unlock courses
+    $('redeem-box').hidden = false;
+    $('redeem-box').innerHTML =
+      '<form id="redeem-form" style="display:flex;gap:9px;flex-wrap:wrap;align-items:center;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);box-shadow:4px 4px 0 var(--ink);padding:14px 16px">'
+      + '<strong style="font-size:15px">🎟️ Got a class code?</strong>'
+      + '<input id="redeem-code" autocomplete="off" placeholder="e.g. ABCD2345" aria-label="Class code" style="font:inherit;text-transform:uppercase;letter-spacing:.04em;padding:9px 12px;border:1.5px solid var(--ink);border-radius:10px;min-width:150px">'
+      + '<button class="tw-btn tw-btn-orange" type="submit">Redeem</button>'
+      + '<span id="redeem-msg" style="font-size:14px;color:var(--text-2)"></span></form>';
+    $('redeem-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = ($('redeem-code').value || '').trim().toUpperCase();
+      const msg = $('redeem-msg');
+      if (!code) { msg.textContent = 'Enter the code your teacher gave you.'; return; }
+      msg.textContent = 'Checking…';
+      try {
+        const res = await LMS.rpc('lms_redeem_code', { p_code: code });
+        const n = (res && res.courses_granted) || 0;
+        msg.style.color = 'var(--green-deep)';
+        msg.textContent = n ? `Done! ${n} course${n===1?'':'s'} unlocked — refreshing…` : 'Joined your school — refreshing…';
+        setTimeout(() => location.reload(), 1100);
+      } catch (err) { msg.style.color = '#B00020'; msg.textContent = err.message || 'That code didn’t work.'; }
+    });
+
+    // Teacher? Offer a link to the school dashboard
+    try {
+      const orgs = await LMS.rpc('lms_my_orgs');
+      if (orgs && orgs.length) {
+        $('teacher-box').hidden = false;
+        const first = orgs[0];
+        $('teacher-box').innerHTML =
+          '<a class="tw-btn tw-btn-white" style="color:var(--ink)" href="school-dashboard.html'
+          + (orgs.length === 1 ? ('?org=' + encodeURIComponent(first.slug)) : '')
+          + '">🏫 ' + (orgs.length > 1 ? 'Your school dashboards' : 'Your school dashboard') + ' &rarr;</a>';
+      }
+    } catch (e) { /* not a teacher, or schema not applied yet */ }
+
     try {
       const mine = await LMS.rpc('lms_my_courses');
       $('mine-box').hidden = false;
