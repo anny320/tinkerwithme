@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A playable electronic instrument on a breadboard</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Build an instrument that plays</text>
+<!-- keys -->
+<g stroke="#220111" stroke-width="2.5">
+  <rect x="120" y="210" width="44" height="120" rx="7" fill="#E4572E"/>
+  <rect x="168" y="210" width="44" height="120" rx="7" fill="#FF7F32"/>
+  <rect x="216" y="210" width="44" height="120" rx="7" fill="#FFD23F"/>
+  <rect x="264" y="210" width="44" height="120" rx="7" fill="#84BD00"/>
+  <rect x="312" y="210" width="44" height="120" rx="7" fill="#004C97"/>
+</g>
+<!-- wires to buzzer -->
+<g stroke="#220111" stroke-width="2.5" fill="none"><path d="M334 330 q40 40 90 20"/></g>
+<!-- buzzer -->
+<circle cx="460" cy="320" r="30" fill="#220111"/><circle cx="460" cy="320" r="10" fill="#FFD23F"/>
+<text x="460" y="372" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Buzzer</text>
+<!-- music notes -->
+<g fill="#004C97" stroke="#220111" stroke-width="2.2">
+  <g transform="translate(470 150)"><circle cx="0" cy="22" r="10"/><rect x="8" y="-16" width="4.5" height="38"/><path d="M8 -16 q22 4 22 22 q-10 -12 -22 -10z" stroke-linejoin="round"/></g>
+  <g transform="translate(560 110)"><circle cx="0" cy="22" r="9"/><rect x="7" y="-10" width="4" height="32"/></g>
+  <g transform="translate(620 170)"><circle cx="0" cy="22" r="9"/><rect x="7" y="-6" width="4" height="28"/></g>
+</g>
+<text x="400" y="408" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Wire the keys, code the notes, and play your own tunes.</text>
+</svg>

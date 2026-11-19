@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A self-watering planter senses dry soil and pumps water</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">A planter that waters itself</text>
+<!-- water tank + pump -->
+<g>
+  <rect x="110" y="170" width="120" height="150" rx="12" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <rect x="110" y="250" width="120" height="70" rx="0" fill="#7FB3E0"/>
+  <rect x="110" y="250" width="120" height="70" fill="none" stroke="#220111" stroke-width="2.5"/>
+  <text x="170" y="350" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Water tank</text>
+  <circle cx="230" cy="215" r="20" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+  <text x="230" y="220" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="13" fill="#fff">PUMP</text>
+</g>
+<!-- tube -->
+<path d="M250 215 q120 -10 170 60" fill="none" stroke="#220111" stroke-width="5" stroke-linecap="round"/>
+<!-- drips -->
+<g fill="#7FB3E0" stroke="#220111" stroke-width="1.6"><path d="M420 285 q-7 10 0 16 q7 -6 0 -16z"/><path d="M438 265 q-6 9 0 14 q6 -5 0 -14z"/></g>
+<!-- plant pot -->
+<g>
+  <path d="M470 300 h120 l-12 60 h-96z" fill="#FF7F32" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="462" y="288" width="136" height="18" rx="5" fill="#E0641B" stroke="#220111" stroke-width="2.5"/>
+  <path d="M530 288 v-66" stroke="#5E8700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M530 244 q-32 -6 -38 -32 q32 0 38 32z" fill="#84BD00" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M530 230 q32 -6 38 -32 q-32 0 -38 32z" fill="#84BD00" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/>
+</g>
+<!-- soil sensor -->
+<line x1="560" y1="300" x2="600" y2="250" stroke="#220111" stroke-width="4" stroke-linecap="round"/>
+<rect x="596" y="228" width="34" height="26" rx="5" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+<text x="648" y="246" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="13" fill="#220111">senses</text>
+<text x="648" y="263" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="13" fill="#220111">dry soil</text>
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Dry soil? The pump turns on — no daily watering needed.</text>
+</svg>

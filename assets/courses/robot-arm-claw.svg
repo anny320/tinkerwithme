@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A robot arm with a claw picks up a block, driven by a joystick</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Program a robot arm</text>
+<!-- base -->
+<rect x="150" y="330" width="130" height="30" rx="8" fill="#220111"/>
+<rect x="195" y="300" width="40" height="36" rx="6" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+<!-- arm segments -->
+<g stroke="#220111" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <rect x="207" y="210" width="20" height="100" rx="8" fill="#FF7F32"/>
+  <rect x="217" y="200" width="150" height="20" rx="9" fill="#FF7F32"/>
+  <rect x="357" y="150" width="20" height="70" rx="8" fill="#FF7F32"/>
+  <circle cx="217" cy="300" r="10" fill="#FFD23F"/><circle cx="217" cy="210" r="10" fill="#FFD23F"/><circle cx="367" cy="210" r="10" fill="#FFD23F"/>
+</g>
+<!-- claw -->
+<g stroke="#220111" stroke-width="2.5" fill="#84BD00" stroke-linejoin="round">
+  <path d="M357 150 l-16 -16 -10 10 10 10z"/><path d="M377 150 l16 -16 10 10 -10 10z"/>
+</g>
+<!-- block -->
+<rect x="345" y="120" width="44" height="30" rx="4" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+<!-- joystick -->
+<g>
+  <rect x="520" y="270" width="170" height="90" rx="16" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <line x1="560" y1="330" x2="560" y2="288" stroke="#220111" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="560" cy="282" r="14" fill="#E4572E" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="630" cy="310" r="12" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="662" cy="310" r="12" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <text x="605" y="392" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">Your joystick</text>
+</g>
+<text x="300" y="400" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Build a 3-joint arm, then code it to grip and move.</text>
+</svg>

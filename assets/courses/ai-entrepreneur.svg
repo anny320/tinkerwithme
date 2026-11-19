@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Launch a mini-business with AI: idea, brand, pitch</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Launch a mini-business with AI</text>
+<!-- idea -->
+<g>
+  <rect x="70" y="150" width="170" height="160" rx="16" fill="#FFEDE0" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="155" cy="210" r="26" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <path d="M155 196 a12 12 0 0 1 7 22 h-14 a12 12 0 0 1 7 -22z" fill="#fff" stroke="#220111" stroke-width="2"/>
+  <rect x="149" y="232" width="12" height="7" fill="#220111"/>
+  <text x="155" y="285" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="16" fill="#220111">Idea</text>
+</g>
+<line x1="246" y1="230" x2="286" y2="230" stroke="#220111" stroke-width="3"/><path d="M277 224 L286 230 L277 236" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- brand + product -->
+<g>
+  <rect x="294" y="150" width="170" height="160" rx="16" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <rect x="330" y="190" width="98" height="70" rx="10" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+  <path d="M345 190 v-16 h30 v16" fill="none" stroke="#220111" stroke-width="2.2"/>
+  <circle cx="379" cy="222" r="12" fill="#fff" stroke="#220111" stroke-width="2.2"/>
+  <text x="379" y="285" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="16" fill="#220111">Brand &amp; product</text>
+</g>
+<line x1="470" y1="230" x2="510" y2="230" stroke="#220111" stroke-width="3"/><path d="M501 224 L510 230 L501 236" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- pitch -->
+<g>
+  <rect x="518" y="150" width="212" height="160" rx="16" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <rect x="545" y="180" width="158" height="95" rx="8" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+  <polyline points="560,255 590,230 615,245 645,205 685,215" fill="none" stroke="#5E8700" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M685 205 l-2 10 10 -2z" fill="#5E8700"/>
+  <text x="624" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="16" fill="#220111">Pitch day</text>
+</g>
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Brand it, build it, market it — then pitch like a founder.</text>
+</svg>

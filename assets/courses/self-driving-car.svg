@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>A self-driving car senses the road and steers itself</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">A car that drives itself</text>
+<!-- road -->
+<rect x="70" y="315" width="660" height="40" rx="6" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+<g stroke="#FFD23F" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 22"><line x1="90" y1="335" x2="710" y2="335"/></g>
+<!-- car -->
+<g>
+  <rect x="150" y="235" width="200" height="56" rx="14" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+  <path d="M185 235 q20 -34 60 -34 h40 q24 0 36 34 z" fill="#004C97" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="205" y="212" width="70" height="24" rx="6" fill="#BFe0ff" stroke="#220111" stroke-width="2"/>
+  <circle cx="195" cy="300" r="22" fill="#220111"/><circle cx="195" cy="300" r="8" fill="#fff"/>
+  <circle cx="305" cy="300" r="22" fill="#220111"/><circle cx="305" cy="300" r="8" fill="#fff"/>
+</g>
+<!-- sensor waves -->
+<g stroke="#FF7F32" stroke-width="3" fill="none" stroke-linecap="round"><path d="M358 262 q22 -14 0 -28"/><path d="M374 268 q34 -20 0 -40"/><path d="M390 274 q46 -26 0 -52"/></g>
+<!-- obstacle -->
+<g>
+  <circle cx="470" cy="248" r="26" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <text x="470" y="258" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">!</text>
+</g>
+<text x="545" y="246" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">Sees an obstacle…</text>
+<text x="545" y="272" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="15" fill="#220111">…and steers around it</text>
+<text x="400" y="400" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Build the chassis, add sensors, and code it to drive on its own.</text>
+</svg>

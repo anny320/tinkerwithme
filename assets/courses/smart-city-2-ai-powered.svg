@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>An Arduino smart city upgraded with an AI brain</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Give your city an AI brain</text>
+<!-- city -->
+<g stroke="#220111" stroke-width="2.5">
+  <rect x="90" y="230" width="70" height="140" rx="6" fill="#E2EBF5"/>
+  <rect x="170" y="190" width="80" height="180" rx="6" fill="#D9ECFA"/>
+  <rect x="260" y="255" width="66" height="115" rx="6" fill="#E2EBF5"/>
+  <rect x="336" y="215" width="60" height="155" rx="6" fill="#D9ECFA"/>
+  <g fill="#FFD23F" stroke="none"><rect x="105" y="248" width="12" height="12"/><rect x="128" y="248" width="12" height="12"/><rect x="188" y="210" width="12" height="12"/><rect x="214" y="210" width="12" height="12"/><rect x="188" y="245" width="12" height="12"/><rect x="214" y="245" width="12" height="12"/><rect x="278" y="275" width="12" height="12"/><rect x="352" y="238" width="12" height="12"/></g>
+</g>
+<!-- AI brain overlay -->
+<g>
+  <circle cx="560" cy="200" r="70" fill="#FF7F32" stroke="#220111" stroke-width="2.5"/>
+  <g stroke="#fff" stroke-width="2.2" fill="none">
+    <path d="M560 150 q-30 0 -30 26 q-22 6 -16 28 q-14 14 4 28 q4 20 26 16 q6 14 16 14"/>
+    <path d="M560 150 q30 0 30 26 q22 6 16 28 q14 14 -4 28 q-4 20 -26 16 q-6 14 -16 14"/>
+    <line x1="560" y1="150" x2="560" y2="262"/>
+  </g>
+  <text x="560" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="16" fill="#220111">AI brain</text>
+</g>
+<!-- connection -->
+<g stroke="#004C97" stroke-width="3" stroke-dasharray="8 7"><line x1="400" y1="250" x2="492" y2="215"/></g>
+<text x="300" y="400" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Build the Arduino city, then let AI run it smarter.</text>
+<text x="640" y="370" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Robotics + AI</text>
+</svg>

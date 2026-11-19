@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Make a short film with AI: script, visuals, audio, edit</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Make a film with AI — no camera</text>
+<!-- script -->
+<g>
+  <rect x="70" y="160" width="110" height="140" rx="10" fill="#F7F3F0" stroke="#220111" stroke-width="2.5"/>
+  <g stroke="#220111" stroke-width="2.4" stroke-linecap="round"><line x1="88" y1="188" x2="162" y2="188"/><line x1="88" y1="208" x2="150" y2="208"/><line x1="88" y1="228" x2="162" y2="228"/><line x1="88" y1="248" x2="146" y2="248"/></g>
+  <text x="125" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Script</text>
+</g>
+<line x1="186" y1="225" x2="226" y2="225" stroke="#220111" stroke-width="3"/><path d="M217 219 L226 225 L217 231" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- visuals -->
+<g>
+  <rect x="234" y="160" width="110" height="140" rx="10" fill="#E2EBF5" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="265" cy="195" r="9" fill="#FFD23F" stroke="#220111" stroke-width="2"/>
+  <path d="M244 272 l26 -34 18 20 14 -14 20 28z" fill="#84BD00" stroke="#220111" stroke-width="2.2" stroke-linejoin="round"/>
+  <text x="289" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Visuals</text>
+</g>
+<line x1="350" y1="225" x2="390" y2="225" stroke="#220111" stroke-width="3"/><path d="M381 219 L390 225 L381 231" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- audio -->
+<g>
+  <rect x="398" y="160" width="110" height="140" rx="10" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <path d="M424 258 v-44 l34 -8 v44" fill="none" stroke="#220111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="424" cy="258" r="9" fill="#5E8700" stroke="#220111" stroke-width="2"/><circle cx="458" cy="250" r="9" fill="#5E8700" stroke="#220111" stroke-width="2"/>
+  <text x="453" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Audio</text>
+</g>
+<line x1="514" y1="225" x2="554" y2="225" stroke="#220111" stroke-width="3"/><path d="M545 219 L554 225 L545 231" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- film / premiere -->
+<g>
+  <rect x="562" y="160" width="170" height="140" rx="12" fill="#220111"/>
+  <g transform="translate(580 158)"><rect x="0" y="0" width="134" height="26" rx="4" fill="#fff" stroke="#220111" stroke-width="2.5"/><path d="M8 0 l14 26 M34 0 l14 26 M60 0 l14 26 M86 0 l14 26 M112 0 l14 26" stroke="#220111" stroke-width="3"/></g>
+  <path d="M632 232 l34 20 -34 20z" fill="#FFD23F" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+  <text x="647" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="600" font-size="14" fill="#220111">Premiere!</text>
+</g>
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Write, picture, score and cut a short film — all with AI.</text>
+</svg>
