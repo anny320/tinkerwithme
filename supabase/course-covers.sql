@@ -28,7 +28,7 @@ update public.lms_courses
     'wearable-tech-lab','iot-garden-monitor','musical-instrument-builder',
     'smart-plant-carer','bluetooth-control-lab',
     'ai-game-designer','ai-movie-studio','ai-entrepreneur','deepfake-detective',
-    'ai-music-producer','computer-vision-explorer','ai-for-social-good','smart-city-2-ai-powered'
+    'ai-music-producer','computer-vision-explorer','ai-for-social-good','smart-city-2'
   );
 
 -- Review the result:
