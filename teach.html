@@ -119,7 +119,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="#schools" id="t-schools">Schools</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -218,11 +218,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums', 'timetable'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
   payCount(); leadCount(); buildsCount(); studentCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : tab === 'schools' ? schools() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -903,6 +903,124 @@ async function timetable(editId) {
       try { must(await db().from('lms_timetable').delete().eq('id', d.dataset.del)); toast('Deleted'); timetable(editId); }
       catch (x) { toast(x.message); }
     }
+  };
+}
+
+/* ── Schools (B2B licensing) ── */
+const ORG_KINDS = [['school','School'],['hotel','Hotel'],['club','Club'],['other','Other']];
+const ORG_TIERS = [['starter','Starter'],['facilitated','Facilitated'],['academy','Academy']];
+const orgSlugify = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+const fmtDate = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+
+async function schools() {
+  const sm = location.hash.match(/^#schools=([0-9a-f-]{36})$/);
+  $('view').innerHTML = '<p class="loading">Loading schools…</p>';
+  const orgs = must(await db().from('lms_orgs').select('*').order('name'));
+  if (sm) return schoolManage(orgs.find(o => o.id === sm[1]) || null);
+  schoolForm(orgs);
+}
+
+function orgFormHTML(e) {
+  e = e || { name:'', slug:'', kind:'school', tier:'facilitated', seats_purchased:30, kits_included:false, term_start:'', term_end:'', contact_name:'', contact_email:'', notes:'' };
+  const kindOpts = ORG_KINDS.map(([v,l]) => `<option value="${v}" ${v===e.kind?'selected':''}>${l}</option>`).join('');
+  const tierOpts = ORG_TIERS.map(([v,l]) => `<option value="${v}" ${v===e.tier?'selected':''}>${l}</option>`).join('');
+  return `<form id="orgf">
+    <label class="field-in">School / organisation name <input name="name" required maxlength="120" value="${esc(e.name)}" placeholder="e.g. Riverside Junior Academy"></label>
+    <div class="grid2">
+      <label class="field-in">URL slug <input name="slug" value="${esc(e.slug)}" placeholder="auto from name"></label>
+      <label class="field-in">Kind <select name="kind">${kindOpts}</select></label>
+    </div>
+    <div class="grid2">
+      <label class="field-in">Tier <select name="tier">${tierOpts}</select></label>
+      <label class="field-in">Seats <input name="seats" type="number" min="0" value="${e.seats_purchased||0}"></label>
+    </div>
+    <div class="grid2">
+      <label class="field-in">Term start <input name="term_start" type="date" value="${e.term_start?String(e.term_start).slice(0,10):''}"></label>
+      <label class="field-in">Term end <input name="term_end" type="date" value="${e.term_end?String(e.term_end).slice(0,10):''}"></label>
+    </div>
+    <div class="grid2">
+      <label class="field-in">Contact name <input name="contact_name" value="${esc(e.contact_name||'')}"></label>
+      <label class="field-in">Contact email <input name="contact_email" type="email" value="${esc(e.contact_email||'')}"></label>
+    </div>
+    <label class="field-in" style="flex-direction:row;align-items:center;gap:9px"><input name="kits" type="checkbox" ${e.kits_included?'checked':''} style="width:auto"> Kits included</label>
+    <label class="field-in">Notes <input name="notes" value="${esc(e.notes||'')}" placeholder="Anything useful about this account"></label>
+    <div class="btns"><button class="tw-btn tw-btn-orange" type="submit">${e.id?'Save changes':'Create school'}</button></div>
+    <p id="orgf-err" style="color:#C0392B;font-weight:600;margin-top:8px"></p>
+  </form>`;
+}
+
+function wireOrgForm(after) {
+  $('orgf').onsubmit = async ev => {
+    ev.preventDefault();
+    const f = ev.target, btn = f.querySelector('button'), err = $('orgf-err'); btn.disabled = true; err.textContent = '';
+    const name = f.name.value.trim();
+    try {
+      const id = await LMS.rpc('lms_admin_upsert_org', {
+        p_name: name, p_slug: (f.slug.value.trim() || orgSlugify(name)), p_kind: f.kind.value, p_tier: f.tier.value,
+        p_seats: +f.seats.value || 0, p_kits: f.kits.checked,
+        p_term_start: f.term_start.value || null, p_term_end: f.term_end.value || null,
+        p_contact_name: f.contact_name.value.trim() || null, p_contact_email: f.contact_email.value.trim() || null,
+        p_notes: f.notes.value.trim() || null,
+      });
+      toast('Saved ✓'); after(id);
+    } catch (x) { err.textContent = x.message || 'Could not save.'; btn.disabled = false; }
+  };
+}
+
+function schoolForm(orgs) {
+  $('view').innerHTML = `
+    <div class="panel box"><h2>Add a school</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Create the organisation, then open <b>Manage</b> to add a teacher and issue seat codes. Needs <code>supabase/school-licensing.sql</code> applied.</p>
+      ${orgFormHTML(null)}</div>
+    <div class="panel box"><h2>Schools (${orgs.length})</h2>
+      <div class="rows">${orgs.map(o => `<div class="row">
+        <a class="grow" href="#schools=${o.id}"><strong>${esc(o.name)}</strong>
+          <small>${esc(o.tier)} · ${o.seats_purchased} seats${o.kits_included?' · kits':''} · ${fmtDate(o.term_start)}–${fmtDate(o.term_end)}</small></a>
+        <button class="ib" type="button" onclick="location.hash='#schools=${o.id}'">Manage</button></div>`).join('') || '<p class="muted">No schools yet. Create your first above.</p>'}</div></div>`;
+  wireOrgForm(id => { location.hash = '#schools=' + id; });
+}
+
+async function schoolManage(org) {
+  if (!org) { $('view').innerHTML = '<div class="notice err">School not found.</div>'; return; }
+  const courses = must(await db().from('lms_courses').select('id,title').eq('is_published', true).order('title'));
+  let seats = null; try { const d = await LMS.rpc('lms_org_dashboard', { p_org: org.id }); seats = d.org; } catch (e) {}
+  const courseChecks = courses.map(c => `<label style="display:block;font-weight:400;font-size:14px"><input type="checkbox" class="gc" value="${c.id}"> ${esc(c.title)}</label>`).join('') || '<p class="muted">No published courses found.</p>';
+  $('view').innerHTML = `
+    <p style="margin-bottom:12px"><a href="#schools">&larr; All schools</a></p>
+    <div class="panel box"><div class="sec-h"><h2>${esc(org.name)}</h2>
+      <span class="muted" style="font-weight:600">${seats ? `${seats.seats_used}/${seats.seats_purchased} seats used · ${seats.seats_free} free${seats.seats_pending?` · ${seats.seats_pending} pending`:''}` : `${org.seats_purchased} seats`}</span></div>
+      <div class="grid2">
+        <div><h3 style="margin:4px 0 8px;font-size:16px">Add a teacher</h3>
+          <form id="tf"><label class="field-in">Teacher email <input name="email" type="email" required placeholder="teacher@school.ac.ke"></label>
+            <label class="field-in">Role <select name="role"><option value="teacher">Teacher</option><option value="owner">Owner</option></select></label>
+            <div class="btns"><button class="tw-btn tw-btn-orange tw-btn-sm" type="submit">Add teacher</button></div>
+            <p class="muted" style="font-size:13px;margin-top:4px">They must have signed up once (matched by email).</p>
+            <p id="tf-err" style="color:#C0392B;font-weight:600"></p></form></div>
+        <div><h3 style="margin:4px 0 8px;font-size:16px">Issue a seat code</h3>
+          <div style="max-height:150px;overflow:auto;border:2px solid var(--ink);border-radius:10px;padding:8px">${courseChecks}</div>
+          <div class="grid2" style="margin-top:8px">
+            <label class="field-in">Uses <input id="gc-max" type="number" min="1" value="${org.seats_purchased||30}"></label>
+            <label class="field-in">Valid days <input id="gc-days" type="number" min="1" placeholder="∞"></label></div>
+          <div class="btns"><button class="tw-btn tw-btn-orange tw-btn-sm" type="button" id="gc-go">Generate code</button></div>
+          <p id="gc-out" style="font-weight:600;margin-top:6px"></p></div>
+      </div>
+      <p style="margin-top:12px"><a class="tw-btn tw-btn-white tw-btn-sm" href="school-dashboard.html?org=${esc(org.slug)}" target="_blank" rel="noopener">Open dashboard &rarr;</a></p>
+    </div>
+    <div class="panel box"><h2>Edit school</h2>${orgFormHTML(org)}</div>`;
+  wireOrgForm(() => schoolManage(org));
+  $('tf').onsubmit = async ev => {
+    ev.preventDefault();
+    const f = ev.target, err = $('tf-err'); err.textContent = '';
+    try { await LMS.rpc('lms_admin_set_org_staff', { p_org: org.id, p_email: f.email.value.trim(), p_role: f.role.value }); toast('Teacher added ✓'); f.reset(); }
+    catch (x) { err.textContent = x.message; }
+  };
+  $('gc-go').onclick = async () => {
+    const picked = [...document.querySelectorAll('.gc:checked')].map(c => c.value);
+    const out = $('gc-out');
+    try {
+      const r = await LMS.rpc('lms_org_create_code', { p_org: org.id, p_courses: picked, p_max_uses: +$('gc-max').value || 1, p_days_valid: +$('gc-days').value || null });
+      out.innerHTML = `Code <span style="font-family:var(--font-mono);background:var(--cream);border:2px solid var(--ink);border-radius:6px;padding:2px 8px">${esc(r.code)}</span> · ${r.max_uses} uses${r.expires_at?` · expires ${fmtDate(r.expires_at)}`:''} <button class="ib" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText('${r.code}');toast('Copied ✓')">Copy</button>`;
+    } catch (x) { out.textContent = x.message; }
   };
 }
 </script>
