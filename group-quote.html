@@ -186,7 +186,7 @@
             <label class="fl">Phone / WhatsApp <input type="tel" id="c-phone" placeholder="07xx xxx xxx"></label>
             <label class="fl" style="grid-column:1/-1">Preferred dates or term <input type="text" id="c-dates" placeholder="e.g. Term 1 2027, or the December holidays"></label>
           </div>
-          <p class="hint" style="margin:12px 0 0">Send the quote to Anne and it lands straight in her enquiries — she’ll confirm the final price.</p>
+          <p class="hint" style="margin:12px 0 0">Share your details and Anne will get back to you to confirm the final price. The quote itself you can download as a PDF.</p>
         </div>
 
         <div class="gq-card" id="outline-card">
@@ -340,9 +340,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
     }
     if(outside) h += '<div class="qnote warn">📍 Outside Nairobi: travel (transport &amp; accommodation) is quoted separately — we’ll confirm it with you.</div>';
-    h += '<button class="qcta" id="q-send" type="button">Send this quote to Anne</button>';
-    h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Or send on WhatsApp</a>';
-    h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Proforma invoice</button>';
+    h += '<button class="qcta" id="q-send" type="button">Enquire with Anne &rarr;</button>';
+    h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Or chat on WhatsApp</a>';
+    h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Download this quote (PDF)</button>';
     h += '<div id="q-msg" class="qnote" style="display:none"></div>';
     body.innerHTML = h;
     $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
@@ -405,7 +405,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var name=($('c-name').value||'').trim(), phone=($('c-phone').value||'').trim(), email=($('c-email').value||'').trim();
     var org=($('c-org').value||'').trim(), dates=($('c-dates').value||'').trim() || 'To be confirmed';
     if(!name || !/^\+?[0-9 ]{7,20}$/.test(phone) || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-      qmsg('Add your name, a valid phone/WhatsApp and email below, then send.', false);
+      qmsg('Add your name, a valid phone/WhatsApp and email below so Anne can get back to you.', false);
       $('c-name').scrollIntoView({behavior:'smooth',block:'center'}); return;
     }
     var perChild=Math.round(d.total/d.kids);
@@ -419,8 +419,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     fetch(LEAD_URL,{method:'POST',headers:{apikey:LEAD_KEY,'Content-Type':'application/json'},body:JSON.stringify({p:p})})
       .then(function(r){ return r.ok ? r.json().catch(function(){return 'ok';}) : r.json().then(function(j){ throw new Error(j&&j.message||'Something went wrong.'); }); })
       .then(function(){ if(typeof gtag==='function') gtag('event','generate_lead',{source:'group-quote'});
-        qmsg('✅ Sent to Anne — she’ll confirm the final quote. You can also <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">send it on WhatsApp</a>.', true); })
-      .catch(function(x){ qmsg((x.message||'Could not send.')+' You can <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">send it on WhatsApp</a> instead.', false); })
+        qmsg('✅ Thanks — Anne will get back to you about your session. Prefer WhatsApp? <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">Message Anne</a>. You can also download the quote above.', true); })
+      .catch(function(x){ qmsg((x.message||'Could not send.')+' You can <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">message Anne on WhatsApp</a> instead.', false); })
       .finally(function(){ btn.disabled=false; });
   }
 
