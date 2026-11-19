@@ -600,14 +600,14 @@ async function leads() {
     .sort((a, b) => b[1] - a[1]).slice(0, 5);
   $('view').innerHTML = `
     <div class="panel box"><h2>Leads</h2>
-      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Enquiries from the courses page and the For schools page (🏫). Reply on WhatsApp, then move each one along.</p>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Enquiries from the courses page, the For schools page (🏫) and the group quote builder (🧾). Reply on WhatsApp, then move each one along.</p>
       <div class="btns" style="margin:0 0 14px">${[...Object.keys(LEAD_STATUS), 'all'].map(k =>
         `<button class="ib${leadFilter === k ? ' cur-f' : ''}" type="button" data-lf="${k}">${k === 'all' ? `All (${all.length})` : `${LEAD_STATUS[k]} (${n(k)})`}</button>`).join('')}</div>
       ${popular.length ? `<p class="muted" style="font-size:14px;margin-bottom:12px">Most asked about: ${popular.map(([t, c]) => `${esc(t)} (${c})`).join(' · ')}</p>` : ''}
       <div class="rows">${list.map(l => `<div class="row" style="align-items:flex-start" data-lead="${l.id}">
-        <div class="grow"><strong>${esc(l.parent_name)}</strong>${l.source === 'schools' ? ` <span class="pill on">🏫 ${esc(l.extras.organisation || 'School')}</span>` : ''}
-          ${l.source === 'schools' ? `<small>${esc([l.extras.role, l.extras.type, l.extras.learners && l.extras.learners + ' learners'].filter(Boolean).join(' · '))}</small>` : ''}
-          <small>${when(l.created_at)} · ${l.source === 'schools' ? 'ages' : 'child'} ${esc(l.child_age)} · ${esc(MODE[l.mode] || l.mode)} · ${esc(l.preferred_dates)}</small>
+        <div class="grow"><strong>${esc(l.parent_name)}</strong>${l.source === 'schools' ? ` <span class="pill on">🏫 ${esc(l.extras.organisation || 'School')}</span>` : l.source === 'group-quote' ? ` <span class="pill on">🧾 Quote${l.extras.total ? ' · KES ' + Number(l.extras.total).toLocaleString() : ''}${(l.extras.organisation ? ' · ' + esc(l.extras.organisation) : '')}</span>` : ''}
+          ${l.source === 'schools' ? `<small>${esc([l.extras.role, l.extras.type, l.extras.learners && l.extras.learners + ' learners'].filter(Boolean).join(' · '))}</small>` : l.source === 'group-quote' ? `<small>${esc([l.extras.type, l.extras.learners && l.extras.learners + ' learners', l.extras.format, l.extras.perChild && 'KES ' + Number(l.extras.perChild).toLocaleString() + '/child', l.extras.discount && '−10%', l.extras.kits && '+kits', l.extras.location].filter(Boolean).join(' · '))}</small>` : ''}
+          <small>${when(l.created_at)} · ${(l.source === 'schools' || l.source === 'group-quote') ? 'ages' : 'child'} ${esc(l.child_age)} · ${esc(MODE[l.mode] || l.mode)} · ${esc(l.preferred_dates)}</small>
           <div style="font-size:14.5px;margin-top:4px">${l.courses.map(c => `<span class="pill off" style="margin:2px 4px 2px 0;display:inline-block">${esc(c.title)}</span>`).join('')}</div>
           ${extras(l.extras) ? `<small>Kit: ${esc(extras(l.extras))}</small>` : ''}
           ${l.message ? `<p style="font-size:14px;margin-top:4px">“${esc(l.message)}”</p>` : ''}

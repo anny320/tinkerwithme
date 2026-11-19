@@ -184,7 +184,9 @@
             <label class="fl">Organisation <input type="text" id="c-org" placeholder="School / hotel / company"></label>
             <label class="fl">Email <input type="email" id="c-email" placeholder="you@example.com"></label>
             <label class="fl">Phone / WhatsApp <input type="tel" id="c-phone" placeholder="07xx xxx xxx"></label>
+            <label class="fl" style="grid-column:1/-1">Preferred dates or term <input type="text" id="c-dates" placeholder="e.g. Term 1 2027, or the December holidays"></label>
           </div>
+          <p class="hint" style="margin:12px 0 0">Send the quote to Anne and it lands straight in her enquiries — she’ll confirm the final price.</p>
         </div>
 
         <div class="gq-card" id="outline-card">
@@ -255,6 +257,18 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var state = { aud:'school', track:'both', age:'8-10', dur:null };
   var last = null;
 
+  // Pre-fill from URL (hand-off from the schools enquiry form)
+  (function(){ var q; try{ q=new URLSearchParams(location.search); }catch(e){ return; }
+    var A=['school','homeschool','hotel','camp','company'], T=['robotics','ai','both'], G=['5-7','8-10','11-13','14-16'], D=['3h','4h','full','term'];
+    if(A.indexOf(q.get('aud'))>-1) state.aud=q.get('aud');
+    if(T.indexOf(q.get('track'))>-1) state.track=q.get('track');
+    if(G.indexOf(q.get('age'))>-1) state.age=q.get('age');
+    if(D.indexOf(q.get('dur'))>-1) state.dur=q.get('dur');
+    if(q.get('kids')) $('kids').value=String(q.get('kids')).replace(/\D/g,'').slice(0,4);
+    var set=function(id,v){ if(v) $(id).value=String(v).slice(0,120); };
+    set('c-org',q.get('org')); set('c-name',q.get('name')); set('c-email',q.get('email')); set('c-phone',q.get('phone')); set('c-dates',q.get('dates'));
+  })();
+
   // option sets
   function pills(el, items, key){
     el.innerHTML = items.map(function(o){
@@ -263,7 +277,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     el.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; state[key]=b.dataset.v;
       [].forEach.call(el.children, function(c){ c.classList.toggle('sel', c.dataset.v===state[key]); }); render(); });
   }
-  pills($('aud'), [{v:'school',l:'School'},{v:'hotel',l:'Hotel / resort'},{v:'camp',l:'Holiday camp'},{v:'company',l:'Company day'}], 'aud');
+  pills($('aud'), [{v:'school',l:'School'},{v:'homeschool',l:'Homeschool'},{v:'hotel',l:'Hotel / resort'},{v:'camp',l:'Holiday camp'},{v:'company',l:'Company'}], 'aud');
   pills($('track'), [{v:'robotics',l:'Robotics',s:'Arduino & builds'},{v:'ai',l:'AI',s:'no kit needed'},{v:'both',l:'Both'}], 'track');
   pills($('age'), [{v:'5-7',l:'5–7'},{v:'8-10',l:'8–10'},{v:'11-13',l:'11–13'},{v:'14-16',l:'14–16'}], 'age');
   function durHtml(items){ return items.map(function(o){ return '<button type="button" class="opt'+(o.feat?' feat':'')+(state.dur===o.v?' sel':'')+'" data-v="'+o.v+'">'+(o.badge?'<span class="badge">'+esc(o.badge)+'</span>':'')+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</button>'; }).join(''); }
@@ -326,16 +340,19 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       h += '<div class="qnote warn">👥 Over our 50-learner single-session capacity — we’ll run it across '+Math.ceil(kids/50)+' days/sessions. The per-child price still applies.</div>';
     }
     if(outside) h += '<div class="qnote warn">📍 Outside Nairobi: travel (transport &amp; accommodation) is quoted separately — we’ll confirm it with you.</div>';
-    h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Request this quote on WhatsApp</a>';
+    h += '<button class="qcta" id="q-send" type="button">Send this quote to Anne</button>';
+    h += '<a class="qcta wa" id="q-wa" href="#" target="_blank" rel="noopener">Or send on WhatsApp</a>';
     h += '<button class="qcta" id="q-pf" type="button" style="background:#fff;color:var(--ink);border-color:var(--ink)">📄 Proforma invoice</button>';
+    h += '<div id="q-msg" class="qnote" style="display:none"></div>';
     body.innerHTML = h;
     $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
     last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers, ratio:ratio, isTerm:isTerm };
     $('q-pf').addEventListener('click', function(){ buildProforma(last); });
+    $('q-send').addEventListener('click', function(){ sendLead(last); });
   }
 
   function trackLabel(){ return state.track==='ai' ? 'AI' : state.track==='robotics' ? 'Robotics' : 'Robotics & AI'; }
-  function audLabel(){ return {school:'School',hotel:'Hotel / resort',camp:'Holiday camp',company:'Company day'}[state.aud] || 'Group'; }
+  function audLabel(){ return {school:'School',homeschool:'Homeschool group',hotel:'Hotel, resort or estate',camp:'Holiday camp',company:'Company'}[state.aud] || 'Group'; }
 
   function buildProforma(d){
     if(!d){ return; }
@@ -377,6 +394,34 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>';
     $('pf-wrap').style.display='block';
     $('pf-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // ---- send quote to Anne (same leads pipeline as the schools form → teach.html) ----
+  var LEAD_URL = 'https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/rpc/lms_submit_lead';
+  var LEAD_KEY = 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT';
+  function qmsg(txt, ok){ var m=$('q-msg'); if(!m) return; m.style.display='block'; m.className='qnote'+(ok?'':' warn'); m.innerHTML=txt; }
+  function sendLead(d){
+    if(!d){ return; }
+    var name=($('c-name').value||'').trim(), phone=($('c-phone').value||'').trim(), email=($('c-email').value||'').trim();
+    var org=($('c-org').value||'').trim(), dates=($('c-dates').value||'').trim() || 'To be confirmed';
+    if(!name || !/^\+?[0-9 ]{7,20}$/.test(phone) || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      qmsg('Add your name, a valid phone/WhatsApp and email below, then send.', false);
+      $('c-name').scrollIntoView({behavior:'smooth',block:'center'}); return;
+    }
+    var perChild=Math.round(d.total/d.kids);
+    var wa=waLink(d.total, d.kids, d.perChild, d.kitsOn, d.discountOn, d.outside);
+    var p={ source:'group-quote', parent_name:name.slice(0,80), whatsapp:phone, email:email,
+      child_age:state.age, mode:'in-person', preferred_dates:dates.slice(0,120),
+      courses:[{id:'group-quote', title:trackLabel()+' · '+DUR_LABEL[d.dur]}],
+      extras:{ organisation:org.slice(0,60), type:audLabel(), learners:d.kids, total:d.total, perChild:perChild, format:DUR_LABEL[d.dur], discount:d.discountOn, kits:d.kitsOn, location:(d.outside?'Outside Nairobi':'Nairobi') },
+      message:('Quote request — '+trackLabel()+' '+DUR_LABEL[d.dur]+', '+d.kids+' learners (ages '+state.age+'), '+(d.outside?'outside Nairobi':'Nairobi')+'. Indicative total '+fmt(d.total)+' (~'+fmt(perChild)+'/child).'+(d.discountOn?' Group discount applied.':'')+(d.kitsOn?' Kits included.':'')).slice(0,1000) };
+    var btn=$('q-send'); btn.disabled=true; qmsg('Sending…', true);
+    fetch(LEAD_URL,{method:'POST',headers:{apikey:LEAD_KEY,'Content-Type':'application/json'},body:JSON.stringify({p:p})})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return 'ok';}) : r.json().then(function(j){ throw new Error(j&&j.message||'Something went wrong.'); }); })
+      .then(function(){ if(typeof gtag==='function') gtag('event','generate_lead',{source:'group-quote'});
+        qmsg('✅ Sent to Anne — she’ll confirm the final quote. You can also <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">send it on WhatsApp</a>.', true); })
+      .catch(function(x){ qmsg((x.message||'Could not send.')+' You can <a style="color:#B6D85A;text-decoration:underline" href="'+wa+'" target="_blank" rel="noopener">send it on WhatsApp</a> instead.', false); })
+      .finally(function(){ btn.disabled=false; });
   }
 
   function waLink(total, kids, perChild, kitsOn, discountOn, outside){
