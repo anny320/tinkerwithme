@@ -53,4 +53,12 @@
       }
     } catch (err) {}
   }, true);
+
+  // Site-wide social share + follow widget (floating button). Loaded once.
+  try {
+    var soc = document.createElement('script');
+    soc.src = 'social.js';
+    soc.defer = true;
+    document.head.appendChild(soc);
+  } catch (e) {}
 })();
