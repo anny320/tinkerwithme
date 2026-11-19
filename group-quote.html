@@ -30,7 +30,10 @@
   .opts{display:flex;gap:9px;flex-wrap:wrap}
   .dur-lbl{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin:0 0 8px}
   .dur-sep{height:1px;background:var(--cream-dim);margin:16px 0}
-  .opt{cursor:pointer;font:inherit;font-weight:600;font-size:14.5px;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:9px 16px;background:var(--white);color:var(--ink);transition:transform .1s,box-shadow .1s}
+  .opt{position:relative;cursor:pointer;font:inherit;font-weight:600;font-size:14.5px;border:2px solid var(--ink);border-radius:var(--radius-pill);padding:9px 16px;background:var(--white);color:var(--ink);transition:transform .1s,box-shadow .1s}
+  .opt.feat{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+  .opt .badge{display:block;font-family:var(--font-mono);font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);opacity:.75;margin-bottom:1px}
+  .opt.sel .badge{color:#fff;opacity:.9}
   .opt small{display:block;font-weight:400;font-size:12px;color:var(--text-2)}
   .opt.sel{background:var(--orange);color:#fff;box-shadow:2px 2px 0 var(--ink)}
   .opt.sel small{color:rgba(255,255,255,.85)}
@@ -154,7 +157,8 @@
           <h2>4 · Format</h2>
           <p class="hint">Per-child price shown.</p>
           <div class="dur-lbl">One-off session</div>
-          <div class="opts" id="dur-day"></div>
+          <div class="opts" id="dur-day" style="margin-top:14px"></div>
+          <p class="hint" style="margin:10px 0 0">Most groups pick the 4-hour — the best balance of build time, a proper showcase and budget.</p>
           <div class="dur-sep"></div>
           <div class="dur-lbl">Ongoing after-school club</div>
           <div class="opts" id="dur-term"></div>
@@ -262,9 +266,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   pills($('aud'), [{v:'school',l:'School'},{v:'hotel',l:'Hotel / resort'},{v:'camp',l:'Holiday camp'},{v:'company',l:'Company day'}], 'aud');
   pills($('track'), [{v:'robotics',l:'Robotics',s:'Arduino & builds'},{v:'ai',l:'AI',s:'no kit needed'},{v:'both',l:'Both'}], 'track');
   pills($('age'), [{v:'5-7',l:'5–7'},{v:'8-10',l:'8–10'},{v:'11-13',l:'11–13'},{v:'14-16',l:'14–16'}], 'age');
-  function durHtml(items){ return items.map(function(o){ return '<button type="button" class="opt'+(state.dur===o.v?' sel':'')+'" data-v="'+o.v+'">'+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</button>'; }).join(''); }
+  function durHtml(items){ return items.map(function(o){ return '<button type="button" class="opt'+(o.feat?' feat':'')+(state.dur===o.v?' sel':'')+'" data-v="'+o.v+'">'+(o.badge?'<span class="badge">'+esc(o.badge)+'</span>':'')+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</button>'; }).join(''); }
   function syncDur(){ ['dur-day','dur-term'].forEach(function(id){ [].forEach.call($(id).children, function(c){ c.classList.toggle('sel', c.dataset.v===state.dur); }); }); }
-  $('dur-day').innerHTML = durHtml([{v:'3h',l:'3 hours',s:'KES 4,500/child'},{v:'4h',l:'4 hours',s:'KES 6,000/child'},{v:'full',l:'Full day',s:'KES 9,000/child'}]);
+  $('dur-day').innerHTML = durHtml([{v:'3h',l:'3 hours',s:'KES 4,500/child'},{v:'4h',l:'4 hours',s:'KES 6,000/child',feat:true,badge:'Popular'},{v:'full',l:'Full day',s:'KES 9,000/child'}]);
   $('dur-term').innerHTML = durHtml([{v:'term',l:'8-week club',s:'KES 10,000/child · term'}]);
   ['dur-day','dur-term'].forEach(function(id){ $(id).addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; state.dur=b.dataset.v; syncDur(); render(); }); });
 
