@@ -93,6 +93,7 @@
   #proforma .pf-note{font-size:12.5px;color:var(--text-2);margin-top:14px;line-height:1.55}
   #proforma .pf-pay{border-top:1px solid var(--cream-dim);margin-top:14px;padding-top:12px;font-size:13px}
   #proforma .pf-pay b{font-weight:700}
+  #proforma .pf-terms{font-size:8px;line-height:1.5;color:var(--text-2);margin-top:10px}
   @media print{
     nav,footer,.tw-footer-tail,.page-head,#tw-social,.pf-actions{display:none!important}
     .tw-section:not(#pf-wrap){display:none!important}
@@ -391,7 +392,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       + '<div class="pf-total"><span>Total</span><span>'+fmt(d.total)+'</span></div>'
       + '<div class="pf-valid">Valid until '+validStr+'</div>'
       + '<div class="pf-pay"><b>Payment:</b> M-Pesa Till <b>3022049</b> (Wakara Technologies) · bank transfer or card — details on request.</div>'
-      + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>';
+      + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>'
+      + '<div class="pf-terms"><b>Payment terms:</b> 70% in advance, 30% on the day of delivery. Late payments beyond 7 days attract a 5% surcharge per week.</div>';
     $('pf-wrap').style.display='block';
     $('pf-wrap').scrollIntoView({behavior:'smooth',block:'start'});
   }
