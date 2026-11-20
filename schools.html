@@ -202,6 +202,7 @@
   <div class="tw-container">
     <h2 class="sec-h">Plan a programme</h2>
     <p style="margin:-0.4rem 0 1.2rem;color:var(--text-2)">Tell us a little about your learners and we&rsquo;ll come back with a plan and a quote.</p>
+    <p style="margin:-0.6rem 0 1.4rem"><a class="tw-link-arrow" href="group-quote.html" id="sch-quote" data-ga="schools-enquire-quote">Prefer a price right now? Build an instant quote &rarr;</a></p>
     <form class="sch-form" id="sch-form" novalidate>
       <label class="field-in">School or organisation <input name="organisation" required maxlength="80" autocomplete="organization"></label>
       <label class="field-in">Type
@@ -295,6 +296,21 @@
     `Organisation: ${p.extras.organisation}\nContact: ${p.parent_name}${p.extras.role ? ' (' + p.extras.role + ')' : ''}\n` +
     `Learners: ${p.extras.learners || '?'}, ages ${p.child_age}\nInterested in: ${p.courses.map(c => c.title).join(', ')}\n` +
     `When: ${p.preferred_dates}\n${p.message ? '\n' + p.message : ''}`;
+  // Hand-off to the group quote builder, carrying whatever's typed so far.
+  const quoteLink = document.getElementById('sch-quote');
+  if (quoteLink) quoteLink.addEventListener('click', ev => {
+    const typeMap = { 'School': 'school', 'Homeschool group': 'homeschool', 'Hotel, resort or estate': 'hotel', 'Company': 'company' };
+    const q = new URLSearchParams();
+    if (typeMap[f.type.value]) q.set('aud', typeMap[f.type.value]);
+    if (f.organisation.value.trim()) q.set('org', f.organisation.value.trim());
+    if (f.name.value.trim()) q.set('name', f.name.value.trim());
+    if (f.email.value.trim()) q.set('email', f.email.value.trim());
+    if (f.whatsapp.value.trim()) q.set('phone', f.whatsapp.value.trim());
+    if (f.learners.value) q.set('kids', f.learners.value);
+    if (f.dates.value.trim()) q.set('dates', f.dates.value.trim());
+    const s = q.toString();
+    if (s) { ev.preventDefault(); location.href = 'group-quote.html?' + s; }
+  });
   f.onsubmit = async e => {
     e.preventDefault();
     f.querySelectorAll('[required]').forEach(i => i.classList.add('touched'));
