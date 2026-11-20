@@ -377,7 +377,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       if(d.isTerm) notes.push('Over 50 learners — delivered as parallel club groups.');
       else notes.push('Over our 50-learner single-session capacity — delivered across '+Math.ceil(d.kids/50)+' days/sessions.');
     }
-    if(d.outside) notes.push('Location is outside Nairobi: transport & accommodation are quoted separately and added on confirmation.');
+    notes.push((d.outside?'This project is outside Nairobi. ':'')+'For projects outside Nairobi, transport and logistics costs are costed separately, shared as a written estimate, and are payable before the agreement is signed.');
     notes.push('Prices in KES, inclusive. This is a proforma (quotation), not a tax invoice.');
 
     $('proforma').innerHTML =
