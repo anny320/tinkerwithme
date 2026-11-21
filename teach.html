@@ -119,7 +119,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="#schools" id="t-schools">Schools</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#prices" id="t-prices">Prices</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="#schools" id="t-schools">Schools</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -218,11 +218,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  const tab = ['prices', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'prices', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
   payCount(); leadCount(); buildsCount(); studentCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : tab === 'schools' ? schools() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'prices' ? prices() : tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : tab === 'schools' ? schools() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -253,6 +253,76 @@ async function courseList() {
       toast(publish ? 'Published ✓ — now live on the site' : 'Unpublished — back to draft');
     } catch (err) { toast(err.message); }
     b.disabled = false;
+  };
+}
+
+/* ── Prices: course prices overview + group session rates ── */
+const QUOTE_DEFAULTS = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:15, trainer_cap:10, capacity:50 };
+async function prices() {
+  $('view').innerHTML = '<p class="loading">Loading prices…</p>';
+  const courses = must(await db().from('lms_courses').select('id,title,slug,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at,is_published').order('position').order('title'));
+  const scRow = must(await db().from('site_content').select('data').eq('key', 'group_quote_pricing').maybeSingle());
+  const q = Object.assign({}, QUOTE_DEFAULTS, (scRow && scRow.data) || {});
+  const dateVal = d => d ? new Date(d).toLocaleDateString('en-CA', { timeZone: 'Africa/Nairobi' }) : '';
+  const liveOffer = c => c.offer_price_kes && c.offer_ends_at && new Date(c.offer_ends_at) > new Date();
+  $('view').innerHTML = `
+    <div class="panel box"><h2>Course prices &amp; discounts</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Set each course's price and an optional launch offer (a lower price shown with the normal one crossed out, until the end date). Leave the offer blank for no discount. Saves go live immediately.</p>
+      <div class="rows">${courses.map(c => `<div class="row" style="align-items:flex-end;flex-wrap:wrap;gap:8px 10px" data-pid="${c.id}">
+        <div class="grow" style="min-width:150px"><strong>${esc(c.title)}</strong><small>/${esc(c.slug)}${c.is_published ? '' : ' · draft'}${liveOffer(c) ? ' · 🏷️ offer live' : ''}</small></div>
+        <label class="field-in" style="width:104px">Price KES <input data-f="price_kes" type="number" min="0" value="${c.price_kes}"></label>
+        <label class="field-in" style="width:92px">US$ <input data-f="price_usd" type="number" min="0" value="${c.price_usd ?? ''}"></label>
+        <label class="field-in" style="width:104px">Offer KES <input data-f="offer_price_kes" type="number" min="1" value="${c.offer_price_kes ?? ''}"></label>
+        <label class="field-in" style="width:92px">Offer US$ <input data-f="offer_price_usd" type="number" min="1" value="${c.offer_price_usd ?? ''}"></label>
+        <label class="field-in" style="width:148px">Offer ends <input data-f="offer_ends" type="date" value="${dateVal(c.offer_ends_at)}"></label>
+        <button class="tw-btn tw-btn-orange tw-btn-sm" type="button" data-save>Save</button>
+      </div>`).join('') || '<p class="muted">No courses yet.</p>'}</div></div>
+
+    <div class="panel box"><h2>Group session rates</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Powers the <a href="group-quote.html" target="_blank" rel="noopener">group quote builder</a> (schools, camps, hotels, companies). All prices in KES.</p>
+      <form id="qf"><div class="grid2">
+        <label class="field-in">3-hour session (per child) <input name="rate_3h" type="number" min="1" value="${q.rate_3h}"></label>
+        <label class="field-in">4-hour session (per child) <input name="rate_4h" type="number" min="1" value="${q.rate_4h}"></label>
+        <label class="field-in">Full day (per child) <input name="rate_full" type="number" min="1" value="${q.rate_full}"></label>
+        <label class="field-in">8-week club, per term (per child) <input name="rate_term" type="number" min="1" value="${q.rate_term}"></label>
+        <label class="field-in">Group discount % <input name="discount_pct" type="number" min="0" max="90" value="${q.discount_pct}"></label>
+        <label class="field-in">Discount applies above (learners) <input name="discount_min" type="number" min="0" value="${q.discount_min}"></label>
+        <label class="field-in">Kits markup % <input name="kits_pct" type="number" min="0" value="${q.kits_pct}"></label>
+        <label class="field-in">Learners per trainer — day session <input name="ratio_day" type="number" min="1" value="${q.ratio_day}"></label>
+        <label class="field-in">Learners per trainer — club session <input name="ratio_term" type="number" min="1" value="${q.ratio_term}"></label>
+        <label class="field-in">Maximum trainers <input name="trainer_cap" type="number" min="1" value="${q.trainer_cap}"></label>
+        <label class="field-in">Single-session capacity (learners) <input name="capacity" type="number" min="1" value="${q.capacity}"></label>
+      </div><div class="btns"><button class="tw-btn tw-btn-orange" type="submit">Save rates</button></div></form>
+    </div>`;
+  $('view').onclick = async e => {
+    const b = e.target.closest('[data-save]'); if (!b) return;
+    const row = b.closest('[data-pid]'), g = f => row.querySelector(`[data-f="${f}"]`).value;
+    const offKes = parseInt(g('offer_price_kes'), 10) > 0 ? parseInt(g('offer_price_kes'), 10) : null, offEnds = g('offer_ends');
+    if (offKes && !offEnds) return toast('Pick the offer end date for that course.');
+    const patch = {
+      price_kes: Math.max(0, parseInt(g('price_kes'), 10) || 0),
+      price_usd: g('price_usd') === '' ? null : Math.max(0, parseInt(g('price_usd'), 10) || 0),
+      offer_price_kes: offKes,
+      offer_price_usd: parseInt(g('offer_price_usd'), 10) > 0 ? parseInt(g('offer_price_usd'), 10) : null,
+      offer_ends_at: offEnds ? offEnds + 'T23:59:59+03:00' : null };
+    b.disabled = true;
+    try { must(await db().from('lms_courses').update(patch).eq('id', row.dataset.pid).select('id').single()); toast('Saved ✓'); }
+    catch (err) { toast(err.message); }
+    b.disabled = false;
+  };
+  const qf = $('qf'); watch(qf);
+  qf.onsubmit = async e => {
+    e.preventDefault();
+    const data = {};
+    ['rate_3h', 'rate_4h', 'rate_full', 'rate_term', 'discount_pct', 'discount_min', 'kits_pct', 'ratio_day', 'ratio_term', 'trainer_cap', 'capacity']
+      .forEach(k => { data[k] = Math.max(0, parseInt(qf[k].value, 10) || 0); });
+    try {
+      must(await db().from('site_content').upsert({ key: 'group_quote_pricing', data }).select('key').single());
+      dirty = false; toast('Rates saved ✓ — live on the quote builder');
+    } catch (err) {
+      toast(/violates|check|constraint/i.test(err.message)
+        ? 'Run supabase/group-quote-pricing.sql once to allow this setting, then save again.' : err.message);
+    }
   };
 }
 
