@@ -357,6 +357,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     if(kitsOn) h += '<div class="qline"><span>Kits supplied (+'+CFG.kits_pct+'%)</span><span>+'+fmt(total-afterDisc)+'</span></div>';
     h += '<div class="qtotal"><span class="lbl">Indicative total</span><span class="amt">'+fmt(total)+'</span></div>';
     h += '<div class="qnote">About '+fmt(total/kids)+' per child'+(isYear?' per year':isTerm?' per term':'')+'. Final quote confirmed by Anne.</div>';
+    if(isYear) h += '<div class="qnote">💳 Billed per term: about '+fmt(total/3)+' per term across 3 terms — not one yearly payment.</div>';
     if(isClub){
       if(kids > CFG.capacity) h += '<div class="qnote warn">👥 Over '+CFG.capacity+' learners — we’ll split into parallel club groups so every child gets hands-on time.</div>';
     } else if(kids > CFG.capacity){
@@ -388,14 +389,21 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var billName=$('c-org').value||$('c-name').value||'—';
     var billTo=[ $('c-name').value, $('c-email').value, $('c-phone').value ].filter(Boolean).map(esc).join('<br>');
 
+    // Schools pay per term, so the full-year club is invoiced one term at a time.
+    var div = d.isYear ? 3 : 1;
+    var uUnit = d.rate/div, uBase = d.base/div, uDisc = (d.base-d.afterDisc)/div, uKits = (d.total-d.afterDisc)/div, uTotal = d.total/div;
+
     var rows='';
-    var descDur = d.isYear ? DUR_LABEL[d.dur]+' · ~24 weekly sessions, 1 hr each' : d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each' : DUR_LABEL[d.dur];
-    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
-    if(d.discountOn) rows+='<tr><td>Group discount ('+CFG.discount_pct+'% off, more than '+CFG.discount_min+' learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(d.base-d.afterDisc)+'</td></tr>';
-    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied ('+CFG.kits_pct+'%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(d.total-d.afterDisc)+'</td></tr>';
+    var descDur = d.isYear ? DUR_LABEL[d.dur]+' · billed per term — Term 1 of 3 (~8 sessions/term, 1 hr each)'
+                : d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each'
+                : DUR_LABEL[d.dur];
+    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(uUnit)+'</td><td class="n">'+fmt(uBase)+'</td></tr>';
+    if(d.discountOn) rows+='<tr><td>Group discount ('+CFG.discount_pct+'% off, more than '+CFG.discount_min+' learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(uDisc)+'</td></tr>';
+    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied ('+CFG.kits_pct+'%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(uKits)+'</td></tr>';
 
     var notes=[];
     notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isClub?' per session (1 per ~'+d.ratio+' learners), across '+(d.isYear?'~24 weekly sessions (3 terms)':'8 weekly sessions')+'.':' on the day (1 per ~'+d.ratio+' learners).'));
+    if(d.isYear) notes.push('Full-year programme: 3 terms, billed each term — this proforma covers one term. Full-year total ≈ '+fmt(d.total)+'.');
     if(d.kids>CFG.capacity){
       if(d.isClub) notes.push('Over '+CFG.capacity+' learners — delivered as parallel club groups.');
       else notes.push('Over our '+CFG.capacity+'-learner single-session capacity — delivered across '+Math.ceil(d.kids/CFG.capacity)+' days/sessions.');
@@ -411,11 +419,11 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       + '<div class="pf-parties"><div><h4>From</h4><b>Wakara Technologies Limited</b><br>Tinkerwith_ · tinkerwith.me<br>tinkerwithanne@gmail.com<br>WhatsApp +254 117 784 724</div>'
       + '<div><h4>Prepared for</h4><b>'+esc(billName)+'</b>'+(billTo?'<br>'+billTo:'')+'</div></div>'
       + '<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Unit (KES)</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody></table>'
-      + '<div class="pf-total"><span>Total</span><span>'+fmt(d.total)+'</span></div>'
+      + '<div class="pf-total"><span>Total'+(d.isYear?' (per term)':'')+'</span><span>'+fmt(uTotal)+'</span></div>'
       + '<div class="pf-valid">Valid until '+validStr+'</div>'
       + '<div class="pf-pay"><b>Payment:</b> M-Pesa Till <b>3022049</b> (Wakara Technologies) · bank transfer or card — details on request.</div>'
       + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>'
-      + '<div class="pf-terms"><b>Payment terms:</b> 70% in advance, 30% on the day of delivery. Late payments beyond 7 days attract a 5% surcharge per week.</div>';
+      + '<div class="pf-terms"><b>Payment terms:</b> '+(d.isClub?'50% deposit in advance; the balance before the last 3 classes.':'70% in advance, 30% on the day of delivery.')+' Late payments beyond 7 days attract a 5% surcharge per week.</div>';
     $('pf-wrap').style.display='block';
     $('pf-wrap').scrollIntoView({behavior:'smooth',block:'start'});
   }
