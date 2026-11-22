@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Turn your idea into a comic with AI</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">From an idea to your own comic, with AI</text>
+
+<!-- Panel 1: the idea / character -->
+<g>
+  <rect x="70" y="150" width="180" height="170" rx="12" fill="#FFEDE0" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="160" cy="220" r="42" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+  <circle cx="146" cy="212" r="5" fill="#220111"/><circle cx="174" cy="212" r="5" fill="#220111"/>
+  <path d="M140 234 q20 18 40 0" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M160 178 l6 -18 l10 12" fill="none" stroke="#220111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="160" y="302" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Your character</text>
+</g>
+
+<!-- arrow -->
+<line x1="258" y1="235" x2="312" y2="235" stroke="#220111" stroke-width="3"/><path d="M303 229 L312 235 L303 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+<!-- Panel 2: the words / speech -->
+<g>
+  <rect x="320" y="150" width="160" height="170" rx="12" fill="#E7F0FB" stroke="#220111" stroke-width="2.5"/>
+  <path d="M352 188 h96 a10 10 0 0 1 10 10 v40 a10 10 0 0 1 -10 10 h-50 l-16 18 v-18 h-30 a10 10 0 0 1 -10 -10 v-40 a10 10 0 0 1 10 -10 z" fill="#fff" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="364" y1="206" x2="436" y2="206" stroke="#004C97" stroke-width="3" stroke-linecap="round"/>
+  <line x1="364" y1="220" x2="420" y2="220" stroke="#004C97" stroke-width="3" stroke-linecap="round"/>
+  <text x="400" y="302" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Your story</text>
+</g>
+
+<!-- arrow -->
+<line x1="488" y1="235" x2="542" y2="235" stroke="#220111" stroke-width="3"/><path d="M533 229 L542 235 L533 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+<!-- Panel 3: the finished comic page with AI spark -->
+<g>
+  <rect x="550" y="150" width="184" height="170" rx="12" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
+  <rect x="566" y="166" width="72" height="62" rx="6" fill="#fff" stroke="#220111" stroke-width="2"/>
+  <rect x="646" y="166" width="72" height="62" rx="6" fill="#fff" stroke="#220111" stroke-width="2"/>
+  <rect x="566" y="236" width="152" height="36" rx="6" fill="#fff" stroke="#220111" stroke-width="2"/>
+  <path d="M602 190 l5 -12 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 z" fill="#FF7F32" stroke="#220111" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="682" cy="197" r="15" fill="#84BD00" stroke="#220111" stroke-width="2"/>
+  <text x="682" y="202" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="13" fill="#fff">AI</text>
+  <text x="642" y="302" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Your comic</text>
+</g>
+
+<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">Invent a character, write the story, let AI draw the panels — then publish it.</text>
+</svg>
