@@ -73,7 +73,7 @@ _Added 10 Nov 2026. Goal: rebuild the homepage to cut selection fatigue (34 cour
 ### Group sessions / B2B & quote builder (from the 22 Nov session)
 - **Review & publish AI Comic Studio** (owner — see Do-first #0) and merge PR #146.
 - **Confirm the group-session rates** in teach.html → Prices now that they're editable (defaults seeded: 4,500 / 6,000 / 9,000 / 10,000, 10% discount >20, +30% kits). Adjust to real numbers anytime — no code change.
-- **Optional: add a longer programme path** (e.g. a 20-week / full-year club) to `group-quote.html` — only the one-off sessions + 8-week club exist today.
+- **✅ DONE — longer programme path added:** `group-quote.html` now has a **Full-year club (3 terms)** at KES 27,000/child (10% off 3×term), weekly 1hr sessions, editable in teach → Prices (`rate_year`). _Note: the live `group_quote_pricing` row predates `rate_year`, so the builder uses the 27,000 default until you Save once in teach → Prices (which writes it); no SQL re-run needed._
 - **Optional: per-course `og:image` prerender** so social-link previews show the right share image (covers now exist; link unfurls still use the generic OG image).
 - **Pattern proven:** AI Comic Studio is a net-new **self-paced course authored directly as a SQL seed** (course + lessons + quizzes). Reuse this seed pattern for any **future courses** (the 17 premium ones are already in the LMS).
 
