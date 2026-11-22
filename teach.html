@@ -257,7 +257,7 @@ async function courseList() {
 }
 
 /* ── Prices: course prices overview + group session rates ── */
-const QUOTE_DEFAULTS = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:15, trainer_cap:10, capacity:50 };
+const QUOTE_DEFAULTS = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, rate_year:27000, discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:15, trainer_cap:10, capacity:50 };
 async function prices() {
   $('view').innerHTML = '<p class="loading">Loading prices…</p>';
   const courses = must(await db().from('lms_courses').select('id,title,slug,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at,is_published').order('position').order('title'));
@@ -285,6 +285,7 @@ async function prices() {
         <label class="field-in">4-hour session (per child) <input name="rate_4h" type="number" min="1" value="${q.rate_4h}"></label>
         <label class="field-in">Full day (per child) <input name="rate_full" type="number" min="1" value="${q.rate_full}"></label>
         <label class="field-in">8-week club, per term (per child) <input name="rate_term" type="number" min="1" value="${q.rate_term}"></label>
+        <label class="field-in">Full-year club, 3 terms (per child) <input name="rate_year" type="number" min="1" value="${q.rate_year}"></label>
         <label class="field-in">Group discount % <input name="discount_pct" type="number" min="0" max="90" value="${q.discount_pct}"></label>
         <label class="field-in">Discount applies above (learners) <input name="discount_min" type="number" min="0" value="${q.discount_min}"></label>
         <label class="field-in">Kits markup % <input name="kits_pct" type="number" min="0" value="${q.kits_pct}"></label>
@@ -314,7 +315,7 @@ async function prices() {
   qf.onsubmit = async e => {
     e.preventDefault();
     const data = {};
-    ['rate_3h', 'rate_4h', 'rate_full', 'rate_term', 'discount_pct', 'discount_min', 'kits_pct', 'ratio_day', 'ratio_term', 'trainer_cap', 'capacity']
+    ['rate_3h', 'rate_4h', 'rate_full', 'rate_term', 'rate_year', 'discount_pct', 'discount_min', 'kits_pct', 'ratio_day', 'ratio_term', 'trainer_cap', 'capacity']
       .forEach(k => { data[k] = Math.max(0, parseInt(qf[k].value, 10) || 0); });
     try {
       must(await db().from('site_content').upsert({ key: 'group_quote_pricing', data }).select('key').single());

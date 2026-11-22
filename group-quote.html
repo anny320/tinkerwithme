@@ -163,7 +163,7 @@
           <div class="dur-sep"></div>
           <div class="dur-lbl">Ongoing after-school club</div>
           <div class="opts" id="dur-term"></div>
-          <p class="hint" style="margin:10px 0 0">8 weekly sessions, 1 hour each, over a term.</p>
+          <p class="hint" style="margin:10px 0 0">Weekly 1-hour sessions — one term (8 weeks) or the full year (3 terms, 10% off).</p>
         </div>
 
         <div class="gq-card">
@@ -253,17 +253,17 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var WA = 'https://wa.me/254117784724';
 
   // Pricing — defaults; overridden by site_content 'group_quote_pricing' (edited in teach.html → Prices).
-  var CFG = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000,
+  var CFG = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, rate_year:27000,
     discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:15, trainer_cap:10, capacity:50 };
-  var RATES = { '3h':4500, '4h':6000, 'full':9000, 'term':10000 };
-  var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day', 'term':'8-week club (per term)' };
+  var RATES = { '3h':4500, '4h':6000, 'full':9000, 'term':10000, 'year':27000 };
+  var DUR_LABEL = { '3h':'3-hour session', '4h':'4-hour session', 'full':'Full day', 'term':'8-week club (per term)', 'year':'Full-year club (3 terms)' };
 
   var state = { aud:'school', track:'both', age:'8-10', dur:null };
   var last = null;
 
   // Pre-fill from URL (hand-off from the schools enquiry form)
   (function(){ var q; try{ q=new URLSearchParams(location.search); }catch(e){ return; }
-    var A=['school','homeschool','hotel','camp','company'], T=['robotics','ai','both'], G=['5-7','8-10','11-13','14-16'], D=['3h','4h','full','term'];
+    var A=['school','homeschool','hotel','camp','company'], T=['robotics','ai','both'], G=['5-7','8-10','11-13','14-16'], D=['3h','4h','full','term','year'];
     if(A.indexOf(q.get('aud'))>-1) state.aud=q.get('aud');
     if(T.indexOf(q.get('track'))>-1) state.track=q.get('track');
     if(G.indexOf(q.get('age'))>-1) state.age=q.get('age');
@@ -291,14 +291,16 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       {v:'3h',l:'3 hours',s:fmt(CFG.rate_3h)+'/child'},
       {v:'4h',l:'4 hours',s:fmt(CFG.rate_4h)+'/child',feat:true,badge:'Popular'},
       {v:'full',l:'Full day',s:fmt(CFG.rate_full)+'/child'}]);
-    $('dur-term').innerHTML = durHtml([{v:'term',l:'8-week club',s:fmt(CFG.rate_term)+'/child · term'}]);
+    $('dur-term').innerHTML = durHtml([
+      {v:'term',l:'8-week club',s:fmt(CFG.rate_term)+'/child · term'},
+      {v:'year',l:'Full-year club',s:fmt(CFG.rate_year)+'/child · year'}]);
     syncDur();
   }
   ['dur-day','dur-term'].forEach(function(id){ $(id).addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; state.dur=b.dataset.v; syncDur(); render(); }); });
 
   // Apply CFG to rates, pills and the checkbox descriptions.
   function applyCfg(){
-    RATES = { '3h':CFG.rate_3h, '4h':CFG.rate_4h, 'full':CFG.rate_full, 'term':CFG.rate_term };
+    RATES = { '3h':CFG.rate_3h, '4h':CFG.rate_4h, 'full':CFG.rate_full, 'term':CFG.rate_term, 'year':CFG.rate_year };
     renderDur();
     var dd=$('discount-desc'); if(dd) dd.textContent = CFG.discount_pct+'% off per child for groups of more than '+CFG.discount_min+'.';
     var kd=$('kits-desc'); if(kd) kd.textContent = 'We supply the electronics kits (adds '+CFG.kits_pct+'%). AI-only sessions need no kits.';
@@ -314,6 +316,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     if(state.dur==='4h') return [['Welcome & spark','Intro + how it works (25 min)'],[b,'Guided build (1h 45m)'],['Test & improve','Make it better (1h)'],['Showcase & certificates','Present + certificates (30 min)']];
     if(state.dur==='full') return [['Welcome & spark','Intro + teams (30 min)'],[b+' — part 1','Build the core (1h 45m)'],['Break','Snack & play (45 min)'],[b+' — part 2','Finish & test (1h 45m)'],['Showcase & certificates','Demo day + certificates (45 min)']];
     if(state.dur==='term') return [['Weeks 1–2 · Spark & basics','How it works + first mini-build (2 sessions)'],['Weeks 3–5 · '+b,'Guided weekly builds, one skill at a time (3 sessions)'],['Weeks 6–7 · Team project','Learners design & build their own (2 sessions)'],['Week 8 · Showcase & certificates','Demo day for parents + certificates (1 session)']];
+    if(state.dur==='year') return [['Term 1 · Foundations',b+' basics — weekly builds (8 sessions)'],['Term 2 · Level up','Harder builds + a term project (8 sessions)'],['Term 3 · Showcase','Big team project, demo day & certificates (8 sessions)']];
     return null;
   }
   function renderOutline(){
@@ -339,20 +342,22 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var total = kitsOn ? afterDisc * (1+CFG.kits_pct/100) : afterDisc;
     var outside = $('loc').value === 'outside';
     var isTerm = dur === 'term';
-    var ratio = isTerm ? CFG.ratio_term : CFG.ratio_day;
-    var unit = isTerm ? '/child · term' : '/child';
+    var isYear = dur === 'year';
+    var isClub = isTerm || isYear;
+    var ratio = isClub ? CFG.ratio_term : CFG.ratio_day;
+    var unit = isYear ? '/child · year' : isTerm ? '/child · term' : '/child';
 
     var h = '';
     h += '<div class="qline muted"><span>'+DUR_LABEL[dur]+'</span><span>'+fmt(rate)+unit+'</span></div>';
     h += '<div class="qline"><span>'+kids+' learner'+(kids===1?'':'s')+'</span><span>'+fmt(base)+'</span></div>';
     var trainers = Math.min(CFG.trainer_cap, Math.ceil(kids/ratio));
-    h += '<div class="qline muted" style="font-size:13px"><span>'+(isTerm?'Trainers per session':'Trainers on the day')+'</span><span>'+trainers+' (1 per ~'+ratio+')</span></div>';
+    h += '<div class="qline muted" style="font-size:13px"><span>'+(isClub?'Trainers per session':'Trainers on the day')+'</span><span>'+trainers+' (1 per ~'+ratio+')</span></div>';
     if(discountOn) h += '<div class="qline disc"><span>Group discount (&minus;'+CFG.discount_pct+'%)</span><span>&minus;'+fmt(base-afterDisc)+'</span></div>';
     else if($('discount').checked && kids<=CFG.discount_min) h += '<div class="qline muted" style="font-size:12.5px"><span>Discount needs more than '+CFG.discount_min+' learners</span><span>&mdash;</span></div>';
     if(kitsOn) h += '<div class="qline"><span>Kits supplied (+'+CFG.kits_pct+'%)</span><span>+'+fmt(total-afterDisc)+'</span></div>';
     h += '<div class="qtotal"><span class="lbl">Indicative total</span><span class="amt">'+fmt(total)+'</span></div>';
-    h += '<div class="qnote">About '+fmt(total/kids)+' per child'+(isTerm?' per term':'')+'. Final quote confirmed by Anne.</div>';
-    if(isTerm){
+    h += '<div class="qnote">About '+fmt(total/kids)+' per child'+(isYear?' per year':isTerm?' per term':'')+'. Final quote confirmed by Anne.</div>';
+    if(isClub){
       if(kids > CFG.capacity) h += '<div class="qnote warn">👥 Over '+CFG.capacity+' learners — we’ll split into parallel club groups so every child gets hands-on time.</div>';
     } else if(kids > CFG.capacity){
       h += '<div class="qnote warn">👥 Over our '+CFG.capacity+'-learner single-session capacity — we’ll run it across '+Math.ceil(kids/CFG.capacity)+' days/sessions. The per-child price still applies.</div>';
@@ -364,7 +369,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     h += '<div id="q-msg" class="qnote" style="display:none"></div>';
     body.innerHTML = h;
     $('q-wa').href = waLink(total, kids, perChild, kitsOn, discountOn, outside);
-    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers, ratio:ratio, isTerm:isTerm };
+    last = { kids:kids, rate:rate, dur:dur, discountOn:discountOn, perChild:perChild, base:base, afterDisc:afterDisc, kitsOn:kitsOn, total:total, outside:outside, trainers:trainers, ratio:ratio, isTerm:isTerm, isYear:isYear, isClub:isClub };
     $('q-pf').addEventListener('click', function(){ buildProforma(last); });
     $('q-send').addEventListener('click', function(){ sendLead(last); });
   }
@@ -384,15 +389,15 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     var billTo=[ $('c-name').value, $('c-email').value, $('c-phone').value ].filter(Boolean).map(esc).join('<br>');
 
     var rows='';
-    var descDur = d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each' : DUR_LABEL[d.dur];
+    var descDur = d.isYear ? DUR_LABEL[d.dur]+' · ~24 weekly sessions, 1 hr each' : d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each' : DUR_LABEL[d.dur];
     rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(d.rate)+'</td><td class="n">'+fmt(d.base)+'</td></tr>';
     if(d.discountOn) rows+='<tr><td>Group discount ('+CFG.discount_pct+'% off, more than '+CFG.discount_min+' learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(d.base-d.afterDisc)+'</td></tr>';
     if(d.kitsOn) rows+='<tr><td>Electronics kits supplied ('+CFG.kits_pct+'%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(d.total-d.afterDisc)+'</td></tr>';
 
     var notes=[];
-    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isTerm?' per session (1 per ~'+d.ratio+' learners), across 8 weekly sessions.':' on the day (1 per ~'+d.ratio+' learners).'));
+    notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isClub?' per session (1 per ~'+d.ratio+' learners), across '+(d.isYear?'~24 weekly sessions (3 terms)':'8 weekly sessions')+'.':' on the day (1 per ~'+d.ratio+' learners).'));
     if(d.kids>CFG.capacity){
-      if(d.isTerm) notes.push('Over '+CFG.capacity+' learners — delivered as parallel club groups.');
+      if(d.isClub) notes.push('Over '+CFG.capacity+' learners — delivered as parallel club groups.');
       else notes.push('Over our '+CFG.capacity+'-learner single-session capacity — delivered across '+Math.ceil(d.kids/CFG.capacity)+' days/sessions.');
     }
     notes.push((d.outside?'This project is outside Nairobi. ':'')+'For projects outside Nairobi, transport and logistics costs are costed separately, shared as a written estimate, and are payable before the agreement is signed.');
