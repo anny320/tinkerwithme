@@ -18,6 +18,6 @@ insert into public.site_content (key, data) values
     "rate_3h": 4500, "rate_4h": 6000, "rate_full": 9000,
     "rate_term": 10000, "rate_year": 27000,
     "discount_pct": 10, "discount_min": 20, "kits_pct": 30,
-    "ratio_day": 5, "ratio_term": 15, "trainer_cap": 10, "capacity": 50
+    "ratio_day": 5, "ratio_term": 10, "trainer_cap": 10, "capacity": 50
   }$j$::jsonb)
 on conflict (key) do nothing;

@@ -257,7 +257,7 @@ async function courseList() {
 }
 
 /* ── Prices: course prices overview + group session rates ── */
-const QUOTE_DEFAULTS = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, rate_year:27000, discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:15, trainer_cap:10, capacity:50 };
+const QUOTE_DEFAULTS = { rate_3h:4500, rate_4h:6000, rate_full:9000, rate_term:10000, rate_year:27000, discount_pct:10, discount_min:20, kits_pct:30, ratio_day:5, ratio_term:10, trainer_cap:10, capacity:50 };
 async function prices() {
   $('view').innerHTML = '<p class="loading">Loading prices…</p>';
   const courses = must(await db().from('lms_courses').select('id,title,slug,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at,is_published').order('position').order('title'));
