@@ -36,14 +36,31 @@
 .hero-btns{display:flex;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:14px;margin-top:32px}
 .hero-visual{
   background:rgba(255,255,255,.30);border-radius:var(--radius-lg);
-  padding:14px;box-shadow:var(--shadow-lg);
+  padding:14px;box-shadow:var(--shadow-lg);position:relative;
 }
 .hero-visual img,.hero-visual video{border-radius:var(--radius);width:100%;height:auto;display:block}
+/* This week's Tinker Challenge — corner card */
+.tinker-corner{position:absolute;left:24px;right:24px;bottom:24px;max-width:340px;
+  background:var(--white,#fff);border:2px solid var(--ink);border-radius:var(--radius);
+  box-shadow:5px 5px 0 var(--ink);padding:14px 16px}
+.tinker-corner[hidden]{display:none}
+.tinker-corner .tc-img-el{display:block;width:calc(100% + 32px);margin:-14px -16px 10px;height:120px;object-fit:cover;border-bottom:2px solid var(--ink);border-radius:var(--radius) var(--radius) 0 0}
+.tinker-corner .tc-img-el[hidden]{display:none}
+.tinker-corner .tc-eyebrow{font-family:var(--font-mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tinker-corner .tc-week{color:var(--text-2);font-weight:600}
+.tinker-corner h3{font-size:16px;font-weight:700;line-height:1.25;margin:6px 0 4px;color:var(--ink)}
+.tinker-corner p{font-size:13px;color:var(--text-2);line-height:1.45;margin:0}
+.tinker-corner .tc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.tinker-corner .tc-btn{cursor:pointer;font:inherit;font-weight:700;font-size:12.5px;border:1.5px solid var(--ink);border-radius:var(--radius-pill);padding:7px 13px;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.tinker-corner .tc-share{background:var(--orange);color:#fff;border-color:var(--ink)}
+.tinker-corner .tc-img{background:var(--white,#fff);color:var(--ink)}
+.tinker-corner .tc-cta{background:transparent;color:var(--ink);border-color:transparent;padding:7px 2px;text-decoration:underline}
 @media(max-width:900px){
   .hero{padding:3rem 0 3.5rem}
   .hero-grid{grid-template-columns:1fr;gap:2.25rem}
   .hero-lede{max-width:none}
   .hero-btns{flex-direction:row;flex-wrap:wrap}
+  .tinker-corner{position:static;max-width:none;margin-top:14px;box-shadow:4px 4px 0 var(--ink)}
 }
 
 /* ── STATS ──────────────────────────────────────────────── */
@@ -179,6 +196,7 @@
 .enrol-age{font-family:var(--font-mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--text-2)}
 .enrol p{font-size:15px;color:var(--text-2)}
 .enrol .tw-btn,.enrol .tw-link-arrow{margin-top:auto;align-self:flex-start;padding-top:6px}
+.enrol-cover{display:block;width:calc(100% + 3.4rem);margin:-1.7rem -1.7rem 4px;aspect-ratio:16/9;object-fit:contain;background:#fff;border-bottom:2px solid var(--ink);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
 .enrol .tw-btn{padding:13px 24px}
 .enrol-price{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink)}
 .enrol-price s{font-size:14px;font-weight:400;color:var(--text-3);margin-left:8px}
@@ -413,6 +431,17 @@
         <source src="assets/robot-build.mp4" type="video/mp4">
         <img src="assets/robot-build-poster.jpg" alt="A young maker building a robotic car">
       </video>
+      <aside class="tinker-corner" id="tinker-corner" hidden aria-label="This week's Tinker Challenge">
+        <img class="tc-img-el" id="tc-img-el" alt="" hidden>
+        <div class="tc-eyebrow">⚡ This week's Tinker Challenge <span class="tc-week" id="tc-week"></span></div>
+        <h3 id="tc-headline"></h3>
+        <p id="tc-body"></p>
+        <div class="tc-actions">
+          <button type="button" class="tc-btn tc-share" id="tc-share" data-ga="tinker-share">Share</button>
+          <button type="button" class="tc-btn tc-img" id="tc-img" data-ga="tinker-image">Save image</button>
+          <a class="tc-btn tc-cta" id="tc-cta" href="#" data-ga="tinker-cta" hidden></a>
+        </div>
+      </aside>
     </div>
   </div>
 </header>
@@ -878,13 +907,14 @@ async function loadHomeOnline() {
   const box = document.getElementById('online-courses');
   const e = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   try {
-    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at&is_published=eq.true&order=position,title',
+    const r = await fetch('https://xithafmrpqzwhkqzwfmk.supabase.co/rest/v1/lms_courses?select=slug,title,summary,age_range,cover_url,price_kes,price_usd,offer_price_kes,offer_price_usd,offer_ends_at&is_published=eq.true&order=position,title',
       { headers: { apikey: 'sb_publishable__mlDCy3NdYIp9iRhDRfcpw_OhhsyHOT' } });
     if (!r.ok) throw 0;
     const list = (await r.json()).filter(c => c.price_kes);   // free ones are in the Free section
     if (!list.length) throw 0;
     box.innerHTML = list.slice(0, 5).map(c => `
       <article class="enrol">
+        ${c.cover_url ? `<img class="enrol-cover" src="${e(c.cover_url)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
         ${c.price_kes ? (TWPrice.course(c).wasKes ? '<div class="enrol-badges"><span class="tw-sticker">Launch offer</span></div>' : '') : '<div class="enrol-badges"><span class="tw-sticker">Free</span></div>'}
         <h3 class="tw-h3">${e(c.title)}</h3>
         <p class="enrol-age">${c.age_range ? `Ages ${e(c.age_range)} · ` : ''}Self-paced · ${c.price_kes ? `${TWPrice.fmtCourse(c)} · 12 months` : 'Free'}</p>
@@ -927,6 +957,85 @@ document.addEventListener('tw:currency', () => { renderLive(); loadHomeOnline();
     title: 'Live sessions, every week',
     cta: 'Members get the join links. <a href="membership.html" data-ga="home-timetable-see-plans">See plans &rarr;</a>',
   });
+</script>
+<script>
+/* This week's Tinker Challenge — hero corner card. Content from SiteData
+   ('tinker_challenge' → Supabase, falling back to tinker_challenge.json). */
+(function () {
+  var SITE = 'https://tinkerwith.me';
+  var el = function (id) { return document.getElementById(id); };
+  if (!window.SiteData || !el('tinker-corner')) return;
+  SiteData.get('tinker_challenge').then(function (c) {
+    if (!c || c.active === false || !c.headline) return;
+    el('tc-week').textContent = c.week || '';
+    el('tc-headline').textContent = c.headline;
+    el('tc-body').textContent = c.body || '';
+    if (c.image) { var im = el('tc-img-el'); im.src = c.image; im.onerror = function () { im.hidden = true; }; im.hidden = false; }
+    if (c.cta_text && c.cta_url) { var a = el('tc-cta'); a.textContent = c.cta_text + ' →'; a.href = c.cta_url; a.hidden = false; }
+    el('tinker-corner').hidden = false;
+
+    var shareText = '⚡ This week’s Tinkerwith challenge: ' + c.headline + (c.body ? '\n\n' + c.body : '') + '\n\nTry it with your kids:';
+    el('tc-share').addEventListener('click', function () {
+      if (navigator.share) { navigator.share({ title: 'Tinkerwith Challenge', text: shareText, url: SITE }).catch(function () {}); return; }
+      var wa = 'https://wa.me/?text=' + encodeURIComponent(shareText + ' ' + SITE);
+      window.open(wa, '_blank', 'noopener');
+    });
+    el('tc-img').addEventListener('click', function () { makeImage(c); });
+  }).catch(function () {});
+
+  // Draw a brand-styled 1080×1350 share image on a canvas and download it.
+  function makeImage(c) {
+    if (c.image) {
+      var img = new Image(); img.crossOrigin = 'anonymous';
+      img.onload = function () { draw(c, img); };
+      img.onerror = function () { draw(c, null); };
+      img.src = c.image;
+    } else { draw(c, null); }
+  }
+  function draw(c, img, noImg) {
+    var W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var x = cv.getContext('2d');
+    x.fillStyle = '#F7F3F0'; x.fillRect(0, 0, W, H);                 // cream
+    x.fillStyle = '#FF7F32'; x.fillRect(0, 0, W, 300);              // orange header band
+    x.strokeStyle = '#220111'; x.lineWidth = 16; x.strokeRect(8, 8, W - 16, H - 16);
+    x.fillStyle = '#fff'; x.font = '700 40px Jost, Arial, sans-serif'; x.textBaseline = 'top';
+    x.fillText('⚡ TINKERWITH_ CHALLENGE', 70, 90);
+    x.font = '600 34px Jost, Arial, sans-serif'; x.fillText((c.week || 'This week'), 70, 160);
+    var y = 390;
+    x.fillStyle = '#220111'; x.font = '800 68px Jost, Arial, sans-serif';
+    y = wrap(x, c.headline, 70, y, W - 140, 78) + 20;
+    if (c.body) { x.fillStyle = '#5A4A50'; x.font = '400 40px Jost, Arial, sans-serif'; y = wrap(x, c.body, 70, y, W - 140, 54) + 16; }
+    if (img && !noImg) {
+      var bx = 70, bw = W - 140, bh = 430, by = Math.min(y + 10, H - 150 - bh - 24);
+      try { drawCover(x, img, bx, by, bw, bh); x.strokeStyle = '#220111'; x.lineWidth = 4; x.strokeRect(bx, by, bw, bh); } catch (e) {}
+    }
+    x.fillStyle = '#220111'; x.font = '700 38px "Space Mono", monospace';
+    x.fillText('tinkerwith.me', 70, H - 150);
+    x.fillStyle = '#5A4A50'; x.font = '400 32px "Space Mono", monospace';
+    x.fillText('@tinkerwith_anne · share your build!', 70, H - 100);
+    var url;
+    try { url = cv.toDataURL('image/png'); }
+    catch (e) { if (img && !noImg) { draw(c, null, true); } return; }   // no-CORS image tainted canvas → text-only
+    var a = document.createElement('a'); a.href = url; a.download = 'tinker-challenge.png';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function drawCover(x, img, dx, dy, dw, dh) {
+    var ir = img.width / img.height, br = dw / dh, sx, sy, sw, sh;
+    if (ir > br) { sh = img.height; sw = sh * br; sx = (img.width - sw) / 2; sy = 0; }
+    else { sw = img.width; sh = sw / br; sx = 0; sy = (img.height - sh) / 2; }
+    x.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+  function wrap(x, text, left, top, maxW, lh) {
+    var words = String(text).split(/\s+/), line = '', yy = top;
+    for (var i = 0; i < words.length; i++) {
+      var test = line ? line + ' ' + words[i] : words[i];
+      if (x.measureText(test).width > maxW && line) { x.fillText(line, left, yy); line = words[i]; yy += lh; }
+      else line = test;
+    }
+    if (line) { x.fillText(line, left, yy); yy += lh; }
+    return yy;
+  }
+})();
 </script>
 </body>
 </html>

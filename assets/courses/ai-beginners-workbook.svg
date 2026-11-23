@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Get to know AI: how it sees, chats, creates and learns</title>
+<rect width="800" height="450" fill="#fff"/>
+<text x="400" y="42" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Get to know AI: see, chat, create &amp; learn</text>
+
+<!-- spokes (behind nodes) -->
+<g stroke="#220111" stroke-width="2.5">
+  <line x1="400" y1="250" x2="214" y2="168"/>
+  <line x1="400" y1="250" x2="586" y2="168"/>
+  <line x1="400" y1="250" x2="214" y2="332"/>
+  <line x1="400" y1="250" x2="586" y2="332"/>
+</g>
+
+<!-- centre: AI -->
+<rect x="352" y="214" width="96" height="74" rx="18" fill="#FF7F32" stroke="#220111" stroke-width="3"/>
+<text x="400" y="263" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="30" fill="#fff">AI</text>
+
+<!-- See (vision) -->
+<circle cx="214" cy="168" r="46" fill="#7FB3E0" stroke="#220111" stroke-width="2.5"/>
+<ellipse cx="214" cy="168" rx="26" ry="15" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="214" cy="168" r="7" fill="#220111"/>
+<text x="214" y="238" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Sees</text>
+
+<!-- Chat -->
+<circle cx="586" cy="168" r="46" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+<path d="M560 152 h52 a8 8 0 0 1 8 8 v18 a8 8 0 0 1 -8 8 h-28 l-14 13 v-13 h-10 a8 8 0 0 1 -8 -8 v-18 a8 8 0 0 1 8 -8 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<g fill="#220111"><circle cx="572" cy="169" r="3.3"/><circle cx="586" cy="169" r="3.3"/><circle cx="600" cy="169" r="3.3"/></g>
+<text x="586" y="238" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Chats</text>
+
+<!-- Create -->
+<circle cx="214" cy="332" r="46" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+<path d="M214 306 l6 16 l16 6 l-16 6 l-6 16 l-6 -16 l-16 -6 l16 -6 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="214" y="402" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Creates</text>
+
+<!-- Learn (mortarboard) -->
+<circle cx="586" cy="332" r="46" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+<path d="M586 314 l30 12 l-30 12 l-30 -12 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<path d="M568 333 v14 c0 6 36 6 36 0 v-14" fill="none" stroke="#fff" stroke-width="2.3"/>
+<line x1="616" y1="326" x2="616" y2="344" stroke="#fff" stroke-width="2.3"/>
+<text x="586" y="402" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Learns</text>
+
+<text x="400" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="14" fill="#6E5F56">The big ideas, for curious beginners.</text>
+</svg>
