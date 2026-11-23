@@ -331,7 +331,7 @@ async function prices() {
 async function challenge() {
   $('view').innerHTML = '<p class="loading">Loading…</p>';
   const row = must(await db().from('site_content').select('data').eq('key', 'tinker_challenge').maybeSingle());
-  const c = Object.assign({ active: true, week: '', headline: '', body: '', cta_text: '', cta_url: '' }, (row && row.data) || {});
+  const c = Object.assign({ active: true, week: '', headline: '', body: '', image: '', cta_text: '', cta_url: '' }, (row && row.data) || {});
   $('view').innerHTML = `
     <div class="panel box"><h2>This week&rsquo;s Tinker Challenge</h2>
       <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Shows in a corner of the homepage hero, with Share + Save-image buttons for socials. Untick &ldquo;Show&rdquo; to hide the card. Saves go live immediately.</p>
@@ -342,13 +342,17 @@ async function challenge() {
         <label class="field-in wide">Details <textarea name="body" maxlength="400" placeholder="One or two lines of instructions / encouragement.">${esc(c.body || '')}</textarea></label>
         <label class="field-in">Button text (optional) <input name="cta_text" maxlength="40" value="${esc(c.cta_text || '')}" placeholder="Share your build"></label>
         <label class="field-in">Button link (optional) <input name="cta_url" maxlength="200" value="${esc(c.cta_url || '')}" placeholder="stories.html"></label>
+        <div class="field-in wide">Image (optional)
+          <div class="btns" style="margin-top:0"><input name="image" maxlength="400" placeholder="Image link, or upload →" value="${esc(c.image || '')}" style="flex:1">
+          <button class="ib" type="button" data-upload="image">Upload</button></div>
+          <small>Shown on the hero card and the shareable image.</small></div>
       </div><div class="btns"><button class="tw-btn tw-btn-orange" type="submit">Save challenge</button>
         <a class="ib" href="index.html" target="_blank" rel="noopener">View homepage</a></div></form></div>`;
-  const f = $('chf'); watch(f);
+  const f = $('chf'); watch(f); wireUploads(f);
   f.onsubmit = async e => {
     e.preventDefault();
     const data = { active: f.active.checked, week: f.week.value.trim(), headline: f.headline.value.trim(),
-      body: f.body.value.trim(), cta_text: f.cta_text.value.trim(), cta_url: f.cta_url.value.trim() };
+      body: f.body.value.trim(), image: f.image.value.trim(), cta_text: f.cta_text.value.trim(), cta_url: f.cta_url.value.trim() };
     if (!data.headline) return toast('Add a challenge headline.');
     try {
       must(await db().from('site_content').upsert({ key: 'tinker_challenge', data }).select('key').single());

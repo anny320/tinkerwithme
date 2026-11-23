@@ -18,6 +18,7 @@ insert into public.site_content (key, data) values
     "week": "",
     "headline": "Build something that moves using only recycled parts",
     "body": "Bottle caps, cardboard, an old motor — anything. Snap a photo or video of your maker creation and share it!",
+    "image": "",
     "cta_text": "Share your build",
     "cta_url": "stories.html"
   }$j$::jsonb)
