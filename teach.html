@@ -616,6 +616,7 @@ function wireUploads(form) {
         if (up.error) throw new Error(up.error.message);
         const url = db().storage.from('lms-media').getPublicUrl(path).data.publicUrl;
         if (b.dataset.upload === 'cover') form.cover_url.value = url;
+        else if (form[b.dataset.upload] && form[b.dataset.upload].tagName === 'INPUT') form[b.dataset.upload].value = url;
         else {
           const ta = form[b.dataset.upload], at = ta.selectionStart ?? ta.value.length;
           const snippet = `\n![${file.name.replace(/\.[^.]+$/, '')}](${url})\n`;
