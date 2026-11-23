@@ -104,6 +104,7 @@
   }
 </style>
 <script src="analytics.js"></script>
+<script src="price.js"></script>
 </head>
 <body>
 <nav class="tw-nav" id="nav">
@@ -129,6 +130,7 @@
     <span class="tw-eyebrow-pill">For schools, camps, hotels &amp; groups</span>
     <h1 class="tw-h1">Build a group session &amp; get a quote</h1>
     <p>Pick a track, how long and how many learners — we'll assemble a session outline and an instant indicative price. Planning for one child instead? <a href="picker.html">Use the family planner &rarr;</a></p>
+    <p id="cur-row" style="margin-top:.7rem;font-size:14px;color:var(--text-2)"></p>
   </div>
 </header>
 
@@ -249,7 +251,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   "use strict";
   var $ = function(id){ return document.getElementById(id); };
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
-  var fmt = function(n){ return 'KES ' + Math.round(n).toLocaleString(); };
+  var fmt = function(n){ return (window.TWPrice ? TWPrice.fmt(Math.round(n)) : 'KES ' + Math.round(n).toLocaleString()); };
+  var curLabel = function(){ return (window.TWPrice && TWPrice.currency === 'USD') ? 'US$' : 'KES'; };
   var WA = 'https://wa.me/254117784724';
 
   // Pricing — defaults; overridden by site_content 'group_quote_pricing' (edited in teach.html → Prices).
@@ -391,25 +394,39 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
     // Schools pay per term, so the full-year club is invoiced one term at a time.
     var div = d.isYear ? 3 : 1;
-    var uUnit = d.rate/div, uBase = d.base/div, uDisc = (d.base-d.afterDisc)/div, uKits = (d.total-d.afterDisc)/div, uTotal = d.total/div;
+    // Compute line items in the active currency so the invoice arithmetic is consistent.
+    var usd = !!(window.TWPrice && TWPrice.currency === 'USD');
+    var sym = usd ? 'US$' : 'KES';
+    var m = function(n){ return sym + ' ' + Math.round(n).toLocaleString(); };
+    var unit, base, disc, kits, total, yearTot;
+    if(usd){
+      unit = TWPrice.usdFor(d.rate/div);
+      base = unit * d.kids;
+      disc = d.discountOn ? Math.round(base * CFG.discount_pct/100) : 0;
+      var afterU = base - disc;
+      kits = d.kitsOn ? Math.round(afterU * CFG.kits_pct/100) : 0;
+      total = afterU + kits; yearTot = total * div;
+    } else {
+      unit = d.rate/div; base = d.base/div; disc = (d.base-d.afterDisc)/div; kits = (d.total-d.afterDisc)/div; total = d.total/div; yearTot = d.total;
+    }
 
     var rows='';
     var descDur = d.isYear ? DUR_LABEL[d.dur]+' · billed per term — Term 1 of 3 (~8 sessions/term, 1 hr each)'
                 : d.isTerm ? DUR_LABEL[d.dur]+' · 8 weekly sessions, 1 hr each'
                 : DUR_LABEL[d.dur];
-    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+fmt(uUnit)+'</td><td class="n">'+fmt(uBase)+'</td></tr>';
-    if(d.discountOn) rows+='<tr><td>Group discount ('+CFG.discount_pct+'% off, more than '+CFG.discount_min+' learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+fmt(uDisc)+'</td></tr>';
-    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied ('+CFG.kits_pct+'%)</td><td class="n"></td><td class="n"></td><td class="n">+'+fmt(uKits)+'</td></tr>';
+    rows+='<tr><td>'+esc(trackLabel())+' group session — '+descDur+' ('+esc(state.age)+' yrs)</td><td class="n">'+d.kids+'</td><td class="n">'+m(unit)+'</td><td class="n">'+m(base)+'</td></tr>';
+    if(d.discountOn) rows+='<tr><td>Group discount ('+CFG.discount_pct+'% off, more than '+CFG.discount_min+' learners)</td><td class="n"></td><td class="n"></td><td class="n">&minus;'+m(disc)+'</td></tr>';
+    if(d.kitsOn) rows+='<tr><td>Electronics kits supplied ('+CFG.kits_pct+'%)</td><td class="n"></td><td class="n"></td><td class="n">+'+m(kits)+'</td></tr>';
 
     var notes=[];
     notes.push(d.trainers+' trainer'+(d.trainers===1?'':'s')+(d.isClub?' per session (1 per ~'+d.ratio+' learners), across '+(d.isYear?'~24 weekly sessions (3 terms)':'8 weekly sessions')+'.':' on the day (1 per ~'+d.ratio+' learners).'));
-    if(d.isYear) notes.push('Full-year programme: 3 terms, billed each term — this proforma covers one term. Full-year total ≈ '+fmt(d.total)+'.');
+    if(d.isYear) notes.push('Full-year programme: 3 terms, billed each term — this proforma covers one term. Full-year total ≈ '+m(yearTot)+'.');
     if(d.kids>CFG.capacity){
       if(d.isClub) notes.push('Over '+CFG.capacity+' learners — delivered as parallel club groups.');
       else notes.push('Over our '+CFG.capacity+'-learner single-session capacity — delivered across '+Math.ceil(d.kids/CFG.capacity)+' days/sessions.');
     }
     notes.push((d.outside?'This project is outside Nairobi. ':'')+'For projects outside Nairobi, transport and logistics costs are costed separately, shared as a written estimate, and are payable before the agreement is signed.');
-    notes.push('Prices in KES, inclusive. This is a proforma (quotation), not a tax invoice.');
+    notes.push('Prices in '+sym+', inclusive. This is a proforma (quotation), not a tax invoice.'+(usd?' Payment is settled in KES at the prevailing rate.':''));
 
     $('proforma').innerHTML =
       '<div class="pf-top"><img src="assets/logo.jpg" alt="Tinkerwith">'
@@ -418,8 +435,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       + '<div><b>Audience:</b> '+esc(audLabel())+'</div><div><b>Learners:</b> '+d.kids+'</div></div>'
       + '<div class="pf-parties"><div><h4>From</h4><b>Wakara Technologies Limited</b><br>Tinkerwith_ · tinkerwith.me<br>tinkerwithanne@gmail.com<br>WhatsApp +254 117 784 724</div>'
       + '<div><h4>Prepared for</h4><b>'+esc(billName)+'</b>'+(billTo?'<br>'+billTo:'')+'</div></div>'
-      + '<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Unit (KES)</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody></table>'
-      + '<div class="pf-total"><span>Total'+(d.isYear?' (per term)':'')+'</span><span>'+fmt(uTotal)+'</span></div>'
+      + '<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Unit ('+sym+')</th><th class="n">Amount</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div class="pf-total"><span>Total'+(d.isYear?' (per term)':'')+'</span><span>'+m(total)+'</span></div>'
       + '<div class="pf-valid">Valid until '+validStr+'</div>'
       + '<div class="pf-pay"><b>Payment:</b> M-Pesa Till <b>3022049</b> (Wakara Technologies) · bank transfer or card — details on request.</div>'
       + '<div class="pf-note">'+notes.map(esc).join('<br>')+'</div>'
@@ -477,6 +494,13 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
   applyCfg();
   render();
+
+  // Currency: KES in Kenya, US$ elsewhere (price.js), with a switcher. Re-render on change.
+  if(window.TWPrice){
+    var curRow = function(){ var c=$('cur-row'); if(c) c.innerHTML = 'Prices shown in ' + TWPrice.switcher(); };
+    curRow();
+    document.addEventListener('tw:currency', function(){ curRow(); applyCfg(); render(); });
+  }
 
   // Load configurable pricing from site_content (falls back to the defaults above on any error).
   (function(){
