@@ -426,7 +426,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       else notes.push('Over our '+CFG.capacity+'-learner single-session capacity — delivered across '+Math.ceil(d.kids/CFG.capacity)+' days/sessions.');
     }
     notes.push((d.outside?'This project is outside Nairobi. ':'')+'For projects outside Nairobi, transport and logistics costs are costed separately, shared as a written estimate, and are payable before the agreement is signed.');
-    notes.push('Prices in '+sym+', inclusive. This is a proforma (quotation), not a tax invoice.'+(usd?' Payment is settled in KES at the prevailing rate.':''));
+    notes.push('Prices in '+sym+', inclusive. This is a proforma (quotation), not a tax invoice.'+(usd?' USD amounts are indicative; billing is in KES, converted at the exchange rate on the payment date, so the final amount may vary slightly.':''));
 
     $('proforma').innerHTML =
       '<div class="pf-top"><img src="assets/logo.jpg" alt="Tinkerwith">'
