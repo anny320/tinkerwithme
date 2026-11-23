@@ -119,7 +119,7 @@
   <div class="tw-container">
     <div id="gate"><p class="loading">Loading&hellip;</p></div>
     <div id="app" hidden>
-      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#prices" id="t-prices">Prices</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="#schools" id="t-schools">Schools</a><a href="learn.html">View the site &rarr;</a></nav>
+      <nav class="tabs"><a href="#courses" id="t-courses">Courses</a><a href="#prices" id="t-prices">Prices</a><a href="#challenge" id="t-challenge">Challenge</a><a href="#students" id="t-students">Students</a><a href="#payments" id="t-payments">Payments</a><a href="#leads" id="t-leads">Leads</a><a href="#builds" id="t-builds">Builds</a><a href="#curriculums" id="t-curriculums">Curriculums</a><a href="#timetable" id="t-timetable">Timetable</a><a href="#schools" id="t-schools">Schools</a><a href="learn.html">View the site &rarr;</a></nav>
       <div id="view"></div>
     </div>
   </div>
@@ -218,11 +218,11 @@ function route() {
   dirty = false;
   $('view').onclick = null;
   const h = location.hash;
-  const tab = ['prices', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].find(t => h.startsWith('#' + t)) || 'courses';
-  ['courses', 'prices', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
+  const tab = ['prices', 'challenge', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].find(t => h.startsWith('#' + t)) || 'courses';
+  ['courses', 'prices', 'challenge', 'students', 'payments', 'leads', 'builds', 'curriculums', 'timetable', 'schools'].forEach(t => $('t-' + t).classList.toggle('cur', t === tab));
   payCount(); leadCount(); buildsCount(); studentCount();
   const m = h.match(/^#course=([0-9a-f-]{36}|new)$/), ml = h.match(/^#lesson=([0-9a-f-]{36}|new:[0-9a-f-]{36})$/);
-  const go = tab === 'prices' ? prices() : tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : tab === 'schools' ? schools() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
+  const go = tab === 'prices' ? prices() : tab === 'challenge' ? challenge() : tab === 'students' ? students() : tab === 'payments' ? payments() : tab === 'leads' ? leads() : tab === 'builds' ? builds() : tab === 'curriculums' ? curriculums() : tab === 'timetable' ? timetable() : tab === 'schools' ? schools() : m ? courseEditor(m[1]) : ml ? lessonEditor(ml[1]) : courseList();
   go.catch(e => { $('view').innerHTML = `<div class="notice err">${esc(e.message)}</div>`; });
   scrollTo(0, 0);
 }
@@ -323,6 +323,38 @@ async function prices() {
     } catch (err) {
       toast(/violates|check|constraint/i.test(err.message)
         ? 'Run supabase/group-quote-pricing.sql once to allow this setting, then save again.' : err.message);
+    }
+  };
+}
+
+/* ── This week's Tinker Challenge (homepage hero corner) ── */
+async function challenge() {
+  $('view').innerHTML = '<p class="loading">Loading…</p>';
+  const row = must(await db().from('site_content').select('data').eq('key', 'tinker_challenge').maybeSingle());
+  const c = Object.assign({ active: true, week: '', headline: '', body: '', cta_text: '', cta_url: '' }, (row && row.data) || {});
+  $('view').innerHTML = `
+    <div class="panel box"><h2>This week&rsquo;s Tinker Challenge</h2>
+      <p class="muted" style="margin:-6px 0 12px;font-size:14.5px">Shows in a corner of the homepage hero, with Share + Save-image buttons for socials. Untick &ldquo;Show&rdquo; to hide the card. Saves go live immediately.</p>
+      <form id="chf"><div class="grid2">
+        <label class="check wide"><input type="checkbox" name="active" ${c.active !== false ? 'checked' : ''}> Show on the homepage</label>
+        <label class="field-in">Date label (optional) <input name="week" maxlength="40" value="${esc(c.week || '')}" placeholder="e.g. 24 Nov — leave blank for none"></label>
+        <label class="field-in wide">Challenge headline <input name="headline" maxlength="120" value="${esc(c.headline || '')}" placeholder="Build something that moves using only recycled parts"></label>
+        <label class="field-in wide">Details <textarea name="body" maxlength="400" placeholder="One or two lines of instructions / encouragement.">${esc(c.body || '')}</textarea></label>
+        <label class="field-in">Button text (optional) <input name="cta_text" maxlength="40" value="${esc(c.cta_text || '')}" placeholder="Share your build"></label>
+        <label class="field-in">Button link (optional) <input name="cta_url" maxlength="200" value="${esc(c.cta_url || '')}" placeholder="stories.html"></label>
+      </div><div class="btns"><button class="tw-btn tw-btn-orange" type="submit">Save challenge</button>
+        <a class="ib" href="index.html" target="_blank" rel="noopener">View homepage</a></div></form></div>`;
+  const f = $('chf'); watch(f);
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const data = { active: f.active.checked, week: f.week.value.trim(), headline: f.headline.value.trim(),
+      body: f.body.value.trim(), cta_text: f.cta_text.value.trim(), cta_url: f.cta_url.value.trim() };
+    if (!data.headline) return toast('Add a challenge headline.');
+    try {
+      must(await db().from('site_content').upsert({ key: 'tinker_challenge', data }).select('key').single());
+      dirty = false; toast('Saved ✓ — live on the homepage');
+    } catch (err) {
+      toast(/violates|check|constraint/i.test(err.message) ? 'Run supabase/tinker-challenge.sql once to allow this, then save again.' : err.message);
     }
   };
 }

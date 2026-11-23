@@ -1,0 +1,9 @@
+{
+  "_comment": "This week's Tinker Challenge, shown in the homepage hero corner. Edited in teach.html → Challenge (saved to Supabase site_content key 'tinker_challenge'); this file is the offline fallback and default. Set active:false to hide the card.",
+  "active": true,
+  "week": "",
+  "headline": "Build something that moves using only recycled parts",
+  "body": "Bottle caps, cardboard, an old motor — anything. Snap a photo or video of your maker creation and share it!",
+  "cta_text": "Share your build",
+  "cta_url": "stories.html"
+}
