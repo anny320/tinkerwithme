@@ -1,39 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Learn what AI is, then build your own</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><title>Get to know AI: how it sees, chats, creates and learns</title>
 <rect width="800" height="450" fill="#fff"/>
-<text x="400" y="40" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Learn what AI is — then build your own</text>
+<text x="400" y="42" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="26" fill="#220111">Get to know AI: see, chat, create &amp; learn</text>
 
-<!-- Panel 1: What is AI? (a friendly AI brain) -->
-<g>
-  <rect x="64" y="150" width="180" height="170" rx="14" fill="#E7F0FB" stroke="#220111" stroke-width="2.5"/>
-  <rect x="124" y="196" width="60" height="52" rx="12" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
-  <circle cx="141" cy="220" r="7" fill="#fff"/><circle cx="167" cy="220" r="7" fill="#fff"/>
-  <line x1="154" y1="180" x2="154" y2="196" stroke="#220111" stroke-width="2.5"/><circle cx="154" cy="176" r="6" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
-  <line x1="124" y1="214" x2="110" y2="214" stroke="#220111" stroke-width="2.5"/><line x1="184" y1="214" x2="198" y2="214" stroke="#220111" stroke-width="2.5"/>
-  <text x="154" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">What is AI?</text>
+<!-- spokes (behind nodes) -->
+<g stroke="#220111" stroke-width="2.5">
+  <line x1="400" y1="250" x2="214" y2="168"/>
+  <line x1="400" y1="250" x2="586" y2="168"/>
+  <line x1="400" y1="250" x2="214" y2="332"/>
+  <line x1="400" y1="250" x2="586" y2="332"/>
 </g>
 
-<line x1="252" y1="235" x2="306" y2="235" stroke="#220111" stroke-width="3"/><path d="M297 229 L306 235 L297 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- centre: AI -->
+<rect x="352" y="214" width="96" height="74" rx="18" fill="#FF7F32" stroke="#220111" stroke-width="3"/>
+<text x="400" y="263" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="800" font-size="30" fill="#fff">AI</text>
 
-<!-- Panel 2: Build a chatbot -->
-<g>
-  <rect x="314" y="150" width="172" height="170" rx="14" fill="#FFEDE0" stroke="#220111" stroke-width="2.5"/>
-  <path d="M344 186 h112 a10 10 0 0 1 10 10 v40 a10 10 0 0 1 -10 10 h-58 l-18 18 v-18 h-36 a10 10 0 0 1 -10 -10 v-40 a10 10 0 0 1 10 -10 z" fill="#fff" stroke="#220111" stroke-width="2.5" stroke-linejoin="round"/>
-  <circle cx="372" cy="216" r="6" fill="#FF7F32"/><circle cx="400" cy="216" r="6" fill="#FF7F32"/><circle cx="428" cy="216" r="6" fill="#FF7F32"/>
-  <text x="400" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Build a chatbot</text>
-</g>
+<!-- See (vision) -->
+<circle cx="214" cy="168" r="46" fill="#7FB3E0" stroke="#220111" stroke-width="2.5"/>
+<ellipse cx="214" cy="168" rx="26" ry="15" fill="#fff" stroke="#220111" stroke-width="2.5"/>
+<circle cx="214" cy="168" r="7" fill="#220111"/>
+<text x="214" y="238" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Sees</text>
 
-<line x1="494" y1="235" x2="548" y2="235" stroke="#220111" stroke-width="3"/><path d="M539 229 L548 235 L539 241" fill="none" stroke="#220111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- Chat -->
+<circle cx="586" cy="168" r="46" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
+<path d="M560 152 h52 a8 8 0 0 1 8 8 v18 a8 8 0 0 1 -8 8 h-28 l-14 13 v-13 h-10 a8 8 0 0 1 -8 -8 v-18 a8 8 0 0 1 8 -8 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<g fill="#220111"><circle cx="572" cy="169" r="3.3"/><circle cx="586" cy="169" r="3.3"/><circle cx="600" cy="169" r="3.3"/></g>
+<text x="586" y="238" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Chats</text>
 
-<!-- Panel 3: Train an AI (examples -> model) -->
-<g>
-  <rect x="556" y="150" width="180" height="170" rx="14" fill="#F0F7DE" stroke="#220111" stroke-width="2.5"/>
-  <rect x="578" y="188" width="40" height="30" rx="5" fill="#fff" stroke="#220111" stroke-width="2"/>
-  <rect x="578" y="226" width="40" height="30" rx="5" fill="#fff" stroke="#220111" stroke-width="2"/>
-  <circle cx="686" cy="222" r="28" fill="#84BD00" stroke="#220111" stroke-width="2.5"/>
-  <path d="M676 222 l7 7 l14 -16" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <line x1="620" y1="203" x2="656" y2="216" stroke="#220111" stroke-width="2.5"/><line x1="620" y1="241" x2="656" y2="228" stroke="#220111" stroke-width="2.5"/>
-  <text x="662" y="300" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="14" fill="#220111">Train your own AI</text>
-</g>
+<!-- Create -->
+<circle cx="214" cy="332" r="46" fill="#FFD23F" stroke="#220111" stroke-width="2.5"/>
+<path d="M214 306 l6 16 l16 6 l-16 6 l-6 16 l-6 -16 l-16 -6 l16 -6 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="214" y="402" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Creates</text>
 
-<text x="400" y="406" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="15" fill="#6E5F56">From "what is AI?" to building a chatbot and training a model yourself.</text>
+<!-- Learn (mortarboard) -->
+<circle cx="586" cy="332" r="46" fill="#004C97" stroke="#220111" stroke-width="2.5"/>
+<path d="M586 314 l30 12 l-30 12 l-30 -12 z" fill="#fff" stroke="#220111" stroke-width="2.3" stroke-linejoin="round"/>
+<path d="M568 333 v14 c0 6 36 6 36 0 v-14" fill="none" stroke="#fff" stroke-width="2.3"/>
+<line x1="616" y1="326" x2="616" y2="344" stroke="#fff" stroke-width="2.3"/>
+<text x="586" y="402" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="700" font-size="15" fill="#220111">Learns</text>
+
+<text x="400" y="330" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-weight="500" font-size="14" fill="#6E5F56">The big ideas, for curious beginners.</text>
 </svg>
