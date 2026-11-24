@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinkerwith_ · Circuit Lab</title>
+<meta name="description" content="A free browser Arduino simulator for kids. Pick a lesson, change the numbers in the code, and watch the circuit light up live — no board needed.">
+<link rel="canonical" href="https://tinkerwith.me/circuit-lab/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FF7F32;--orange-deep:#E0641B;--orange-soft:#FFEDE0;
+    --green:#84BD00;--green-deep:#5E8700;--green-soft:#F0F7DE;
+    --blue:#004C97;--blue-soft:#E2EBF5;
+    --ink:#220111;--ink-deep:#160009;
+    --cream:#F7F3F0;--cream-dim:#EDE6E0;--white:#fff;
+    --text:#220111;--text-2:#5A4A50;--text-3:#A89E97;
+    --border:rgba(34,1,17,0.10);--border-strong:rgba(34,1,17,0.20);
+    --font-display:'Jost','Futura','Century Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --font-mono:'Space Mono','SFMono-Regular',Menlo,Consolas,monospace;
+    --radius:18px;--radius-sm:12px;--radius-pill:99px;
+    --shadow:0 1px 2px rgba(34,1,17,.04),0 10px 28px -14px rgba(34,1,17,.20);
+    --shadow-lg:0 2px 4px rgba(34,1,17,.05),0 26px 56px -24px rgba(34,1,17,.30);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:var(--font-display);background:var(--cream);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+  /* ── Nav ── */
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:12px 16px;background:var(--ink)}
+  .nav a.brand{color:#fff;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:.2px}
+  .nav a.back{color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;font-weight:500}
+  .nav a.back:hover{color:#fff}
+
+  /* ── Hero ── */
+  .hero{padding:28px 16px 8px;max-width:1180px;margin:0 auto}
+  .kicker{display:inline-block;background:var(--orange-soft);color:var(--orange-deep);font-weight:700;font-size:12px;letter-spacing:.6px;text-transform:uppercase;padding:5px 12px;border-radius:var(--radius-pill)}
+  h1{font-size:clamp(28px,5vw,44px);font-weight:700;line-height:1.05;margin:12px 0 8px}
+  .hero p{color:var(--text-2);max-width:62ch;font-size:16px}
+
+  /* ── Lesson tabs ── */
+  .lessons{max-width:1180px;margin:18px auto 0;padding:0 16px;display:flex;gap:10px;flex-wrap:wrap}
+  .lesson-btn{border:1.5px solid var(--border-strong);background:var(--white);color:var(--text);font-family:var(--font-display);font-weight:600;font-size:14px;padding:9px 16px;border-radius:var(--radius-pill);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+  .lesson-btn:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .lesson-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .lesson-btn .dot{width:9px;height:9px;border-radius:50%;background:var(--orange)}
+  .lesson-btn.active .dot{background:var(--green)}
+
+  /* ── Layout ── */
+  .stage{max-width:1180px;margin:18px auto 48px;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  @media(max-width:860px){.stage{grid-template-columns:1fr}}
+
+  .panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:linear-gradient(0deg,var(--cream),var(--white))}
+  .panel-head h2{font-size:14px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-2)}
+  .panel-body{padding:16px}
+
+  /* ── Scene ── */
+  #scene{width:100%;height:auto;display:block;background:radial-gradient(120% 120% at 50% 0%,#fbf8f5,#efe9e4);border-radius:var(--radius-sm)}
+  .lesson-blurb{margin-top:14px;font-size:14px;color:var(--text-2);background:var(--blue-soft);border-radius:var(--radius-sm);padding:12px 14px;border-left:3px solid var(--blue)}
+  .lesson-blurb b{color:var(--blue)}
+
+  /* ── Controls ── */
+  .controls{display:flex;gap:10px;align-items:center}
+  .btn{font-family:var(--font-display);font-weight:700;font-size:13px;border:none;border-radius:var(--radius-pill);padding:8px 16px;cursor:pointer;transition:transform .12s,filter .15s;display:inline-flex;align-items:center;gap:7px}
+  .btn:active{transform:scale(.96)}
+  .btn-run{background:var(--green);color:#fff}
+  .btn-run.paused{background:var(--orange)}
+  .btn-reset{background:var(--cream-dim);color:var(--text)}
+
+  /* ── Code ── */
+  .code-wrap{background:#1b0d14;border-radius:var(--radius-sm);padding:16px 14px;overflow-x:auto}
+  pre.code{font-family:var(--font-mono);font-size:13px;line-height:1.75;color:#e9dfe4;white-space:pre;margin:0;tab-size:2}
+  .code .kw{color:#ff9d5c}
+  .code .fn{color:#9fd356}
+  .code .cm{color:#7c6670;font-style:italic}
+  .code .str{color:#ffd48a}
+  .val-input{font-family:var(--font-mono);font-size:13px;font-weight:700;color:#1b0d14;background:#ffd48a;border:none;border-radius:6px;padding:1px 7px;width:6.5ch;text-align:center;cursor:pointer;outline:2px solid transparent;transition:outline .12s;-moz-appearance:textfield;appearance:textfield}
+  .val-input::-webkit-outer-spin-button,.val-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .val-input.text{width:auto;min-width:8ch}
+  .val-input:focus{outline:2px solid var(--green)}
+  .val-input:hover{filter:brightness(1.05)}
+
+  /* ── Sliders ── */
+  .params{margin-top:16px;display:grid;gap:14px}
+  .param{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+  .param label{font-size:13px;font-weight:600;color:var(--text)}
+  .param .pval{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--orange-deep);text-align:right}
+  .param input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--orange);height:22px}
+  .param input[type=text]{grid-column:1/-1;font-family:var(--font-mono);font-size:14px;padding:8px 10px;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm)}
+
+  .hint{font-size:12.5px;color:var(--text-3);margin-top:16px;text-align:center}
+  .footer{max-width:1180px;margin:0 auto;padding:24px 16px 40px;color:var(--text-3);font-size:13px;text-align:center}
+  .footer a{color:var(--orange-deep)}
+  .serial{margin-top:12px;background:#0f0a0c;border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:#9fd356;min-height:40px;max-height:90px;overflow-y:auto}
+  .serial .muted{color:#5f5057}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">Tinkerwith_</a>
+  <a class="back" href="/courses.html#arduino">← All Arduino courses</a>
+</nav>
+
+<header class="hero">
+  <span class="kicker">Circuit Lab · Free</span>
+  <h1>Build an Arduino circuit in your browser</h1>
+  <p>Pick a project, then <b>tap the yellow numbers</b> in the code to change them. The circuit reacts instantly — no board, no wires, no setup. When you're ready, the same code runs on a real Arduino.</p>
+</header>
+
+<div class="lessons" id="lessons"></div>
+
+<main class="stage">
+  <!-- LEFT: live circuit -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Live circuit</h2>
+      <div class="controls">
+        <button class="btn btn-run" id="runBtn">▶ Running</button>
+        <button class="btn btn-reset" id="resetBtn">↺ Reset</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <svg id="scene" viewBox="0 0 520 340" role="img" aria-label="Arduino circuit">
+        <!-- Breadboard -->
+        <rect x="40" y="210" width="440" height="110" rx="10" fill="#f3ead9" stroke="#d8c9a8"/>
+        <line x1="40" y1="238" x2="480" y2="238" stroke="#e05b5b" stroke-width="2" opacity=".5"/>
+        <line x1="40" y1="292" x2="480" y2="292" stroke="#3b6fd4" stroke-width="2" opacity=".5"/>
+
+        <!-- Arduino board -->
+        <rect x="150" y="26" width="220" height="150" rx="12" fill="#0b6b6b" stroke="#064d4d"/>
+        <rect x="150" y="26" width="220" height="150" rx="12" fill="none" stroke="#2fd3d3" stroke-width="1" opacity=".25"/>
+        <rect x="168" y="44" width="50" height="34" rx="4" fill="#0a3a3a"/>
+        <text x="193" y="65" fill="#7fe8e8" font-size="9" font-family="monospace" text-anchor="middle">UNO</text>
+        <rect x="300" y="50" width="48" height="48" rx="3" fill="#111"/>
+        <text x="324" y="78" fill="#555" font-size="7" font-family="monospace" text-anchor="middle">ATmega</text>
+        <!-- USB -->
+        <rect x="134" y="52" width="22" height="30" rx="2" fill="#bbb"/>
+        <!-- pin header labels -->
+        <text x="360" y="40" fill="#bdeeee" font-size="8" font-family="monospace" text-anchor="end">DIGITAL ~</text>
+
+        <!-- Onboard LED (pin 13) -->
+        <g id="ledBoard"><circle cx="330" cy="120" r="7" fill="#3a1f10"/><text x="330" y="142" fill="#bdeeee" font-size="8" font-family="monospace" text-anchor="middle">L</text></g>
+
+        <!-- Wires to breadboard -->
+        <path id="wireRed" d="M360,150 C400,180 420,190 420,238" fill="none" stroke="#e05b5b" stroke-width="3" opacity=".7"/>
+        <path id="wireYellow" d="M345,150 C370,185 350,195 350,238" fill="none" stroke="#f0b429" stroke-width="3" opacity=".7"/>
+        <path id="wireGreen" d="M330,150 C300,185 280,195 280,238" fill="none" stroke="#84BD00" stroke-width="3" opacity=".7"/>
+
+        <!-- External LEDs on breadboard -->
+        <g id="ledRed" class="ext-led"><circle cx="420" cy="238" r="12" fill="#5a1414"/></g>
+        <g id="ledYellow" class="ext-led"><circle cx="350" cy="238" r="12" fill="#5a4a14"/></g>
+        <g id="ledGreen" class="ext-led"><circle cx="280" cy="238" r="12" fill="#2d4d14"/></g>
+
+        <!-- OLED display -->
+        <g id="oledWrap">
+          <rect x="52" y="214" width="150" height="86" rx="6" fill="#111"/>
+          <foreignObject x="60" y="222" width="134" height="70">
+            <canvas xmlns="http://www.w3.org/1999/xhtml" id="oled" width="128" height="64" style="width:134px;height:70px;image-rendering:pixelated;border-radius:3px;background:#001018"></canvas>
+          </foreignObject>
+          <text x="127" y="314" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">SSD1306 OLED · 128×64</text>
+        </g>
+      </svg>
+
+      <div class="serial" id="serial"><span class="muted">Serial Monitor</span></div>
+      <div class="lesson-blurb" id="blurb"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: code + controls -->
+  <section class="panel">
+    <div class="panel-head"><h2>Your Arduino code</h2><span id="lessonName" style="font-size:13px;color:var(--text-3);font-weight:600"></span></div>
+    <div class="panel-body">
+      <div class="code-wrap"><pre class="code" id="code"></pre></div>
+      <div class="params" id="params"></div>
+      <p class="hint">Tip: the yellow boxes in the code and the sliders below are the same values — change either one.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  Circuit Lab is a free teaching tool from <a href="/">Tinkerwith_</a>. Works on any computer or tablet — nothing to install.
+</footer>
+
+<script>
+"use strict";
+/* ─────────────────────────────────────────────
+   Circuit Lab — tiny Arduino behaviour simulator
+   Pre-baked lessons; kids edit the numbers.
+   No compiler, no external libraries. Fully static.
+   To add a lesson: push an object to LESSONS.
+   ───────────────────────────────────────────── */
+
+// Code token helpers for the syntax-highlighted, editable code block
+const kw  = t => ({t:'kw', v:t});
+const fn  = t => ({t:'fn', v:t});
+const cm  = t => ({t:'cm', v:t});
+const str = t => ({t:'str',v:t});
+const txt = t => ({t:'txt',v:t});
+const P   = key => ({t:'param', key});            // editable value chip
+
+const LESSONS = [
+  /* 1 ─ BLINK ─────────────────────────────── */
+  {
+    id:'blink',
+    name:'Blink an LED',
+    components:['ledBoard','ledRed','wireRed'],
+    blurb:'<b>Digital output.</b> The Arduino turns pin 13 on and off. Shorten the delays to make it blink faster — see how <code>delay()</code> controls time.',
+    params:{
+      onTime:{label:'LED on (ms)', min:50, max:2000, step:50, value:500},
+      offTime:{label:'LED off (ms)', min:50, max:2000, step:50, value:500}
+    },
+    code:p=>[
+      kw('void '),fn('setup'),txt('() {\n'),
+      txt('  '),fn('pinMode'),txt('(13, '),kw('OUTPUT'),txt(');\n'),
+      txt('}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),fn('digitalWrite'),txt('(13, '),kw('HIGH'),txt(');  '),cm('// LED on\n'),
+      txt('  '),fn('delay'),txt('('),P('onTime'),txt(');\n'),
+      txt('  '),fn('digitalWrite'),txt('(13, '),kw('LOW'),txt(');   '),cm('// LED off\n'),
+      txt('  '),fn('delay'),txt('('),P('offTime'),txt(');\n'),
+      txt('}')
+    ],
+    step(p,t){
+      const period = p.onTime + p.offTime;
+      const phase = t % period;
+      const on = phase < p.onTime;
+      return { leds:{ledBoard:on?1:0, ledRed:on?1:0}, serial: on ? 'LED: ON' : 'LED: OFF' };
+    }
+  },
+
+  /* 2 ─ BREATHING / PWM ───────────────────── */
+  {
+    id:'fade',
+    name:'Breathing LED',
+    components:['ledBoard','ledRed','wireRed'],
+    blurb:'<b>PWM — analog output.</b> Instead of just ON/OFF, <code>analogWrite()</code> sets brightness from 0–255. The LED smoothly fades like it\'s breathing.',
+    params:{
+      speed:{label:'Breathing speed', min:1, max:10, step:1, value:4},
+      maxBright:{label:'Max brightness (0–255)', min:30, max:255, step:5, value:255}
+    },
+    code:p=>[
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),cm('// fade up and down\n'),
+      txt('  '),kw('for '),txt('('),kw('int '),txt('b = 0; b <= '),P('maxBright'),txt('; b++) {\n'),
+      txt('    '),fn('analogWrite'),txt('(9, b);\n'),
+      txt('    '),fn('delay'),txt('('),P('speed'),txt(');\n'),
+      txt('  }\n'),
+      txt('  '),kw('for '),txt('('),kw('int '),txt('b = '),P('maxBright'),txt('; b >= 0; b--) {\n'),
+      txt('    '),fn('analogWrite'),txt('(9, b);\n'),
+      txt('    '),fn('delay'),txt('('),P('speed'),txt(');\n'),
+      txt('  }\n'),
+      txt('}')
+    ],
+    step(p,t){
+      // one full breath = up + down, scaled by speed
+      const cycle = (255/ p.speed) * 2 * 10;     // ms per full breath (approx, feels right)
+      const ph = (t % cycle) / cycle;            // 0..1
+      const tri = ph < .5 ? ph*2 : (1-ph)*2;     // triangle 0..1..0
+      const b = tri * p.maxBright;
+      return { leds:{ledBoard:b/255, ledRed:b/255}, serial:'brightness: '+Math.round(b) };
+    }
+  },
+
+  /* 3 ─ TRAFFIC LIGHT ─────────────────────── */
+  {
+    id:'traffic',
+    name:'Traffic light',
+    components:['ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen'],
+    blurb:'<b>Sequencing with 3 LEDs.</b> Real code runs top to bottom, then repeats. Change each light\'s time and watch the pattern shift — this is how real crossings work.',
+    params:{
+      greenTime:{label:'Green (ms)', min:300, max:4000, step:100, value:2000},
+      yellowTime:{label:'Yellow (ms)', min:200, max:2000, step:100, value:600},
+      redTime:{label:'Red (ms)', min:300, max:4000, step:100, value:2000}
+    },
+    code:p=>[
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),fn('setLights'),txt('('),kw('HIGH'),txt(', '),kw('LOW'),txt(', '),kw('LOW'),txt(');  '),cm('// red\n'),
+      txt('  '),fn('delay'),txt('('),P('redTime'),txt(');\n'),
+      txt('  '),fn('setLights'),txt('('),kw('LOW'),txt(', '),kw('LOW'),txt(', '),kw('HIGH'),txt(');  '),cm('// green\n'),
+      txt('  '),fn('delay'),txt('('),P('greenTime'),txt(');\n'),
+      txt('  '),fn('setLights'),txt('('),kw('LOW'),txt(', '),kw('HIGH'),txt(', '),kw('LOW'),txt(');  '),cm('// yellow\n'),
+      txt('  '),fn('delay'),txt('('),P('yellowTime'),txt(');\n'),
+      txt('}')
+    ],
+    step(p,t){
+      const total = p.redTime + p.greenTime + p.yellowTime;
+      const ph = t % total;
+      let r=0,y=0,g=0, label='';
+      if(ph < p.redTime){ r=1; label='RED — stop'; }
+      else if(ph < p.redTime + p.greenTime){ g=1; label='GREEN — go'; }
+      else { y=1; label='YELLOW — slow'; }
+      return { leds:{ledRed:r, ledYellow:y, ledGreen:g}, serial:label };
+    }
+  },
+
+  /* 4 ─ OLED COUNTER ──────────────────────── */
+  {
+    id:'oled',
+    name:'OLED screen',
+    components:['oledWrap'],
+    blurb:'<b>On-screen graphics.</b> This draws text and a counting number on a tiny OLED display. Change the message and the counting speed — the same library (Adafruit_GFX) runs on a real screen.',
+    params:{
+      message:{label:'Message on screen', type:'text', value:'TINKER!'},
+      step:{label:'Count by', min:1, max:25, step:1, value:1},
+      interval:{label:'Speed (ms per count)', min:100, max:1500, step:50, value:400}
+    },
+    code:p=>[
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  display.'),fn('clearDisplay'),txt('();\n'),
+      txt('  display.'),fn('setCursor'),txt('(0, 0);\n'),
+      txt('  display.'),fn('println'),txt('('),str('"'),P('message'),str('"'),txt(');\n'),
+      txt('  display.'),fn('setTextSize'),txt('(3);\n'),
+      txt('  display.'),fn('println'),txt('(count);\n'),
+      txt('  display.'),fn('display'),txt('();\n'),
+      txt('  count += '),P('step'),txt(';\n'),
+      txt('  '),fn('delay'),txt('('),P('interval'),txt(');\n'),
+      txt('}')
+    ],
+    step(p,t){
+      const count = Math.floor(t / p.interval) * p.step;
+      return { oled:{message:(p.message||'').toString().toUpperCase(), count}, serial:'count = '+count };
+    }
+  }
+];
+
+/* ── State ── */
+let current = LESSONS[0];
+let params = {};
+let running = true;
+let startTime = performance.now();
+
+/* ── DOM refs ── */
+const $ = s => document.querySelector(s);
+const scene = $('#scene');
+const codeEl = $('#code');
+const paramsEl = $('#params');
+const blurbEl = $('#blurb');
+const serialEl = $('#serial');
+const oled = $('#oled');
+const octx = oled.getContext('2d');
+
+/* ── Build lesson tabs ── */
+const lessonsBar = $('#lessons');
+LESSONS.forEach(l=>{
+  const b=document.createElement('button');
+  b.className='lesson-btn'; b.dataset.id=l.id;
+  b.innerHTML='<span class="dot"></span>'+l.name;
+  b.onclick=()=>selectLesson(l.id);
+  lessonsBar.appendChild(b);
+});
+
+function selectLesson(id){
+  current = LESSONS.find(l=>l.id===id);
+  params = {};
+  for(const k in current.params){ params[k] = current.params[k].value; }
+  startTime = performance.now();
+  $('#lessonName').textContent = current.name;
+  document.querySelectorAll('.lesson-btn').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  // show/hide scene components
+  ['ledBoard','ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen','oledWrap'].forEach(cid=>{
+    const el=document.getElementById(cid);
+    if(el) el.style.display = current.components.includes(cid) ? '' : 'none';
+  });
+  renderCode();
+  renderParams();
+  blurbEl.innerHTML = current.blurb;
+}
+
+/* ── Render code with inline editable value chips ── */
+function renderCode(){
+  codeEl.innerHTML='';
+  current.code(params).forEach(tok=>{
+    if(tok.t==='param'){
+      const def=current.params[tok.key];
+      const inp=document.createElement('input');
+      inp.className='val-input'+(def.type==='text'?' text':'');
+      inp.value=params[tok.key];
+      if(def.type!=='text'){ inp.type='number'; inp.min=def.min; inp.max=def.max; inp.step=def.step; }
+      inp.oninput=()=>{ setParam(tok.key, inp.value, false); };
+      codeEl.appendChild(inp);
+    } else {
+      const s=document.createElement('span');
+      if(tok.t!=='txt') s.className=tok.t;
+      s.textContent=tok.v;
+      codeEl.appendChild(s);
+    }
+  });
+}
+
+/* ── Render sliders / text inputs ── */
+function renderParams(){
+  paramsEl.innerHTML='';
+  for(const key in current.params){
+    const def=current.params[key];
+    const row=document.createElement('div'); row.className='param';
+    if(def.type==='text'){
+      const lab=document.createElement('label'); lab.textContent=def.label;
+      const inp=document.createElement('input'); inp.type='text'; inp.maxLength=12; inp.value=params[key];
+      inp.oninput=()=>setParam(key,inp.value,true);
+      row.appendChild(lab); row.appendChild(document.createElement('span')); row.appendChild(inp);
+    } else {
+      const lab=document.createElement('label'); lab.textContent=def.label;
+      const val=document.createElement('span'); val.className='pval'; val.id='pv-'+key; val.textContent=params[key];
+      const inp=document.createElement('input'); inp.type='range'; inp.min=def.min; inp.max=def.max; inp.step=def.step; inp.value=params[key];
+      inp.oninput=()=>setParam(key,inp.value,true);
+      row.appendChild(lab); row.appendChild(val); row.appendChild(inp);
+    }
+    paramsEl.appendChild(row);
+  }
+}
+
+/* ── Set a param from either the code chip or the slider, keep both in sync ── */
+function setParam(key,raw,fromSlider){
+  const def=current.params[key];
+  let v = def.type==='text' ? raw : Math.max(def.min, Math.min(def.max, Number(raw)||def.min));
+  params[key]=v;
+  // Keep the two controls (code chip + slider/text) in sync by re-rendering
+  // whichever one the edit did NOT come from. The edited control keeps focus.
+  if(fromSlider) renderCode();   // edit came from a slider/text field → refresh code chips
+  else renderParams();           // edit came from a code chip → refresh sliders
+}
+
+/* ── LED glow ── */
+const LED_COLORS={ledBoard:'#ff7043', ledRed:'#ff3b3b', ledYellow:'#ffd21f', ledGreen:'#8ee63f'};
+function setLed(id, level){
+  const g=document.getElementById(id); if(!g) return;
+  const c=g.querySelector('circle'); if(!c) return;
+  const col=LED_COLORS[id];
+  if(level>0.02){
+    c.setAttribute('fill', col);
+    c.style.filter=`drop-shadow(0 0 ${6+level*14}px ${col})`;
+    c.style.opacity=0.35+0.65*level;
+  } else {
+    c.setAttribute('fill', '#3a1f10');
+    c.style.filter='none';
+    c.style.opacity=1;
+  }
+}
+
+/* ── OLED drawing ── */
+function drawOled(data){
+  octx.fillStyle='#001018'; octx.fillRect(0,0,128,64);
+  if(!data){ return; }
+  octx.fillStyle='#39e6ff';
+  octx.textBaseline='top';
+  octx.font='bold 12px "Space Mono", monospace';
+  octx.fillText((data.message||'').slice(0,14), 2, 2);
+  octx.font='bold 34px "Space Mono", monospace';
+  octx.fillText(String(data.count), 2, 24);
+}
+
+/* ── Main loop ── */
+let lastSerial='';
+function frame(now){
+  if(running){
+    const t = now - startTime;
+    const out = current.step(params, t) || {};
+    // leds
+    ['ledBoard','ledRed','ledYellow','ledGreen'].forEach(id=>{
+      const lvl = out.leds && out.leds[id]!=null ? out.leds[id] : 0;
+      if(current.components.includes(id)) setLed(id, lvl);
+    });
+    // oled
+    if(current.components.includes('oledWrap')) drawOled(out.oled);
+    // serial
+    if(out.serial && out.serial!==lastSerial){
+      lastSerial=out.serial;
+      const line=document.createElement('div'); line.textContent='» '+out.serial;
+      serialEl.appendChild(line);
+      while(serialEl.children.length>6) serialEl.removeChild(serialEl.firstChild);
+      serialEl.scrollTop=serialEl.scrollHeight;
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ── Controls ── */
+$('#runBtn').onclick=function(){
+  running=!running;
+  this.textContent = running ? '▶ Running' : '⏸ Paused';
+  this.classList.toggle('paused', !running);
+  if(running){ /* keep timeline continuous */ }
+};
+$('#resetBtn').onclick=()=>{ startTime=performance.now(); serialEl.innerHTML='<span class="muted">Serial Monitor</span>'; lastSerial=''; };
+
+/* ── Go ── */
+selectLesson('blink');
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
