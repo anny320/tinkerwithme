@@ -247,6 +247,7 @@ const LESSONS = [
       txt('  '),fn('delay'),txt('('),P('onTime'),txt(');\n'),
       txt('  '),fn('digitalWrite'),txt('(13, '),kw('LOW'),txt(');   '),cm('// LED off\n'),
       txt('  '),fn('delay'),txt('('),P('offTime'),txt(');\n}')],
+    avr:{leds:[{pin:13,targets:['ledBoard','ledRed']}]},
     step(p,t){ const ph=t%(p.onTime+p.offTime), on=ph<p.onTime; return {leds:{ledBoard:on?1:0,ledRed:on?1:0}, serial:on?'LED: ON':'LED: OFF'}; } },
 
   { id:'fade', name:'Breathing LED', components:['ledBoard','ledRed','wireRed'],
@@ -259,6 +260,7 @@ const LESSONS = [
       txt('    '),fn('analogWrite'),txt('(9, b);\n    '),fn('delay'),txt('('),P('speed'),txt(');\n  }\n'),
       txt('  '),kw('for '),txt('('),kw('int '),txt('b = '),P('maxBright'),txt('; b >= 0; b--) {\n'),
       txt('    '),fn('analogWrite'),txt('(9, b);\n    '),fn('delay'),txt('('),P('speed'),txt(');\n  }\n}')],
+    avr:{leds:[{pin:9,targets:['ledBoard','ledRed'],pwm:true}]},
     step(p,t){ const cyc=(255/p.speed)*2*10, ph=(t%cyc)/cyc, tri=ph<.5?ph*2:(1-ph)*2, b=tri*p.maxBright; return {leds:{ledBoard:b/255,ledRed:b/255}, serial:'brightness: '+Math.round(b)}; } },
 
   { id:'traffic', name:'Traffic light', components:['ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen'],
@@ -272,6 +274,7 @@ const LESSONS = [
       txt('  '),fn('set'),txt('('),kw('LOW'),txt(','),kw('LOW'),txt(','),kw('HIGH'),txt(');  '),cm('// green\n  '),fn('delay'),txt('('),P('greenTime'),txt(');\n'),
       txt('  '),fn('set'),txt('('),kw('LOW'),txt(','),kw('HIGH'),txt(','),kw('LOW'),txt(');  '),cm('// yellow\n  '),fn('delay'),txt('('),P('yellowTime'),txt(');\n}\n\n'),
       kw('void '),fn('set'),txt('('),kw('int '),txt('r,'),kw('int '),txt('y,'),kw('int '),txt('g) {\n  '),fn('digitalWrite'),txt('(R,r); '),fn('digitalWrite'),txt('(Y,y); '),fn('digitalWrite'),txt('(G,g);\n}')],
+    avr:{leds:[{pin:13,targets:['ledRed']},{pin:12,targets:['ledYellow']},{pin:11,targets:['ledGreen']}]},
     step(p,t){ const tot=p.redTime+p.greenTime+p.yellowTime, ph=t%tot; let r=0,y=0,g=0,l=''; if(ph<p.redTime){r=1;l='RED — stop';} else if(ph<p.redTime+p.greenTime){g=1;l='GREEN — go';} else {y=1;l='YELLOW — slow';} return {leds:{ledRed:r,ledYellow:y,ledGreen:g}, serial:l}; } },
 
   { id:'oled', name:'OLED screen', components:['oledWrap'],
@@ -284,11 +287,12 @@ const LESSONS = [
       txt('  display.'),fn('println'),txt('('),str('"'),P('message'),str('"'),txt(');\n'),
       txt('  display.'),fn('setTextSize'),txt('(3);\n  display.'),fn('println'),txt('(count);\n  display.'),fn('display'),txt('();\n'),
       txt('  count += '),P('step'),txt(';\n  '),fn('delay'),txt('('),P('interval'),txt(');\n}')],
+    avr:{supported:false},
     step(p,t){ const count=Math.floor(t/p.interval)*p.step; return {oled:{message:(p.message||'').toString().toUpperCase(),count}, serial:'count = '+count}; } }
 ];
 
 /* ── State ── */
-let current=LESSONS[0], params={}, running=true, startTime=performance.now(), mode='guided', cm5=null, editorDirty=false;
+let current=LESSONS[0], params={}, running=true, startTime=performance.now(), mode='guided', cm5=null, editorDirty=false, engine='sim';
 
 const $=s=>document.querySelector(s);
 const codeEl=$('#code'), paramsEl=$('#params'), blurbEl=$('#blurb'), serialEl=$('#serial'), statusEl=$('#status');
@@ -299,6 +303,7 @@ const lessonsBar=$('#lessons');
 LESSONS.forEach(l=>{ const b=document.createElement('button'); b.className='lesson-btn'; b.dataset.id=l.id; b.innerHTML='<span class="dot"></span>'+l.name; b.onclick=()=>selectLesson(l.id); lessonsBar.appendChild(b); });
 
 function selectLesson(id){
+  stopAvr();
   current=LESSONS.find(l=>l.id===id); params={};
   for(const k in current.params) params[k]=current.params[k].value;
   startTime=performance.now(); editorDirty=false;
@@ -384,10 +389,74 @@ async function compileAndRun(){
   }catch(e){ setStatus('err','✗ Could not reach the compile backend.'); }
 }
 
-/* Integration point for real hex execution (avr8js, ATmega328P).
-   Wired once the backend is live and verified in a browser; until then
-   the built-in behaviour engine keeps the visuals running. */
-function runCompiledHex(hex){ running=true; startTime=performance.now(); /* TODO: avr8js.load(hex) → map PB5/PD… to LEDs */ }
+/* ── Live hex execution on a simulated ATmega328P (avr8js) ──────────────
+   Verified against avr8js 0.21.1 (Intel-HEX parse → CPU → port pin reads).
+   Guided mode always uses the behaviour engine above; compiled Code-mode
+   sketches run here. If avr8js can't load, we fall back to the preview. */
+const AVR8JS_URL='https://cdn.jsdelivr.net/npm/avr8js@0.21.1/+esm';
+let avrMod=null, avr=null, avrRAF=null, avrHex=null;
+
+function loadIntelHex(text, flash){
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim(); if(!line||line[0]!==':') continue;
+    const b=line.slice(1), len=parseInt(b.substr(0,2),16), addr=parseInt(b.substr(2,4),16), type=parseInt(b.substr(6,2),16);
+    let sum=0; for(let i=0;i<b.length;i+=2) sum=(sum+parseInt(b.substr(i,2),16))&0xff;
+    if(sum!==0) throw new Error('bad hex checksum');
+    if(type===1) break; if(type!==0) continue;
+    for(let i=0;i<len;i++) flash[addr+i]=parseInt(b.substr(8+i*2,2),16);
+  }
+}
+/* Uno digital pin → AVR port: D0–7=PD, D8–13=PB, A0–5(14–19)=PC */
+function pinPort(ports,pin){ if(pin<=7) return {p:ports.D,bit:pin}; if(pin<=13) return {p:ports.B,bit:pin-8}; return {p:ports.C,bit:pin-14}; }
+
+function stopAvr(){ if(avrRAF) cancelAnimationFrame(avrRAF); avrRAF=null; if(avr) avr.dead=true; avr=null; engine='sim'; }
+
+async function runCompiledHex(hex){
+  avrHex=hex;
+  if(current.avr && current.avr.supported===false){
+    stopAvr(); running=true; startTime=performance.now();
+    setStatus('ok','✓ Compiled. The OLED display isn\'t emulated yet — showing the built-in preview.'); return;
+  }
+  try{ if(!avrMod) avrMod=await import(AVR8JS_URL); }
+  catch(e){ stopAvr(); running=true; startTime=performance.now();
+    setStatus('ok','✓ Compiled, but the live engine could not load — showing the built-in preview.'); return; }
+  startAvr(hex);
+}
+
+function startAvr(hex){
+  if(avrRAF) cancelAnimationFrame(avrRAF); avrRAF=null;
+  const M=avrMod, flash=new Uint8Array(0x8000);
+  try{ loadIntelHex(hex, flash); }catch(e){ setStatus('err','✗ '+e.message); return; }
+  const cpu=new M.CPU(new Uint16Array(flash.buffer));
+  const ports={B:new M.AVRIOPort(cpu,M.portBConfig), C:new M.AVRIOPort(cpu,M.portCConfig), D:new M.AVRIOPort(cpu,M.portDConfig)};
+  new M.AVRTimer(cpu,M.timer0Config); new M.AVRTimer(cpu,M.timer1Config); new M.AVRTimer(cpu,M.timer2Config);
+  const usart=new M.AVRUSART(cpu,M.usart0Config,16e6);
+  let sbuf=''; usart.onByteTransmit=(byte)=>{ const ch=String.fromCharCode(byte);
+    if(ch==='\n'||sbuf.length>=40){ if(sbuf) pushSerial(sbuf); sbuf=(ch==='\n')?'':ch; } else if(ch!=='\r') sbuf+=ch; };
+  const duty={};
+  (current.avr.leds||[]).forEach(l=>{ if(l.pwm){ const {p,bit}=pinPort(ports,l.pin);
+    const d={high:0,start:cpu.cycles,last:cpu.cycles,lvl:(p.pinState(bit)===M.PinState.High)?1:0};
+    p.addListener(()=>{ const now=cpu.cycles; if(d.lvl) d.high+=now-d.last; d.last=now; d.lvl=(p.pinState(bit)===M.PinState.High)?1:0; });
+    duty[l.pin]=d; } });
+  avr={cpu, ports, duty, dead:false, inst:M.avrInstruction, PinState:M.PinState};
+  engine='avr'; running=true;
+  $('#runBtn').textContent='▶ Running'; $('#runBtn').classList.remove('paused');
+  avrRAF=requestAnimationFrame(pumpAvr);
+}
+
+function pumpAvr(){
+  if(!avr||avr.dead) return;
+  if(running){
+    const cpu=avr.cpu, target=cpu.cycles+16e6/60; let guard=0;
+    while(cpu.cycles<target && guard++<2000000){ avr.inst(cpu); cpu.tick(); }
+    (current.avr.leds||[]).forEach(l=>{ const {p,bit}=pinPort(avr.ports,l.pin);
+      if(l.pwm){ const d=avr.duty[l.pin]; if(d.lvl) d.high+=cpu.cycles-d.last; const span=(cpu.cycles-d.start)||1;
+        const frac=Math.max(0,Math.min(1,d.high/span)); l.targets.forEach(t=>setLed(t,frac)); d.high=0; d.start=cpu.cycles; d.last=cpu.cycles; }
+      else { const on=(p.pinState(bit)===avr.PinState.High)?1:0; l.targets.forEach(t=>setLed(t,on)); }
+    });
+  }
+  avrRAF=requestAnimationFrame(pumpAvr);
+}
 
 /* ── LEDs / OLED / loop (behaviour engine) ── */
 const LED_COLORS={ledBoard:'#ff7043',ledRed:'#ff3b3b',ledYellow:'#ffd21f',ledGreen:'#8ee63f'};
@@ -399,12 +468,17 @@ function drawOled(d){ octx.fillStyle='#001018'; octx.fillRect(0,0,128,64); if(!d
   octx.font='bold 34px "Space Mono", monospace'; octx.fillText(String(d.count),2,24); }
 
 let lastSerial='';
+function pushSerial(text, dedupe){
+  if(dedupe){ if(text===lastSerial) return; lastSerial=text; }
+  const line=document.createElement('div'); line.textContent='» '+text; serialEl.appendChild(line);
+  while(serialEl.children.length>6) serialEl.removeChild(serialEl.firstChild); serialEl.scrollTop=serialEl.scrollHeight;
+}
 function frame(now){
-  if(running){
+  if(running && engine==='sim'){   // behaviour engine; avr8js drives its own loop
     const out=current.step(params, now-startTime)||{};
     ['ledBoard','ledRed','ledYellow','ledGreen'].forEach(id=>{ if(current.components.includes(id)) setLed(id, out.leds&&out.leds[id]!=null?out.leds[id]:0); });
     if(current.components.includes('oledWrap')) drawOled(out.oled);
-    if(out.serial && out.serial!==lastSerial){ lastSerial=out.serial; const line=document.createElement('div'); line.textContent='» '+out.serial; serialEl.appendChild(line); while(serialEl.children.length>6) serialEl.removeChild(serialEl.firstChild); serialEl.scrollTop=serialEl.scrollHeight; }
+    if(out.serial) pushSerial(out.serial, true);
   }
   requestAnimationFrame(frame);
 }
@@ -417,11 +491,12 @@ function setMode(m){
   $('#guidedView').classList.toggle('hidden',m!=='guided');
   $('#codeView').classList.toggle('hidden',m!=='code');
   if(m==='code'){ loadEditor(); if(cm5) setTimeout(()=>cm5.refresh(),10); }
+  else { stopAvr(); running=true; startTime=performance.now(); }   // guided → behaviour engine
 }
 
 /* ── Controls ── */
 $('#runBtn').onclick=function(){ running=!running; this.textContent=running?'▶ Running':'⏸ Paused'; this.classList.toggle('paused',!running); };
-$('#resetBtn').onclick=()=>{ startTime=performance.now(); serialEl.innerHTML='<span class="muted">Serial Monitor</span>'; lastSerial=''; };
+$('#resetBtn').onclick=()=>{ serialEl.innerHTML='<span class="muted">Serial Monitor</span>'; lastSerial=''; if(engine==='avr'&&avrHex) startAvr(avrHex); else startTime=performance.now(); };
 $('#compileBtn').onclick=compileAndRun;
 $('#revertBtn').onclick=()=>{ loadEditor(); setStatus('idle','Code reset to the lesson sketch.'); };
 
