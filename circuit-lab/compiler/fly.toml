@@ -1,0 +1,32 @@
+# Fly.io config for the Circuit Lab compiler.
+# Rename `app` to something unique, then:  fly launch --no-deploy  (first time)  /  fly deploy
+app = "tinker-circuit-compiler"
+primary_region = "jnb"   # Johannesburg — closest Fly region to Nairobi. Change if you prefer.
+
+[build]
+
+[env]
+  # Lock CORS to your site so random pages can't use your compiler.
+  ALLOW_ORIGIN = "https://tinkerwith.me"
+  RATE_PER_MIN = "30"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Scale to zero when idle (free-friendly). First compile after idle cold-starts.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+
+# The AVR toolchain is large; give the machine room.
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1
