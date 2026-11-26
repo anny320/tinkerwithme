@@ -93,6 +93,16 @@
 .fc-eyebrow{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-deep)}
 .fc-sec-head h2{font-size:clamp(24px,3.4vw,32px);font-weight:600;line-height:1.12;margin:7px 0 5px}
 .fc-sec-head p{color:var(--text-2);max-width:62ch;font-size:16px}
+.cl-callout{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;text-decoration:none;color:var(--ink);background:var(--white);border:2px solid var(--ink);border-radius:var(--radius-lg);box-shadow:5px 5px 0 var(--ink);padding:18px 22px}
+.cl-callout .cl-ic{font-size:34px;line-height:1}
+.cl-callout .cl-eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--orange)}
+.cl-callout strong{display:block;font-size:19px;margin:3px 0 4px}
+.cl-callout .cl-sub{font-size:14.5px;color:var(--text-2)}
+.cl-callout .tw-btn{white-space:nowrap}
+@media(max-width:620px){
+  .cl-callout{grid-template-columns:auto 1fr;gap:12px 14px}
+  .cl-callout .tw-btn{grid-column:1/-1;justify-self:start;margin-top:4px}
+}
 </style>
 <script src="analytics.js"></script>
 </head>
@@ -147,6 +157,20 @@
     </nav>
   </div>
 </header>
+
+<section class="tw-section tw-section-tight">
+  <div class="tw-container">
+    <a class="cl-callout" href="circuit-lab/" data-ga="free-for-kids-circuit-lab">
+      <span class="cl-ic" aria-hidden="true">⚡</span>
+      <span>
+        <span class="cl-eyebrow">New &middot; no kit needed</span>
+        <strong>Start your first circuits in the Circuit Lab</strong>
+        <span class="cl-sub">Blink an LED, build a traffic light, write real code on a simulated Arduino &mdash; right in your browser, no board or wires. Then, when you&rsquo;re ready, build it for real.</span>
+      </span>
+      <span class="tw-btn tw-btn-orange">Open the Lab &rarr;</span>
+    </a>
+  </div>
+</section>
 
 <section class="tw-section">
   <div class="tw-container">
