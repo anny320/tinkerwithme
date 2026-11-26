@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tinkerwith_ · Circuit Lab</title>
-<meta name="description" content="A free browser Arduino Uno R3 simulator for kids. Guided mode: change the numbers. Code mode: write real C++, compiled by our backend and run live on a simulated Uno R3.">
+<meta name="description" content="A free browser Arduino Uno R3 simulator for kids. Guided mode: change the numbers. Code mode: write real C++, compiled by our backend and run live on a simulated Uno R3. LEDs, RGB, servo, potentiometer, buzzer and OLED.">
 <link rel="canonical" href="https://tinkerwith.me/circuit-lab/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
   .panel-head h2{font-size:14px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-2)}
   .panel-body{padding:16px}
 
-  #scene{width:100%;height:auto;display:block;background:radial-gradient(120% 120% at 50% 0%,#fbf8f5,#efe9e4);border-radius:var(--radius-sm)}
+  #scene{width:100%;height:auto;display:block;background:radial-gradient(120% 120% at 50% 0%,#fbf8f5,#efe9e4);border-radius:var(--radius-sm);touch-action:none}
   .lesson-blurb{margin-top:14px;font-size:14px;color:var(--text-2);background:var(--blue-soft);border-radius:var(--radius-sm);padding:12px 14px;border-left:3px solid var(--blue)}
   .lesson-blurb b{color:var(--blue)}
 
@@ -80,7 +80,9 @@
   .val-input.text{width:auto;min-width:8ch}
   .val-input:focus{outline:2px solid var(--green)}
 
-  .params{margin-top:16px;display:grid;gap:14px}
+  .params,.inputs-wrap{margin-top:16px;display:grid;gap:14px}
+  .inputs-wrap{margin-top:14px;padding:12px 14px;background:var(--green-soft);border-radius:var(--radius-sm)}
+  .inputs-title{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--green-deep)}
   .param{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
   .param label{font-size:13px;font-weight:600;color:var(--text)}
   .param .pval{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--orange-deep);text-align:right}
@@ -116,7 +118,7 @@
 <header class="hero">
   <span class="kicker">Circuit Lab · Arduino Uno R3 · Free</span>
   <h1>Build an Arduino circuit in your browser</h1>
-  <p><b>Guided</b> mode: tap the yellow numbers to change the project. <b>Code</b> mode: write real C++, compile it on our backend, and watch it run on a simulated Uno R3 — no board, no wires, no install. The same sketch flashes straight onto a real Uno R3.</p>
+  <p><b>Guided</b> mode: tap the yellow numbers (or drag the knob) to change the project. <b>Code</b> mode: write real C++, compile it on our backend, and watch it run on a simulated Uno R3. Parts so far: LED, RGB LED, servo, potentiometer, buzzer and OLED — the same sketches flash onto a real Uno R3.</p>
 </header>
 
 <div class="lessons" id="lessons"></div>
@@ -156,6 +158,43 @@
         <g id="ledYellow" class="ext-led"><circle cx="350" cy="238" r="12" fill="#5a4a14"/></g>
         <g id="ledGreen" class="ext-led"><circle cx="280" cy="238" r="12" fill="#2d4d14"/></g>
 
+        <!-- RGB LED -->
+        <g id="rgbLed">
+          <circle id="rgbDot" cx="250" cy="256" r="18" fill="#3a1f10"/>
+          <text x="250" y="300" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">RGB LED</text>
+        </g>
+
+        <!-- Servo -->
+        <g id="servo">
+          <rect x="290" y="226" width="92" height="62" rx="6" fill="#1f6feb" stroke="#1550b0"/>
+          <text x="336" y="282" fill="#cfe0ff" font-size="8" font-family="monospace" text-anchor="middle">SERVO</text>
+          <circle cx="336" cy="250" r="6" fill="#0d3a8a"/>
+          <g id="servoArm"><rect x="332" y="212" width="8" height="42" rx="3" fill="#ffd21f" stroke="#caa400"/></g>
+        </g>
+
+        <!-- Buzzer -->
+        <g id="buzzer">
+          <circle cx="250" cy="258" r="22" fill="#111" stroke="#333"/>
+          <circle cx="250" cy="258" r="8" fill="#2a2a2a"/>
+          <text x="250" y="262" fill="#888" font-size="11" text-anchor="middle">+</text>
+          <g id="buzzWaves" opacity="0" stroke="#84BD00" fill="none" stroke-width="2" stroke-linecap="round">
+            <path d="M276 248 q7 10 0 20"/>
+            <path d="M283 243 q11 15 0 30"/>
+            <path d="M290 238 q15 20 0 40"/>
+          </g>
+          <text x="250" y="300" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">PIEZO BUZZER</text>
+        </g>
+
+        <!-- Potentiometer (draggable knob) -->
+        <g id="pot">
+          <circle cx="115" cy="262" r="30" fill="#2a2a2a" stroke="#555"/>
+          <circle cx="115" cy="262" r="22" fill="#3a3a3a"/>
+          <g id="potInd"><line x1="115" y1="262" x2="115" y2="240" stroke="#ffd21f" stroke-width="4" stroke-linecap="round"/></g>
+          <circle id="potHit" cx="115" cy="262" r="34" fill="transparent" style="cursor:grab"/>
+          <text x="115" y="312" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">POTENTIOMETER</text>
+        </g>
+
+        <!-- OLED -->
         <g id="oledWrap">
           <rect x="52" y="214" width="150" height="86" rx="6" fill="#111"/>
           <foreignObject x="60" y="222" width="134" height="70">
@@ -165,6 +204,7 @@
         </g>
       </svg>
 
+      <div class="inputs-wrap" id="inputsWrap" style="display:none"></div>
       <div class="serial" id="serial"><span class="muted">Serial Monitor</span></div>
       <div class="lesson-blurb" id="blurb"></div>
     </div>
@@ -184,7 +224,7 @@
       <div id="guidedView">
         <div class="code-wrap"><pre class="code" id="code"></pre></div>
         <div class="params" id="params"></div>
-        <p class="hint">Tip: the yellow boxes in the code and the sliders below are the same values — change either one.</p>
+        <p class="hint" id="guidedHint">Tip: the yellow boxes in the code and the sliders below are the same values — change either one.</p>
       </div>
 
       <!-- CODE -->
@@ -202,7 +242,7 @@
 </main>
 
 <footer class="footer">
-  Circuit Lab is a free teaching tool from <a href="/">Tinkerwith_</a>. Guided mode runs fully offline; Code mode compiles real C++ for the Arduino Uno R3.
+  Circuit Lab is a free teaching tool from <a href="/">Tinkerwith_</a> — a complement to hands-on building, not a replacement. Guided mode runs fully offline; Code mode compiles real C++ for the Arduino Uno R3.
 </footer>
 
 <!-- Editor + simulator libs (optional; page works without them) -->
@@ -213,23 +253,18 @@
 "use strict";
 /* ═══════════════════════════════════════════════════════════════
    Circuit Lab — Arduino Uno R3 teaching simulator
-   • Guided mode: pre-baked lessons, kids edit the numbers (offline).
-   • Code mode:   real C++ editor → compile on the backend → run.
-   The visual behaviour engine (behaviour-sim) drives the animation
-   and is the guaranteed fallback. Live hex execution (avr8js) plugs
-   into runCompiledHex() once the compile backend is connected.
+   • Guided mode: pre-baked lessons, kids edit the numbers / drag the
+     knob (fully offline — the "behaviour engine").
+   • Code mode:   real C++ editor → compile on the backend → run live
+     on a simulated ATmega328P (avr8js).
+   Components: LED, RGB LED, servo, potentiometer, buzzer, OLED.
    ─────────────────────────────────────────────────────────────── */
 
 /* ── BACKEND CONFIG ──────────────────────────────────────────────
-   Point this at your Supabase compile gateway (Edge Function).
-   Contract:
-     POST  <COMPILE_ENDPOINT>
-     body  { "board": "arduino:avr:uno", "source": "<full .ino sketch>" }
-     200   { "hex": "<Intel HEX text>", "cached": true|false }
-     4xx   { "error": "<compiler stderr / message>" }
-   Leave empty ('') until the backend is live — Code mode then shows a
-   friendly "not connected" notice and still animates known sketches. */
-const COMPILE_ENDPOINT = '';            // e.g. 'https://<ref>.supabase.co/functions/v1/compile'
+   Point this at your compile service (direct container, or a Supabase
+   Edge Function gateway). Contract:
+     POST <COMPILE_ENDPOINT>  { board, source } → { hex, cached } / { error } */
+const COMPILE_ENDPOINT = '';            // e.g. 'https://<app>.fly.dev/compile'
 const COMPILE_HEADERS  = {};            // e.g. { Authorization: 'Bearer ' + clerkToken }
 const BOARD = 'arduino:avr:uno';
 
@@ -237,6 +272,7 @@ const BOARD = 'arduino:avr:uno';
 const kw=t=>({t:'kw',v:t}), fn=t=>({t:'fn',v:t}), cm=t=>({t:'cm',v:t}), str=t=>({t:'str',v:t}), txt=t=>({t:'txt',v:t}), P=key=>({t:'param',key});
 
 const LESSONS = [
+  /* 1 ─ BLINK ─────────────────────────────── */
   { id:'blink', name:'Blink an LED', components:['ledBoard','ledRed','wireRed'],
     blurb:'<b>Digital output.</b> Pin 13 turns on and off. Shorten the delays to blink faster — <code>delay()</code> controls time.',
     params:{ onTime:{label:'LED on (ms)',min:50,max:2000,step:50,value:500}, offTime:{label:'LED off (ms)',min:50,max:2000,step:50,value:500} },
@@ -250,6 +286,7 @@ const LESSONS = [
     avr:{leds:[{pin:13,targets:['ledBoard','ledRed']}]},
     step(p,t){ const ph=t%(p.onTime+p.offTime), on=ph<p.onTime; return {leds:{ledBoard:on?1:0,ledRed:on?1:0}, serial:on?'LED: ON':'LED: OFF'}; } },
 
+  /* 2 ─ BREATHING / PWM ───────────────────── */
   { id:'fade', name:'Breathing LED', components:['ledBoard','ledRed','wireRed'],
     blurb:'<b>PWM — analog output.</b> <code>analogWrite()</code> sets brightness 0–255, so the LED fades like it is breathing. (Use a ~ pin such as 9 on a real Uno.)',
     params:{ speed:{label:'Breathing speed',min:1,max:10,step:1,value:4}, maxBright:{label:'Max brightness (0–255)',min:30,max:255,step:5,value:255} },
@@ -263,6 +300,7 @@ const LESSONS = [
     avr:{leds:[{pin:9,targets:['ledBoard','ledRed'],pwm:true}]},
     step(p,t){ const cyc=(255/p.speed)*2*10, ph=(t%cyc)/cyc, tri=ph<.5?ph*2:(1-ph)*2, b=tri*p.maxBright; return {leds:{ledBoard:b/255,ledRed:b/255}, serial:'brightness: '+Math.round(b)}; } },
 
+  /* 3 ─ TRAFFIC LIGHT ─────────────────────── */
   { id:'traffic', name:'Traffic light', components:['ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen'],
     blurb:'<b>Sequencing with 3 LEDs.</b> Code runs top to bottom, then repeats. Change each light\'s time and watch the pattern shift.',
     params:{ greenTime:{label:'Green (ms)',min:300,max:4000,step:100,value:2000}, yellowTime:{label:'Yellow (ms)',min:200,max:2000,step:100,value:600}, redTime:{label:'Red (ms)',min:300,max:4000,step:100,value:2000} },
@@ -277,6 +315,68 @@ const LESSONS = [
     avr:{leds:[{pin:13,targets:['ledRed']},{pin:12,targets:['ledYellow']},{pin:11,targets:['ledGreen']}]},
     step(p,t){ const tot=p.redTime+p.greenTime+p.yellowTime, ph=t%tot; let r=0,y=0,g=0,l=''; if(ph<p.redTime){r=1;l='RED — stop';} else if(ph<p.redTime+p.greenTime){g=1;l='GREEN — go';} else {y=1;l='YELLOW — slow';} return {leds:{ledRed:r,ledYellow:y,ledGreen:g}, serial:l}; } },
 
+  /* 4 ─ RGB MIXER ─────────────────────────── */
+  { id:'rgb', name:'RGB mixer', components:['rgbLed'],
+    blurb:'<b>Mix colours with PWM.</b> Three <code>analogWrite()</code> values — red, green, blue — blend into any colour on one RGB LED.',
+    params:{ r:{label:'Red (0–255)',min:0,max:255,step:5,value:180}, g:{label:'Green (0–255)',min:0,max:255,step:5,value:40}, b:{label:'Blue (0–255)',min:0,max:255,step:5,value:170} },
+    code:p=>[
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(9,'),kw('OUTPUT'),txt('); '),fn('pinMode'),txt('(10,'),kw('OUTPUT'),txt('); '),fn('pinMode'),txt('(11,'),kw('OUTPUT'),txt(');\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),fn('analogWrite'),txt('(9,  '),P('r'),txt(');  '),cm('// red\n'),
+      txt('  '),fn('analogWrite'),txt('(10, '),P('g'),txt(');  '),cm('// green\n'),
+      txt('  '),fn('analogWrite'),txt('(11, '),P('b'),txt(');  '),cm('// blue\n}')],
+    avr:{ rgb:{r:9,g:10,b:11,target:'rgbLed'} },
+    step(p){ return {rgb:{r:p.r,g:p.g,b:p.b}, serial:'R '+p.r+'  G '+p.g+'  B '+p.b}; } },
+
+  /* 5 ─ SERVO SWEEP ───────────────────────── */
+  { id:'servo', name:'Servo sweep', components:['servo'],
+    blurb:'<b>Move a servo motor.</b> The Servo library turns an angle (0–180°) into timed pulses. Change the sweep range and the delay between steps.',
+    params:{ fromA:{label:'From angle (°)',min:0,max:180,step:5,value:0}, toA:{label:'To angle (°)',min:0,max:180,step:5,value:180}, speed:{label:'Delay per step (ms)',min:1,max:30,step:1,value:8} },
+    code:p=>[
+      txt('#include <Servo.h>\nServo myServo;\n\n'),
+      kw('void '),fn('setup'),txt('() {\n  myServo.'),fn('attach'),txt('(9);\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('for '),txt('('),kw('int '),txt('a = '),P('fromA'),txt('; a <= '),P('toA'),txt('; a++) {\n'),
+      txt('    myServo.'),fn('write'),txt('(a);\n    '),fn('delay'),txt('('),P('speed'),txt(');\n  }\n'),
+      txt('  '),kw('for '),txt('('),kw('int '),txt('a = '),P('toA'),txt('; a >= '),P('fromA'),txt('; a--) {\n'),
+      txt('    myServo.'),fn('write'),txt('(a);\n    '),fn('delay'),txt('('),P('speed'),txt(');\n  }\n}')],
+    avr:{ servo:{pin:9,target:'servoArm'} },
+    step(p,t){ const lo=Math.min(p.fromA,p.toA), hi=Math.max(p.fromA,p.toA), span=Math.max(1,hi-lo);
+      const half=span*p.speed, full=half*2, ph=t%full;
+      const a = ph<half ? lo+(ph/half)*span : hi-((ph-half)/half)*span;
+      return {servo:a, serial:'angle: '+Math.round(a)+'°'}; } },
+
+  /* 6 ─ KNOB → SERVO (potentiometer input) ── */
+  { id:'knobservo', name:'Knob → servo', components:['pot','servo'],
+    blurb:'<b>Read a knob, move a servo.</b> <code>analogRead()</code> turns the potentiometer into 0–1023; <code>map()</code> scales it to 0–180° for the servo. <b>Drag the knob</b> in the circuit!',
+    inputs:{ pot:{label:'Potentiometer — drag the knob',min:0,max:1023,step:1,value:512} },
+    params:{},
+    code:p=>[
+      txt('#include <Servo.h>\nServo myServo;\n\n'),
+      kw('void '),fn('setup'),txt('() {\n  myServo.'),fn('attach'),txt('(9);\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('int '),txt('v = '),fn('analogRead'),txt('(A0);        '),cm('// knob 0–1023\n'),
+      txt('  '),kw('int '),txt('a = '),fn('map'),txt('(v, 0, 1023, 0, 180);\n'),
+      txt('  myServo.'),fn('write'),txt('(a);\n  '),fn('delay'),txt('(15);\n}')],
+    avr:{ servo:{pin:9,target:'servoArm'}, pot:{channel:0,from:'pot'} },
+    step(p,t,io){ const v=io.pot||0, a=Math.round(v/1023*180); return {servo:a, serial:'knob '+v+' → '+a+'°'}; } },
+
+  /* 7 ─ BUZZER MELODY (tone) ──────────────── */
+  { id:'buzzer', name:'Buzzer melody', components:['buzzer'],
+    blurb:'<b>Make sound with <code>tone()</code>.</b> <code>tone(pin, frequency)</code> plays a note. This plays a little scale — change the tempo. 🔊 Turn your volume on!',
+    params:{ tempo:{label:'Note length (ms)',min:120,max:600,step:20,value:240} },
+    code:p=>[
+      kw('int '),txt('melody[] = {262, 294, 330, 349, 392, 440, 494, 523};\n\n'),
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(8, '),kw('OUTPUT'),txt(');\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('for '),txt('('),kw('int '),txt('i = 0; i < 8; i++) {\n'),
+      txt('    '),fn('tone'),txt('(8, melody[i]);\n    '),fn('delay'),txt('('),P('tempo'),txt(');\n'),
+      txt('    '),fn('noTone'),txt('(8);\n    '),fn('delay'),txt('(40);\n  }\n}')],
+    avr:{ tone:{pin:8,target:'buzzer'} },
+    step(p,t){ const melody=[262,294,330,349,392,440,494,523], unit=p.tempo+40, i=Math.floor(t/unit)%8, ph=t%unit, on=ph<p.tempo, f=on?melody[i]:0;
+      return {tone:f, serial:on?('tone '+melody[i]+' Hz'):'rest'}; } },
+
+  /* 8 ─ OLED SCREEN ───────────────────────── */
   { id:'oled', name:'OLED screen', components:['oledWrap'],
     blurb:'<b>On-screen graphics.</b> Draws text + a counting number on a tiny OLED. The same Adafruit_GFX code runs on a real SSD1306 wired to your Uno R3.',
     params:{ message:{label:'Message on screen',type:'text',value:'TINKER!'}, step:{label:'Count by',min:1,max:25,step:1,value:1}, interval:{label:'Speed (ms per count)',min:100,max:1500,step:50,value:400} },
@@ -292,10 +392,11 @@ const LESSONS = [
 ];
 
 /* ── State ── */
-let current=LESSONS[0], params={}, running=true, startTime=performance.now(), mode='guided', cm5=null, editorDirty=false, engine='sim';
+let current=LESSONS[0], params={}, io={}, running=true, startTime=performance.now(), mode='guided', cm5=null, editorDirty=false, engine='sim';
+const ALL_COMPONENTS=['ledBoard','ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen','rgbLed','servo','buzzer','pot','oledWrap'];
 
 const $=s=>document.querySelector(s);
-const codeEl=$('#code'), paramsEl=$('#params'), blurbEl=$('#blurb'), serialEl=$('#serial'), statusEl=$('#status');
+const codeEl=$('#code'), paramsEl=$('#params'), inputsWrap=$('#inputsWrap'), blurbEl=$('#blurb'), serialEl=$('#serial'), statusEl=$('#status');
 const oled=$('#oled'), octx=oled.getContext('2d');
 
 /* ── Lesson tabs ── */
@@ -303,19 +404,21 @@ const lessonsBar=$('#lessons');
 LESSONS.forEach(l=>{ const b=document.createElement('button'); b.className='lesson-btn'; b.dataset.id=l.id; b.innerHTML='<span class="dot"></span>'+l.name; b.onclick=()=>selectLesson(l.id); lessonsBar.appendChild(b); });
 
 function selectLesson(id){
-  stopAvr();
-  current=LESSONS.find(l=>l.id===id); params={};
+  stopAvr(); setTone(0); setBuzzerActive(false);
+  current=LESSONS.find(l=>l.id===id); params={}; io={};
   for(const k in current.params) params[k]=current.params[k].value;
+  for(const k in (current.inputs||{})) io[k]=current.inputs[k].value;
   startTime=performance.now(); editorDirty=false;
   document.querySelectorAll('.lesson-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
-  ['ledBoard','ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen','oledWrap'].forEach(cid=>{ const el=document.getElementById(cid); if(el) el.style.display=current.components.includes(cid)?'':'none'; });
-  renderCode(); renderParams(); loadEditor(); blurbEl.innerHTML=current.blurb; setStatus('idle','Ready. Edit the sketch, then Compile & Run.');
+  ALL_COMPONENTS.forEach(cid=>{ const el=document.getElementById(cid); if(el) el.style.display=current.components.includes(cid)?'':'none'; });
+  if(current.components.includes('buzzer')) audioCtx();   // create/resume audio within this click gesture
+  if('pot' in io) setKnob(io.pot);
+  renderCode(); renderParams(); renderInputs(); loadEditor();
+  blurbEl.innerHTML=current.blurb; setStatus('idle','Ready. Edit the sketch, then Compile & Run.');
 }
 
 /* ── Build a plain-text sketch from the tokens (what Code mode shows & sends) ── */
-function sketchText(){
-  return current.code(params).map(tok=> tok.t==='param' ? String(params[tok.key]) : tok.v).join('');
-}
+function sketchText(){ return current.code(params).map(tok=> tok.t==='param' ? String(params[tok.key]) : tok.v).join(''); }
 
 /* ── Guided: render highlighted code with inline chips ── */
 function renderCode(){
@@ -331,7 +434,9 @@ function renderCode(){
 }
 function renderParams(){
   paramsEl.innerHTML='';
-  for(const key in current.params){
+  const keys=Object.keys(current.params);
+  $('#guidedHint').style.display = keys.length ? '' : 'none';
+  for(const key of keys){
     const def=current.params[key], row=document.createElement('div'); row.className='param';
     if(def.type==='text'){
       const lab=document.createElement('label'); lab.textContent=def.label;
@@ -352,31 +457,53 @@ function setParam(key,raw,fromSlider){
   if(fromSlider) renderCode(); else renderParams();
 }
 
-/* ── Code editor (CodeMirror if present, else the <textarea> fallback) ── */
-function loadEditor(){
-  const src=sketchText();
-  const ta=$('#editor');
-  if(window.CodeMirror && !cm5){
-    cm5=window.CodeMirror.fromTextArea(ta,{mode:'text/x-c++src',lineNumbers:true,theme:'default',tabSize:2,indentUnit:2});
-    cm5.on('change',()=>{ editorDirty=true; });
-    cm5.setSize(null,300);
+/* ── Live inputs (e.g. the potentiometer) ── */
+function renderInputs(){
+  inputsWrap.innerHTML='';
+  const keys=Object.keys(current.inputs||{});
+  inputsWrap.style.display = keys.length ? '' : 'none';
+  if(!keys.length) return;
+  const h=document.createElement('div'); h.className='inputs-title'; h.textContent='Live inputs'; inputsWrap.appendChild(h);
+  for(const key of keys){
+    const def=current.inputs[key], row=document.createElement('div'); row.className='param';
+    const lab=document.createElement('label'); lab.textContent=def.label;
+    const val=document.createElement('span'); val.className='pval'; val.id='iv-'+key; val.textContent=io[key];
+    const inp=document.createElement('input'); inp.type='range'; inp.id='in-'+key; inp.min=def.min; inp.max=def.max; inp.step=def.step; inp.value=io[key];
+    inp.oninput=()=>{ io[key]=Number(inp.value); val.textContent=io[key]; if(key==='pot') setKnob(io.pot); };
+    row.append(lab, val, inp); inputsWrap.appendChild(row);
   }
-  if(cm5){ cm5.setValue(src); cm5.clearHistory(); } else { ta.value=src; ta.oninput=()=>{editorDirty=true;}; }
-  editorDirty=false;
 }
-function editorSource(){ return cm5 ? cm5.getValue() : $('#editor').value; }
+
+/* ── Rotary knob (potentiometer) — drag to set io.pot (0–1023) ── */
+const POT={cx:115,cy:262};
+function setKnob(v){
+  const ind=$('#potInd'); if(ind){ const deg=-135+(v/1023)*270; ind.setAttribute('transform','rotate('+deg+' '+POT.cx+' '+POT.cy+')'); }
+  const s=$('#in-pot'); if(s && Number(s.value)!==v) s.value=v;
+  const r=$('#iv-pot'); if(r) r.textContent=Math.round(v);
+}
+function initKnob(){
+  const hit=$('#potHit'), svg=$('#scene'); if(!hit) return;
+  let drag=false;
+  const upd=(e)=>{ const pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const m=svg.getScreenCTM(); if(!m) return; const loc=pt.matrixTransform(m.inverse());
+    let deg=Math.atan2(loc.x-POT.cx, -(loc.y-POT.cy))*180/Math.PI;
+    deg=Math.max(-135,Math.min(135,deg));
+    const v=Math.round((deg+135)/270*1023); io.pot=v; setKnob(v); };
+  hit.addEventListener('pointerdown',e=>{ drag=true; try{hit.setPointerCapture(e.pointerId);}catch(_){} upd(e); e.preventDefault(); });
+  hit.addEventListener('pointermove',e=>{ if(drag) upd(e); });
+  hit.addEventListener('pointerup',()=>{ drag=false; });
+  hit.addEventListener('pointercancel',()=>{ drag=false; });
+}
 
 /* ── Compile pipeline ── */
 function setStatus(kind,msg){ statusEl.className='status '+kind; statusEl.textContent=msg; }
-
 async function compileAndRun(){
   const source=editorSource();
   if(!COMPILE_ENDPOINT){
-    // No backend yet: be honest, but still animate if the sketch matches the lesson.
     setStatus('err','⚠ Compile backend not connected yet.');
-    $('#backendHint').innerHTML='Set <code>COMPILE_ENDPOINT</code> to your Supabase compile gateway to run custom C++. '+
+    $('#backendHint').innerHTML='Set <code>COMPILE_ENDPOINT</code> to your compile service to run custom C++. '+
       (source.trim()===sketchText().trim() ? 'For now, this unchanged lesson is animating from the built-in engine.' : 'This edited sketch can\'t run until the backend is connected.');
-    if(source.trim()===sketchText().trim()){ running=true; startTime=performance.now(); }
+    if(source.trim()===sketchText().trim()){ engine='sim'; running=true; startTime=performance.now(); }
     return;
   }
   setStatus('work','⏳ Compiling for Uno R3…');
@@ -390,9 +517,12 @@ async function compileAndRun(){
 }
 
 /* ── Live hex execution on a simulated ATmega328P (avr8js) ──────────────
-   Verified against avr8js 0.21.1 (Intel-HEX parse → CPU → port pin reads).
-   Guided mode always uses the behaviour engine above; compiled Code-mode
-   sketches run here. If avr8js can't load, we fall back to the preview. */
+   Verified against avr8js 0.21.1 (Intel-HEX parse → CPU → ports/ADC).
+   Peripherals wired: digital + PWM pins, 3× PWM → RGB, servo pulse-width
+   → angle, ADC ← potentiometer, tone() frequency → WebAudio.
+   NOTE: these compiled-execution paths need a browser pass once the
+   compile backend is deployed; Guided mode (the behaviour engine) is the
+   verified offline experience and the fallback if avr8js can't load. */
 const AVR8JS_URL='https://cdn.jsdelivr.net/npm/avr8js@0.21.1/+esm';
 let avrMod=null, avr=null, avrRAF=null, avrHex=null;
 
@@ -415,13 +545,21 @@ async function runCompiledHex(hex){
   avrHex=hex;
   if(current.avr && current.avr.supported===false){
     stopAvr(); running=true; startTime=performance.now();
-    setStatus('ok','✓ Compiled. The OLED display isn\'t emulated yet — showing the built-in preview.'); return;
+    setStatus('ok','✓ Compiled. This part (OLED) isn\'t emulated yet — showing the built-in preview.'); return;
   }
   try{ if(!avrMod) avrMod=await import(AVR8JS_URL); }
   catch(e){ stopAvr(); running=true; startTime=performance.now();
     setStatus('ok','✓ Compiled, but the live engine could not load — showing the built-in preview.'); return; }
   startAvr(hex);
 }
+
+/* Attach a duty-cycle tracker to a pin (fraction of time HIGH). */
+function dutyTracker(M,p,bit,cpu){
+  const d={high:0,start:cpu.cycles,last:cpu.cycles,lvl:(p.pinState(bit)===M.PinState.High)?1:0};
+  p.addListener(()=>{ const now=cpu.cycles; if(d.lvl) d.high+=now-d.last; d.last=now; d.lvl=(p.pinState(bit)===M.PinState.High)?1:0; });
+  return d;
+}
+function dutyRead(d,cpu){ if(d.lvl) d.high+=cpu.cycles-d.last; const span=(cpu.cycles-d.start)||1; const f=Math.max(0,Math.min(1,d.high/span)); d.high=0; d.start=cpu.cycles; d.last=cpu.cycles; return f; }
 
 function startAvr(hex){
   if(avrRAF) cancelAnimationFrame(avrRAF); avrRAF=null;
@@ -433,12 +571,18 @@ function startAvr(hex){
   const usart=new M.AVRUSART(cpu,M.usart0Config,16e6);
   let sbuf=''; usart.onByteTransmit=(byte)=>{ const ch=String.fromCharCode(byte);
     if(ch==='\n'||sbuf.length>=40){ if(sbuf) pushSerial(sbuf); sbuf=(ch==='\n')?'':ch; } else if(ch!=='\r') sbuf+=ch; };
-  const duty={};
-  (current.avr.leds||[]).forEach(l=>{ if(l.pwm){ const {p,bit}=pinPort(ports,l.pin);
-    const d={high:0,start:cpu.cycles,last:cpu.cycles,lvl:(p.pinState(bit)===M.PinState.High)?1:0};
-    p.addListener(()=>{ const now=cpu.cycles; if(d.lvl) d.high+=now-d.last; d.last=now; d.lvl=(p.pinState(bit)===M.PinState.High)?1:0; });
-    duty[l.pin]=d; } });
-  avr={cpu, ports, duty, dead:false, inst:M.avrInstruction, PinState:M.PinState};
+
+  const A=current.avr||{}, track={duty:{}, rgb:null, servo:null, tone:null};
+  let adc=null;
+  (A.leds||[]).forEach(l=>{ if(l.pwm){ const {p,bit}=pinPort(ports,l.pin); track.duty[l.pin]=dutyTracker(M,p,bit,cpu); } });
+  if(A.rgb){ track.rgb={}; ['r','g','b'].forEach(k=>{ const {p,bit}=pinPort(ports,A.rgb[k]); track.rgb[k]=dutyTracker(M,p,bit,cpu); }); }
+  if(A.servo){ const {p,bit}=pinPort(ports,A.servo.pin); const s={rise:0,width:0,lvl:(p.pinState(bit)===M.PinState.High)?1:0};
+    p.addListener(()=>{ const now=cpu.cycles, hi=(p.pinState(bit)===M.PinState.High)?1:0; if(hi&&!s.lvl) s.rise=now; else if(!hi&&s.lvl) s.width=now-s.rise; s.lvl=hi; }); track.servo=s; }
+  if(A.tone){ const {p,bit}=pinPort(ports,A.tone.pin); const s={last:0,half:0,lvl:(p.pinState(bit)===M.PinState.High)?1:0,lastEdge:cpu.cycles};
+    p.addListener(()=>{ const now=cpu.cycles, v=(p.pinState(bit)===M.PinState.High)?1:0; if(v!==s.lvl){ if(s.last) s.half=now-s.last; s.last=now; s.lvl=v; s.lastEdge=now; } }); track.tone=s; }
+  if(A.pot){ adc=new M.AVRADC(cpu,M.adcConfig); }
+
+  avr={cpu, ports, dead:false, inst:M.avrInstruction, PinState:M.PinState, track, adc};
   engine='avr'; running=true;
   $('#runBtn').textContent='▶ Running'; $('#runBtn').classList.remove('paused');
   avrRAF=requestAnimationFrame(pumpAvr);
@@ -447,26 +591,50 @@ function startAvr(hex){
 function pumpAvr(){
   if(!avr||avr.dead) return;
   if(running){
-    const cpu=avr.cpu, target=cpu.cycles+16e6/60; let guard=0;
+    const A=current.avr||{}, cpu=avr.cpu;
+    if(A.pot && avr.adc) avr.adc.channelValues[A.pot.channel]=((io[A.pot.from]||0)/1023)*5;   // knob → ADC
+    const target=cpu.cycles+16e6/60; let guard=0;
     while(cpu.cycles<target && guard++<2000000){ avr.inst(cpu); cpu.tick(); }
-    (current.avr.leds||[]).forEach(l=>{ const {p,bit}=pinPort(avr.ports,l.pin);
-      if(l.pwm){ const d=avr.duty[l.pin]; if(d.lvl) d.high+=cpu.cycles-d.last; const span=(cpu.cycles-d.start)||1;
-        const frac=Math.max(0,Math.min(1,d.high/span)); l.targets.forEach(t=>setLed(t,frac)); d.high=0; d.start=cpu.cycles; d.last=cpu.cycles; }
-      else { const on=(p.pinState(bit)===avr.PinState.High)?1:0; l.targets.forEach(t=>setLed(t,on)); }
-    });
+    (A.leds||[]).forEach(l=>{ const {p,bit}=pinPort(avr.ports,l.pin);
+      if(l.pwm){ const f=dutyRead(avr.track.duty[l.pin],cpu); l.targets.forEach(t=>setLed(t,f)); }
+      else { const on=(p.pinState(bit)===avr.PinState.High)?1:0; l.targets.forEach(t=>setLed(t,on)); } });
+    if(A.rgb){ const r=dutyRead(avr.track.rgb.r,cpu), g=dutyRead(avr.track.rgb.g,cpu), b=dutyRead(avr.track.rgb.b,cpu);
+      setRgb({r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)}); }
+    if(A.servo){ const us=avr.track.servo.width/16; if(avr.track.servo.width) setServo(Math.max(0,Math.min(180,(us-544)/(2400-544)*180))); }
+    if(A.tone){ const s=avr.track.tone, idle=(cpu.cycles-s.lastEdge)>16000, f=(!idle&&s.half>0)?16e6/(2*s.half):0; setTone(f); setBuzzerActive(f>0); }
   }
   avrRAF=requestAnimationFrame(pumpAvr);
 }
 
-/* ── LEDs / OLED / loop (behaviour engine) ── */
+/* ── Visual setters ── */
 const LED_COLORS={ledBoard:'#ff7043',ledRed:'#ff3b3b',ledYellow:'#ffd21f',ledGreen:'#8ee63f'};
 function setLed(id,level){ const g=document.getElementById(id); if(!g) return; const c=g.querySelector('circle'); if(!c) return; const col=LED_COLORS[id];
   if(level>0.02){ c.setAttribute('fill',col); c.style.filter=`drop-shadow(0 0 ${6+level*14}px ${col})`; c.style.opacity=0.35+0.65*level; }
   else { c.setAttribute('fill','#3a1f10'); c.style.filter='none'; c.style.opacity=1; } }
+function setRgb(o){ const d=$('#rgbDot'); if(!d) return; const r=o.r|0,g=o.g|0,b=o.b|0, col='rgb('+r+','+g+','+b+')', bright=(r+g+b)/765;
+  d.setAttribute('fill',col); d.style.filter=bright>0.04?`drop-shadow(0 0 ${6+bright*18}px ${col})`:'none'; }
+const SERVO={px:336,py:250};
+function setServo(angle){ const a=$('#servoArm'); if(!a) return; a.setAttribute('transform','rotate('+(angle-90)+' '+SERVO.px+' '+SERVO.py+')'); }
+function setBuzzerActive(on){ const w=$('#buzzWaves'); if(w) w.setAttribute('opacity', on?'1':'0'); }
 function drawOled(d){ octx.fillStyle='#001018'; octx.fillRect(0,0,128,64); if(!d) return; octx.fillStyle='#39e6ff'; octx.textBaseline='top';
   octx.font='bold 12px "Space Mono", monospace'; octx.fillText((d.message||'').slice(0,14),2,2);
   octx.font='bold 34px "Space Mono", monospace'; octx.fillText(String(d.count),2,24); }
 
+/* ── Audio (buzzer) — one persistent square oscillator, gated by gain ── */
+let actx=null, osc=null, gain=null;
+function audioCtx(){
+  if(!actx){ try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
+    actx=new AC(); gain=actx.createGain(); gain.gain.value=0; gain.connect(actx.destination);
+    osc=actx.createOscillator(); osc.type='square'; osc.frequency.value=440; osc.connect(gain); osc.start(); }
+    catch(e){ actx=null; return null; } }
+  if(actx.state==='suspended'){ try{ actx.resume(); }catch(e){} }
+  return actx;
+}
+function setTone(freq){ const c=audioCtx(); if(!c||!osc) return;
+  if(freq>0){ osc.frequency.setTargetAtTime(freq,c.currentTime,0.004); gain.gain.setTargetAtTime(0.05,c.currentTime,0.01); }
+  else { gain.gain.setTargetAtTime(0,c.currentTime,0.01); } }
+
+/* ── Serial + behaviour-engine loop ── */
 let lastSerial='';
 function pushSerial(text, dedupe){
   if(dedupe){ if(text===lastSerial) return; lastSerial=text; }
@@ -475,13 +643,28 @@ function pushSerial(text, dedupe){
 }
 function frame(now){
   if(running && engine==='sim'){   // behaviour engine; avr8js drives its own loop
-    const out=current.step(params, now-startTime)||{};
+    const out=current.step(params, now-startTime, io)||{};
     ['ledBoard','ledRed','ledYellow','ledGreen'].forEach(id=>{ if(current.components.includes(id)) setLed(id, out.leds&&out.leds[id]!=null?out.leds[id]:0); });
     if(current.components.includes('oledWrap')) drawOled(out.oled);
+    if(out.rgb) setRgb(out.rgb);
+    if(out.servo!=null) setServo(out.servo);
+    if('tone' in out){ setTone(out.tone); setBuzzerActive(out.tone>0); }
     if(out.serial) pushSerial(out.serial, true);
   }
   requestAnimationFrame(frame);
 }
+
+/* ── Editor ── */
+function loadEditor(){
+  const src=sketchText(), ta=$('#editor');
+  if(window.CodeMirror && !cm5){
+    cm5=window.CodeMirror.fromTextArea(ta,{mode:'text/x-c++src',lineNumbers:true,theme:'default',tabSize:2,indentUnit:2});
+    cm5.on('change',()=>{ editorDirty=true; }); cm5.setSize(null,300);
+  }
+  if(cm5){ cm5.setValue(src); cm5.clearHistory(); } else { ta.value=src; ta.oninput=()=>{editorDirty=true;}; }
+  editorDirty=false;
+}
+function editorSource(){ return cm5 ? cm5.getValue() : $('#editor').value; }
 
 /* ── Mode toggle ── */
 $('#modeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; setMode(b.dataset.mode); });
@@ -495,12 +678,13 @@ function setMode(m){
 }
 
 /* ── Controls ── */
-$('#runBtn').onclick=function(){ running=!running; this.textContent=running?'▶ Running':'⏸ Paused'; this.classList.toggle('paused',!running); };
+$('#runBtn').onclick=function(){ running=!running; this.textContent=running?'▶ Running':'⏸ Paused'; this.classList.toggle('paused',!running); if(!running){ setTone(0); setBuzzerActive(false); } };
 $('#resetBtn').onclick=()=>{ serialEl.innerHTML='<span class="muted">Serial Monitor</span>'; lastSerial=''; if(engine==='avr'&&avrHex) startAvr(avrHex); else startTime=performance.now(); };
 $('#compileBtn').onclick=compileAndRun;
 $('#revertBtn').onclick=()=>{ loadEditor(); setStatus('idle','Code reset to the lesson sketch.'); };
 
 /* ── Go ── */
+initKnob();
 selectLesson('blink');
 $('#backendHint').innerHTML = COMPILE_ENDPOINT ? '' : 'Code mode needs the compile backend. Guided mode works right now, offline.';
 requestAnimationFrame(frame);
