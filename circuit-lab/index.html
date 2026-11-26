@@ -118,7 +118,7 @@
 <header class="hero">
   <span class="kicker">Circuit Lab · Arduino Uno R3 · Free</span>
   <h1>Build an Arduino circuit in your browser</h1>
-  <p><b>Guided</b> mode: tap the yellow numbers (or drag the knob) to change the project. <b>Code</b> mode: write real C++, compile it on our backend, and watch it run on a simulated Uno R3. Parts so far: LED, RGB LED, servo, potentiometer, buzzer and OLED — the same sketches flash onto a real Uno R3.</p>
+  <p><b>Guided</b> mode: tap the yellow numbers (or drag the knob) to change the project. <b>Code</b> mode: write real C++, compile it on our backend, and watch it run on a simulated Uno R3. Parts so far: LED, RGB LED, button, servo, potentiometer, buzzer, light / motion / distance / temperature sensors and OLED — the same sketches flash onto a real Uno R3.</p>
 </header>
 
 <div class="lessons" id="lessons"></div>
@@ -192,6 +192,60 @@
           <g id="potInd"><line x1="115" y1="262" x2="115" y2="240" stroke="#ffd21f" stroke-width="4" stroke-linecap="round"/></g>
           <circle id="potHit" cx="115" cy="262" r="34" fill="transparent" style="cursor:grab"/>
           <text x="115" y="312" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">POTENTIOMETER</text>
+        </g>
+
+        <!-- Push button -->
+        <g id="button">
+          <rect x="150" y="242" width="52" height="40" rx="6" fill="#2a2a2a" stroke="#555"/>
+          <g id="pushCap"><circle cx="176" cy="258" r="13" fill="#c0392b" stroke="#7d2018"/></g>
+          <circle id="pushHit" cx="176" cy="262" r="26" fill="transparent" style="cursor:pointer"/>
+          <text x="176" y="302" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">BUTTON</text>
+        </g>
+
+        <!-- Dice -->
+        <g id="dice">
+          <rect x="250" y="222" width="66" height="66" rx="10" fill="#fdfdfd" stroke="#d8c9a8"/>
+          <circle id="pTL" cx="267" cy="239" r="6" fill="#220111"/>
+          <circle id="pTR" cx="299" cy="239" r="6" fill="#220111"/>
+          <circle id="pML" cx="267" cy="255" r="6" fill="#220111"/>
+          <circle id="pC"  cx="283" cy="255" r="6" fill="#220111"/>
+          <circle id="pMR" cx="299" cy="255" r="6" fill="#220111"/>
+          <circle id="pBL" cx="267" cy="271" r="6" fill="#220111"/>
+          <circle id="pBR" cx="299" cy="271" r="6" fill="#220111"/>
+          <text x="283" y="306" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">DICE</text>
+        </g>
+
+        <!-- Photoresistor (LDR) -->
+        <g id="ldr">
+          <circle cx="118" cy="256" r="20" fill="#e9d8a6" stroke="#b8a46a"/>
+          <path d="M106 256 q6 -9 12 0 q6 9 12 0" fill="none" stroke="#7a5c1e" stroke-width="2"/>
+          <text x="118" y="300" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">LIGHT (LDR)</text>
+        </g>
+
+        <!-- PIR motion sensor -->
+        <g id="pir">
+          <rect x="96" y="238" width="48" height="40" rx="6" fill="#0b6b6b" stroke="#064d4d"/>
+          <circle cx="120" cy="252" r="14" fill="#eee" stroke="#ccc"/>
+          <circle cx="120" cy="252" r="9" fill="#dfeffb" opacity="0.6"/>
+          <text x="120" y="300" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">PIR MOTION</text>
+        </g>
+
+        <!-- Ultrasonic HC-SR04 -->
+        <g id="ultrasonic">
+          <rect x="70" y="236" width="86" height="40" rx="6" fill="#1550b0" stroke="#0d3a8a"/>
+          <circle cx="92" cy="256" r="14" fill="#222" stroke="#444"/><circle cx="92" cy="256" r="8" fill="#333"/>
+          <circle cx="134" cy="256" r="14" fill="#222" stroke="#444"/><circle cx="134" cy="256" r="8" fill="#333"/>
+          <rect id="usObject" x="307" y="240" width="16" height="36" rx="3" fill="#e0641b"/>
+          <text id="usDist" x="311" y="232" fill="#5A4A50" font-size="9" font-family="monospace">100cm</text>
+          <text x="113" y="300" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">ULTRASONIC</text>
+        </g>
+
+        <!-- DHT11 temp/humidity -->
+        <g id="dht">
+          <rect x="330" y="230" width="44" height="58" rx="5" fill="#2f78d6" stroke="#1550b0"/>
+          <rect x="336" y="236" width="32" height="20" rx="2" fill="#1b4f92"/>
+          <circle cx="344" cy="246" r="2" fill="#bcd4f5"/><circle cx="352" cy="250" r="2" fill="#bcd4f5"/><circle cx="360" cy="244" r="2" fill="#bcd4f5"/>
+          <text x="352" y="302" fill="#8a7d84" font-size="8" font-family="monospace" text-anchor="middle">DHT11</text>
         </g>
 
         <!-- OLED -->
@@ -376,7 +430,96 @@ const LESSONS = [
     step(p,t){ const melody=[262,294,330,349,392,440,494,523], unit=p.tempo+40, i=Math.floor(t/unit)%8, ph=t%unit, on=ph<p.tempo, f=on?melody[i]:0;
       return {tone:f, serial:on?('tone '+melody[i]+' Hz'):'rest'}; } },
 
-  /* 8 ─ OLED SCREEN ───────────────────────── */
+  /* 8 ─ BUTTON → LED (digital input) ──────── */
+  { id:'button', name:'Button → LED', components:['button','ledRed','wireRed'],
+    blurb:'<b>Digital input.</b> A push button with <code>INPUT_PULLUP</code> reads HIGH normally, LOW when pressed. <b>Hold the button</b> (in the circuit, or the panel) to light the LED.',
+    inputs:{ press:{type:'button', label:'⏺ Hold to press the button'} },
+    params:{},
+    code:p=>[
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(2, '),kw('INPUT_PULLUP'),txt(');\n  '),fn('pinMode'),txt('(13, '),kw('OUTPUT'),txt(');\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('if '),txt('('),fn('digitalRead'),txt('(2) == '),kw('LOW'),txt(') {   '),cm('// pressed\n'),
+      txt('    '),fn('digitalWrite'),txt('(13, '),kw('HIGH'),txt(');\n  } '),kw('else '),txt('{\n    '),fn('digitalWrite'),txt('(13, '),kw('LOW'),txt(');\n  }\n}')],
+    avr:{ leds:[{pin:13,targets:['ledRed']}], inputs:[{pin:2,from:'press',active:'low'}] },
+    step(p,t,io){ const on=io.press?1:0; return {leds:{ledRed:on}, serial:on?'button pressed → LED on':'button up → LED off'}; } },
+
+  /* 9 ─ DICE ROLL (button + random) ───────── */
+  { id:'dice', name:'Dice roll', components:['button','dice'],
+    blurb:'<b>Random + a button.</b> Press to roll — the Arduino picks a random number 1–6 with <code>random()</code> and lights the dice pips. Press the button to roll! 🎲',
+    inputs:{ roll:{type:'button', label:'🎲 Roll the dice'} },
+    params:{},
+    code:p=>[
+      kw('int '),txt('pips = 1;\n\n'),
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(2, '),kw('INPUT_PULLUP'),txt(');\n  '),fn('randomSeed'),txt('('),fn('analogRead'),txt('(A0));\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('if '),txt('('),fn('digitalRead'),txt('(2) == '),kw('LOW'),txt(') {\n'),
+      txt('    pips = '),fn('random'),txt('(1, 7);   '),cm('// 1..6\n'),
+      txt('    '),fn('showDice'),txt('(pips);\n    '),fn('delay'),txt('(300);\n  }\n}')],
+    avr:{ supported:false },
+    press(key){ if(key==='roll') diceRoll(); },
+    step(p,t,io){ return {dice:diceValue(), serial:diceSerial()}; } },
+
+  /* 10 ─ LIGHT SENSOR / NIGHT-LIGHT (LDR) ─── */
+  { id:'nightlight', name:'Light sensor', components:['ldr','ledRed','wireRed'],
+    blurb:'<b>Analog sensor input.</b> A photoresistor (LDR) reads the light level with <code>analogRead()</code>. When it gets dark, switch the LED on — an automatic night-light. Drag the light slider.',
+    inputs:{ light:{type:'slider', label:'Light level (0 dark → 1023 bright)', min:0, max:1023, step:1, value:700} },
+    params:{ threshold:{label:'Dark threshold', min:50, max:950, step:10, value:400} },
+    code:p=>[
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(13, '),kw('OUTPUT'),txt(');\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('int '),txt('light = '),fn('analogRead'),txt('(A0);\n'),
+      txt('  '),kw('if '),txt('(light < '),P('threshold'),txt(') {   '),cm('// dark\n'),
+      txt('    '),fn('digitalWrite'),txt('(13, '),kw('HIGH'),txt(');\n  } '),kw('else '),txt('{\n    '),fn('digitalWrite'),txt('(13, '),kw('LOW'),txt(');\n  }\n}')],
+    avr:{ leds:[{pin:13,targets:['ledRed']}], pot:{channel:0,from:'light'} },
+    step(p,t,io){ const dark=(io.light||0)<p.threshold; return {leds:{ledRed:dark?1:0}, serial:'light '+(io.light||0)+(dark?' → dark, LED on':' → bright, LED off')}; } },
+
+  /* 11 ─ MOTION ALARM (PIR) ───────────────── */
+  { id:'motion', name:'Motion alarm', components:['pir','ledRed','buzzer','wireRed'],
+    blurb:'<b>Motion sensor (PIR).</b> A PIR outputs HIGH when it sees movement. Flip "motion detected" and the alarm — LED + buzzer — goes off.',
+    inputs:{ motion:{type:'toggle', label:'Motion detected'} },
+    params:{},
+    code:p=>[
+      kw('void '),fn('setup'),txt('() {\n  '),fn('pinMode'),txt('(2, '),kw('INPUT'),txt(');\n  '),fn('pinMode'),txt('(13, '),kw('OUTPUT'),txt(');\n}\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('if '),txt('('),fn('digitalRead'),txt('(2) == '),kw('HIGH'),txt(') {   '),cm('// motion!\n'),
+      txt('    '),fn('digitalWrite'),txt('(13, '),kw('HIGH'),txt('); '),fn('tone'),txt('(8, 880);\n  } '),kw('else '),txt('{\n    '),fn('digitalWrite'),txt('(13, '),kw('LOW'),txt('); '),fn('noTone'),txt('(8);\n  }\n}')],
+    avr:{ leds:[{pin:13,targets:['ledRed']}], inputs:[{pin:2,from:'motion',active:'high'}], tone:{pin:8,target:'buzzer'} },
+    step(p,t,io){ const m=io.motion?1:0; return {leds:{ledRed:m}, tone:m?880:0, serial:m?'⚠ MOTION! alarm on':'all clear'}; } },
+
+  /* 12 ─ DISTANCE RANGER (ultrasonic) ─────── */
+  { id:'ranger', name:'Distance ranger', components:['ultrasonic','buzzer'],
+    blurb:'<b>Ultrasonic distance (HC-SR04).</b> It pings and times the echo to measure distance. The closer the object, the faster the beeps. Drag the object nearer or farther.',
+    inputs:{ distance:{type:'slider', label:'Object distance (cm)', min:2, max:200, step:1, value:100} },
+    params:{},
+    code:p=>[
+      txt('long duration; int cm;\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),fn('digitalWrite'),txt('(9, '),kw('HIGH'),txt('); '),fn('delayMicroseconds'),txt('(10); '),fn('digitalWrite'),txt('(9, '),kw('LOW'),txt(');\n'),
+      txt('  duration = '),fn('pulseIn'),txt('(10, '),kw('HIGH'),txt(');\n'),
+      txt('  cm = duration / 58;\n'),
+      txt('  '),kw('if '),txt('(cm < 20) '),fn('tone'),txt('(8, 1000); '),kw('else '),fn('noTone'),txt('(8);\n}')],
+    avr:{ supported:false },
+    step(p,t,io){ const d=io.distance||0, beep=d<60, period=Math.max(120,d*4), on=beep?((t%period)<60):false;
+      return {tone:on?1000:0, serial:d+' cm'+(d<20?' — CLOSE!':'')}; } },
+
+  /* 13 ─ WEATHER (DHT11 temp/humidity) ────── */
+  { id:'weather', name:'Weather sensor', components:['dht','oledWrap'],
+    blurb:'<b>Temperature & humidity (DHT11).</b> Reads temp and humidity and prints them on the OLED. Drag the sliders to change the conditions.',
+    inputs:{ temp:{type:'slider', label:'Temperature (°C)', min:0, max:50, step:1, value:24}, humidity:{type:'slider', label:'Humidity (%)', min:10, max:100, step:1, value:55} },
+    params:{},
+    code:p=>[
+      txt('#include <DHT.h>\nDHT dht(2, DHT11);\n\n'),
+      kw('void '),fn('loop'),txt('() {\n'),
+      txt('  '),kw('float '),txt('t = dht.'),fn('readTemperature'),txt('();\n'),
+      txt('  '),kw('float '),txt('h = dht.'),fn('readHumidity'),txt('();\n'),
+      txt('  display.'),fn('clearDisplay'),txt('();\n  display.'),fn('setCursor'),txt('(0, 0);\n'),
+      txt('  display.'),fn('print'),txt('("Temp "); display.'),fn('println'),txt('(t);\n'),
+      txt('  display.'),fn('print'),txt('("Hum  "); display.'),fn('println'),txt('(h);\n'),
+      txt('  display.'),fn('display'),txt('();\n  '),fn('delay'),txt('(1000);\n}')],
+    avr:{ supported:false },
+    step(p,t,io){ return {oled:{lines:['Temp '+(io.temp||0)+' C','Hum  '+(io.humidity||0)+' %']}, serial:'T='+(io.temp||0)+'C  H='+(io.humidity||0)+'%'}; } },
+
+  /* 14 ─ OLED SCREEN ───────────────────────── */
   { id:'oled', name:'OLED screen', components:['oledWrap'],
     blurb:'<b>On-screen graphics.</b> Draws text + a counting number on a tiny OLED. The same Adafruit_GFX code runs on a real SSD1306 wired to your Uno R3.',
     params:{ message:{label:'Message on screen',type:'text',value:'TINKER!'}, step:{label:'Count by',min:1,max:25,step:1,value:1}, interval:{label:'Speed (ms per count)',min:100,max:1500,step:50,value:400} },
@@ -393,7 +536,7 @@ const LESSONS = [
 
 /* ── State ── */
 let current=LESSONS[0], params={}, io={}, running=true, startTime=performance.now(), mode='guided', cm5=null, editorDirty=false, engine='sim';
-const ALL_COMPONENTS=['ledBoard','ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen','rgbLed','servo','buzzer','pot','oledWrap'];
+const ALL_COMPONENTS=['ledBoard','ledRed','ledYellow','ledGreen','wireRed','wireYellow','wireGreen','rgbLed','servo','buzzer','pot','button','dice','ldr','pir','ultrasonic','dht','oledWrap'];
 
 const $=s=>document.querySelector(s);
 const codeEl=$('#code'), paramsEl=$('#params'), inputsWrap=$('#inputsWrap'), blurbEl=$('#blurb'), serialEl=$('#serial'), statusEl=$('#status');
@@ -408,6 +551,8 @@ function selectLesson(id){
   current=LESSONS.find(l=>l.id===id); params={}; io={};
   for(const k in current.params) params[k]=current.params[k].value;
   for(const k in (current.inputs||{})) io[k]=current.inputs[k].value;
+  diceAnim.rolling=false; diceAnim.shown=1;
+  curBtnKey=Object.keys(current.inputs||{}).find(k=>current.inputs[k].type==='button')||null;
   startTime=performance.now(); editorDirty=false;
   document.querySelectorAll('.lesson-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
   ALL_COMPONENTS.forEach(cid=>{ const el=document.getElementById(cid); if(el) el.style.display=current.components.includes(cid)?'':'none'; });
@@ -465,7 +610,21 @@ function renderInputs(){
   if(!keys.length) return;
   const h=document.createElement('div'); h.className='inputs-title'; h.textContent='Live inputs'; inputsWrap.appendChild(h);
   for(const key of keys){
-    const def=current.inputs[key], row=document.createElement('div'); row.className='param';
+    const def=current.inputs[key];
+    if(def.type==='button'){
+      const b=document.createElement('button'); b.className='btn btn-run'; b.style.width='100%'; b.textContent=def.label; b.id='in-'+key;
+      b.addEventListener('pointerdown',e=>{ e.preventDefault(); pressDown(key); });
+      b.addEventListener('pointerup',()=>pressUp(key)); b.addEventListener('pointerleave',()=>pressUp(key));
+      inputsWrap.appendChild(b); continue;
+    }
+    if(def.type==='toggle'){
+      const row=document.createElement('label'); row.className='param'; row.style.cursor='pointer';
+      const lab=document.createElement('span'); lab.textContent=def.label; lab.style.cssText='font-size:13px;font-weight:600';
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.id='in-'+key; cb.checked=!!io[key]; cb.style.cssText='width:20px;height:20px;accent-color:var(--orange)';
+      cb.onchange=()=>{ io[key]=cb.checked?1:0; };
+      row.append(lab, cb); inputsWrap.appendChild(row); continue;
+    }
+    const row=document.createElement('div'); row.className='param';
     const lab=document.createElement('label'); lab.textContent=def.label;
     const val=document.createElement('span'); val.className='pval'; val.id='iv-'+key; val.textContent=io[key];
     const inp=document.createElement('input'); inp.type='range'; inp.id='in-'+key; inp.min=def.min; inp.max=def.max; inp.step=def.step; inp.value=io[key];
@@ -592,7 +751,8 @@ function pumpAvr(){
   if(!avr||avr.dead) return;
   if(running){
     const A=current.avr||{}, cpu=avr.cpu;
-    if(A.pot && avr.adc) avr.adc.channelValues[A.pot.channel]=((io[A.pot.from]||0)/1023)*5;   // knob → ADC
+    if(A.pot && avr.adc) avr.adc.channelValues[A.pot.channel]=((io[A.pot.from]||0)/1023)*5;   // pot / LDR → ADC
+    (A.inputs||[]).forEach(inp=>{ const {p,bit}=pinPort(avr.ports,inp.pin); const v=io[inp.from]?1:0; p.setPin(bit, inp.active==='low'?!v:!!v); });   // button / PIR → input pins
     const target=cpu.cycles+16e6/60; let guard=0;
     while(cpu.cycles<target && guard++<2000000){ avr.inst(cpu); cpu.tick(); }
     (A.leds||[]).forEach(l=>{ const {p,bit}=pinPort(avr.ports,l.pin);
@@ -617,8 +777,30 @@ const SERVO={px:336,py:250};
 function setServo(angle){ const a=$('#servoArm'); if(!a) return; a.setAttribute('transform','rotate('+(angle-90)+' '+SERVO.px+' '+SERVO.py+')'); }
 function setBuzzerActive(on){ const w=$('#buzzWaves'); if(w) w.setAttribute('opacity', on?'1':'0'); }
 function drawOled(d){ octx.fillStyle='#001018'; octx.fillRect(0,0,128,64); if(!d) return; octx.fillStyle='#39e6ff'; octx.textBaseline='top';
+  if(d.lines){ octx.font='bold 14px "Space Mono", monospace'; d.lines.slice(0,3).forEach((ln,i)=>octx.fillText(String(ln).slice(0,16),2,6+i*20)); return; }
   octx.font='bold 12px "Space Mono", monospace'; octx.fillText((d.message||'').slice(0,14),2,2);
   octx.font='bold 34px "Space Mono", monospace'; octx.fillText(String(d.count),2,24); }
+
+/* Dice pips */
+const DICE_MAP={1:['pC'],2:['pTL','pBR'],3:['pTL','pC','pBR'],4:['pTL','pTR','pBL','pBR'],5:['pTL','pTR','pC','pBL','pBR'],6:['pTL','pTR','pML','pMR','pBL','pBR']};
+const DICE_ALL=['pTL','pTR','pML','pC','pMR','pBL','pBR'];
+function setDice(n){ const show=DICE_MAP[n]||[]; DICE_ALL.forEach(id=>{ const e=$('#'+id); if(e) e.style.opacity=show.includes(id)?'1':'0'; }); }
+let diceAnim={rolling:false,end:0,shown:1,final:1,flip:0};
+function diceRoll(){ diceAnim.rolling=true; diceAnim.end=performance.now()+700; diceAnim.final=1+Math.floor(Math.random()*6); }
+function diceValue(){ const now=performance.now(); if(diceAnim.rolling){ if(now>=diceAnim.end){ diceAnim.rolling=false; diceAnim.shown=diceAnim.final; } else if(now-diceAnim.flip>70){ diceAnim.flip=now; diceAnim.shown=1+Math.floor(Math.random()*6); } } return diceAnim.shown; }
+function diceSerial(){ return diceAnim.rolling?'rolling…':('rolled a '+diceAnim.shown); }
+
+/* Ultrasonic object position (near→far across the breadboard) */
+function setUltrasonic(d){ const o=$('#usObject'); if(!o) return; const x=175+(Math.min(200,Math.max(2,d||0))/200)*265; o.setAttribute('x',x); const t=$('#usDist'); if(t){ t.setAttribute('x',x+4); t.textContent=Math.round(d||0)+'cm'; } }
+
+/* Momentary push button (scene + panel share it) */
+let curBtnKey=null;
+function pressDown(key){ io[key]=1; const c=$('#pushCap'); if(c) c.setAttribute('transform','translate(0,3)'); if(current.press) current.press(key); }
+function pressUp(key){ io[key]=0; const c=$('#pushCap'); if(c) c.removeAttribute('transform'); }
+function initPush(){ const hit=$('#pushHit'); if(!hit) return;
+  hit.addEventListener('pointerdown',e=>{ e.preventDefault(); if(curBtnKey) pressDown(curBtnKey); });
+  hit.addEventListener('pointerup',()=>{ if(curBtnKey) pressUp(curBtnKey); });
+  hit.addEventListener('pointerleave',()=>{ if(curBtnKey) pressUp(curBtnKey); }); }
 
 /* ── Audio (buzzer) — one persistent square oscillator, gated by gain ── */
 let actx=null, osc=null, gain=null;
@@ -648,6 +830,8 @@ function frame(now){
     if(current.components.includes('oledWrap')) drawOled(out.oled);
     if(out.rgb) setRgb(out.rgb);
     if(out.servo!=null) setServo(out.servo);
+    if(out.dice!=null) setDice(out.dice);
+    if(current.components.includes('ultrasonic')) setUltrasonic(io.distance);
     if('tone' in out){ setTone(out.tone); setBuzzerActive(out.tone>0); }
     if(out.serial) pushSerial(out.serial, true);
   }
@@ -685,6 +869,7 @@ $('#revertBtn').onclick=()=>{ loadEditor(); setStatus('idle','Code reset to the 
 
 /* ── Go ── */
 initKnob();
+initPush();
 selectLesson('blink');
 $('#backendHint').innerHTML = COMPILE_ENDPOINT ? '' : 'Code mode needs the compile backend. Guided mode works right now, offline.';
 requestAnimationFrame(frame);
