@@ -189,6 +189,9 @@ footer a:hover{text-decoration:underline}
 .ct-adv{background:var(--blue-light);color:var(--blue-dark)}
 .ct-age{color:var(--text-2);white-space:nowrap}
 .ct-time{color:var(--text-2);white-space:nowrap}
+.ct-lab{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;color:var(--orange-dark);background:var(--orange-light);border-radius:var(--radius-pill);padding:1px 8px;text-decoration:none;white-space:nowrap;vertical-align:middle}
+.ct-lab:hover{background:var(--orange);color:#fff}
+.lab-chip{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--orange-dark);background:var(--orange-light);border-radius:var(--radius-pill);padding:1px 8px;letter-spacing:.02em}
 @media(max-width:520px){
   .catalog-table td:nth-child(4),.catalog-table th:nth-child(4){display:none}
 }
@@ -744,6 +747,10 @@ document.getElementById('yr').textContent=new Date().getFullYear();
 // once. Any local edits saved via admin.html are merged on top.
 let DATA={arduino:{ages:[],projects:[]},ai:{ages:[],projects:[]}};
 
+// Projects that have a matching lesson in the free Circuit Lab simulator
+// (circuit-lab/). Lets kids try them with no kit — then build for real.
+const LAB_PROJECTS={ar1:1,ar3:1,ar4:1,ar6:1,ar10:1};
+
 // KES or US$ on the price cards (price.js).
 function renderPrices(){
   document.querySelectorAll('[data-kes]').forEach(el=>{el.textContent=TWPrice.fmt(+el.dataset.kes,+el.dataset.usd);});
@@ -794,6 +801,7 @@ function renderGrid(){
       +'<div class="proj-meta">'+p.time+' min &middot; '+p.age+'</div>'
       +'<div class="proj-desc">'+p.desc+'</div>'
       +'<span class="diff-badge '+dc+'">'+p.diff+'</span>'
+      +(LAB_PROJECTS[p.id]?'<span class="lab-chip">⚡ Try in the Lab</span>':'')
       +'</div>';
   }).join('');
 }
@@ -1067,7 +1075,7 @@ function renderCatalog(){
     const rows=DATA[tr.key].projects.map(p=>{
       const dc=p.diff==='Beginner'?'ct-beg':p.diff==='Intermediate'?'ct-int':'ct-adv';
       return `<tr>
-        <td><i class="ti ${p.icon} catalog-icon"></i>${p.title}</td>
+        <td><i class="ti ${p.icon} catalog-icon"></i>${p.title}${LAB_PROJECTS[p.id]?` <a class="ct-lab" href="circuit-lab/" target="_blank" rel="noopener" data-ga="picker-lab-${p.id}">⚡ Lab</a>`:''}</td>
         <td><span class="ct-diff ${dc}">${p.diff}</span></td>
         <td class="ct-age">${p.age}</td>
         <td class="ct-time">${p.time} min</td>
