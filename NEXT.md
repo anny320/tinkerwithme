@@ -1,6 +1,6 @@
 # Tinkerwith — Next tasks (pick-up notes)
 
-_Last updated: 22 Nov 2026_
+_Last updated: 24 Nov 2026_
 
 ## ▶️ Do first when we resume
 0. **Review & publish the new AI Comic Studio course** (owner) — the SQL is already run (it loaded as a **draft**). Open **teach.html → Courses → AI Comic Studio**, read the 6 lessons/quizzes, then **Publish** when happy. PR **#146** (cover + seed) is **open** — merge it so the cover file deploys. _Optional cleanup: the sample row "AI Comic Studio" still sits in `school-dashboard.html` demo data — harmless, now that a real course of that name exists, but can be swapped for another sample title._
@@ -82,6 +82,22 @@ _Added 10 Nov 2026. Goal: rebuild the homepage to cut selection fatigue (34 cour
 
 ### UX review (courses now online)
 - **Review the planner → inquiry UX now that the courses are live in the LMS.** The session planner (`picker.html`), camp planner (`camp-planner.html`) and the curriculum generator all previously ended in a **PDF preview / download** as the main outcome — a lot of work went into those previews. Now that the 17 courses exist online, revisit each planner's end-state so an enquirer is also routed to the matching **online course / membership**, not only the PDF: add "see this as a self-paced course" / "enquire" CTAs alongside the preview, and check the preview-PDF step still makes sense as the primary call-to-action. Audit all three flows for consistency with the new online offering. _(Partial: `schools.html#enquire` now hands off to the group quote builder, and `picker.html` links to it. Still to do: `camp-planner.html` + the curriculum generator, and "see this as a self-paced course" CTAs on the planners.)_
+
+### Circuit Lab — browser Arduino simulator (`/circuit-lab/`)
+_Added 24 Nov 2026. Free in-browser Arduino **Uno R3** teaching tool: **Guided** mode (kids edit the numbers, runs fully offline) + **Code** mode (real C++ → compiled → run live on a simulated ATmega328P via **avr8js**). Four lessons: Blink, Breathing/PWM, Traffic light, OLED. Built on branch `claude/arduino-visualization-tools-7mr5o7`. Guided mode is done and verified; Code mode ships with a **direct-to-container** compile path (no Supabase needed to compile)._
+
+- **⭐ Owner: deploy the compiler + connect it** (makes Code mode compile for real). Files are in `circuit-lab/compiler/`. On your machine (needs flyctl + `fly auth login`): `cd circuit-lab/compiler` → set a unique `app` name in `fly.toml` → `fly launch --no-deploy && fly deploy` → paste the printed URL into `COMPILE_ENDPOINT` in `circuit-lab/index.html`, commit & push. Then **verify in a browser**: compile a Blink/Traffic sketch and confirm the LED + serial + PWM behave (the avr8js engine is verified in Node, but the live round-trip, PWM-brightness and serial timing still need one real-browser pass). First compile after idle cold-starts a few seconds (~1 GB image); cache makes the rest instant.
+
+- **TODO — (optional) harden the compile path with a Supabase Edge Function gateway.** _Only needed if the open container URL gets abused — CORS stops other sites, but anyone can still `curl` it; today's rate-limit + size-cap + timeout keep that bounded. The page's compile contract is identical, so switching is just a URL + auth-header change._ Puts Clerk auth + a shared, persistent hex cache in front of the `arduino-cli` container. **Requirements:**
+  1. **`tw_compiles` cache table** (one SQL run in the SQL Editor, like `builds.sql`): `sketch_hash text primary key, board text, hex text, hits int default 0, created_at timestamptz default now()`; RLS on, no anon policy; written/read by the function via the **service role** (keep `lms.sql` conventions — `lms_uid()` / `lms_is_admin()` for any admin view).
+  2. **`compile` Edge Function** (TypeScript/Deno, in `supabase/functions/compile/`): verify the **Clerk JWT** (reuse the existing auth pattern), per-user rate-limit, check `tw_compiles` → on hit return cached hex, on miss `fetch` the container (`COMPILER_URL`), store the hex, return `{hex, cached}`. **Same contract** as now: `POST {board, source}` → `{hex, cached}` / `{error}`.
+  3. **Secrets + deploy via the Supabase CLI** (not SQL): `supabase secrets set COMPILER_URL=https://<app>.fly.dev/compile` then `supabase functions deploy compile` (mirror the `paystack-webhook` deploy note). Needs the container deployed first (it's the upstream).
+  4. **Lock the container** so only the function can reach it (set `ALLOW_ORIGIN` to the function origin, or keep the container private / behind a shared token the function sends).
+  5. **Frontend switch:** point `COMPILE_ENDPOINT` at the function URL and send the Clerk token in `COMPILE_HEADERS` (`{ Authorization: 'Bearer ' + token }`). No other page changes.
+  - **Depends on:** Supabase CLI + `supabase login` (owner machine); the Fly/Render container live; the existing Clerk/`lms_*` auth. Cross-refs the "Dedicated teacher role (Supabase + Clerk)" work — same auth plumbing.
+
+- **TODO — OLED display emulation** (so the on-screen-graphics lesson also runs real compiled code): add an I2C (`AVRTWI`/`twiConfig`) + SSD1306 command parser that draws to the existing `#oled` canvas. Until then the OLED lesson falls back to the built-in preview (the UI says so).
+- **Nice-to-have:** wire `/circuit-lab/` into `courses.html#arduino` as a free "try it" tool and/or repoint a stub like `first-circuits-lights/`; more lessons (button→LED input, servo sweep); preview images are in `circuit-lab/previews/` for marketing/social.
 
 ### Nice-to-have
 - Normalise relative `og:image` paths to absolute on older pages (index, free-for-kids).
