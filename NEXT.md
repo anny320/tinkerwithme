@@ -99,6 +99,22 @@ _Added 24 Nov 2026. Free in-browser Arduino **Uno R3** teaching tool: **Guided**
 - **TODO — OLED display emulation** (so the on-screen-graphics lesson also runs real compiled code): add an I2C (`AVRTWI`/`twiConfig`) + SSD1306 command parser that draws to the existing `#oled` canvas. Until then the OLED lesson falls back to the built-in preview (the UI says so).
 - **Nice-to-have:** wire `/circuit-lab/` into `courses.html#arduino` as a free "try it" tool and/or repoint a stub like `first-circuits-lights/`; more lessons (button→LED input, servo sweep); preview images are in `circuit-lab/previews/` for marketing/social.
 
+#### ⭐ Component coverage vs. the project catalogue (checked 26 Nov) — the build-out spec
+_Positioning decision: the lab is **complementary** — it reduces the "can't start" barrier, it does **not** replace hands-on tinkering. So we only claim **"Start in the Lab, no kit needed"** on the courses it genuinely covers, and expand that claim course-by-course as components land. Do **not** market "do all robotics in the lab" yet._
+
+**Covered today (~4 of 21 Arduino projects):** LED on/off, PWM fade, multi-LED sequencing (traffic light), OLED text. Parts the lab renders: **LED, button, OLED (SSD1306)**. That maps to the free **First Circuits & Lights** course and the LED intro of **Robotics 101** — safe to wire "Start in the Lab" there now.
+
+**Not covered — components the rest of the catalogue needs** (mention counts from `project_content/` + `premium_courses.json`): motors/L298 (141/40), servo (121), buzzer/piezo (86), LCD 16×2 (62), potentiometer (54), DHT11 (44), relay (32), ultrasonic HC-SR04 (24), PIR (24), photoresistor/LDR (15, part exists/no lesson), IR line sensor (10), RGB (7, referenced/no lesson), Bluetooth HC-05 (2), Teachable-Machine AI×Arduino crossovers (5). **Note:** each needs BOTH a rendered/interactive part in the lab UI **and** avr8js peripheral behaviour — the compiler alone isn't enough.
+
+**Prioritised roadmap (biggest coverage gain first):**
+1. **Servo + potentiometer + buzzer** → RGB mixer, servo control, buzzer melody, morse, Simon Says, robotic arm (≈4 → ~10 projects).
+2. **Sensors: ultrasonic, DHT11, photoresistor, PIR** → distance, weather/temp, light-activated LED, alarm.
+3. **DC motors + L298N driver** → line-follower / obstacle / self-driving-car robots (hardest to simulate convincingly).
+4. **LCD 16×2, Bluetooth HC-05, NeoPixel/WS2812** → weather station, bluetooth-control-lab, wearables.
+5. **Teachable-Machine bridge** → the AI×Arduino crossovers (already browser-AI; needs a wiring pattern, not avr8js).
+
+As each wave lands, flip that course's copy from kit-required to **"Start in the Lab → build it for real"** (kit stays the celebrated next step, never a gate).
+
 ### Nice-to-have
 - Normalise relative `og:image` paths to absolute on older pages (index, free-for-kids).
 
