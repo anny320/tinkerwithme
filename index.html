@@ -40,18 +40,18 @@
 }
 .hero-visual img,.hero-visual video{border-radius:var(--radius);width:100%;height:auto;display:block}
 /* This week's Tinker Challenge — corner card */
-.tinker-corner{position:absolute;left:24px;right:24px;bottom:24px;max-width:340px;
+.tinker-corner{position:absolute;left:18px;right:auto;bottom:18px;width:min(290px,64%);
   background:var(--white,#fff);border:2px solid var(--ink);border-radius:var(--radius);
-  box-shadow:5px 5px 0 var(--ink);padding:14px 16px}
+  box-shadow:5px 5px 0 var(--ink);padding:11px 13px}
 .tinker-corner[hidden]{display:none}
-.tinker-corner .tc-img-el{display:block;width:calc(100% + 32px);margin:-14px -16px 10px;height:120px;object-fit:cover;border-bottom:2px solid var(--ink);border-radius:var(--radius) var(--radius) 0 0}
+.tinker-corner .tc-img-el{display:block;width:calc(100% + 32px);margin:-11px -13px 9px;height:86px;object-fit:cover;border-bottom:2px solid var(--ink);border-radius:var(--radius) var(--radius) 0 0}
 .tinker-corner .tc-img-el[hidden]{display:none}
 .tinker-corner .tc-eyebrow{font-family:var(--font-mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .tinker-corner .tc-week{color:var(--text-2);font-weight:600}
-.tinker-corner h3{font-size:16px;font-weight:700;line-height:1.25;margin:6px 0 4px;color:var(--ink)}
-.tinker-corner p{font-size:13px;color:var(--text-2);line-height:1.45;margin:0}
-.tinker-corner .tc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
-.tinker-corner .tc-btn{cursor:pointer;font:inherit;font-weight:700;font-size:12.5px;border:1.5px solid var(--ink);border-radius:var(--radius-pill);padding:7px 13px;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.tinker-corner h3{font-size:14.5px;font-weight:700;line-height:1.22;margin:5px 0 3px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tinker-corner p{font-size:12px;color:var(--text-2);line-height:1.4;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tinker-corner .tc-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.tinker-corner .tc-btn{cursor:pointer;font:inherit;font-weight:700;font-size:11.5px;border:1.5px solid var(--ink);border-radius:var(--radius-pill);padding:6px 11px;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 .tinker-corner .tc-share{background:var(--orange);color:#fff;border-color:var(--ink)}
 .tinker-corner .tc-img{background:var(--white,#fff);color:var(--ink)}
 .tinker-corner .tc-cta{background:transparent;color:var(--ink);border-color:transparent;padding:7px 2px;text-decoration:underline}
@@ -60,7 +60,13 @@
   .hero-grid{grid-template-columns:1fr;gap:2.25rem}
   .hero-lede{max-width:none}
   .hero-btns{flex-direction:row;flex-wrap:wrap}
-  .tinker-corner{position:static;max-width:none;margin-top:14px;box-shadow:4px 4px 0 var(--ink)}
+  .tinker-corner{position:static;width:auto;max-width:none;margin-top:14px;box-shadow:4px 4px 0 var(--ink)}
+  .tinker-corner h3,.tinker-corner p{-webkit-line-clamp:unset;overflow:visible;display:block}
+}
+/* 2-col but the image column is too narrow to overlay — stack the card below instead */
+@media(min-width:901px) and (max-width:1199.98px){
+  .tinker-corner{position:static;width:auto;max-width:none;margin-top:14px;box-shadow:4px 4px 0 var(--ink)}
+  .tinker-corner h3,.tinker-corner p{-webkit-line-clamp:unset;overflow:visible;display:block}
 }
 
 /* ── STATS ──────────────────────────────────────────────── */
